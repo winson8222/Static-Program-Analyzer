@@ -17,4 +17,6 @@ To be updated
 
 Name | Email | Development OS/Toolchain
 -:|:-|-|
-Hoang Manh Duc | hmanhduc2k@gmail.com | To be updated
+Hoang Manh Duc | hmanhduc2k@gmail.com | Windows, Microsoft Visual Studio 2022, CMake 3.27.2-msvc1
+Phua Guan Wei | phuaguanwei99@gmail.com | Windows, Microsoft Visual Studio 2022, CMake 3.27.2-msvc1
+Tan JIan Wei | 
