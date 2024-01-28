@@ -22,4 +22,4 @@ Phua Guan Wei | phuaguanwei99@gmail.com | Windows, Microsoft Visual Studio 2022,
 Tan Jian Wei | tanjwkeith@gmail.com | MacOS Clion 2023.3.2 CMake 3.27.8
 Zheng Yong Shen Winson | zheng.yongshen.winson@gmail.com | MacOS, CLion 2023.2.1, CMake 3.26.4
 Shurvir Singh Arora | shurvirarora@gmail.com | MacOS, CLion 2023.3.2, CMake 3.27.8
-Tariq | | 
+Bahatheq Tariq Ahmed S | tariqbahatheq@outlook.com | Windows, Microsoft Visual Studio 2022, CMake 3.27.2-msvc1
