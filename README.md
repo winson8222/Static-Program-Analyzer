@@ -19,5 +19,7 @@ Name | Email | Development OS/Toolchain
 -:|:-|-|
 Hoang Manh Duc | hmanhduc2k@gmail.com | Windows, Microsoft Visual Studio 2022, CMake 3.27.2-msvc1
 Phua Guan Wei | phuaguanwei99@gmail.com | Windows, Microsoft Visual Studio 2022, CMake 3.27.2-msvc1
-Tan JIan Wei | | MacOS, CLion 2023.2.1, CMake 3.26.4
+Tan Jian Wei | | MacOS, CLion 2023.2.1, CMake 3.26.4
 Zheng Yong Shen Winson | zheng.yongshen.winson@gmail.com | MacOS, CLion 2023.2.1, CMake 3.26.4
+Shurvir Singh Arora | shurvirarora@gmail.com | MacOS, CLion 2023.3.2, CMake 3.27.8
+Tariq | | 
