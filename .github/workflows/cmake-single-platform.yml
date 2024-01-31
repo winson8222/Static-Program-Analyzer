@@ -32,7 +32,7 @@ jobs:
           cd Team19/Code19
           mkdir build
           cd build
-          cmake -A Win32 ..
+          cmake -A x64 ..
           cmake --build . --target unit_testing --config Release
           cmake --build . --target integration_testing --config Release
           cmake --build . --target autotester --config Release
