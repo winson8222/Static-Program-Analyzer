@@ -64,6 +64,21 @@ TEST_CASE("Modifies with invalid statement number") {
         "Unrecognized token: -1");
 }
 
+TEST_CASE("Uses with invalid IDENT") {
+    REQUIRE_THROWS_WITH(Tokenizer("stmt 1a; Select s such that Uses(-1, \"x\")").tokenize(),
+        "Unrecognized token: 1a");
+}
+
+TEST_CASE("Follows with invalid quotes") {
+    REQUIRE_THROWS_WITH(Tokenizer("stmt a1; Select s such that Uses(1, \"x)").tokenize(),
+        "Unrecognized token: \"");
+}
+
+TEST_CASE("Pattern with operator in quotes") {
+    REQUIRE_THROWS_WITH(Tokenizer("assign a; Select a pattern a(_, _\"y + z\"_)").tokenize(),
+        "Unrecognized token: \"y + z\"");
+}
+
 TEST_CASE("Modifies with quoted variable") {
     Tokenizer tokenizer("stmt s; Select s such that Modifies(s, \"existentVar\")");
     vector<Token> tokens = tokenizer.tokenize();
@@ -154,5 +169,52 @@ TEST_CASE("Pattern with variable and constant") {
     REQUIRE(tokens[11].getValue() == ")");
 }
 
+TEST_CASE("quoted constant with wildcards") {
+    Tokenizer tokenizer("assign a; Select a pattern a(_, _\"1\"_)");
+    vector<Token> tokens = tokenizer.tokenize();
 
+    REQUIRE(tokens.size() == 14);  // Expecting 14 tokens
+
+    REQUIRE(tokens[0].getType() == TokenType::DesignEntity);
+    REQUIRE(tokens[0].getValue() == "assign");
+
+    REQUIRE(tokens[1].getType() == TokenType::IDENT);
+    REQUIRE(tokens[1].getValue() == "a");
+
+    REQUIRE(tokens[2].getType() == TokenType::Semicolon);
+    REQUIRE(tokens[2].getValue() == ";");
+
+    REQUIRE(tokens[3].getType() == TokenType::ClauseKeyword);
+    REQUIRE(tokens[3].getValue() == "Select");
+
+    REQUIRE(tokens[4].getType() == TokenType::IDENT);
+    REQUIRE(tokens[4].getValue() == "a");
+
+    REQUIRE(tokens[5].getType() == TokenType::ClauseKeyword);
+    REQUIRE(tokens[5].getValue() == "pattern");
+
+    REQUIRE(tokens[6].getType() == TokenType::IDENT);
+    REQUIRE(tokens[6].getValue() == "a");
+
+    REQUIRE(tokens[7].getType() == TokenType::Lparenthesis);
+    REQUIRE(tokens[7].getValue() == "(");
+
+    REQUIRE(tokens[8].getType() == TokenType::Wildcard);
+    REQUIRE(tokens[8].getValue() == "_");
+
+    REQUIRE(tokens[9].getType() == TokenType::Comma);
+    REQUIRE(tokens[9].getValue() == ",");
+
+    REQUIRE(tokens[10].getType() == TokenType::Wildcard);
+    REQUIRE(tokens[10].getValue() == "_");
+
+    REQUIRE(tokens[11].getType() == TokenType::QuoutConst);
+    REQUIRE(tokens[11].getValue() == "\"1\"");
+
+    REQUIRE(tokens[12].getType() == TokenType::Wildcard);
+    REQUIRE(tokens[12].getValue() == "_");
+
+    REQUIRE(tokens[13].getType() == TokenType::Rparenthesis);
+    REQUIRE(tokens[13].getValue() == ")");
+}
 
