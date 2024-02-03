@@ -25,7 +25,6 @@ public:
     FollowsStore();
 
     bool isFollows(int preStmtNum, int postStmtNum);
-    bool isFollowing(int postStmtNum, int preStmtNum);
     unordered_set<int> getFollows(int stmtNum);
 
     void addFollows(int stmt1, int stmt2);

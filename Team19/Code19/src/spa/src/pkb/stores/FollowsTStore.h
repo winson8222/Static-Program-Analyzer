@@ -11,7 +11,19 @@ private:
     // The map that stores the reverse Follows* relationship
     TemplateMapSet<int, int> postToPreTMap;
 public:
+    /**
+     * Returns true if the Follows* relationship exists
+     * @param preStmtNum
+     * @param postStmtNum
+     * @return true if the Follows* relationship exists
+     */
     bool isFollowsT(int preStmtNum, int postStmtNum);
+
+    /**
+     * Adds a Follows* relationship to the map
+     * @param preStmtNum
+     * @param postStmtNum
+     */
     void addFollowsT(int preStmtNum, int postStmtNum);
 
     /**
