@@ -1,3 +1,5 @@
+#pragma once
+
 #include "pkb/templates/TemplateMapSet.h"
 #include "IRelationshipReader.h"
 #include "IRelationshipWriter.h"
