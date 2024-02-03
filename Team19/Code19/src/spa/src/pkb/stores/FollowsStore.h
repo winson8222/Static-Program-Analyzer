@@ -23,12 +23,7 @@ private:
     TemplateMapSet<int, int> reverseFollowsMap;
 public:
     FollowsStore();
-
     bool isFollows(int preStmtNum, int postStmtNum);
     unordered_set<int> getFollows(int stmtNum);
-
     void addFollows(int stmt1, int stmt2);
-
-
-
 };

@@ -12,3 +12,11 @@ void FollowsTStore::addFollowsT(int preStmtNum, int postStmtNum) {
 unordered_map<int, unordered_set<int>> FollowsTStore::getFollowsT() {
     return this->preToPostTMap.getMapSet();
 }
+
+unordered_set<int> FollowsTStore::getPreFollowsT(int postStmtNum) {
+    return this->postToPreTMap.getValuesByKey(postStmtNum);
+}
+
+unordered_set<int> FollowsTStore::getPostFollowsT(int preStmtNum) {
+    return this->preToPostTMap.getValuesByKey(preStmtNum);
+}

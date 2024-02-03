@@ -31,4 +31,16 @@ public:
      * @return Follows* map (preToPostTMap)
      */
     unordered_map<int, unordered_set<int>> getFollowsT();
+    /**
+     * Gets the statement numbers that are Follows* by th   e given statement number
+     * @param postStmtNum
+     * @return The set of preStmtNum that satisfy Follows*(preStmtNum, postStmtNum)
+     */
+    unordered_set<int> getPreFollowsT(int postStmtNum);
+    /**
+     * Gets the statement numbers that Follows* the given statement number
+     * @param preStmtNum
+     * @return The set of postStmtNum that satisfy Follows*(preStmtNum, postStmtNum)
+     */
+    unordered_set<int> getPostFollowsT(int preStmtNum);
 };
