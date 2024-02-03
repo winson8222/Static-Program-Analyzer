@@ -21,6 +21,7 @@ enum class TokenType {
     DesignEntity,
     RelRef,
     ClauseKeyword,
+    QuoutConst,
 
 
 };

@@ -42,12 +42,16 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
         return TokenType::Wildcard;
     }
     // ClauseKeyword: Specific clause keywords.
-    else if (regex_match(tokenStr, regex("^(Select|Pattern|such|that)$"))) {
+    else if (regex_match(tokenStr, regex("^(Select|pattern|such|that)$"))) {
         return TokenType::ClauseKeyword;
     }
     // QuoutIDENT: An IDENT enclosed in double quotes.
     else if (regex_match(tokenStr, regex("^\"[a-zA-Z][a-zA-Z0-9]*\"$"))) {
         return TokenType::QuoutIDENT;
+    }
+    // QuoutConst: A constant enclosed in double quotes (for pattern matching).
+    else if (regex_match(tokenStr, regex("^\"[1-9]*\"$"))) {
+        return TokenType::QuoutConst;
     }
     // Lparenthesis: '('
     else if (tokenStr == "(") {
