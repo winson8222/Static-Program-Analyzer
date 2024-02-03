@@ -20,12 +20,19 @@ public:
      * @brief Construct an empty TemplateMapSet.
      */
     TemplateMapSet();
+    /**
+     * @brief Checks if the TemplateMapSet is empty.
+     */
 
     /**
      * @brief Get all values in the TemplateMapSet.
      *
      * @return Map of all key-values in the TemplateMapSet.
      */
+    bool isEmpty() {
+        return this->map.empty();
+    }
+
     unordered_map<KeyType, unordered_set<ValueType>> getMapSet();
 
     /**
