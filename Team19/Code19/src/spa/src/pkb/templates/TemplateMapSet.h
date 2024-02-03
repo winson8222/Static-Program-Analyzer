@@ -73,7 +73,7 @@ public:
      * @param key Key to add.
      * @param value Value to add.
      */
-    void add(KeyType key, ValueType value);
+    void addKeyValue(KeyType key, ValueType value);
 
     /**
      * @brief Remove the key-value pair associated with the given key from the TemplateMapSet.
@@ -135,7 +135,7 @@ bool TemplateMapSet<KeyType, ValueType>::hasKeyValue(KeyType key, ValueType valu
 }
 
 template <typename KeyType, typename ValueType>
-void TemplateMapSet<KeyType, ValueType>::add(KeyType key, ValueType value) {
+void TemplateMapSet<KeyType, ValueType>::addKeyValue(KeyType key, ValueType value) {
     this->map[key].insert(value);
 }
 

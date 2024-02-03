@@ -1,7 +1,3 @@
-//
-// Created by Shurvir Arora on 3/2/24.
-//
-
 #pragma once
 
 #include <unordered_map>

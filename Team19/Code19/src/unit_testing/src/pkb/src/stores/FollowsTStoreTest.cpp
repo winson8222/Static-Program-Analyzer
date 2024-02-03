@@ -3,7 +3,7 @@
 
 using namespace std;
 
-TEST_CASE("PKB FollowsTStore") {
+TEST_CASE("pkb/stores/FollowsTStore") {
     SECTION("getFollowsT") {
         FollowsTStore followsTStore;
         followsTStore.addFollowsT(1, 2);
@@ -14,5 +14,17 @@ TEST_CASE("PKB FollowsTStore") {
                 {2, {3}}
         };
         REQUIRE(followsTStore.getFollowsT() == expected);
+    }
+
+    SECTION("isFollowsT") {
+        FollowsTStore followsTStore;
+        followsTStore.addFollowsT(1, 2);
+        followsTStore.addFollowsT(1, 3);
+        followsTStore.addFollowsT(2, 3);
+        REQUIRE(followsTStore.isFollowsT(1, 2));
+        REQUIRE(followsTStore.isFollowsT(1, 3));
+        REQUIRE(followsTStore.isFollowsT(2, 3));
+        REQUIRE_FALSE(followsTStore.isFollowsT(1, 4));
+        REQUIRE_FALSE(followsTStore.isFollowsT(2, 1));
     }
 }

@@ -5,8 +5,8 @@ bool FollowsTStore::isFollowsT(int preStmtNum, int postStmtNum) {
 }
 
 void FollowsTStore::addFollowsT(int preStmtNum, int postStmtNum) {
-    this->preToPostTMap.add(preStmtNum, postStmtNum);
-    this->postToPreTMap.add(postStmtNum, preStmtNum);
+    this->preToPostTMap.addKeyValue(preStmtNum, postStmtNum);
+    this->postToPreTMap.addKeyValue(postStmtNum, preStmtNum);
 }
 
 unordered_map<int, unordered_set<int>> FollowsTStore::getFollowsT() {
