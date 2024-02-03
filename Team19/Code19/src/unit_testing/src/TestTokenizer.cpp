@@ -28,10 +28,8 @@ TEST_CASE("Modifies with valid statement and variable") {
 }
 
 TEST_CASE("Modifies with invalid statement number") {
-    Tokenizer tokenizer("stmt s; Select s such that Modifies(-1, \"x\")");
-    vector<Token> tokens = tokenizer.tokenize();
-
-    REQUIRE_THROWS_WITH(tokens, "Unrecognized token: -1");
+    REQUIRE_THROWS_WITH(Tokenizer("stmt s; Select s such that Modifies(-1, \"x\")").tokenize(),
+        "Unrecognized token: -1");
 }
 
 TEST_CASE("Modifies with quoted variable") {
@@ -74,5 +72,4 @@ TEST_CASE("Pattern with variable and constant") {
     REQUIRE(tokens[10].getType() == TokenType::QuoutConst && tokens[10].getValue() == "\"1\""); 
 }
 
-// Continue with more test cases...
 
