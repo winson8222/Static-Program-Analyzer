@@ -2,7 +2,6 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
-// Including necessary standard library headers.
 #include <string>
 #include <vector>
 
@@ -12,11 +11,18 @@ using namespace std;
 // This enum class lists different types of tokens that can be recognized.
 enum class TokenType {
     IDENT,    
-    NAME,     
     INTEGER,  
-    SYNONYM,  
-    STMTRF,   
-    ENTREF,   
+    Wildcard,   
+    QuoutIDENT,
+    Lparenthesis,
+    Rparenthesis,
+    Semicolon,
+    Comma,
+    DesignEntity,
+    RelRef,
+    ClauseKeyword,
+
+
 };
 
 // The Token class represents a token with a type and a string value.
@@ -44,4 +50,4 @@ private:
 
 
 
-#endif // End of include guard TOKEN_H
+#endif

@@ -1,4 +1,3 @@
-// Include the header file for the Token class.
 #include "Token.h"
 
 using namespace std;

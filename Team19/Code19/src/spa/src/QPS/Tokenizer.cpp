@@ -1,22 +1,19 @@
-// Include the Tokenizer class header.
 #include "Tokenizer.h"
+#include <stdexcept>
 
 using namespace std;
 
 // Initializes the Tokenizer with a given query string.
-// The regex for tokenization is also defined here.
 Tokenizer::Tokenizer(const string& query) : query(query) {
-    // Regex to split based on whitespaces, parentheses, commas, semicolons
-    tokenRegex = std::regex(R"([\s,;()]+)");
+    // Regex to split based on quouted text, whitespaces, parentheses, commas, semicolons
+    tokenRegex = std::regex(R"("[^"]*"|[a-zA-Z_]+|[,;()])");
 }
 
 // This method tokenizes the stored query and returns a vector of Token objects.
 vector<Token> Tokenizer::tokenize() {
     auto tokens = splitQuery();  // Call the splitQuery method to get tokens.
 
-    //More processing is possible here
-
-    return tokens;  // Return the vector of tokens.
+    return tokens;
 }
 
 // This method splits the query into tokens based on the regular expression.
@@ -24,7 +21,7 @@ vector<Token> Tokenizer::tokenize() {
 vector<Token> Tokenizer::splitQuery() {
     vector<Token> tokens;  // Vector to store tokens.
     // Iterator to go through each token found by the regex.
-    std::sregex_token_iterator iter(query.begin(), query.end(), tokenRegex, -1);
+    std::sregex_token_iterator iter(query.begin(), query.end(), tokenRegex);
     std::sregex_token_iterator end;  // End iterator.
 
     for (; iter != end; ++iter) {  // Loop through all tokens.
@@ -32,21 +29,60 @@ vector<Token> Tokenizer::splitQuery() {
         tokens.emplace_back(tokenType, *iter);  // Add the token to the vector.
     }
 
-    return tokens;  // Return the vector of tokens.
+    return tokens; 
 }
 
 // Determines the type of a token based on its string representation.
 // Returns the TokenType of the token.
 TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     // Logic to determine the type of the token.
-    // This is a placeholder and should be modified according to specific grammar-rules/Lexical-rules.
     
-    // Sample implementation to identify an identifier.
-    if (std::regex_match(tokenStr, std::regex("^[a-zA-Z][a-zA-Z0-9]*$"))) {
+    // Wildcard: A single underscore.
+    if (tokenStr == "_") {
+        return TokenType::Wildcard;
+    }
+    // ClauseKeyword: Specific clause keywords.
+    else if (regex_match(tokenStr, regex("^(Select|Pattern|such|that)$"))) {
+        return TokenType::ClauseKeyword;
+    }
+    // QuoutIDENT: An IDENT enclosed in double quotes.
+    else if (regex_match(tokenStr, regex("^\"[a-zA-Z][a-zA-Z0-9]*\"$"))) {
+        return TokenType::QuoutIDENT;
+    }
+    // Lparenthesis: '('
+    else if (tokenStr == "(") {
+        return TokenType::Lparenthesis;
+    }
+    // Rparenthesis: ')'
+    else if (tokenStr == ")") {
+        return TokenType::Rparenthesis;
+    }
+    // Semicolon: ';'
+    else if (tokenStr == ";") {
+        return TokenType::Semicolon;
+    }
+    // Comma: ','
+    else if (tokenStr == ",") {
+        return TokenType::Comma;
+    }
+    // DesignEntity: Specific keywords.
+    else if (regex_match(tokenStr, regex("^(stmt|read|print|while|if|assign|variable|constant|procedure)$"))) {
+        return TokenType::DesignEntity;
+    }
+    // RelRef: Specific keywords.
+    else if (regex_match(tokenStr, regex("^(Follows|Follows\\*|Parent|Parent\\*|Uses|Modifies)$"))) {
+        return TokenType::RelRef;
+    }
+    // IDENT: Starts with a letter and may continue with letters or digits.
+    else if (regex_match(tokenStr, regex("^[a-zA-Z][a-zA-Z0-9]*$"))) {
         return TokenType::IDENT;
     }
+    // INTEGER: Either 0 or a sequence of digits with no leading zero.
+    else if (regex_match(tokenStr, regex("^(0|[1-9][0-9]*)$"))) {
+        return TokenType::INTEGER;
+    }
 
-    // Add more conditions for other token types.
+    // If no pattern matches, throw an error.
+    throw std::invalid_argument("Unrecognized token: " + tokenStr);
 
-    return TokenType::IDENT; // Default return type, should be modified.
 }

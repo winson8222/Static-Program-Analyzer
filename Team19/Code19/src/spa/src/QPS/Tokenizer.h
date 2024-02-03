@@ -1,8 +1,6 @@
-// Include guard to prevent multiple inclusions of this header.
 #ifndef TOKENIZER_H
 #define TOKENIZER_H
 
-// Include necessary headers.
 #include "Token.h"
 #include <string>
 #include <vector>
