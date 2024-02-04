@@ -1,40 +1,40 @@
-#ifndef TOKENIZER_H
-#define TOKENIZER_H
+#pragma once
 
+#include <algorithm>
+#include <iostream>
+#include <map>
+#include <regex>
 #include <string>
 #include <vector>
 
-class Tokenizer {
-public:
-    // Token types enum
-    enum class TokenType {
-        KEYWORD,   // e.g., "procedure", "while", "if"
-        IDENTIFIER,// e.g., "x", "Example"
-        OPERATOR,  // e.g., "+", "=", "=="
-        LITERAL,   // e.g., "2", "true", "false"
-        SYMBOL,    // e.g., "{", "}", "(", ")"
-        SEMICOLON, // ;
-        UNKNOWN    // unrecognized tokens
-    };
 
-    // Token structure
-    struct Token {
-        TokenType type;
-        std::string lexeme;
-    };
-
-    // Constructor
-    Tokenizer();
-
-    // Tokenize the input SIMPLE source code and return a vector of tokens
-    std::vector<Token> tokenize(const std::string& sourceCode);
-
-private:
-    // Helper functions for tokenizing
-    bool isKeyword(const std::string& word) const;
-    bool isOperator(char character) const;
-    bool isLiteral(const std::string& word) const;
-    bool isSymbol(char character) const;
+enum class TokenType {
+    NAME, INTEGER, OPERATOR, COMPARATOR, SPECIAL, WHITESPACE
 };
 
-#endif // TOKENIZER_H
+class Token {
+private:
+    TokenType type;
+    int lineNumber;
+    int linePosition;
+    std::string name;
+    std::string integer;
+
+    Token() = delete;
+
+public:
+    Token(TokenType t) : 
+        type(t), lineNumber(0), linePosition(0), name(""), integer("") {}
+
+    TokenType getType() const;
+    int getLineNumber() const;
+    int getLinePosition() const;
+    const std::string& getName() const;
+    const std::string& getInteger() const;
+};
+
+class Tokenizer {
+public:
+    static std::vector<Token> tokenize(std::istream& stream);
+    static std::vector<std::string> splitLine(std::istream& stream);
+};
