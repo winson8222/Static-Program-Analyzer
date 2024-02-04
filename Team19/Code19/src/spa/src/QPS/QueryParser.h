@@ -44,6 +44,17 @@ private:
     // Method to check if the current token matches a given TokenType.
     // Returns true if it matches, false otherwise.
     bool match(TokenType type);
+    bool parseSynonym();
+    bool parseEntRef();
+    bool parseExpressionSpec();
+    bool parseRelRef();
+    bool parseStmtRef();
+    bool parseDesignEntity();
+    bool isUsesOrModifies();
+    bool isstmtRefstmtRef();
+    bool parseUsesOrModifies();
+    bool parsestmtRefstmtRef();
+
 };
 
 #endif // QUERYPARSER_H
