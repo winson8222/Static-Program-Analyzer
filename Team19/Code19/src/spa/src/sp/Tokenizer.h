@@ -13,28 +13,21 @@ enum class TokenType {
 };
 
 class Token {
-private:
+public:
     TokenType type;
     int lineNumber;
     int linePosition;
     std::string name;
     std::string integer;
 
-    Token() = delete;
-
-public:
     Token(TokenType t) : 
         type(t), lineNumber(0), linePosition(0), name(""), integer("") {}
 
-    TokenType getType() const;
-    int getLineNumber() const;
-    int getLinePosition() const;
-    const std::string& getName() const;
-    const std::string& getInteger() const;
 };
 
 class Tokenizer {
 public:
     static std::vector<Token> tokenize(std::istream& stream);
     static std::vector<std::string> splitLine(std::istream& stream);
+    static std::string readFileToString(const std::string& filename);
 };

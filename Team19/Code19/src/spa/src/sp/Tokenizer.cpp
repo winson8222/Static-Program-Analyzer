@@ -1,5 +1,6 @@
 #include "Tokenizer.h"
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <regex>
 #include <stdexcept>
@@ -14,31 +15,26 @@ std::vector<std::string> Tokenizer::splitLine(std::istream& stream) {
     return result;
 }
 
-Token::Token(TokenType t)
-    : type(t), lineNumber(0), linePosition(0), name(""), integer("") {}
 
-TokenType Token::getType() const {
-    return type;
+std::vector<Token> Tokenizer::tokenize(std::istream& input_stream) {
+    std::vector<Token> results;
+    return results;
 }
 
-int Token::getLineNumber() const {
-    return lineNumber;
-}
 
-int Token::getLinePosition() const {
-    return linePosition;
-}
+std::string Tokenizer::readFileToString(const std::string& filename) {
+    // Create an input file stream to read the file
+    std::ifstream inputFile(filename);
 
-const std::string& Token::getName() const {
-    return name;
-}
+    // Check if the file was opened successfully
+    if (!inputFile.is_open()) {
+        throw std::runtime_error("Error: Unable to open the input file.");
+    }
 
-const std::string& Token::getInteger() const {
-    return integer;
-}
+    std::stringstream buffer;
+    buffer << inputFile.rdbuf();
 
-std::vector<Token> Tokenizer::tokenize(std::istream& stream) {
-    std::vector<Token> result;
+    inputFile.close();
 
-    return result;
+    return buffer.str();
 }
