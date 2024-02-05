@@ -7,9 +7,8 @@
 #include <string>
 #include <vector>
 
-
 enum class TokenType {
-    NAME, INTEGER, OPERATOR, COMPARATOR, SPECIAL, WHITESPACE
+    NAME, INTEGER, OPERATOR, SYMBOLS, WHITESPACE
 };
 
 class Token {
@@ -27,7 +26,7 @@ public:
 
 class Tokenizer {
 public:
-    static std::vector<Token> tokenize(std::istream& stream);
-    static std::vector<std::string> splitLine(std::istream& stream);
+    static std::vector<Token> tokenize(std::vector<std::string> inputStream);
+    static std::vector<std::string> splitLine(const std::string& content);
     static std::string readFileToString(const std::string& filename);
 };
