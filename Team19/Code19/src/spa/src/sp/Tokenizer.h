@@ -13,18 +13,6 @@ enum class TokenType {
     LEFT_BRACKET, RIGHT_BRACKET
 };
 
-// prototype for matching rules
-std::unordered_map<TokenType, std::string> rules = {
-        { TokenType::NAME, "^([a-zA-Z]\\w*)\\b" },
-        { TokenType::INTEGER, "^(\\d+)" },
-        { TokenType::OPERATOR_PLUS, "^(\\+)" },
-        { TokenType::OPERATOR_EQUAL, "^(=)" },
-        { TokenType::SEMICOLON, "^(;)" },
-        { TokenType::WHITESPACE, "^(\\s+)" },
-        { TokenType::LEFT_BRACKET, "^(\\{)" },
-        { TokenType::RIGHT_BRACKET, "^(\\})" }
-};
-
 class Token {
 public:
     TokenType type;

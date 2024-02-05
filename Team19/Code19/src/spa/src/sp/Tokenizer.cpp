@@ -5,6 +5,17 @@
 #include <regex>
 #include <stdexcept>
 
+// prototype for matching rules
+extern std::unordered_map<TokenType, std::string> rules = {
+        { TokenType::NAME, "^([a-zA-Z]\\w*)\\b" },
+        { TokenType::INTEGER, "^(\\d+)" },
+        { TokenType::OPERATOR_PLUS, "^(\\+)" },
+        { TokenType::OPERATOR_EQUAL, "^(=)" },
+        { TokenType::SEMICOLON, "^(;)" },
+        { TokenType::WHITESPACE, "^(\\s+)" },
+        { TokenType::LEFT_BRACKET, "^(\\{)" },
+        { TokenType::RIGHT_BRACKET, "^(\\})" }
+};
 
 std::vector<std::string> Tokenizer::splitLine(const std::string& content) {
     std::vector<std::string> result;

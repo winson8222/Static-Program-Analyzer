@@ -1,5 +1,4 @@
 #include "sp/LexicalToken.h"
-#include "sp/Tokenizer.h"
 #include <fstream>     
 #include "catch.hpp"
 #include <filesystem>
