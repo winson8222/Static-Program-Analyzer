@@ -1,25 +1,19 @@
 #include "sp/LexicalToken.h"
+#include "sp/Tokenizer.h"
 #include <fstream>     
 #include "catch.hpp"
-#include <filesystem>
+#include "sp/LexicalToken.h"
 
-TEST_CASE("Letter::verifyToken", "[Letter]")
-{
-    LexicalTokens::Letter letterToken;
+TEST_CASE("Symbol Tokens") {
+    REQUIRE(LexicalTokenMapper::getToken("}") == LexicalToken::CLOSE_BRACE);
+    REQUIRE(LexicalTokenMapper::getToken("(") == LexicalToken::OPEN_PAREN);
+    // Add more symbol tokens as needed
+}
 
-    SECTION("Valid Letters")
-    {
-        REQUIRE(letterToken.verifyToken("A"));
-        REQUIRE(letterToken.verifyToken("z"));
-    }
-
-    SECTION("Invalid Characters")
-    {
-        REQUIRE_FALSE(letterToken.verifyToken(""));
-        REQUIRE_FALSE(letterToken.verifyToken("1"));
-        REQUIRE_FALSE(letterToken.verifyToken("az"));
-        REQUIRE_FALSE(letterToken.verifyToken("_"));
-    }
+TEST_CASE("Keyword Tokens") {
+    REQUIRE(LexicalTokenMapper::getToken("if") == LexicalToken::IF_KEYWORD);
+    REQUIRE(LexicalTokenMapper::getToken("then") == LexicalToken::THEN_KEYWORD);
+    // Add more keyword tokens as needed
 }
 
 TEST_CASE("Digit::verifyToken", "[Digit]")
@@ -32,51 +26,28 @@ TEST_CASE("Digit::verifyToken", "[Digit]")
         REQUIRE(digitToken.verifyToken("9"));
     }
 
-    SECTION("Invalid Characters")
-    {
-        REQUIRE_FALSE(digitToken.verifyToken(""));
-        REQUIRE_FALSE(digitToken.verifyToken("a"));
-        REQUIRE_FALSE(digitToken.verifyToken("10"));
-        REQUIRE_FALSE(digitToken.verifyToken("_"));
-    }
+TEST_CASE("Name Tokens") {
+    REQUIRE(LexicalTokenMapper::getToken("variable1") == LexicalToken::NAME);
+    REQUIRE(LexicalTokenMapper::getToken("unknown") == LexicalToken::NAME);
+    REQUIRE(LexicalTokenMapper::getToken("v") == LexicalToken::NAME);
+    // Add more name tokens as needed
 }
 
-TEST_CASE("Name::verifyToken", "[Name]")
-{
-    LexicalTokens::Name nameToken;
-
-    SECTION("Valid Names")
-    {
-        REQUIRE(nameToken.verifyToken("ducIsHandsome"));
-        REQUIRE(nameToken.verifyToken("Name123"));
-        REQUIRE(nameToken.verifyToken("v"));
-
-    }
-
-    SECTION("Invalid Characters")
-    {
-        REQUIRE_FALSE(nameToken.verifyToken("function_123"));
-        REQUIRE_FALSE(nameToken.verifyToken(""));
-        REQUIRE_FALSE(nameToken.verifyToken("1stVariable"));
-        REQUIRE_FALSE(nameToken.verifyToken("_myVariable"));
-
-    }
+TEST_CASE("Error Tokens") {
+    REQUIRE(LexicalTokenMapper::getToken("123abc") == LexicalToken::ERROR);
+    REQUIRE(LexicalTokenMapper::getToken("!@#") == LexicalToken::ERROR);
+    // Add more error cases as needed
 }
 
-TEST_CASE("Integer::verifyToken", "[Integer]")
-{
-    LexicalTokens::Integer integerToken;
+TEST_CASE("Space and New Line Tokens") {
+    REQUIRE(LexicalTokenMapper::getToken(" ") == LexicalToken::SPACE);
+    REQUIRE(LexicalTokenMapper::getToken("\n") == LexicalToken::NEW_LINE);
+    // Add more space and new line tokens as needed
+}
 
-    SECTION("Valid Integers")
-    {
-        REQUIRE(integerToken.verifyToken("0"));
-        REQUIRE(integerToken.verifyToken("987654321"));
-    }
-
-    SECTION("Invalid Characters")
-    {
-        REQUIRE_FALSE(integerToken.verifyToken("-123"));
-        REQUIRE_FALSE(integerToken.verifyToken(""));
-        REQUIRE_FALSE(integerToken.verifyToken("hello"));
-    }
+TEST_CASE("Unknown Token") {
+    REQUIRE(LexicalTokenMapper::getToken("1variable") == LexicalToken::ERROR);
+    REQUIRE(LexicalTokenMapper::getToken("variable_123") == LexicalToken::ERROR);
+    REQUIRE(LexicalTokenMapper::getToken("@") == LexicalToken::ERROR);
+    // Add more unknown cases as needed
 }
