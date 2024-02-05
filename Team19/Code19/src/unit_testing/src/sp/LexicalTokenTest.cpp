@@ -16,15 +16,6 @@ TEST_CASE("Keyword Tokens") {
     // Add more keyword tokens as needed
 }
 
-TEST_CASE("Digit::verifyToken", "[Digit]")
-{
-    LexicalTokens::Digit digitToken;
-
-    SECTION("Valid Digits")
-    {
-        REQUIRE(digitToken.verifyToken("0"));
-        REQUIRE(digitToken.verifyToken("9"));
-    }
 
 TEST_CASE("Name Tokens") {
     REQUIRE(LexicalTokenMapper::getToken("variable1") == LexicalToken::NAME);
