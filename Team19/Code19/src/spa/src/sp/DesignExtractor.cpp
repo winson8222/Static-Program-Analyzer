@@ -5,9 +5,6 @@
 
 using namespace std;
 
-
-#include "pkb/PKB.h"
-
 int DesignExtractor () {
 	return 0;
 }
