@@ -5,8 +5,6 @@
 
 using namespace std;
 
-
 int Parse () {
-
 	return 0;
 }
