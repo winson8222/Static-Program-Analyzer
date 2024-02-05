@@ -67,6 +67,14 @@ public:
     unordered_set<ValueType> getRelationshipsByValue(ValueType value) override {
         return valueToKeyMap.getValuesByKey(value);
     };
-
+    /**
+     * Clears all stored relationships from the store.
+     * This method resets both the key-to-value and value-to-key mappings, effectively
+     * removing all relationships.
+     */
+    void clear() {
+        keyToValueMap.clear();
+        valueToKeyMap.clear();
+    }
 };
 
