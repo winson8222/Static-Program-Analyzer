@@ -12,6 +12,7 @@ std::vector<std::string> Tokenizer::splitLine(const std::string& content) {
     std::string line;
 
     while (std::getline(stream, line)) {
+        std::cout << line << std::endl;
         result.push_back(line);
     }
 
@@ -38,8 +39,6 @@ std::string Tokenizer::readFileToString(const std::string& filename) {
     buffer << inputFile.rdbuf();
 
     inputFile.close();
-
-    std::cout << buffer.str() << std::endl;
 
     return buffer.str();
 }

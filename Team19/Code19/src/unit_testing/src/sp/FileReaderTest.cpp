@@ -10,7 +10,5 @@ TEST_CASE("Tokenizer::readFileToString", "[readFileToString]") {
 
     std::string actualContent;
     REQUIRE_NOTHROW(actualContent = Tokenizer::readFileToString(testFileName));
-
-    // Assert that the actual content matches the expected content
     REQUIRE(actualContent == testFileContent);
 }
