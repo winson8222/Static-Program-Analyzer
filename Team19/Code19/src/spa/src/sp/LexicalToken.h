@@ -4,20 +4,33 @@
 
 enum class LexicalToken {
     // Symbols
-    OPEN_BRACE, CLOSE_BRACE, 
-    OPEN_PAREN, CLOSE_PAREN,
-    ASSIGN, 
-    NOT, AND, OR, 
-    GREATER, GREATER_EQUAL, LESS, LESS_EQUAL, EQUAL_EQUAL, NOT_EQUAL,
-    PLUS, MINUS, MULTIPLY, DIVIDE, MODULO, 
+    SYMBOL_OPEN_BRACE, SYMBOL_CLOSE_BRACE, // { and }
+    SYMBOL_OPEN_PAREN, SYMBOL_CLOSE_PAREN, // ( and )
+    SYMBOL_SEMICOLON, // ;
+    
+    // Operator
+    OPERATOR_ASSIGN,    // =
+    OPERATOR_NOT,       // !
+    OPERATOR_AND,       // &&
+    OPERATOR_OR,        // ||
+    OPERATOR_GREATER, OPERATOR_GREATER_EQUAL,   // > and >=
+    OPERATOR_LESS, OPERATOR_LESS_EQUAL,         // < and <=
+    OPERATOR_IS_EQUAL,                          // ==
+    OPERATOR_NOT_EQUAL,                         // !=
+    OPERATOR_PLUS, OPERATOR_MINUS,              // + and -
+    OPERATOR_MULTIPLY, OPERATOR_DIVIDE,         // * and /
+    OPERATOR_MODULO,                            // %
 
     // Keywords
-    PROCEDURE_KEYWORD, WHILE_KEYWORD,
-    IF_KEYWORD, THEN_KEYWORD, ELSE_KEYWORD, 
-    READ_KEYWORD, CALL_KEYWORD, PRINT_KEYWORD, 
+    KEYWORD_PROCEDURE,
+    KEYWORD_WHILE,
+    KEYWORD_IF, KEYWORD_THEN, KEYWORD_ELSE,
+    KEYWORD_READ,
+    KEYWORD_CALL,
+    KEYWORD_PRINT,
 
     // General Tokens
-    INTEGER, NAME, SPACE, NEW_LINE,
+    INTEGER, NAME, WHITESPACE, NEW_LINE,
 
     // Error Token
     ERROR
@@ -26,7 +39,7 @@ enum class LexicalToken {
 class LexicalTokenMapper {
 public:
     static LexicalToken getToken(std::string str);
-
-private:
-    static const std::unordered_map<std::string, LexicalToken> tokenMap;
+    static const std::unordered_map<std::string, LexicalToken> stringToTokenMap;
+    static const std::unordered_map<LexicalToken, std::string> tokenToStringMap;
+    static const std::unordered_map<LexicalToken, std::string> tokenToRegexMap;
 };

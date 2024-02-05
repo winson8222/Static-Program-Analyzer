@@ -2,14 +2,14 @@
 #include "sp/LexicalToken.h"
 
 TEST_CASE("Symbol Tokens") {
-    REQUIRE(LexicalTokenMapper::getToken("}") == LexicalToken::CLOSE_BRACE);
-    REQUIRE(LexicalTokenMapper::getToken("(") == LexicalToken::OPEN_PAREN);
+    REQUIRE(LexicalTokenMapper::getToken("}") == LexicalToken::SYMBOL_CLOSE_BRACE);
+    REQUIRE(LexicalTokenMapper::getToken("(") == LexicalToken::SYMBOL_OPEN_PAREN);
     // Add more symbol tokens as needed
 }
 
 TEST_CASE("Keyword Tokens") {
-    REQUIRE(LexicalTokenMapper::getToken("if") == LexicalToken::IF_KEYWORD);
-    REQUIRE(LexicalTokenMapper::getToken("then") == LexicalToken::THEN_KEYWORD);
+    REQUIRE(LexicalTokenMapper::getToken("if") == LexicalToken::KEYWORD_IF);
+    REQUIRE(LexicalTokenMapper::getToken("then") == LexicalToken::KEYWORD_THEN);
     // Add more keyword tokens as needed
 }
 
@@ -33,7 +33,7 @@ TEST_CASE("Error Tokens") {
 }
 
 TEST_CASE("Space and New Line Tokens") {
-    REQUIRE(LexicalTokenMapper::getToken(" ") == LexicalToken::SPACE);
+    REQUIRE(LexicalTokenMapper::getToken(" ") == LexicalToken::WHITESPACE);
     REQUIRE(LexicalTokenMapper::getToken("\n") == LexicalToken::NEW_LINE);
     // Add more space and new line tokens as needed
 }
