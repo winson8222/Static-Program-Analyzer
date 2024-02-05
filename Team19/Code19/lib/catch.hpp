@@ -17754,7 +17754,7 @@ int main (int argc, char * const argv[]) {
 #define AND_GIVEN( desc ) INTERNAL_CATCH_DYNAMIC_SECTION( "And given: " << desc )
 #define WHEN( desc )      INTERNAL_CATCH_DYNAMIC_SECTION( "     When: " << desc )
 #define AND_WHEN( desc )  INTERNAL_CATCH_DYNAMIC_SECTION( " And when: " << desc )
-#define THEN_KEYWORD( desc )      INTERNAL_CATCH_DYNAMIC_SECTION( "     Then: " << desc )
+#define THEN( desc )      INTERNAL_CATCH_DYNAMIC_SECTION( "     Then: " << desc )
 #define AND_THEN( desc )  INTERNAL_CATCH_DYNAMIC_SECTION( "      And: " << desc )
 
 #if defined(CATCH_CONFIG_ENABLE_BENCHMARKING)
@@ -17938,7 +17938,7 @@ using Catch::Detail::Approx;
 #define AND_GIVEN( desc )
 #define WHEN( desc )
 #define AND_WHEN( desc )
-#define THEN_KEYWORD( desc )
+#define THEN( desc )
 #define AND_THEN( desc )
 
 using Catch::Detail::Approx;
