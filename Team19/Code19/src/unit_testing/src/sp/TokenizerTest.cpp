@@ -22,4 +22,5 @@ TEST_CASE("Tokenizer::splitLine", "[splitLine]") {
     REQUIRE(actualOutput == expectedOutput);
     const int expectedLineNumber = 5;
     REQUIRE(actualOutput.size() == expectedLineNumber);
+
 }

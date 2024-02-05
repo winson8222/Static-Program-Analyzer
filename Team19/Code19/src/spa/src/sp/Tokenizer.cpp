@@ -20,8 +20,53 @@ std::vector<std::string> Tokenizer::splitLine(const std::string& content) {
 }
 
 
-std::vector<Token> Tokenizer::tokenize(std::vector<std::string> inputStream) {
+void Token::print() {
+    std::cout << "Line Number: " << lineNumber << " ";
+    std::cout << "Line Position: " << linePosition << " ";
+    std::cout << "Name: " << name << " ";
+    std::cout << "Integer: " << integer << std::endl;
+
+}
+
+
+std::vector<Token> Tokenizer::tokenize(const std::string& content) {
     std::vector<Token> results;
+
+    int currentLine = 1;
+    std::vector<std::string> lines = Tokenizer::splitLine(content);
+
+    for (const std::string& line : lines) {
+        std::string originalLine = line;
+        while (!line.empty()) {
+            bool matchedSomething = false;
+            for (const auto& rule : rules) {
+                std::smatch match;
+                if (std::regex_search(line, match, std::regex(rule.second))) {
+                    Token token(rule.first);
+                    token.lineNumber = currentLine;
+                    token.linePosition = static_cast<int>(originalLine.size() - line.size());
+                    if (rule.first == TokenType::NAME) {
+                        token.name = match.str();
+                    }
+                    else if (rule.first == TokenType::INTEGER) {
+                        token.integer = match.str();
+                    }
+                    results.push_back(token);
+                    matchedSomething = true;
+                    originalLine = originalLine.substr(match.str().size());
+                    break;
+                }
+            }
+            if (!matchedSomething) {
+                break;
+            }
+        }
+        currentLine++;
+    }
+
+    for (auto t : results) {
+        t.print();
+    }
     return results;
 }
 
