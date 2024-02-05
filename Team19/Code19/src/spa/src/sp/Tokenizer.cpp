@@ -7,6 +7,7 @@
 
 // prototype for matching rules
 extern std::unordered_map<TokenType, std::string> rules = {
+        { TokenType::KEYWORD_PROCEDURE, "^(procedure)\\b" },
         { TokenType::NAME, "^([a-zA-Z]\\w*)\\b" },
         { TokenType::INTEGER, "^(\\d+)" },
         { TokenType::OPERATOR_PLUS, "^(\\+)" },
@@ -15,6 +16,18 @@ extern std::unordered_map<TokenType, std::string> rules = {
         { TokenType::WHITESPACE, "^(\\s+)" },
         { TokenType::LEFT_BRACKET, "^(\\{)" },
         { TokenType::RIGHT_BRACKET, "^(\\})" }
+};
+
+extern std::unordered_map<TokenType, std::string> printer = {
+        { TokenType::KEYWORD_PROCEDURE, "procedure"},
+        { TokenType::NAME, "name" },
+        { TokenType::INTEGER, "integer" },
+        { TokenType::OPERATOR_PLUS, "plus" },
+        { TokenType::OPERATOR_EQUAL, "equal" },
+        { TokenType::SEMICOLON, "semicolon" },
+        { TokenType::WHITESPACE, "whitespace" },
+        { TokenType::LEFT_BRACKET, "left bracket" },
+        { TokenType::RIGHT_BRACKET, "right bracket" }
 };
 
 std::vector<std::string> Tokenizer::splitLine(const std::string& content) {
@@ -32,10 +45,10 @@ std::vector<std::string> Tokenizer::splitLine(const std::string& content) {
 
 
 void Token::print() {
+    std::cout << "Token type " << printer.find(type)->second << " ";
     std::cout << "Line Number: " << lineNumber << " ";
     std::cout << "Line Position: " << linePosition << " ";
-    std::cout << "Name: " << name << " ";
-    std::cout << "Integer: " << integer << std::endl;
+    std::cout << "Value: " << value << std::endl;
 
 }
 
@@ -43,36 +56,45 @@ void Token::print() {
 std::vector<Token> Tokenizer::tokenize(const std::string& content) {
     std::vector<Token> results;
 
-    int currentLine = 1;
+    
     std::vector<std::string> lines = Tokenizer::splitLine(content);
+    int lineNumber = 1;
 
-    for (const std::string& line : lines) {
-        std::string originalLine = line;
+    for (; lineNumber <= static_cast<int>(lines.size()); lineNumber++) {
+        std::string line = lines[lineNumber - 1];
+        std::string originalLine = line.substr();
         while (!line.empty()) {
             bool matchedSomething = false;
-            for (const auto& rule : rules) {
+            for (auto const& rule : rules) {
                 std::smatch match;
                 if (std::regex_search(line, match, std::regex(rule.second))) {
-                    Token token(rule.first);
-                    token.lineNumber = currentLine;
-                    token.linePosition = static_cast<int>(originalLine.size() - line.size());
-                    if (rule.first == TokenType::NAME) {
-                        token.name = match.str();
+
+                    Token t(rule.first);
+                    t.lineNumber = lineNumber;
+                    t.linePosition = (int)(originalLine.size() - line.size());
+                    if (rule.first == TokenType::NAME || rule.first == TokenType::INTEGER) {
+                        t.value = match.str();
                     }
-                    else if (rule.first == TokenType::INTEGER) {
-                        token.integer = match.str();
-                    }
-                    results.push_back(token);
+
+                    if (t.type != TokenType::WHITESPACE)
+                        results.push_back(t);
+
                     matchedSomething = true;
-                    originalLine = originalLine.substr(match.str().size());
+                    line = line.substr(match.str().size());
                     break;
                 }
             }
+
             if (!matchedSomething) {
-                break;
+                std::cout << "Error" << std::endl;
             }
         }
-        currentLine++;
+
+        if (lineNumber != lines.size()) {
+            Token newLine(TokenType::WHITESPACE);
+            newLine.lineNumber = lineNumber;
+            results.push_back(newLine);
+        }
     }
 
     for (auto t : results) {

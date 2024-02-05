@@ -13,7 +13,7 @@ TEST_CASE("Tokenizer::readFileToString", "[readFileToString]") {
     REQUIRE_NOTHROW(actualContent = Tokenizer::readFileToString(testFileName));
     REQUIRE(actualContent == testFileContent);
 
-    // Tokenizer::tokenize(actualContent);
+    Tokenizer::tokenize(actualContent);
 }
 
 TEST_CASE("Tokenizer::splitLine", "[splitLine]") {
