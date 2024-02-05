@@ -3,10 +3,11 @@
 
 const std::unordered_map<std::string, LexicalToken> LexicalTokenMapper::tokenMap = {
     // Symbols
+    {"{", LexicalToken::OPEN_BRACE},
     {"}", LexicalToken::CLOSE_BRACE},
     {"(", LexicalToken::OPEN_PAREN},
     {")", LexicalToken::CLOSE_PAREN},
-    {"=", LexicalToken::EQUAL},
+    {"=", LexicalToken::ASSIGN},
     {"!", LexicalToken::NOT},
     {"&&", LexicalToken::AND},
     {"||", LexicalToken::OR},
@@ -23,15 +24,14 @@ const std::unordered_map<std::string, LexicalToken> LexicalTokenMapper::tokenMap
     {"%", LexicalToken::MODULO},
 
     // Keywords
-    {"if", LexicalToken::IF},
-    {"then", LexicalToken::THEN},
-    {"else", LexicalToken::ELSE},
-    {"{", LexicalToken::OPEN_BRACE},
-    {"read", LexicalToken::READ},
-    {"call", LexicalToken::CALL},
-    {"print", LexicalToken::PRINT},
-    {"procedure", LexicalToken::PROCEDURE},
-    {"while", LexicalToken::WHILE},
+    {"if", LexicalToken::IF_KEYWORD},
+    {"then", LexicalToken::THEN_KEYWORD},
+    {"else", LexicalToken::ELSE_KEYWORD},
+    {"read", LexicalToken::READ_KEYWORD},
+    {"call", LexicalToken::CALL_KEYWORD},
+    {"print", LexicalToken::PRINT_KEYWORD},
+    {"procedure", LexicalToken::PROCEDURE_KEYWORD},
+    {"while", LexicalToken::WHILE_KEYWORD},
 
     {" ", LexicalToken::SPACE},
     {"\n", LexicalToken::NEW_LINE}
