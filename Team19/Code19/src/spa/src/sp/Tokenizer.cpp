@@ -1,4 +1,5 @@
 #include "Tokenizer.h"
+#include "LexicalToken.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -20,8 +21,49 @@ std::vector<std::string> Tokenizer::splitLine(const std::string& content) {
 }
 
 
-std::vector<Token> Tokenizer::tokenize(std::vector<std::string> inputStream) {
+
+std::vector<Token> Tokenizer::tokenize(const std::string& content) {
     std::vector<Token> results;
+
+    
+    std::vector<std::string> lines = Tokenizer::splitLine(content);
+    int lineNumber = 1;
+
+    for (; lineNumber <= static_cast<int>(lines.size()); lineNumber++) {
+        std::string line = lines[lineNumber - 1];
+        std::string originalLine = line.substr();
+        while (!line.empty()) {
+            bool matchedSomething = false;
+            for (auto const& rule : LexicalTokenMapper::tokenToRegexMap) {
+                std::smatch match;
+                if (std::regex_search(line, match, std::regex(rule.second))) {
+                    std::cout << match.str() << std::endl;
+                    Token t(rule.first, lineNumber, (int)(originalLine.size() - line.size()), match.str());
+
+                    if (rule.first != LexicalToken::WHITESPACE) {
+                        results.push_back(t);
+                    }
+
+                    matchedSomething = true;
+                    line = line.substr(match.str().size());
+                    break;
+                }
+            }
+
+            if (!matchedSomething) {
+                std::cout << "Error" << std::endl;
+            }
+        }
+
+        if (lineNumber != lines.size()) {
+            Token newLine(LexicalToken::WHITESPACE, lineNumber, -1, "new line");
+            results.push_back(newLine);
+        }
+    }
+
+    for (auto it : results) {
+        it.print();
+    }
     return results;
 }
 
