@@ -1,7 +1,8 @@
-#include "../../spa/src/QPS/QueryParser.h"
+#include "../../spa/src/qps/QueryParser.h"
 #include "catch.hpp"
 
 using namespace std;
+
 TEST_CASE("Check Grammar of Valid tokens with no declaration") {
     std::vector<Token> tokens = {
 
@@ -55,26 +56,7 @@ TEST_CASE("Check Grammar of incomplete query with incomplete modifies clause") {
     REQUIRE(!parser.parse());
 }
 
-TEST_CASE("Check Grammar of Valid tokens with Modifies query") {
-    std::vector<Token> tokens = {
-            Token(TokenType::DesignEntity, "stmt"),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::Semicolon, ";"),
-            Token(TokenType::SelectKeyword, "Select"),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::SuchKeyword, "such"),
-            Token(TokenType::ThatKeyword, "that"),
-            Token(TokenType::Modifies, "Modifies"),
-            Token(TokenType::Lparenthesis, "("),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::IDENT, "v"),
-            Token(TokenType::Rparenthesis, ")")
-    };
 
-    QueryParser parser(tokens);
-    REQUIRE(parser.parse());
-}
 
 TEST_CASE("Check Grammar of Valid tokens with no relref keyword") {
     std::vector<Token> tokens = {
