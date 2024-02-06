@@ -1,10 +1,12 @@
 #include "Tokenizer.h"
+#include "LexicalToken.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <regex>
 #include <stdexcept>
 
+/*
 // prototype for matching rules
 extern std::unordered_map<TokenType, std::string> rules = {
         { TokenType::KEYWORD_PROCEDURE, "^(procedure)\\b" },
@@ -29,6 +31,7 @@ extern std::unordered_map<TokenType, std::string> printer = {
         { TokenType::LEFT_BRACKET, "left bracket" },
         { TokenType::RIGHT_BRACKET, "right bracket" }
 };
+*/
 
 std::vector<std::string> Tokenizer::splitLine(const std::string& content) {
     std::vector<std::string> result;
@@ -45,7 +48,7 @@ std::vector<std::string> Tokenizer::splitLine(const std::string& content) {
 
 
 void Token::print() {
-    std::cout << "Token type " << printer.find(type)->second << " ";
+    std::cout << "Token Type: " << LexicalTokenMapper::tokenToStringMap.find(type)->second << " ";
     std::cout << "Line Number: " << lineNumber << " ";
     std::cout << "Line Position: " << linePosition << " ";
     std::cout << "Value: " << value << std::endl;
@@ -65,19 +68,19 @@ std::vector<Token> Tokenizer::tokenize(const std::string& content) {
         std::string originalLine = line.substr();
         while (!line.empty()) {
             bool matchedSomething = false;
-            for (auto const& rule : rules) {
+            for (auto const& rule : LexicalTokenMapper::tokenToRegexMap) {
                 std::smatch match;
                 if (std::regex_search(line, match, std::regex(rule.second))) {
-
+                    std::cout << match.str() << std::endl;
                     Token t(rule.first);
                     t.lineNumber = lineNumber;
                     t.linePosition = (int)(originalLine.size() - line.size());
-                    if (rule.first == TokenType::NAME || rule.first == TokenType::INTEGER) {
-                        t.value = match.str();
-                    }
+                    t.value = match.str();
 
-                    if (t.type != TokenType::WHITESPACE)
+
+                    if (t.type != LexicalToken::WHITESPACE) {
                         results.push_back(t);
+                    }
 
                     matchedSomething = true;
                     line = line.substr(match.str().size());
@@ -91,14 +94,14 @@ std::vector<Token> Tokenizer::tokenize(const std::string& content) {
         }
 
         if (lineNumber != lines.size()) {
-            Token newLine(TokenType::WHITESPACE);
+            Token newLine(LexicalToken::WHITESPACE);
             newLine.lineNumber = lineNumber;
             results.push_back(newLine);
         }
     }
 
-    for (auto t : results) {
-        t.print();
+    for (auto it : results) {
+        it.print();
     }
     return results;
 }

@@ -43,3 +43,16 @@ public:
     static const std::unordered_map<LexicalToken, std::string> tokenToStringMap;
     static const std::unordered_map<LexicalToken, std::string> tokenToRegexMap;
 };
+
+class Token {
+private:
+    LexicalToken type;
+    int lineNumber;
+    int linePosition;
+    std::string value;
+
+public:
+    Token(LexicalToken t) :
+        type(t), lineNumber(0), linePosition(0), value("") {}
+    void print();
+};
