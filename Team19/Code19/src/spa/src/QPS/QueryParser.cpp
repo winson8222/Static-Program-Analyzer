@@ -8,10 +8,16 @@ using namespace std;
 // Initializes the Parser with a vector of tokens to be parsed.
 QueryParser::QueryParser(const vector<Token>& tokens) : tokens(tokens), currentTokenIndex(0) {}
 
+
+
+//bool QueryParser::validateGrammar() {
 // Orchestrates the parsing process by calling specific parsing methods for different parts of the input.
 // Returns true if all parsing is successful, false otherwise.
 // Will probably make it work with the Query Evaluator so that it will give the synonyms and 
 // the relationships that should be passed to the PKB
+
+
+// This should be validate grammar and not parse, change
 bool QueryParser::parse() {
 
     while (!match(TokenType::SelectKeyword)) {
@@ -187,16 +193,124 @@ bool QueryParser::parseEntRef() {
 
 }
 
+// Parsing the ExpressionSpec,
 bool QueryParser::parseExpressionSpec() {
-    // assume it is a entRef first
-    if(parseEntRef()) {
+
+    if (match(TokenType::QuoutConst) || match(TokenType::QuoutIDENT)) {
+        advanceToken();
         return true;
     }
-    if(match(TokenType::QuoutConst)) {
+
+    if (match(TokenType::Wildcard)) {
+        advanceToken();
+        if (match(TokenType::DoubleQuote)) {
+            advanceToken();
+            if (!parseExpression()) {
+                return false;
+            }
+            if (!match(TokenType::DoubleQuote)) {
+                return false;
+            }
+            advanceToken();
+            if (match(TokenType::Wildcard)) {
+                advanceToken();
+                return true;
+            }
+            return false;
+        } else {
+            return true;
+        }
+    } else if (match(TokenType::DoubleQuote)) {
+        advanceToken();
+        if (!parseExpression()) {
+            return false;
+        }
+        if (!match(TokenType::DoubleQuote)) {
+            return false;
+        }
+        advanceToken();
+        return true;
+    } else {
+        return false;
+    }
+
+
+}
+
+bool QueryParser::parseExpression() {
+    if (!parseTerm()) {
+        return false;
+    }
+
+    while (match(TokenType::Operator)) {
+        if (currentToken().getValue() == "+" || currentToken().getValue() == "-") {
+            advanceToken();
+        } else {
+            return false;
+        }
+        advanceToken();
+        if (!parseTerm()) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool QueryParser::parseTerm() {
+    if (!parseFactor()) {
+        return false;
+    }
+
+    while (match(TokenType::Operator)) {
+        if (currentToken().getValue() == "*" || currentToken().getValue() == "/"
+        || currentToken().getValue() == "%") {
+            advanceToken();
+        } else {
+            return false;
+        }
+        if (!parseFactor()) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool QueryParser::parseFactor() {
+    if (match(TokenType::Lparenthesis)) {
+        advanceToken();
+        if (!parseExpression()) {
+            return false;
+        }
+        if (match(TokenType::Rparenthesis)) {
+            advanceToken();
+            return true;
+        }
+        return false;
+    } else if (parseVarName()) {
+        return true;
+    } else if (parseConstValue()) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool QueryParser::parseConstValue() {
+    if (match(TokenType::INTEGER)) {
+        advanceToken();
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool QueryParser::parseVarName() {
+    if (match(TokenType::IDENT)) {
+        advanceToken();
         return true;
     }
     return false;
-
 }
 
 bool QueryParser::parsePatternClause() {

@@ -54,6 +54,13 @@ private:
     bool isstmtRefstmtRef();
     bool parseUsesOrModifies();
     bool parsestmtRefstmtRef();
+    bool parseExpression();
+    bool parseTerm();
+    bool parseFactor();
+    bool parseVarName();
+    bool parseConstValue();
+
+
 
 };
 

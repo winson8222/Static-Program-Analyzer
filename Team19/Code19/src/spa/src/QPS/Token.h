@@ -15,6 +15,8 @@ enum class TokenType {
     INTEGER,  
     Wildcard,   
     QuoutIDENT,
+    Operator,
+    DoubleQuote,
     Lparenthesis,
     Rparenthesis,
     Semicolon,
@@ -31,6 +33,7 @@ enum class TokenType {
     ParentT,
     Uses,
     Modifies,
+
 
 };
 

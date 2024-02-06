@@ -64,6 +64,10 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     else if (regex_match(tokenStr, regex("^\"[1-9]*\"$"))) {
         return TokenType::QuoutConst;
     }
+    //
+    else if (regex_match(tokenStr, regex("\".*\""))) {
+        return TokenType::DoubleQuote;
+    }
     // Lparenthesis: '('
     else if (tokenStr == "(") {
         return TokenType::Lparenthesis;
@@ -112,6 +116,10 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     // INTEGER: Either 0 or a sequence of digits with no leading zero.
     else if (regex_match(tokenStr, regex("^(0|[1-9][0-9]*)$"))) {
         return TokenType::INTEGER;
+    }
+    // OPERATOR" "+-*/%&|<>=!~^"
+    else if (regex_match(tokenStr, regex("^[+\\-*/%&|<>=!~^]$"))) {
+        return TokenType::Operator;
     }
 
     // If no pattern matches, throw an error.
