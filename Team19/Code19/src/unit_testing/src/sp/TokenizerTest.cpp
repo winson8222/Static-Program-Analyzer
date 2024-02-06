@@ -36,3 +36,14 @@ TEST_CASE("Tokenizer::splitLine", "[splitLine]") {
 
     Tokenizer::tokenize(actualContent);
 }
+
+TEST_CASE("Tokenizer::tokenize", "[tokenize]") {
+    const std::string testFileName = "../../../../../tests/sourcefile3.txt";
+    REQUIRE(std::filesystem::exists(testFileName));
+    std::string actualContent = Tokenizer::readFileToString(testFileName);
+    std::vector<std::string> actualOutput = Tokenizer::splitLine(actualContent);
+
+    Tokenizer::tokenize(actualContent);
+}
+
+
