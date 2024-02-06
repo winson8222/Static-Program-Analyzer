@@ -9,7 +9,7 @@ TEST_CASE("Modifies with valid statement and variable") {
 
     REQUIRE(tokens.size() == 16);  // Expecting 16 tokens
 
-<<<<<<< HEAD
+
     REQUIRE((tokens[0].getType() == TokenType::DesignEntity && tokens[0].getValue() == "stmt"));
     REQUIRE((tokens[1].getType() == TokenType::IDENT && tokens[1].getValue() == "s"));
     REQUIRE((tokens[2].getType() == TokenType::Semicolon && tokens[2].getValue() == ";"));
@@ -26,7 +26,7 @@ TEST_CASE("Modifies with valid statement and variable") {
     REQUIRE((tokens[13].getType() == TokenType::Comma && tokens[13].getValue() == ","));
     REQUIRE((tokens[14].getType() == TokenType::IDENT && tokens[14].getValue() == "v"));
     REQUIRE((tokens[15].getType() == TokenType::Rparenthesis && tokens[15].getValue() == ")"));
-=======
+
     REQUIRE(tokens[0].getType() == TokenType::DesignEntity);
     REQUIRE(tokens[0].getValue() == "stmt");
 
@@ -74,7 +74,6 @@ TEST_CASE("Modifies with valid statement and variable") {
 
     REQUIRE(tokens[15].getType() == TokenType::Rparenthesis);
     REQUIRE(tokens[15].getValue() == ")");
->>>>>>> b62271ef7f6799d4bc9ce7dc29e990389673ae17
 }
 
 
@@ -104,7 +103,6 @@ TEST_CASE("Modifies with quoted variable") {
 
     REQUIRE(tokens.size() == 13);  // Expecting 13 tokens
 
-<<<<<<< HEAD
     REQUIRE((tokens[0].getType() == TokenType::DesignEntity && tokens[0].getValue() == "stmt"));
     REQUIRE((tokens[1].getType() == TokenType::IDENT && tokens[1].getValue() == "s"));
     REQUIRE((tokens[2].getType() == TokenType::Semicolon && tokens[2].getValue() == ";"));
@@ -118,7 +116,7 @@ TEST_CASE("Modifies with quoted variable") {
     REQUIRE((tokens[10].getType() == TokenType::Comma && tokens[10].getValue() == ","));
     REQUIRE((tokens[11].getType() == TokenType::QuoutIDENT && tokens[11].getValue() == "\"existentVar\""));
     REQUIRE((tokens[12].getType() == TokenType::Rparenthesis && tokens[12].getValue() == ")"));
-=======
+
     REQUIRE(tokens[0].getType() == TokenType::DesignEntity);
     REQUIRE(tokens[0].getValue() == "stmt");
 
@@ -157,7 +155,6 @@ TEST_CASE("Modifies with quoted variable") {
 
     REQUIRE(tokens[12].getType() == TokenType::Rparenthesis);
     REQUIRE(tokens[12].getValue() == ")");
->>>>>>> b62271ef7f6799d4bc9ce7dc29e990389673ae17
 }
 
 
@@ -167,7 +164,6 @@ TEST_CASE("Pattern with variable and constant") {
 
     REQUIRE(tokens.size() == 12);  // Expecting 12 tokens
 
-<<<<<<< HEAD
     REQUIRE((tokens[0].getType() == TokenType::DesignEntity && tokens[0].getValue() == "assign"));
     REQUIRE((tokens[1].getType() == TokenType::IDENT && tokens[1].getValue() == "a"));
     REQUIRE((tokens[2].getType() == TokenType::Semicolon && tokens[2].getValue() == ";"));
@@ -179,7 +175,7 @@ TEST_CASE("Pattern with variable and constant") {
     REQUIRE((tokens[8].getType() == TokenType::QuoutIDENT && tokens[8].getValue() == "\"x\""));
     REQUIRE((tokens[9].getType() == TokenType::Comma && tokens[9].getValue() == ","));
     REQUIRE((tokens[10].getType() == TokenType::QuoutConst && tokens[10].getValue() == "\"1\""));
-=======
+
     REQUIRE(tokens[0].getType() == TokenType::DesignEntity);
     REQUIRE(tokens[0].getValue() == "assign");
 
@@ -215,7 +211,6 @@ TEST_CASE("Pattern with variable and constant") {
 
     REQUIRE(tokens[11].getType() == TokenType::Rparenthesis);
     REQUIRE(tokens[11].getValue() == ")");
->>>>>>> b62271ef7f6799d4bc9ce7dc29e990389673ae17
 }
 
 TEST_CASE("quoted constant with wildcards") {
