@@ -8,4 +8,7 @@ PKB::PKB() {
     parentStore = ParentStore();
     usesPStore = UsesPStore();
     usesSStore = UsesSStore();
+
+    // Initialize all entities
+
 };

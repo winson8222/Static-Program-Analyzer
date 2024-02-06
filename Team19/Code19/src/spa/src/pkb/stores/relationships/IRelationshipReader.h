@@ -46,7 +46,7 @@ public:
      * @param value The value to retrieve keys for.
      * @return A set of keys associated with the value.
      */
-    virtual unordered_set<ValueType> getRelationshipsByValue(ValueType value) = 0;
+    virtual unordered_set<KeyType> getRelationshipsByValue(ValueType value) = 0;
 
     /**
      * Checks if a specific relationship exists between a key and a value.

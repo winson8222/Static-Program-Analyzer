@@ -51,6 +51,7 @@ public:
     unordered_map<ValueType, unordered_set<KeyType>> getValueKeyRelationships() override {
         return valueToKeyMap.getMapSet();
     };
+
     /**
      * Get all values related to a given key
      * @param key
