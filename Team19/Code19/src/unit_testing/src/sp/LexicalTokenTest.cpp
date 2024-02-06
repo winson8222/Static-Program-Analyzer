@@ -1,6 +1,3 @@
-#include "sp/LexicalToken.h"
-#include "sp/Tokenizer.h"
-#include <fstream>     
 #include "catch.hpp"
 #include "sp/LexicalToken.h"
 
@@ -16,6 +13,11 @@ TEST_CASE("Keyword Tokens") {
     // Add more keyword tokens as needed
 }
 
+TEST_CASE("Integer Tokens") {
+    REQUIRE(LexicalTokenMapper::getToken("42") == LexicalToken::INTEGER);
+    REQUIRE(LexicalTokenMapper::getToken("123") == LexicalToken::INTEGER);
+    // Add more integer tokens as needed
+}
 
 TEST_CASE("Name Tokens") {
     REQUIRE(LexicalTokenMapper::getToken("variable1") == LexicalToken::NAME);
