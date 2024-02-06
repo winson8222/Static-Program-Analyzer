@@ -52,7 +52,7 @@ private:
     std::string value;
 
 public:
-    Token(LexicalToken t) :
-        type(t), lineNumber(0), linePosition(0), value("") {}
+    Token(LexicalToken t);
+    Token(LexicalToken t, int lineNumber, int linePosition, std::string value);
     void print();
 };

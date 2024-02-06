@@ -1,4 +1,5 @@
 #include "LexicalToken.h"
+#include <iostream>
 #include <regex>
 
 const std::unordered_map<std::string, LexicalToken> LexicalTokenMapper::stringToTokenMap = {
@@ -131,4 +132,23 @@ LexicalToken LexicalTokenMapper::getToken(std::string str) {
     }
 
     return LexicalToken::ERROR;
+}
+
+Token::Token(LexicalToken t) {
+    this->type = t;
+}
+
+
+Token::Token(LexicalToken t, int lineNumber, int linePosition, std::string value) {
+    this->type = t;
+    this->lineNumber = lineNumber;
+    this->linePosition = linePosition;
+    this->value = value;
+}
+
+void Token::print() {
+    std::cout << "Token Type: " << LexicalTokenMapper::tokenToStringMap.find(type)->second << " ";
+    std::cout << "Line Number: " << lineNumber << " ";
+    std::cout << "Line Position: " << linePosition << " ";
+    std::cout << "Value: " << value << std::endl;
 }
