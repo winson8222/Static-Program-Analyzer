@@ -20,15 +20,26 @@ QueryParser::QueryParser(const vector<Token>& tokens) : tokens(tokens), currentT
 // This should be validate grammar and not parse, change
 bool QueryParser::parse() {
 
+    int numberOfDeclarations = 0;
     while (!match(TokenType::SelectKeyword)) {
         if (!parseDeclaration()) {
             return false;
+        } else {
+            numberOfDeclarations++;
         }
+
+    }
+    if (numberOfDeclarations == 0) {
+        return false;
     }
 
     // check if the Select Clause is correctly matched with a synonym
     if (!parseSelectClause()) {
         return false;
+    }
+
+    if (currentTokenIndex == tokens.size() - 1) {
+        return true;
     }
 
 
@@ -40,7 +51,19 @@ bool QueryParser::parse() {
             if (!parseSuchThatClause()) {
                 return false;
             }
-            return true;
+            if (currentTokenIndex == tokens.size() - 1) {
+                return true;
+            } else if (match(TokenType::PatternKeyword)) {
+                advanceToken();
+                if (!parsePatternClause()) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+            if (currentTokenIndex == tokens.size() - 1) {
+                return true;
+            }
         }
         return false;
     } else if (match(TokenType::PatternKeyword)) {
