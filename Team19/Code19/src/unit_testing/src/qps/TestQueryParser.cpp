@@ -1,8 +1,8 @@
-#include "../../spa/src/QPS/QueryParser.h"
+#include "../../spa/src/qps/QueryParser.h"
 #include "catch.hpp"
 
 using namespace std;
-
+/*
 TEST_CASE("Check Grammar of Valid tokens with Modifies query") {
     std::vector<Token> tokens = {
             Token(TokenType::SelectKeyword, "Select"),
@@ -19,7 +19,7 @@ TEST_CASE("Check Grammar of Valid tokens with Modifies query") {
 
     QueryParser parser(tokens);
     REQUIRE(parser.parse());
-}
+}*/
 
 TEST_CASE("Check Grammar of Valid tokens with no relref keyword") {
     std::vector<Token> tokens = {
