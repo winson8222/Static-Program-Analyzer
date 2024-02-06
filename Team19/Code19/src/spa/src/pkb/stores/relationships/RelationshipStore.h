@@ -10,7 +10,7 @@ template <typename KeyType, typename ValueType>
 class RelationshipStore: public IRelationshipReader<KeyType, ValueType> , public IRelationshipWriter<KeyType, ValueType> {
 private:
     TemplateMapSet<KeyType, ValueType> keyToValueMap;
-    TemplateMapSet<KeyType, ValueType> valueToKeyMap;
+    TemplateMapSet<ValueType, KeyType> valueToKeyMap;
 public:
     /**
      * Check if the store is empty
@@ -51,6 +51,7 @@ public:
     unordered_map<ValueType, unordered_set<KeyType>> getValueKeyRelationships() override {
         return valueToKeyMap.getMapSet();
     };
+
     /**
      * Get all values related to a given key
      * @param key
@@ -64,7 +65,7 @@ public:
      * @param value
      * @return
      */
-    unordered_set<ValueType> getRelationshipsByValue(ValueType value) override {
+    unordered_set<KeyType> getRelationshipsByValue(ValueType value) override {
         return valueToKeyMap.getValuesByKey(value);
     };
     /**
