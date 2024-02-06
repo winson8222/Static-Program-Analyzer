@@ -4,6 +4,7 @@
 
 #include <string>
 #include <vector>
+#include <unordered_set>
 
 using namespace std;
 
@@ -14,17 +15,29 @@ enum class TokenType {
     INTEGER,  
     Wildcard,   
     QuoutIDENT,
+    Operator,
+    DoubleQuote,
     Lparenthesis,
     Rparenthesis,
     Semicolon,
     Comma,
     DesignEntity,
-    RelRef,
-    ClauseKeyword,
+    SelectKeyword,
+    PatternKeyword,
+    SuchKeyword,
+    ThatKeyword,
     QuoutConst,
+    Follows,
+    FollowsT,
+    Parent,
+    ParentT,
+    Uses,
+    Modifies,
 
 
 };
+
+
 
 // The Token class represents a token with a type and a string value.
 class Token {

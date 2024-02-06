@@ -43,7 +43,18 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     }
     // ClauseKeyword: Specific clause keywords.
     else if (regex_match(tokenStr, regex("^(Select|pattern|such|that)$"))) {
-        return TokenType::ClauseKeyword;
+        if (tokenStr == "Select") {
+            return TokenType::SelectKeyword;
+        }
+        else if (tokenStr == "pattern") {
+            return TokenType::PatternKeyword;
+        }
+        else if (tokenStr == "such") {
+            return TokenType::SuchKeyword;
+        }
+        else if (tokenStr == "that") {
+            return TokenType::ThatKeyword;
+        }
     }
     // QuoutIDENT: An IDENT enclosed in double quotes.
     else if (regex_match(tokenStr, regex("^\"[a-zA-Z][a-zA-Z0-9]*\"$"))) {
@@ -52,6 +63,10 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     // QuoutConst: A constant enclosed in double quotes (for pattern matching).
     else if (regex_match(tokenStr, regex("^\"[1-9]*\"$"))) {
         return TokenType::QuoutConst;
+    }
+    //
+    else if (regex_match(tokenStr, regex("\".*\""))) {
+        return TokenType::DoubleQuote;
     }
     // Lparenthesis: '('
     else if (tokenStr == "(") {
@@ -75,7 +90,24 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     }
     // RelRef: Specific keywords.
     else if (regex_match(tokenStr, regex("^(Follows|Follows\\*|Parent|Parent\\*|Uses|Modifies)$"))) {
-        return TokenType::RelRef;
+        if (tokenStr == "Follows") {
+            return TokenType::Follows;
+        }
+        else if (tokenStr == "Follows*") {
+            return TokenType::FollowsT;
+        }
+        else if (tokenStr == "Parent") {
+            return TokenType::Parent;
+        }
+        else if (tokenStr == "Parent*") {
+            return TokenType::ParentT;
+        }
+        else if (tokenStr == "Uses") {
+            return TokenType::Uses;
+        }
+        else if (tokenStr == "Modifies") {
+            return TokenType::Modifies;
+        }
     }
     // IDENT: Starts with a letter and may continue with letters or digits.
     else if (regex_match(tokenStr, regex("^[a-zA-Z][a-zA-Z0-9]*$"))) {
@@ -84,6 +116,10 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     // INTEGER: Either 0 or a sequence of digits with no leading zero.
     else if (regex_match(tokenStr, regex("^(0|[1-9][0-9]*)$"))) {
         return TokenType::INTEGER;
+    }
+    // OPERATOR" "+-*/%&|<>=!~^"
+    else if (regex_match(tokenStr, regex("^[+\\-*/%&|<>=!~^]$"))) {
+        return TokenType::Operator;
     }
 
     // If no pattern matches, throw an error.
