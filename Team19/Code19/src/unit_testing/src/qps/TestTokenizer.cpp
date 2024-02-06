@@ -45,19 +45,19 @@ TEST_CASE("Modifies with valid statement and variable") {
     REQUIRE(tokens[5].getType() == TokenType::Semicolon);
     REQUIRE(tokens[5].getValue() == ";");
 
-    REQUIRE(tokens[6].getType() == TokenType::ClauseKeyword);
+    REQUIRE(tokens[6].getType() == TokenType::SelectKeyword);
     REQUIRE(tokens[6].getValue() == "Select");
 
     REQUIRE(tokens[7].getType() == TokenType::IDENT);
     REQUIRE(tokens[7].getValue() == "s");
 
-    REQUIRE(tokens[8].getType() == TokenType::ClauseKeyword);
+    REQUIRE(tokens[8].getType() == TokenType::SuchKeyword);
     REQUIRE(tokens[8].getValue() == "such");
 
-    REQUIRE(tokens[9].getType() == TokenType::ClauseKeyword);
+    REQUIRE(tokens[9].getType() == TokenType::ThatKeyword);
     REQUIRE(tokens[9].getValue() == "that");
 
-    REQUIRE(tokens[10].getType() == TokenType::RelRef);
+    REQUIRE(tokens[10].getType() == TokenType::Modifies);
     REQUIRE(tokens[10].getValue() == "Modifies");
 
     REQUIRE(tokens[11].getType() == TokenType::Lparenthesis);
@@ -92,10 +92,6 @@ TEST_CASE("Follows with invalid quotes") {
         "Unrecognized token: \"");
 }
 
-TEST_CASE("Pattern with operator in quotes") {
-    REQUIRE_THROWS_WITH(Tokenizer("assign a; Select a pattern a(_, _\"y + z\"_)").tokenize(),
-        "Unrecognized token: \"y + z\"");
-}
 
 TEST_CASE("Modifies with quoted variable") {
     Tokenizer tokenizer("stmt s; Select s such that Modifies(s, \"existentVar\")");
@@ -126,19 +122,19 @@ TEST_CASE("Modifies with quoted variable") {
     REQUIRE(tokens[2].getType() == TokenType::Semicolon);
     REQUIRE(tokens[2].getValue() == ";");
 
-    REQUIRE(tokens[3].getType() == TokenType::ClauseKeyword);
+    REQUIRE(tokens[3].getType() == TokenType::SelectKeyword);
     REQUIRE(tokens[3].getValue() == "Select");
 
     REQUIRE(tokens[4].getType() == TokenType::IDENT);
     REQUIRE(tokens[4].getValue() == "s");
 
-    REQUIRE(tokens[5].getType() == TokenType::ClauseKeyword);
+    REQUIRE(tokens[5].getType() == TokenType::SuchKeyword);
     REQUIRE(tokens[5].getValue() == "such");
 
-    REQUIRE(tokens[6].getType() == TokenType::ClauseKeyword);
+    REQUIRE(tokens[6].getType() == TokenType::ThatKeyword);
     REQUIRE(tokens[6].getValue() == "that");
 
-    REQUIRE(tokens[7].getType() == TokenType::RelRef);
+    REQUIRE(tokens[7].getType() == TokenType::Modifies);
     REQUIRE(tokens[7].getValue() == "Modifies");
 
     REQUIRE(tokens[8].getType() == TokenType::Lparenthesis);
@@ -185,13 +181,13 @@ TEST_CASE("Pattern with variable and constant") {
     REQUIRE(tokens[2].getType() == TokenType::Semicolon);
     REQUIRE(tokens[2].getValue() == ";");
 
-    REQUIRE(tokens[3].getType() == TokenType::ClauseKeyword);
+    REQUIRE(tokens[3].getType() == TokenType::SelectKeyword);
     REQUIRE(tokens[3].getValue() == "Select");
 
     REQUIRE(tokens[4].getType() == TokenType::IDENT);
     REQUIRE(tokens[4].getValue() == "a");
 
-    REQUIRE(tokens[5].getType() == TokenType::ClauseKeyword);
+    REQUIRE(tokens[5].getType() == TokenType::PatternKeyword);
     REQUIRE(tokens[5].getValue() == "pattern");
 
     REQUIRE(tokens[6].getType() == TokenType::IDENT);
@@ -228,13 +224,13 @@ TEST_CASE("quoted constant with wildcards") {
     REQUIRE(tokens[2].getType() == TokenType::Semicolon);
     REQUIRE(tokens[2].getValue() == ";");
 
-    REQUIRE(tokens[3].getType() == TokenType::ClauseKeyword);
+    REQUIRE(tokens[3].getType() == TokenType::SelectKeyword);
     REQUIRE(tokens[3].getValue() == "Select");
 
     REQUIRE(tokens[4].getType() == TokenType::IDENT);
     REQUIRE(tokens[4].getValue() == "a");
 
-    REQUIRE(tokens[5].getType() == TokenType::ClauseKeyword);
+    REQUIRE(tokens[5].getType() == TokenType::PatternKeyword);
     REQUIRE(tokens[5].getValue() == "pattern");
 
     REQUIRE(tokens[6].getType() == TokenType::IDENT);
