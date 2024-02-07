@@ -75,7 +75,7 @@ bool QueryParser::parse() {
 // The parseDeclaration method of the Parser class.
 // Contains logic to parse declarations.
 // Currently a placeholder, actual implementation logic is needed.
-bool QueryParser::parseDeclarations() {
+void QueryParser::parseDeclarations() {
     int numberOfDeclarations = 0;
     while (!match(TokenType::SelectKeyword)) {
         parseDesignEntity();
@@ -96,42 +96,41 @@ bool QueryParser::parseDeclarations() {
         throwError();
     }
     
-
-    return true;
 }
 
-bool QueryParser::parseDesignEntity() {
+void QueryParser::parseDesignEntity() {
     if (currentToken().getType() == TokenType::DesignEntity) {
         advanceToken();
-        return true;
     }
-    throwError();
+    else {
+		throwError();
+    }
 }
 
-bool QueryParser::parseSynonym() {
+void QueryParser::parseSynonym() {
     if (currentToken().getType() == TokenType::IDENT) {
         advanceToken();
-        return true;
     }
-    throwError();
+    else {
+		throwError();
+	}
+    
 }
 
 // Check if the keyword Select is present
-bool QueryParser::parseSelectClause() {
+void QueryParser::parseSelectClause() {
     if (currentToken().getValue() != "Select") {
         throwError();
     }
     advanceToken();
     // check after select if it is a synonym
-    if (match(TokenType::IDENT)) {
-        return true;
-    } else {
+    if (!match(TokenType::IDENT)) {
         throwError();
     }
 
 }
 
-bool QueryParser::parseSuchThatClause() {
+void QueryParser::parseSuchThatClause() {
     advanceToken();
     if (!match(TokenType::ThatKeyword)) {
         throwError();
@@ -141,15 +140,13 @@ bool QueryParser::parseSuchThatClause() {
     return parseRelRef();
 }
 
-bool QueryParser::parseRelRef() {
+void QueryParser::parseRelRef() {
     if (isStmtRefStmtRef()) {
         advanceToken();
         parsestmtRefstmtRef();
-        return true;
     } else if (isUsesOrModifies()) {
         advanceToken();
         parseUsesOrModifies();
-        return true;
     } else {
         throwError();
     }
@@ -159,19 +156,15 @@ bool QueryParser::parseRelRef() {
 
 
 // parsing the stmtRef, check if is a synonym, INTEGER or Wildcard
-bool QueryParser::parseStmtRef() {
+void QueryParser::parseStmtRef() {
     
     if (match(TokenType::INTEGER)) {
         advanceToken();
-        return true;
-    }
-
-    if (match(TokenType::Wildcard)) {
+    } else if (match(TokenType::Wildcard)) {
         advanceToken();
-        return true;
+    } else {
+        parseSynonym();
     }
-
-    parseSynonym();
 
 }
 
@@ -179,32 +172,25 @@ bool QueryParser::parseStmtRef() {
 
 
 // parsing the entRef, check if is a synonym, QuoutIDENT or Wildcard
-bool QueryParser::parseEntRef() {
+void QueryParser::parseEntRef() {
     
 
     if (match(TokenType::QuoutIDENT)) {
         advanceToken();
-        return true;
-    }
-
-    if (match(TokenType::Wildcard)) {
+    } else if (match(TokenType::Wildcard)) {
         advanceToken();
-        return true;
+    } else {
+        parseSynonym();
     }
-
-    parseSynonym();
 
 }
 
 // Parsing the ExpressionSpec,
-bool QueryParser::parseExpressionSpec() {
+void QueryParser::parseExpressionSpec() {
 
     if (match(TokenType::QuoutConst) || match(TokenType::QuoutIDENT)) {
         advanceToken();
-        return true;
-    }
-
-    if (match(TokenType::Wildcard)) {
+    } else if (match(TokenType::Wildcard)) {
         advanceToken();
         if (match(TokenType::DoubleQuote)) {
             advanceToken();
@@ -215,11 +201,7 @@ bool QueryParser::parseExpressionSpec() {
             advanceToken();
             if (match(TokenType::Wildcard)) {
                 advanceToken();
-                return true;
             }
-            throwError();
-        } else {
-            return true;
         }
     } else if (match(TokenType::DoubleQuote)) {
         advanceToken();
@@ -228,7 +210,6 @@ bool QueryParser::parseExpressionSpec() {
             throwError();
         }
         advanceToken();
-        return true;
     } else {
         throwError();
     }
@@ -236,7 +217,7 @@ bool QueryParser::parseExpressionSpec() {
 
 }
 
-bool QueryParser::parseExpression() {
+void QueryParser::parseExpression() {
     parseTerm();
 
     while (match(TokenType::Operator)) {
@@ -248,11 +229,9 @@ bool QueryParser::parseExpression() {
         advanceToken();
         parseTerm();
     }
-
-    return true;
 }
 
-bool QueryParser::parseTerm() {
+void QueryParser::parseTerm() {
     parseFactor();
 
     while (match(TokenType::Operator)) {
@@ -262,24 +241,20 @@ bool QueryParser::parseTerm() {
         } 
         parseFactor();
     }
-    return true;
 }
 
-bool QueryParser::parseFactor() {
+void QueryParser::parseFactor() {
     if (match(TokenType::Lparenthesis)) {
         advanceToken();
         parseExpression();
         if (match(TokenType::Rparenthesis)) {
             advanceToken();
-            return true;
         }
         throwError();
     } else if (isVarName()) {
         advanceToken();
-        return true;
     } else if (isConstValue()) {
         advanceToken();
-        return true;
     } else {
         throwError();
     }
@@ -300,7 +275,7 @@ bool QueryParser::isVarName() {
     return false;
 }
 
-bool QueryParser::parsePatternClause() {
+void QueryParser::parsePatternClause() {
     // check if it is a syn-assign
     if (!match(TokenType::PatternKeyword)) {
         throwError();
@@ -322,16 +297,12 @@ bool QueryParser::parsePatternClause() {
     }
 
     advanceToken();
-    if (!parseExpressionSpec()) {
-        return false;
-    }
+    parseExpressionSpec();
     
     advanceToken();
     if (!match(TokenType::Rparenthesis)) {
         throwError();
     }
-
-    return true;
 }
 
 bool QueryParser::isStmtRefStmtRef() {
@@ -350,7 +321,7 @@ bool QueryParser::isUsesOrModifies() {
     return false;
 }
 
-bool QueryParser::parseUsesOrModifies() {
+void QueryParser::parseUsesOrModifies() {
     if (match(TokenType::Lparenthesis)) {
         advanceToken();
     } else {
@@ -384,10 +355,9 @@ bool QueryParser::parseUsesOrModifies() {
     if (!match(TokenType::Rparenthesis)) {
         throwError();
     }
-    return true;
 }
 
-bool QueryParser::parsestmtRefstmtRef() {
+void QueryParser::parsestmtRefstmtRef() {
     if (match(TokenType::Lparenthesis)) {
         advanceToken();
     } else {
@@ -409,7 +379,6 @@ bool QueryParser::parsestmtRefstmtRef() {
     if (!match(TokenType::Rparenthesis)) {
         throwError();
     }
-    return true;
 }
 
 
