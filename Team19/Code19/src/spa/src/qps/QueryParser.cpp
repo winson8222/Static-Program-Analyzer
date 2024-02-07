@@ -4,20 +4,18 @@
 
 using namespace std;
 
-// Constructor of the Parser class.
-// Initializes the Parser with a vector of tokens to be parsed.
+// Constructor of the QueryParser class.
+// Initializes the QueryParser with a vector of Token objects to be parsed.
 QueryParser::QueryParser(const vector<Token>& tokens) : tokens(tokens), currentTokenIndex(0) {}
 
 
-// The currentToken method of the Parser class.
 // Returns a constant reference to the current Token being parsed.
 const Token& QueryParser::currentToken() const {
     return tokens[currentTokenIndex];
 }
 
-// The advanceToken method of the Parser class.
-// Advances to the next token in the sequence.
-// Returns true if advancement is successful, false if it reaches the end of the tokens.
+// Advances to the next token in the token sequence.
+// Returns true if advancement is successful, false if it reaches the end of the token sequence.
 bool QueryParser::advanceToken() {
     if (currentTokenIndex < tokens.size() - 1) {
         ++currentTokenIndex;
@@ -27,8 +25,7 @@ bool QueryParser::advanceToken() {
 }
 
 // Checks if the current token matches a given TokenType.
-// If it matches, advances to the next token and returns true.
-// This should be used in conjunction with Tokenizer::determineTokenType.
+// Advances to the next token and returns true if it matches.
 // Returns false if there is no match.
 bool QueryParser::match(TokenType type) {
     if (currentToken().getType() == type) {
@@ -37,19 +34,22 @@ bool QueryParser::match(TokenType type) {
     return false;
 }
 
-// Ensures the next token matches the expected type, throws error otherwise.
+// Ensures the next token matches the expected TokenType.
+// Throws an error if the token does not match the expected type.
 void QueryParser::ensureToken(TokenType expected) {
     if (!match(expected)) {
         throwError();
     }
 }
 
+// Throws a standard invalid_argument exception with a custom error message.
 bool QueryParser::throwError() {
     throw std::invalid_argument("incorrect grammar at: " + currentToken().getValue());
     return false;
 }
 
-// This should be validate grammar and not parse, change
+// Parses the entire query.
+// Processes declarations, select clause, and optional such that and pattern clauses.
 bool QueryParser::parse() {
 
     parseDeclarations();
@@ -78,9 +78,8 @@ bool QueryParser::parse() {
     }
 }
 
-// The parseDeclaration method of the Parser class.
-// Contains logic to parse declarations.
-// Currently a placeholder, actual implementation logic is needed.
+// Parses declarations in the query.
+// Processes design entities and their synonyms, and ensures correct syntax with semicolons.
 void QueryParser::parseDeclarations() {
     int numberOfDeclarations = 0;
     while (!match(TokenType::SelectKeyword)) {
@@ -104,6 +103,8 @@ void QueryParser::parseDeclarations() {
     
 }
 
+// Parses a design entity in the query.
+// Ensures the current token is a design entity and advances the token.
 void QueryParser::parseDesignEntity() {
     if (currentToken().getType() == TokenType::DesignEntity) {
         advanceToken();
@@ -113,6 +114,8 @@ void QueryParser::parseDesignEntity() {
     }
 }
 
+// Parses a synonym in the query.
+// Ensures the current token is an identifier and advances the token.
 void QueryParser::parseSynonym() {
     if (currentToken().getType() == TokenType::IDENT) {
         advanceToken();
@@ -123,7 +126,8 @@ void QueryParser::parseSynonym() {
     
 }
 
-// Check if the keyword Select is present
+// Parses the select clause in the query.
+// Checks for the 'Select' keyword and ensures the following token is a valid identifier.
 void QueryParser::parseSelectClause() {
     if (currentToken().getValue() != "Select") {
         throwError();
@@ -134,6 +138,8 @@ void QueryParser::parseSelectClause() {
 
 }
 
+// Parses the 'such that' clause in the query.
+// Ensures the correct syntax and calls the function to process relation references.
 void QueryParser::parseSuchThatClause() {
     advanceToken();
     ensureToken(TokenType::ThatKeyword);
@@ -142,6 +148,8 @@ void QueryParser::parseSuchThatClause() {
     return parseRelRef();
 }
 
+// Parses relation references in a 'such that' clause.
+// Determines the type of relation and calls the appropriate parsing function.
 void QueryParser::parseRelRef() {
     if (isStmtRefStmtRef()) {
         advanceToken();
@@ -155,9 +163,8 @@ void QueryParser::parseRelRef() {
 
 }
 
-
-
-// parsing the stmtRef, check if is a synonym, INTEGER or Wildcard
+// Parses a statement reference in the query.
+// Handles different types of statement references like integer, wildcard, or synonym.
 void QueryParser::parseStmtRef() {
     
     if (match(TokenType::INTEGER)) {
@@ -170,10 +177,8 @@ void QueryParser::parseStmtRef() {
 
 }
 
-
-
-
-// parsing the entRef, check if is a synonym, QuoutIDENT or Wildcard
+// Parses an entity reference in the query.
+// Handles different types of entity references like quoted identifier, wildcard, or synonym.
 void QueryParser::parseEntRef() {
     
 
@@ -187,7 +192,8 @@ void QueryParser::parseEntRef() {
 
 }
 
-// Parsing the ExpressionSpec,
+// Parses the expression specification in the query.
+// Handles different forms of expressions like quoted constants, wildcards, or quoted expressions.
 void QueryParser::parseExpressionSpec() {
 
     if (match(TokenType::QuoutConst) || match(TokenType::QuoutIDENT)) {
@@ -208,6 +214,9 @@ void QueryParser::parseExpressionSpec() {
 
 
 }
+
+// Parses a quoted expression in the query.
+// Processes the expression enclosed in double quotes.
 void QueryParser::parseQuotedExpression() {
     advanceToken();
     parseExpression();
@@ -216,6 +225,8 @@ void QueryParser::parseQuotedExpression() {
     
 }
 
+// Parses an expression in the query.
+// Processes terms and operators within the expression.
 void QueryParser::parseExpression() {
     parseTerm();
 
@@ -230,6 +241,8 @@ void QueryParser::parseExpression() {
     }
 }
 
+// Parses a term in an expression.
+// Processes factors and operators within the term.
 void QueryParser::parseTerm() {
     parseFactor();
 
@@ -242,6 +255,8 @@ void QueryParser::parseTerm() {
     }
 }
 
+// Parses a factor in a term.
+// Handles parentheses, variable names, and constant values.
 void QueryParser::parseFactor() {
     if (match(TokenType::Lparenthesis)) {
         advanceToken();
@@ -259,14 +274,18 @@ void QueryParser::parseFactor() {
     }
 }
 
+// Checks if the current token is a constant value.
 bool QueryParser::isConstValue() {
     return match(TokenType::INTEGER);
 }
 
+// Checks if the current token is a variable name.
 bool QueryParser::isVarName() {
     return match(TokenType::IDENT);
 }
 
+// Parses the pattern clause in the query.
+// Ensures the correct syntax and processes entity references and expression specifications.
 void QueryParser::parsePatternClause() {
     
     ensureToken(TokenType::PatternKeyword);
@@ -288,6 +307,7 @@ void QueryParser::parsePatternClause() {
     ensureToken(TokenType::Rparenthesis);
 }
 
+// Checks if the current context is a statement reference to statement reference relation.
 bool QueryParser::isStmtRefStmtRef() {
     if (match(TokenType::Parent) || match(TokenType::ParentT) ||
     match(TokenType::Follows) || match(TokenType::FollowsT)) {
@@ -297,6 +317,7 @@ bool QueryParser::isStmtRefStmtRef() {
     return false;
 }
 
+// Checks if the current context is a 'Uses' or 'Modifies' relation.
 bool QueryParser::isUsesOrModifies() {
     if (match(TokenType::Uses) || match(TokenType::Modifies)) {
         return true;
@@ -304,6 +325,8 @@ bool QueryParser::isUsesOrModifies() {
     return false;
 }
 
+// Parses a 'Uses' or 'Modifies' relation in the query.
+// Ensures correct syntax and processes statement and entity references.
 void QueryParser::parseUsesOrModifies() {
     if (match(TokenType::Lparenthesis)) {
         advanceToken();
@@ -338,6 +361,8 @@ void QueryParser::parseUsesOrModifies() {
     ensureToken(TokenType::Rparenthesis);
 }
 
+// Parses a statement reference to statement reference relation.
+// Ensures correct syntax and processes multiple statement references.
 void QueryParser::parsestmtRefstmtRef() {
     if (match(TokenType::Lparenthesis)) {
         advanceToken();
