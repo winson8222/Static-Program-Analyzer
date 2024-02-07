@@ -17,15 +17,12 @@ TEST_CASE("Tokenizer::readFileToString", "[readFileToString]") {
 }
 
 TEST_CASE("Test reading non-existent file", "[readFileToString]") {
-    Tokenizer tokenizer;
-    REQUIRE_THROWS_WITH(tokenizer.readFileToString("non_existent_file.txt"),
+    REQUIRE_THROWS_WITH(Tokenizer::readFileToString("non_existent_file.txt"),
         "Error: Unable to open the input file.");
 }
 
 TEST_CASE("Test reading from an empty file", "[readFileToString]") {
-    // Assume empty.txt is a blank file in ../files directory
-    Tokenizer tokenizer;
-    REQUIRE(tokenizer.readFileToString("../../../../../tests/sp/TokenizerTest/empty.txt") == "");
+    REQUIRE(Tokenizer::readFileToString("../../../../../tests/sp/TokenizerTest/empty.txt") == "");
 }
 
 TEST_CASE("Tokenizer::splitLine", "[splitLine]") {
@@ -60,6 +57,7 @@ TEST_CASE("Tokenize simple file without keywords", "[tokenize]") {
     REQUIRE(actualOutput[3].getTokenType() == LexicalTokenType::SYMBOL_SEMICOLON);
 }
 
+// IMPORTANT: When Tokenizer is able to check syntax, e.g. assigning the 2nd 'procedure' to NAME in procedure procedure, this will not work.
 TEST_CASE("Tokenize file with keywords", "[tokenize]") {
     const std::string testFileName = "../../../../../tests/sp/TokenizerTest/sourcefile4.txt";
     REQUIRE(std::filesystem::exists(testFileName));
@@ -80,18 +78,8 @@ TEST_CASE("Tokenize file with keywords", "[tokenize]") {
 
 /*
 * FUTURE TEST CASES THAT ARE TO BE ADDRESSED.
-* 
-* 
 TEST_CASE("Tokenizer throws runtime error for invalid syntax", "[tokenize]") {
-    const std::string testFileName = "../../../../../tests/sp/TokenizerTest/sourcefile4.txt";
-    REQUIRE(std::filesystem::exists(testFileName));
-    std::string actualContent = Tokenizer::readFileToString(testFileName);
-
-    REQUIRE_THROWS_WITH(Tokenizer::tokenize(actualContent), "Error: Invalid SIMPLE syntax.");
-}
-
-TEST_CASE("Tokenizer throws runtime error for invalid syntax", "[tokenize]") {
-    const std::string testFileName = "../../../../../tests/sp/TokenizerTest/sourcefile4.txt";
+    const std::string testFileName = "../../../../../tests/sp/TokenizerTest/invalid1.txt";
     REQUIRE(std::filesystem::exists(testFileName));
     std::string actualContent = Tokenizer::readFileToString(testFileName);
 
