@@ -147,8 +147,9 @@ Token::Token(LexicalToken t, int lineNumber, int linePosition, std::string value
 }
 
 void Token::print() {
+    /*
     std::cout << "Token Type: " << LexicalTokenMapper::tokenToStringMap.find(type)->second << " ";
     std::cout << "Line Number: " << lineNumber << " ";
-    std::cout << "Line Position: " << linePosition << " ";
-    std::cout << "Value: " << value << std::endl;
+    std::cout << "Line Position: " << linePosition << " ";*/
+    std::cout << "Value: " << std::endl;
 }

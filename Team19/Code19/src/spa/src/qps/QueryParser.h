@@ -29,7 +29,7 @@ private:
     size_t currentTokenIndex;
 
     // Private methods for parsing different parts of the input.
-    bool parseDeclaration();
+    bool parseDeclarations();
     bool parseSelectClause();
     bool parseSuchThatClause();
     bool parsePatternClause();
@@ -51,16 +51,16 @@ private:
     bool parseStmtRef();
     bool parseDesignEntity();
     bool isUsesOrModifies();
-    bool isstmtRefstmtRef();
+    bool isStmtRefStmtRef();
     bool parseUsesOrModifies();
     bool parsestmtRefstmtRef();
     bool parseExpression();
     bool parseTerm();
     bool parseFactor();
-    bool parseVarName();
-    bool parseConstValue();
+    bool isVarName();
+    bool isConstValue();
 
-
+    bool QueryParser::throwError();
 
 };
 
