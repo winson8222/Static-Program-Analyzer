@@ -16,8 +16,6 @@ TEST_CASE("Tokenizer::readFileToString", "[readFileToString]") {
     Tokenizer::tokenize(actualContent);
 }
 
-// ai-gen start(gpt,1,e)
-// prompt: https://platform.openai.com/playground?thread=thread_B0hJ2obSjkZeF7NDPIUidhBG
 TEST_CASE("Test reading non-existent file", "[readFileToString]") {
     Tokenizer tokenizer;
     REQUIRE_THROWS_WITH(tokenizer.readFileToString("non_existent_file.txt"),
@@ -29,7 +27,6 @@ TEST_CASE("Test reading from an empty file", "[readFileToString]") {
     Tokenizer tokenizer;
     REQUIRE(tokenizer.readFileToString("../../../../../tests/sp/TokenizerTest/empty.txt") == "");
 }
-// ai-gen end
 
 TEST_CASE("Tokenizer::splitLine", "[splitLine]") {
     const std::string testFileName = "../../../../../tests/sp/TokenizerTest/sourcefile2.txt";
@@ -63,8 +60,6 @@ TEST_CASE("Tokenizer::tokenize", "[tokenize]") {
     REQUIRE(actualOutput[3].getTokenType() == LexicalTokenType::SYMBOL_SEMICOLON);
 }
 
-// ai-gen start(gpt,1,e)
-// prompt: https://platform.openai.com/playground?thread=thread_B0hJ2obSjkZeF7NDPIUidhBG
 /*
 TEST_CASE("Tokenizer throws runtime error for invalid syntax", "[tokenize]") {
     const std::string testFileName = "../../../../../tests/sp/TokenizerTest/sourcefile4.txt";
@@ -74,4 +69,3 @@ TEST_CASE("Tokenizer throws runtime error for invalid syntax", "[tokenize]") {
     REQUIRE_THROWS_WITH(Tokenizer::tokenize(actualContent), "Error: Invalid SIMPLE syntax.");
 }
 */
-// ai-gen end
