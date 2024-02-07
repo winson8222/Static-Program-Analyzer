@@ -70,7 +70,7 @@ private:
 
     void ensureToken(TokenType expected);
 
-    void QueryParser::throwError();
+    void throwError();
 
     
 };
