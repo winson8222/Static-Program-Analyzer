@@ -21,25 +21,24 @@ std::vector<std::string> Tokenizer::splitLine(const std::string& content) {
     return result;
 }
 
-
-
-std::vector<SpToken> Tokenizer::tokenize(const std::string& content) {
-    std::vector<SpToken> results;
+std::vector<LexicalToken> Tokenizer::tokenize(const std::string& content) {
+    std::vector<LexicalToken> results;
     std::vector<std::string> lines = Tokenizer::splitLine(content);
+    int numberOfLines = static_cast<int>(lines.size());
     
-    for (int lineNumber = 1; lineNumber <= static_cast<int>(lines.size()); lineNumber++) {
+    for (int lineNumber = 1; lineNumber <= numberOfLines; lineNumber++) {
         std::string line = lines[lineNumber - 1];
         std::string originalLine = line.substr();
 
         while (!line.empty()) {
             bool matchedSomething = false;
-            for (auto const& rule : LexicalTokenMapper::tokenToRegexMap) {
+            for (auto const& rule : LexicalTokenTypeMapper::tokenToRegexPairs) {
                 std::smatch match;
                 if (std::regex_search(line, match, std::regex(rule.second))) {
                     std::cout << match.str() << std::endl;
-                    SpToken t(rule.first, lineNumber, (int)(originalLine.size() - line.size()), match.str());
+                    LexicalToken t(rule.first, lineNumber, (int)(originalLine.size() - line.size()), match.str());
 
-                    if (rule.first != LexicalToken::WHITESPACE) {
+                    if (rule.first != LexicalTokenType::WHITESPACE) {
                         results.push_back(t);
                     }
 
@@ -49,13 +48,14 @@ std::vector<SpToken> Tokenizer::tokenize(const std::string& content) {
                 }
             }
 
+            // Buggy
             if (!matchedSomething) {
                 throw std::runtime_error("Error: Invalid SIMPLE syntax.");
             }
         }
 
         if (lineNumber != lines.size()) {
-            SpToken newLine(LexicalToken::WHITESPACE, lineNumber, -1, "new line");
+            LexicalToken newLine(LexicalTokenType::WHITESPACE, lineNumber, -1, "new line");
             results.push_back(newLine);
         }
     }
