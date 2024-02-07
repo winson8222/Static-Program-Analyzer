@@ -42,5 +42,6 @@ TEST_CASE("Unknown Token") {
     REQUIRE(LexicalTokenTypeMapper::getTokenType("1variable") == LexicalTokenType::ERROR);
     REQUIRE(LexicalTokenTypeMapper::getTokenType("variable_123") == LexicalTokenType::ERROR);
     REQUIRE(LexicalTokenTypeMapper::getTokenType("@") == LexicalTokenType::ERROR);
+    REQUIRE(LexicalTokenTypeMapper::getTokenType(";=") == LexicalTokenType::ERROR);
     // Add more unknown cases as needed
 }

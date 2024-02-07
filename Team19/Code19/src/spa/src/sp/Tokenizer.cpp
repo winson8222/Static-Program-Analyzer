@@ -48,6 +48,7 @@ std::vector<LexicalToken> Tokenizer::tokenize(const std::string& content) {
                 }
             }
 
+            // Buggy
             if (!matchedSomething) {
                 throw std::runtime_error("Error: Invalid SIMPLE syntax.");
             }
