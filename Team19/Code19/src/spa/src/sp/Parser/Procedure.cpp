@@ -1,17 +1,24 @@
 #include "Procedure.h"
 #include <iostream>
 
-Procedure::Procedure(const std::string& stmtType)
-    : todo(stmtType) {}
+Procedure::Procedure() {
+
+}
+
+void Procedure::addStmtList(StmtList stmtList) {
+    this->statementLists.push_back(stmtList);
+}
+
+void Procedure::buildTree() const {
+    // Do sth
+}
 
 int Procedure::getStartLine() const {
+    return 0;
     // Do sth
 }
 
 int Procedure::getEndLine() const {
-    // Do sth
-}
-
-void Procedure::buildTree() const {
+    return 0;
     // Do sth
 }

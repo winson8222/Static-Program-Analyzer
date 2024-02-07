@@ -14,7 +14,6 @@ public:
 
     // Virtual function for building the tree
     virtual void buildTree() const = 0;
-
     virtual int getStartLine() const = 0;
     virtual int getEndLine() const = 0;
 

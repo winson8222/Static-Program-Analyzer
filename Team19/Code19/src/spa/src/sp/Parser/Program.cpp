@@ -4,15 +4,21 @@
 // Prompt: https://platform.openai.com/playground/p/3mLKCsoXcgjIM0eMlvP3rIgb?model=gpt-4&mode=chat
 Program::Program() {}
 
-void Program::addProcedure(Procedure p) {
-    this->procedures.push_back(p);
+void Program::addProcedure(Procedure procedure) {
+    this->procedures.push_back(procedure);
 }
 
-std::vector<Procedure> Program::getProcedures() const {
-    return this->procedures;
+int Program::getStartLine() const {
+    return 0;
+    // Do sth
 }
 
-void Program::buildTree() {
+int Program::getEndLine() const {
+    return 0;
+    // Do sth
+}
+
+void Program::buildTree() const {
     // build a Master root tree here, then populate all Procedures.
 }
 // ai-gen end

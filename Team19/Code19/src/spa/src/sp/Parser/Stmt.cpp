@@ -1,14 +1,17 @@
 #include "Stmt.h"
 #include <iostream>
 
-Stmt::Stmt(const std::string& stmtType)
-    : stmtType(stmtType) {}
+Stmt::Stmt() {
+    // Todo
+}
 
 int Stmt::getStartLine() const {
+    return 0;
     // Do sth
 }
 
 int Stmt::getEndLine() const {
+    return 0;
     // Do sth
 }
 
