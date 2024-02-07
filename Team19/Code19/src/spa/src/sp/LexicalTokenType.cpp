@@ -33,7 +33,7 @@ const std::unordered_map<std::string, LexicalTokenType> LexicalTokenTypeMapper::
     {"read", LexicalTokenType::KEYWORD_READ},
     {"call", LexicalTokenType::KEYWORD_CALL},
     {"print", LexicalTokenType::KEYWORD_PRINT},
-    {"procedure", LexicalTokenType::KEYWORD_PRINT},
+    {"procedure", LexicalTokenType::KEYWORD_PROCEDURE},
     {"while", LexicalTokenType::KEYWORD_WHILE},
 
     {" ", LexicalTokenType::WHITESPACE},
@@ -73,18 +73,26 @@ const std::unordered_map<LexicalTokenType, std::string> LexicalTokenTypeMapper::
     {LexicalTokenType::KEYWORD_READ, "READ"},
     {LexicalTokenType::KEYWORD_CALL, "CALL"},
     {LexicalTokenType::KEYWORD_PRINT, "PRINT"},
-    {LexicalTokenType::KEYWORD_PRINT, "PROCEDURE"},
+    {LexicalTokenType::KEYWORD_PROCEDURE, "PROCEDURE"},
     {LexicalTokenType::KEYWORD_WHILE, "WHILE"},
 
     {LexicalTokenType::NAME, "NAMES"},
     {LexicalTokenType::INTEGER, "INTEGERS"},
     {LexicalTokenType::WHITESPACE, "WHITESPACES"},
     {LexicalTokenType::NEW_LINE, "NEWLINES"}
-
-    // Add more keywords as needed
 };
 
-const std::unordered_map<LexicalTokenType, std::string> LexicalTokenTypeMapper::tokenToRegexMap = {
+const std::vector<std::pair<LexicalTokenType, std::string>> LexicalTokenTypeMapper::tokenToRegexPairs = {
+    // Keywords
+    {LexicalTokenType::KEYWORD_IF, "^(if\\b)"},
+    {LexicalTokenType::KEYWORD_THEN, "^(then\\b)"},
+    {LexicalTokenType::KEYWORD_ELSE, "^(else\\b)"},
+    {LexicalTokenType::KEYWORD_READ, "^(read\\b)"},
+    {LexicalTokenType::KEYWORD_CALL, "^(call\\b)"},
+    {LexicalTokenType::KEYWORD_PRINT, "^(print\\b)"},
+    {LexicalTokenType::KEYWORD_PROCEDURE, "^(procedure\\b)"},
+    {LexicalTokenType::KEYWORD_WHILE, "^(while\\b)"},
+
     // Symbols
     {LexicalTokenType::SYMBOL_OPEN_BRACE, "^(\\{)"},
     {LexicalTokenType::SYMBOL_CLOSE_BRACE, "^(\\})"},
@@ -107,10 +115,10 @@ const std::unordered_map<LexicalTokenType, std::string> LexicalTokenTypeMapper::
     {LexicalTokenType::OPERATOR_DIVIDE, "^(\\/)"},
     {LexicalTokenType::OPERATOR_MODULO, "^(%)"},
 
+    // Other matches
     {LexicalTokenType::NAME, "^([a-zA-Z]\\w*)\\b"},
     {LexicalTokenType::INTEGER,  "^(\\d+)"},
     {LexicalTokenType::WHITESPACE, "^(\\s+)"}
-    // Add more keywords as needed
 };
 
 

@@ -40,5 +40,5 @@ public:
     static LexicalTokenType getTokenType(std::string str);
     static const std::unordered_map<std::string, LexicalTokenType> stringToTokenMap;
     static const std::unordered_map<LexicalTokenType, std::string> tokenToStringMap;
-    static const std::unordered_map<LexicalTokenType, std::string> tokenToRegexMap;
+    static const std::vector<std::pair<LexicalTokenType, std::string>> tokenToRegexPairs;
 };

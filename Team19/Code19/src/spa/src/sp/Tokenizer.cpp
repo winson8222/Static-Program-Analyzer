@@ -32,7 +32,7 @@ std::vector<LexicalToken> Tokenizer::tokenize(const std::string& content) {
 
         while (!line.empty()) {
             bool matchedSomething = false;
-            for (auto const& rule : LexicalTokenTypeMapper::tokenToRegexMap) {
+            for (auto const& rule : LexicalTokenTypeMapper::tokenToRegexPairs) {
                 std::smatch match;
                 if (std::regex_search(line, match, std::regex(rule.second))) {
                     std::cout << match.str() << std::endl;
