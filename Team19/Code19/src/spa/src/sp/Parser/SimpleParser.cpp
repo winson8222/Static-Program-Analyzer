@@ -8,13 +8,13 @@ SimpleParser::SimpleParser(std::string filename) {
     tokenStream = t.tokenize(t.readFileToString(filename));
 }
 
-void SimpleParser::parseProg() {
+void SimpleParser::parseProgram() {
     while (!tokenStream.empty()) {
-        parseProc();
+        parseProcedure();
     }
 }
 
-void SimpleParser::parseProc() {
+void SimpleParser::parseProcedure() {
     // Add parsing logic for procedure
 }
 

@@ -1,17 +1,17 @@
 #pragma once
 
-#include"Tokenizer.h"
-#include"LexicalToken.h"
+#include"../Tokenizer.h"
+#include"../LexicalToken.h"
 
 // ai-gen start(gpt,2,e)
 // Prompt: https://platform.openai.com/playground/p/cJLjmmneCEs4z6ms7ZkBSxJB?model=gpt-4&mode=chat
 class SimpleParser {
 public:
     SimpleParser(std::string);
-    void parseProg();
+    void parseProgram();
 private:
     std::vector<LexicalToken> tokenStream;
-    void parseProc();
+    void parseProcedure();
     void parseStmtLst();
     void parseStmt();
     void parseRead();
