@@ -21,5 +21,5 @@ void LexicalToken::print() {
     /*std::cout << "Token Type: " << LexicalTokenTypeMapper::tokenToStringMap.find(type)->second << " ";
     std::cout << "Line Number: " << lineNumber << " ";
     std::cout << "Line Position: " << linePosition << " ";*/
-    std::cout << "Value: " << std::endl;
+    //std::cout << "Value: " << std::endl;
 }

@@ -1,12 +1,13 @@
 // Include the Parser class header.
 #include "../../spa/src/qps/QueryParser.h"
 #include <stdexcept>
+#include <iostream>
 
 using namespace std;
 
 // Constructor of the QueryParser class.
 // Initializes the QueryParser with a vector of Token objects to be parsed.
-QueryParser::QueryParser(const vector<Token>& tokens) : tokens(tokens), currentTokenIndex(0) {}
+QueryParser::QueryParser(const vector<Token>& tokens) : tokens(tokens), currentTokenIndex(0), parsingResult() {}
 
 // Parses the entire query.
 // Processes declarations, select clause, and optional such that and pattern clauses.
@@ -43,12 +44,12 @@ bool QueryParser::parse() {
 void QueryParser::parseDeclarations() {
     int numberOfDeclarations = 0;
     while (!match(TokenType::SelectKeyword)) {
-        parseDesignEntity();
-        parseSynonym();
+        string assignmentType = parseDesignEntity();
+        parsingResult.addDeclaredSynonym(parseSynonym(), assignmentType);
 
         while (match(TokenType::Comma)) {
             advanceToken();
-            parseSynonym();
+            parsingResult.addDeclaredSynonym(parseSynonym(), assignmentType);
         }
 
         ensureToken(TokenType::Semicolon);
@@ -65,9 +66,11 @@ void QueryParser::parseDeclarations() {
 
 // Parses a design entity in the query.
 // Ensures the current token is a design entity and advances the token.
-void QueryParser::parseDesignEntity() {
+string QueryParser::parseDesignEntity() {
     if (currentToken().getType() == TokenType::DesignEntity) {
+        string designEntity = currentToken().getValue();
         advanceToken();
+        return designEntity;
     }
     else {
 		throwError();
@@ -76,9 +79,11 @@ void QueryParser::parseDesignEntity() {
 
 // Parses a synonym in the query.
 // Ensures the current token is an identifier and advances the token.
-void QueryParser::parseSynonym() {
+string QueryParser::parseSynonym() {
     if (currentToken().getType() == TokenType::IDENT) {
+        string synonym = currentToken().getValue();
         advanceToken();
+        return synonym;
     }
     else {
 		throwError();
@@ -383,8 +388,10 @@ void QueryParser::ensureToken(TokenType expected) {
 }
 
 // Throws a standard invalid_argument exception with a custom error message.
-bool QueryParser::throwError() {
+void QueryParser::throwError() {
     throw std::invalid_argument("incorrect grammar at: " + currentToken().getValue());
-    return false;
 }
 
+ParsingResult QueryParser::getParsingResult() const {
+    return parsingResult;
+}
