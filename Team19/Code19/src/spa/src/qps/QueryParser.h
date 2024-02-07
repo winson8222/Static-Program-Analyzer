@@ -7,6 +7,7 @@
 #include <vector>
 #include <string>
 #include "../../spa/src/qps/Tokenizer.h"
+#include "../../spa/src/qps/ParsingResult.h"
 
 using namespace std;
 
@@ -21,6 +22,8 @@ public:
     // Returns true if parsing is successful, false otherwise.
     bool parse();
 
+    ParsingResult getParsingResult() const;  // Method to retrieve the result
+
 private:
     // Vector of tokens to be parsed.
     vector<Token> tokens;
@@ -28,11 +31,31 @@ private:
     // Current index in the tokens vector.
     size_t currentTokenIndex;
 
+    ParsingResult parsingResult;
+
     // Private methods for parsing different parts of the input.
     void parseDeclarations();
     void parseSelectClause();
     void parseSuchThatClause();
     void parsePatternClause();
+
+    bool isUsesOrModifies();
+    bool isStmtRefStmtRef();
+    bool isVarName();
+    bool isConstValue();
+
+    string parseSynonym();
+    void parseEntRef();
+    void parseExpressionSpec();
+    void parseQuotedExpression();
+    void parseRelRef();
+    void parseStmtRef();
+    string parseDesignEntity();
+    void parseUsesOrModifies();
+    void parsestmtRefstmtRef();
+    void parseExpression();
+    void parseTerm();
+    void parseFactor();
 
     // Method to get the current token.
     // Returns a constant reference to the current Token object.
@@ -45,30 +68,11 @@ private:
     // Returns true if it matches, false otherwise.
     bool match(TokenType type);
 
-    bool isUsesOrModifies();
-    bool isStmtRefStmtRef();
-    bool isVarName();
-    bool isConstValue();
-
-    void parseSynonym();
-    void parseEntRef();
-    void parseExpressionSpec();
-    void parseQuotedExpression();
-    void parseRelRef();
-    void parseStmtRef();
-    void parseDesignEntity();
-    void parseUsesOrModifies();
-    void parsestmtRefstmtRef();
-    void parseExpression();
-    void parseTerm();
-    void parseFactor();
-
-    
-
     void ensureToken(TokenType expected);
 
-    bool QueryParser::throwError();
+    void QueryParser::throwError();
 
+    
 };
 
 #endif // QUERYPARSER_H
