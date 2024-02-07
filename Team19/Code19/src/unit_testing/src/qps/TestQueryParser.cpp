@@ -2,9 +2,10 @@
 #include "catch.hpp"
 
 using namespace std;
-/*
-TEST_CASE("Check Grammar of Valid tokens with Modifies query") {
+
+TEST_CASE("Check Grammar of Valid tokens with no declaration") {
     std::vector<Token> tokens = {
+
             Token(TokenType::SelectKeyword, "Select"),
             Token(TokenType::IDENT, "s"),
             Token(TokenType::SuchKeyword, "such"),
@@ -18,11 +19,50 @@ TEST_CASE("Check Grammar of Valid tokens with Modifies query") {
     };
 
     QueryParser parser(tokens);
+    REQUIRE(!parser.parse());
+}
+
+
+
+TEST_CASE("Check Grammar of select all query") {
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "stmt"),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "s"),
+
+    };
+
+    QueryParser parser(tokens);
     REQUIRE(parser.parse());
-}*/
+}
+
+TEST_CASE("Check Grammar of incomplete query with incomplete modifies clause") {
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "stmt"),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Modifies, "Modifies"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::IDENT, "s"),
+    };
+
+    QueryParser parser(tokens);
+    REQUIRE(!parser.parse());
+}
+
+
 
 TEST_CASE("Check Grammar of Valid tokens with no relref keyword") {
     std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "stmt"),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::Semicolon, ";"),
             Token(TokenType::SelectKeyword, "Select"),
             Token(TokenType::IDENT, "s"),
             Token(TokenType::SuchKeyword, "such"),
@@ -219,5 +259,36 @@ TEST_CASE("Check Grammars of Pattern with variable and an expressionSpec that co
 
     QueryParser parser(tokens);
     REQUIRE(parser.parse());
+
+}
+
+
+TEST_CASE("Check Grammars of valid tokens have Modifies and pattern clauses") {
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "stmt"),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Modifies, "Modifies"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::INTEGER, "1"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::INTEGER, "1"),
+            Token(TokenType::Rparenthesis, ")"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::PatternKeyword, "pattern"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::QuoutIDENT, "\"x\""),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::QuoutConst, "\"1\""),
+            Token(TokenType::Rparenthesis, ")")
+    };
+
+    QueryParser parser(tokens);
+    REQUIRE(!parser.parse());
 
 }
