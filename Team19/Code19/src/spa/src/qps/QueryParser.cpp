@@ -32,10 +32,16 @@ bool QueryParser::advanceToken() {
 // Returns false if there is no match.
 bool QueryParser::match(TokenType type) {
     if (currentToken().getType() == type) {
-
         return true;
     }
     return false;
+}
+
+// Ensures the next token matches the expected type, throws error otherwise.
+void QueryParser::ensureToken(TokenType expected) {
+    if (!match(expected)) {
+        throwError();
+    }
 }
 
 bool QueryParser::throwError() {
@@ -86,9 +92,9 @@ void QueryParser::parseDeclarations() {
             parseSynonym();
         }
 
-        if (!match(TokenType::Semicolon) || !advanceToken()) {
-            throwError();
-        }
+        ensureToken(TokenType::Semicolon);
+        advanceToken();
+
         numberOfDeclarations++;
     }
 
@@ -124,17 +130,13 @@ void QueryParser::parseSelectClause() {
     }
     advanceToken();
     // check after select if it is a synonym
-    if (!match(TokenType::IDENT)) {
-        throwError();
-    }
+    ensureToken(TokenType::IDENT);
 
 }
 
 void QueryParser::parseSuchThatClause() {
     advanceToken();
-    if (!match(TokenType::ThatKeyword)) {
-        throwError();
-    }
+    ensureToken(TokenType::ThatKeyword);
     advanceToken();
 
     return parseRelRef();
@@ -193,28 +195,25 @@ void QueryParser::parseExpressionSpec() {
     } else if (match(TokenType::Wildcard)) {
         advanceToken();
         if (match(TokenType::DoubleQuote)) {
+            parseQuotedExpression();
+            ensureToken(TokenType::Wildcard);
             advanceToken();
-            parseExpression();
-            if (!match(TokenType::DoubleQuote)) {
-                throwError();
-            }
-            advanceToken();
-            if (match(TokenType::Wildcard)) {
-                advanceToken();
-            }
         }
+        
     } else if (match(TokenType::DoubleQuote)) {
-        advanceToken();
-        parseExpression();
-        if (!match(TokenType::DoubleQuote)) {
-            throwError();
-        }
-        advanceToken();
+        parseQuotedExpression();
     } else {
         throwError();
     }
 
 
+}
+void QueryParser::parseQuotedExpression() {
+    advanceToken();
+    parseExpression();
+    ensureToken(TokenType::DoubleQuote);
+    advanceToken();
+    
 }
 
 void QueryParser::parseExpression() {
@@ -261,48 +260,32 @@ void QueryParser::parseFactor() {
 }
 
 bool QueryParser::isConstValue() {
-    if (match(TokenType::INTEGER)) {
-        return true;
-    } 
-    return false;
-    
+    return match(TokenType::INTEGER);
 }
 
 bool QueryParser::isVarName() {
-    if (match(TokenType::IDENT)) {
-        return true;
-    }
-    return false;
+    return match(TokenType::IDENT);
 }
 
 void QueryParser::parsePatternClause() {
-    // check if it is a syn-assign
-    if (!match(TokenType::PatternKeyword)) {
-        throwError();
-    }
+    
+    ensureToken(TokenType::PatternKeyword);
     advanceToken();
-    if (!match(TokenType::IDENT)) {
-        throwError();
-    }
+    // check if it is a syn-assign
+    ensureToken(TokenType::IDENT);
 
     advanceToken();
-    if (!match(TokenType::Lparenthesis)) {
-        throwError();
-    }
+    ensureToken(TokenType::Lparenthesis);
 
     advanceToken();
     parseEntRef();
-    if (!match(TokenType::Comma)) {
-        throwError();
-    }
+    ensureToken(TokenType::Comma);
 
     advanceToken();
     parseExpressionSpec();
     
     advanceToken();
-    if (!match(TokenType::Rparenthesis)) {
-        throwError();
-    }
+    ensureToken(TokenType::Rparenthesis);
 }
 
 bool QueryParser::isStmtRefStmtRef() {
@@ -352,9 +335,7 @@ void QueryParser::parseUsesOrModifies() {
         throwError();
     }
     parseEntRef();
-    if (!match(TokenType::Rparenthesis)) {
-        throwError();
-    }
+    ensureToken(TokenType::Rparenthesis);
 }
 
 void QueryParser::parsestmtRefstmtRef() {
@@ -376,9 +357,7 @@ void QueryParser::parsestmtRefstmtRef() {
 
     parseStmtRef();
 
-    if (!match(TokenType::Rparenthesis)) {
-        throwError();
-    }
+    ensureToken(TokenType::Rparenthesis);
 }
 
 

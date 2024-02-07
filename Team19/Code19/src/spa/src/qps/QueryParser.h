@@ -53,6 +53,7 @@ private:
     void parseSynonym();
     void parseEntRef();
     void parseExpressionSpec();
+    void parseQuotedExpression();
     void parseRelRef();
     void parseStmtRef();
     void parseDesignEntity();
@@ -63,6 +64,8 @@ private:
     void parseFactor();
 
     
+
+    void ensureToken(TokenType expected);
 
     bool QueryParser::throwError();
 
