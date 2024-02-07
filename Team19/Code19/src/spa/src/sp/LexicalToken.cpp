@@ -134,19 +134,20 @@ LexicalToken LexicalTokenMapper::getToken(std::string str) {
     return LexicalToken::ERROR;
 }
 
-Token::Token(LexicalToken t) {
+SpToken::SpToken(LexicalToken t) {
     this->type = t;
 }
 
 
-Token::Token(LexicalToken t, int lineNumber, int linePosition, std::string value) {
+SpToken::SpToken(LexicalToken t, int lineNumber, int linePosition, std::string value) {
     this->type = t;
     this->lineNumber = lineNumber;
     this->linePosition = linePosition;
     this->value = value;
 }
 
-void Token::print() {
+
+void SpToken::print() {
     /*
     std::cout << "Token Type: " << LexicalTokenMapper::tokenToStringMap.find(type)->second << " ";
     std::cout << "Line Number: " << lineNumber << " ";
