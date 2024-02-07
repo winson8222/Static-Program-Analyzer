@@ -5,7 +5,7 @@
 #include <vector>
 
 TEST_CASE("Tokenizer::readFileToString", "[readFileToString]") {
-    const std::string testFileName = "../../../../../tests/sourcefile1.txt";
+    const std::string testFileName = "../../../../../tests/sp/TokenizerTest/sourcefile1.txt";
     const std::string testFileContent = "x = 1;";
     REQUIRE(std::filesystem::exists(testFileName));
 
@@ -17,7 +17,7 @@ TEST_CASE("Tokenizer::readFileToString", "[readFileToString]") {
 }
 
 TEST_CASE("Tokenizer::splitLine", "[splitLine]") {
-    const std::string testFileName = "../../../../../tests/sourcefile2.txt";
+    const std::string testFileName = "../../../../../tests/sp/TokenizerTest/sourcefile2.txt";
     REQUIRE(std::filesystem::exists(testFileName));
     const std::vector<std::string> expectedOutput = {
         "procedure testproc {",
@@ -38,12 +38,10 @@ TEST_CASE("Tokenizer::splitLine", "[splitLine]") {
 }
 
 TEST_CASE("Tokenizer::tokenize", "[tokenize]") {
-    const std::string testFileName = "../../../../../tests/sourcefile3.txt";
+    const std::string testFileName = "../../../../../tests/sp/TokenizerTest/sourcefile3.txt";
     REQUIRE(std::filesystem::exists(testFileName));
     std::string actualContent = Tokenizer::readFileToString(testFileName);
     std::vector<std::string> actualOutput = Tokenizer::splitLine(actualContent);
 
     Tokenizer::tokenize(actualContent);
 }
-
-
