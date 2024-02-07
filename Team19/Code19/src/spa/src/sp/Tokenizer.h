@@ -1,14 +1,6 @@
 #pragma once
 
 #include "LexicalToken.h"
-#include <algorithm>
-#include <iostream>
-#include <map>
-#include <regex>
-#include <string>
-#include <vector>
-#include <unordered_map>
-
 
 class Tokenizer {
 public:
