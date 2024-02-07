@@ -146,6 +146,10 @@ SpToken::SpToken(LexicalToken t, int lineNumber, int linePosition, std::string v
     this->value = value;
 }
 
+LexicalToken SpToken::getTokenType() {
+    return this->type;
+}
+
 void SpToken::print() {
     std::cout << "Token Type: " << LexicalTokenMapper::tokenToStringMap.find(type)->second << " ";
     std::cout << "Line Number: " << lineNumber << " ";

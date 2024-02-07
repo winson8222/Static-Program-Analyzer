@@ -54,5 +54,6 @@ private:
 public:
     SpToken(LexicalToken t);
     SpToken(LexicalToken t, int lineNumber, int linePosition, std::string value);
+    LexicalToken getTokenType();
     void print();
 };

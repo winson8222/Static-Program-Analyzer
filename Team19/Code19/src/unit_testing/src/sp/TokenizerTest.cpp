@@ -16,6 +16,21 @@ TEST_CASE("Tokenizer::readFileToString", "[readFileToString]") {
     Tokenizer::tokenize(actualContent);
 }
 
+// ai-gen start(gpt,1,e)
+//prompt: https://platform.openai.com/playground?thread=thread_B0hJ2obSjkZeF7NDPIUidhBG
+TEST_CASE("Test reading non-existent file", "[readFileToString]") {
+    Tokenizer tokenizer;
+    REQUIRE_THROWS_WITH(tokenizer.readFileToString("non_existent_file.txt"),
+        "Error: Unable to open the input file.");
+}
+
+TEST_CASE("Test reading from an empty file", "[readFileToString]") {
+    // Assume empty.txt is a blank file in ../files directory
+    Tokenizer tokenizer;
+    REQUIRE(tokenizer.readFileToString("../../../../../tests/sp/TokenizerTest/empty.txt") == "");
+}
+// ai-gen end
+
 TEST_CASE("Tokenizer::splitLine", "[splitLine]") {
     const std::string testFileName = "../../../../../tests/sp/TokenizerTest/sourcefile2.txt";
     REQUIRE(std::filesystem::exists(testFileName));
@@ -31,17 +46,16 @@ TEST_CASE("Tokenizer::splitLine", "[splitLine]") {
     std::vector<std::string> actualOutput = Tokenizer::splitLine(actualContent);
 
     REQUIRE(actualOutput == expectedOutput);
-    const int expectedLineNumber = 5;
+    const size_t expectedLineNumber = 5;
     REQUIRE(actualOutput.size() == expectedLineNumber);
-
-    Tokenizer::tokenize(actualContent);
 }
 
 TEST_CASE("Tokenizer::tokenize", "[tokenize]") {
-    const std::string testFileName = "../../../../../tests/sp/TokenizerTest/sourcefile3.txt";
+    const std::string testFileName = "../../../../../tests/sp/TokenizerTest/sourcefile1.txt";
     REQUIRE(std::filesystem::exists(testFileName));
     std::string actualContent = Tokenizer::readFileToString(testFileName);
-    std::vector<std::string> actualOutput = Tokenizer::splitLine(actualContent);
 
-    Tokenizer::tokenize(actualContent);
+    auto actualOutput = Tokenizer::tokenize(actualContent);
+    REQUIRE(actualOutput.size() == 4);
+    REQUIRE(actualOutput[1].getTokenType() == LexicalToken::OPERATOR_ASSIGN);
 }

@@ -21,13 +21,12 @@ std::vector<std::string> Tokenizer::splitLine(const std::string& content) {
     return result;
 }
 
-
-
 std::vector<SpToken> Tokenizer::tokenize(const std::string& content) {
     std::vector<SpToken> results;
     std::vector<std::string> lines = Tokenizer::splitLine(content);
+    int numberOfLines = static_cast<int>(lines.size());
     
-    for (int lineNumber = 1; lineNumber <= static_cast<int>(lines.size()); lineNumber++) {
+    for (int lineNumber = 1; lineNumber <= numberOfLines; lineNumber++) {
         std::string line = lines[lineNumber - 1];
         std::string originalLine = line.substr();
 
