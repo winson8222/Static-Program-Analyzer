@@ -2,7 +2,7 @@
 #include <unordered_map>
 #include <string>
 
-enum class LexicalToken {
+enum class LexicalTokenType {
     // Symbols
     SYMBOL_OPEN_BRACE, SYMBOL_CLOSE_BRACE, // { and }
     SYMBOL_OPEN_PAREN, SYMBOL_CLOSE_PAREN, // ( and )
@@ -36,24 +36,24 @@ enum class LexicalToken {
     ERROR
 };
 
-class LexicalTokenMapper {
+class LexicalTokenTypeMapper {
 public:
-    static LexicalToken getToken(std::string str);
-    static const std::unordered_map<std::string, LexicalToken> stringToTokenMap;
-    static const std::unordered_map<LexicalToken, std::string> tokenToStringMap;
-    static const std::unordered_map<LexicalToken, std::string> tokenToRegexMap;
+    static LexicalTokenType getTokenType(std::string str);
+    static const std::unordered_map<std::string, LexicalTokenType> stringToTokenMap;
+    static const std::unordered_map<LexicalTokenType, std::string> tokenToStringMap;
+    static const std::unordered_map<LexicalTokenType, std::string> tokenToRegexMap;
 };
 
-class SpToken {
+class LexicalToken {
 private:
-    LexicalToken type;
+    LexicalTokenType type;
     int lineNumber;
     int linePosition;
     std::string value;
 
 public:
-    SpToken(LexicalToken t);
-    SpToken(LexicalToken t, int lineNumber, int linePosition, std::string value);
-    LexicalToken getTokenType();
+    LexicalToken(LexicalTokenType t);
+    LexicalToken(LexicalTokenType t, int lineNumber, int linePosition, std::string value);
+    LexicalTokenType getTokenType();
     void print();
 };

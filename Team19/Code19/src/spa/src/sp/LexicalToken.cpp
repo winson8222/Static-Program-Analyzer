@@ -2,120 +2,120 @@
 #include <iostream>
 #include <regex>
 
-const std::unordered_map<std::string, LexicalToken> LexicalTokenMapper::stringToTokenMap = {
+const std::unordered_map<std::string, LexicalTokenType> LexicalTokenTypeMapper::stringToTokenMap = {
     // Symbols
-    {"{", LexicalToken::SYMBOL_OPEN_BRACE},
-    {"}", LexicalToken::SYMBOL_CLOSE_BRACE},
-    {"(", LexicalToken::SYMBOL_OPEN_PAREN},
-    {")", LexicalToken::SYMBOL_CLOSE_PAREN},
-    {";", LexicalToken::SYMBOL_SEMICOLON},
+    {"{", LexicalTokenType::SYMBOL_OPEN_BRACE},
+    {"}", LexicalTokenType::SYMBOL_CLOSE_BRACE},
+    {"(", LexicalTokenType::SYMBOL_OPEN_PAREN},
+    {")", LexicalTokenType::SYMBOL_CLOSE_PAREN},
+    {";", LexicalTokenType::SYMBOL_SEMICOLON},
 
     // Operators
-    {"=", LexicalToken::OPERATOR_ASSIGN},
-    {"!", LexicalToken::OPERATOR_NOT},
-    {"&&", LexicalToken::OPERATOR_AND},
-    {"||", LexicalToken::OPERATOR_OR},
-    {">", LexicalToken::OPERATOR_GREATER},
-    {">=", LexicalToken::OPERATOR_GREATER_EQUAL},
-    {"<", LexicalToken::OPERATOR_LESS},
-    {"<=", LexicalToken::OPERATOR_LESS_EQUAL},
-    {"==", LexicalToken::OPERATOR_IS_EQUAL},
-    {"!=", LexicalToken::OPERATOR_NOT_EQUAL},
-    {"+", LexicalToken::OPERATOR_PLUS},
-    {"-", LexicalToken::OPERATOR_MINUS},
-    {"*", LexicalToken::OPERATOR_MULTIPLY},
-    {"/", LexicalToken::OPERATOR_DIVIDE},
-    {"%", LexicalToken::OPERATOR_MODULO},
+    {"=", LexicalTokenType::OPERATOR_ASSIGN},
+    {"!", LexicalTokenType::OPERATOR_NOT},
+    {"&&", LexicalTokenType::OPERATOR_AND},
+    {"||", LexicalTokenType::OPERATOR_OR},
+    {">", LexicalTokenType::OPERATOR_GREATER},
+    {">=", LexicalTokenType::OPERATOR_GREATER_EQUAL},
+    {"<", LexicalTokenType::OPERATOR_LESS},
+    {"<=", LexicalTokenType::OPERATOR_LESS_EQUAL},
+    {"==", LexicalTokenType::OPERATOR_IS_EQUAL},
+    {"!=", LexicalTokenType::OPERATOR_NOT_EQUAL},
+    {"+", LexicalTokenType::OPERATOR_PLUS},
+    {"-", LexicalTokenType::OPERATOR_MINUS},
+    {"*", LexicalTokenType::OPERATOR_MULTIPLY},
+    {"/", LexicalTokenType::OPERATOR_DIVIDE},
+    {"%", LexicalTokenType::OPERATOR_MODULO},
 
     // Keywords
-    {"if", LexicalToken::KEYWORD_IF},
-    {"then", LexicalToken::KEYWORD_THEN},
-    {"else", LexicalToken::KEYWORD_ELSE},
-    {"read", LexicalToken::KEYWORD_READ},
-    {"call", LexicalToken::KEYWORD_CALL},
-    {"print", LexicalToken::KEYWORD_PRINT},
-    {"procedure", LexicalToken::KEYWORD_PRINT},
-    {"while", LexicalToken::KEYWORD_WHILE},
+    {"if", LexicalTokenType::KEYWORD_IF},
+    {"then", LexicalTokenType::KEYWORD_THEN},
+    {"else", LexicalTokenType::KEYWORD_ELSE},
+    {"read", LexicalTokenType::KEYWORD_READ},
+    {"call", LexicalTokenType::KEYWORD_CALL},
+    {"print", LexicalTokenType::KEYWORD_PRINT},
+    {"procedure", LexicalTokenType::KEYWORD_PRINT},
+    {"while", LexicalTokenType::KEYWORD_WHILE},
 
-    {" ", LexicalToken::WHITESPACE},
-    {"\n", LexicalToken::NEW_LINE}
+    {" ", LexicalTokenType::WHITESPACE},
+    {"\n", LexicalTokenType::NEW_LINE}
     // Add more keywords as needed
 };
 
-const std::unordered_map<LexicalToken, std::string> LexicalTokenMapper::tokenToStringMap = {
+const std::unordered_map<LexicalTokenType, std::string> LexicalTokenTypeMapper::tokenToStringMap = {
     // Symbols
-    {LexicalToken::SYMBOL_OPEN_BRACE, "LEFT_BRACE"},
-    {LexicalToken::SYMBOL_CLOSE_BRACE, "RIGHT_BRACE"},
-    {LexicalToken::SYMBOL_OPEN_PAREN, "LEFT_PARENTHESIS"},
-    {LexicalToken::SYMBOL_CLOSE_PAREN, "RIGHT_PARENTHESIS"},
-    {LexicalToken::SYMBOL_SEMICOLON, "SEMICOLON"},
+    {LexicalTokenType::SYMBOL_OPEN_BRACE, "LEFT_BRACE"},
+    {LexicalTokenType::SYMBOL_CLOSE_BRACE, "RIGHT_BRACE"},
+    {LexicalTokenType::SYMBOL_OPEN_PAREN, "LEFT_PARENTHESIS"},
+    {LexicalTokenType::SYMBOL_CLOSE_PAREN, "RIGHT_PARENTHESIS"},
+    {LexicalTokenType::SYMBOL_SEMICOLON, "SEMICOLON"},
 
     // Operators
-    {LexicalToken::OPERATOR_ASSIGN, "EQUAL_ASSIGNMENT"},
-    {LexicalToken::OPERATOR_NOT, "NOT_EQUAL"},
-    {LexicalToken::OPERATOR_AND, "LOGICAL_AND"},
-    {LexicalToken::OPERATOR_OR, "LOGICAL_OR"},
-    {LexicalToken::OPERATOR_GREATER, "GREATER_THAN"},
-    {LexicalToken::OPERATOR_GREATER_EQUAL, "GREATER_THAN_OR_EQUAL"},
-    {LexicalToken::OPERATOR_LESS, "LESS_THAN"},
-    {LexicalToken::OPERATOR_LESS_EQUAL, "LESS_THAN_OR_EQUAL"},
-    {LexicalToken::OPERATOR_IS_EQUAL, "EQUAL_TO"},
-    {LexicalToken::OPERATOR_NOT_EQUAL, "NOT_EQUAL_TO"},
-    {LexicalToken::OPERATOR_PLUS, "ADDITION"},
-    {LexicalToken::OPERATOR_MINUS, "SUBTRACTION"},
-    {LexicalToken::OPERATOR_MULTIPLY, "MULTIPLICATION"},
-    {LexicalToken::OPERATOR_DIVIDE, "DIVISION"},
-    {LexicalToken::OPERATOR_MODULO, "MODULO"},
+    {LexicalTokenType::OPERATOR_ASSIGN, "EQUAL_ASSIGNMENT"},
+    {LexicalTokenType::OPERATOR_NOT, "NOT_EQUAL"},
+    {LexicalTokenType::OPERATOR_AND, "LOGICAL_AND"},
+    {LexicalTokenType::OPERATOR_OR, "LOGICAL_OR"},
+    {LexicalTokenType::OPERATOR_GREATER, "GREATER_THAN"},
+    {LexicalTokenType::OPERATOR_GREATER_EQUAL, "GREATER_THAN_OR_EQUAL"},
+    {LexicalTokenType::OPERATOR_LESS, "LESS_THAN"},
+    {LexicalTokenType::OPERATOR_LESS_EQUAL, "LESS_THAN_OR_EQUAL"},
+    {LexicalTokenType::OPERATOR_IS_EQUAL, "EQUAL_TO"},
+    {LexicalTokenType::OPERATOR_NOT_EQUAL, "NOT_EQUAL_TO"},
+    {LexicalTokenType::OPERATOR_PLUS, "ADDITION"},
+    {LexicalTokenType::OPERATOR_MINUS, "SUBTRACTION"},
+    {LexicalTokenType::OPERATOR_MULTIPLY, "MULTIPLICATION"},
+    {LexicalTokenType::OPERATOR_DIVIDE, "DIVISION"},
+    {LexicalTokenType::OPERATOR_MODULO, "MODULO"},
 
     // Keywords
-    {LexicalToken::KEYWORD_IF, "IF"},
-    {LexicalToken::KEYWORD_THEN, "THEN"},
-    {LexicalToken::KEYWORD_ELSE, "ELSE"},
-    {LexicalToken::KEYWORD_READ, "READ"},
-    {LexicalToken::KEYWORD_CALL, "CALL"},
-    {LexicalToken::KEYWORD_PRINT, "PRINT"},
-    {LexicalToken::KEYWORD_PRINT, "PROCEDURE"},
-    {LexicalToken::KEYWORD_WHILE, "WHILE"},
+    {LexicalTokenType::KEYWORD_IF, "IF"},
+    {LexicalTokenType::KEYWORD_THEN, "THEN"},
+    {LexicalTokenType::KEYWORD_ELSE, "ELSE"},
+    {LexicalTokenType::KEYWORD_READ, "READ"},
+    {LexicalTokenType::KEYWORD_CALL, "CALL"},
+    {LexicalTokenType::KEYWORD_PRINT, "PRINT"},
+    {LexicalTokenType::KEYWORD_PRINT, "PROCEDURE"},
+    {LexicalTokenType::KEYWORD_WHILE, "WHILE"},
 
-    {LexicalToken::NAME, "NAMES"},
-    {LexicalToken::INTEGER, "INTEGERS"},
-    {LexicalToken::WHITESPACE, "WHITESPACES"},
-    {LexicalToken::NEW_LINE, "NEWLINES"}
+    {LexicalTokenType::NAME, "NAMES"},
+    {LexicalTokenType::INTEGER, "INTEGERS"},
+    {LexicalTokenType::WHITESPACE, "WHITESPACES"},
+    {LexicalTokenType::NEW_LINE, "NEWLINES"}
 
     // Add more keywords as needed
 };
 
-const std::unordered_map<LexicalToken, std::string> LexicalTokenMapper::tokenToRegexMap = {
+const std::unordered_map<LexicalTokenType, std::string> LexicalTokenTypeMapper::tokenToRegexMap = {
     // Symbols
-    {LexicalToken::SYMBOL_OPEN_BRACE, "^(\\{)"},
-    {LexicalToken::SYMBOL_CLOSE_BRACE, "^(\\})"},
-    {LexicalToken::SYMBOL_OPEN_PAREN, "^(\\()"},
-    {LexicalToken::SYMBOL_CLOSE_PAREN, "^(\\))"},
-    {LexicalToken::SYMBOL_SEMICOLON, "^(;)"},
-    {LexicalToken::OPERATOR_ASSIGN, "^(=)"},
-    {LexicalToken::OPERATOR_NOT, "^(!)"},
-    {LexicalToken::OPERATOR_AND, "^(&&)"},
-    {LexicalToken::OPERATOR_OR, "^(\\|\\|)"},
-    {LexicalToken::OPERATOR_GREATER, "^(>)"},
-    {LexicalToken::OPERATOR_GREATER_EQUAL, "^(>=)"},
-    {LexicalToken::OPERATOR_LESS, "^(<)"},
-    {LexicalToken::OPERATOR_LESS_EQUAL, "^(<=)"},
-    {LexicalToken::OPERATOR_IS_EQUAL, "^(==)"},
-    {LexicalToken::OPERATOR_NOT_EQUAL, "^(!=)"},
-    {LexicalToken::OPERATOR_PLUS, "^(\\+)"},
-    {LexicalToken::OPERATOR_MINUS, "^(-)"},
-    {LexicalToken::OPERATOR_MULTIPLY, "^(\\*)"},
-    {LexicalToken::OPERATOR_DIVIDE, "^(\\/)"},
-    {LexicalToken::OPERATOR_MODULO, "^(%)"},
+    {LexicalTokenType::SYMBOL_OPEN_BRACE, "^(\\{)"},
+    {LexicalTokenType::SYMBOL_CLOSE_BRACE, "^(\\})"},
+    {LexicalTokenType::SYMBOL_OPEN_PAREN, "^(\\()"},
+    {LexicalTokenType::SYMBOL_CLOSE_PAREN, "^(\\))"},
+    {LexicalTokenType::SYMBOL_SEMICOLON, "^(;)"},
+    {LexicalTokenType::OPERATOR_ASSIGN, "^(=)"},
+    {LexicalTokenType::OPERATOR_NOT, "^(!)"},
+    {LexicalTokenType::OPERATOR_AND, "^(&&)"},
+    {LexicalTokenType::OPERATOR_OR, "^(\\|\\|)"},
+    {LexicalTokenType::OPERATOR_GREATER, "^(>)"},
+    {LexicalTokenType::OPERATOR_GREATER_EQUAL, "^(>=)"},
+    {LexicalTokenType::OPERATOR_LESS, "^(<)"},
+    {LexicalTokenType::OPERATOR_LESS_EQUAL, "^(<=)"},
+    {LexicalTokenType::OPERATOR_IS_EQUAL, "^(==)"},
+    {LexicalTokenType::OPERATOR_NOT_EQUAL, "^(!=)"},
+    {LexicalTokenType::OPERATOR_PLUS, "^(\\+)"},
+    {LexicalTokenType::OPERATOR_MINUS, "^(-)"},
+    {LexicalTokenType::OPERATOR_MULTIPLY, "^(\\*)"},
+    {LexicalTokenType::OPERATOR_DIVIDE, "^(\\/)"},
+    {LexicalTokenType::OPERATOR_MODULO, "^(%)"},
 
-    {LexicalToken::NAME, "^([a-zA-Z]\\w*)\\b"},
-    {LexicalToken::INTEGER,  "^(\\d+)"},
-    {LexicalToken::WHITESPACE, "^(\\s+)"}
+    {LexicalTokenType::NAME, "^([a-zA-Z]\\w*)\\b"},
+    {LexicalTokenType::INTEGER,  "^(\\d+)"},
+    {LexicalTokenType::WHITESPACE, "^(\\s+)"}
     // Add more keywords as needed
 };
 
 
-LexicalToken LexicalTokenMapper::getToken(std::string str) {
+LexicalTokenType LexicalTokenTypeMapper::getTokenType(std::string str) {
     auto it = stringToTokenMap.find(str);
     if (it != stringToTokenMap.end()) {
         return it->second;
@@ -123,35 +123,35 @@ LexicalToken LexicalTokenMapper::getToken(std::string str) {
     
     // Check for valid integer pattern (\d+)
     if (std::regex_match(str, std::regex(R"(\d+)"))) {
-        return LexicalToken::INTEGER;
+        return LexicalTokenType::INTEGER;
     }
 
     // Check for valid name pattern ([a-zA-Z][a-zA-Z0-9]*)
     if (std::regex_match(str, std::regex(R"([a-zA-Z][a-zA-Z0-9]*)"))) {
-        return LexicalToken::NAME;
+        return LexicalTokenType::NAME;
     }
 
-    return LexicalToken::ERROR;
+    return LexicalTokenType::ERROR;
 }
 
-SpToken::SpToken(LexicalToken t) {
+LexicalToken::LexicalToken(LexicalTokenType t) {
     this->type = t;
 }
 
 
-SpToken::SpToken(LexicalToken t, int lineNumber, int linePosition, std::string value) {
+LexicalToken::LexicalToken(LexicalTokenType t, int lineNumber, int linePosition, std::string value) {
     this->type = t;
     this->lineNumber = lineNumber;
     this->linePosition = linePosition;
     this->value = value;
 }
 
-LexicalToken SpToken::getTokenType() {
+LexicalTokenType LexicalToken::getTokenType() {
     return this->type;
 }
 
-void SpToken::print() {
-    std::cout << "Token Type: " << LexicalTokenMapper::tokenToStringMap.find(type)->second << " ";
+void LexicalToken::print() {
+    std::cout << "Token Type: " << LexicalTokenTypeMapper::tokenToStringMap.find(type)->second << " ";
     std::cout << "Line Number: " << lineNumber << " ";
     std::cout << "Line Position: " << linePosition << " ";
     std::cout << "Value: " << value << std::endl;

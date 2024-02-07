@@ -57,5 +57,5 @@ TEST_CASE("Tokenizer::tokenize", "[tokenize]") {
 
     auto actualOutput = Tokenizer::tokenize(actualContent);
     REQUIRE(actualOutput.size() == 4);
-    REQUIRE(actualOutput[1].getTokenType() == LexicalToken::OPERATOR_ASSIGN);
+    REQUIRE(actualOutput[1].getTokenType() == LexicalTokenType::OPERATOR_ASSIGN);
 }
