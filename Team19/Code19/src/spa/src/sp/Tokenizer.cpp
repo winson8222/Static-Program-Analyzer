@@ -6,14 +6,15 @@
 #include <regex>
 #include <stdexcept>
 
-
+/** Splits the text file into a array of strings, with each element representing a line of text.
+ *  Returns: A vector of size equal to the number of lines in the input content.
+ */
 std::vector<std::string> Tokenizer::splitLine(const std::string& content) {
     std::vector<std::string> result;
     std::istringstream stream(content); // Create a stringstream from the content
     std::string line;
 
     while (std::getline(stream, line)) {
-        std::cout << line << std::endl;
         result.push_back(line);
     }
 
@@ -22,23 +23,21 @@ std::vector<std::string> Tokenizer::splitLine(const std::string& content) {
 
 
 
-std::vector<Token> Tokenizer::tokenize(const std::string& content) {
-    std::vector<Token> results;
-
-    
+std::vector<SpToken> Tokenizer::tokenize(const std::string& content) {
+    std::vector<SpToken> results;
     std::vector<std::string> lines = Tokenizer::splitLine(content);
-    int lineNumber = 1;
-
-    for (; lineNumber <= static_cast<int>(lines.size()); lineNumber++) {
+    
+    for (int lineNumber = 1; lineNumber <= static_cast<int>(lines.size()); lineNumber++) {
         std::string line = lines[lineNumber - 1];
         std::string originalLine = line.substr();
+
         while (!line.empty()) {
             bool matchedSomething = false;
             for (auto const& rule : LexicalTokenMapper::tokenToRegexMap) {
                 std::smatch match;
                 if (std::regex_search(line, match, std::regex(rule.second))) {
                     std::cout << match.str() << std::endl;
-                    Token t(rule.first, lineNumber, (int)(originalLine.size() - line.size()), match.str());
+                    SpToken t(rule.first, lineNumber, (int)(originalLine.size() - line.size()), match.str());
 
                     if (rule.first != LexicalToken::WHITESPACE) {
                         results.push_back(t);
@@ -51,12 +50,12 @@ std::vector<Token> Tokenizer::tokenize(const std::string& content) {
             }
 
             if (!matchedSomething) {
-                std::cout << "Error" << std::endl;
+                throw std::runtime_error("Error: Invalid SIMPLE syntax.");
             }
         }
 
         if (lineNumber != lines.size()) {
-            Token newLine(LexicalToken::WHITESPACE, lineNumber, -1, "new line");
+            SpToken newLine(LexicalToken::WHITESPACE, lineNumber, -1, "new line");
             results.push_back(newLine);
         }
     }
@@ -64,6 +63,7 @@ std::vector<Token> Tokenizer::tokenize(const std::string& content) {
     for (auto it : results) {
         it.print();
     }
+
     return results;
 }
 

@@ -44,7 +44,7 @@ public:
     static const std::unordered_map<LexicalToken, std::string> tokenToRegexMap;
 };
 
-class Token {
+class SpToken {
 private:
     LexicalToken type;
     int lineNumber;
@@ -52,7 +52,7 @@ private:
     std::string value;
 
 public:
-    Token(LexicalToken t);
-    Token(LexicalToken t, int lineNumber, int linePosition, std::string value);
+    SpToken(LexicalToken t);
+    SpToken(LexicalToken t, int lineNumber, int linePosition, std::string value);
     void print();
 };
