@@ -7,8 +7,11 @@ class Stmt : public Grammar {
 public:
     Stmt(const std::string& stmtType);
     std::pair<int,int> lines;
-    virtual ~Stmt() {}
-    void buildTree() {};
+    
+    void buildTree() const override;
+
+    int getStartLine() const override;
+    int getEndLine() const override;
 
 private:
     std::string stmtType;
