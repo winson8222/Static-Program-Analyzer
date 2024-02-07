@@ -1,10 +1,6 @@
 #include "LexicalToken.h"
 #include <iostream>
 
-LexicalToken::LexicalToken(LexicalTokenType t) {
-    this->type = t;
-}
-
 LexicalToken::LexicalToken(LexicalTokenType t, int lineNumber, int linePosition, std::string value) {
     this->type = t;
     this->lineNumber = lineNumber;

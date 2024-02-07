@@ -5,13 +5,17 @@
 // Prompt: https://platform.openai.com/playground/p/cJLjmmneCEs4z6ms7ZkBSxJB?model=gpt-4&mode=chat
 SimpleParser::SimpleParser(std::string filename) {
     Tokenizer t;
-    tokenStream = t.tokenize(t.readFileToString(filename));
+    this->tokenStream = t.tokenize(t.readFileToString(filename));
 }
 
 void SimpleParser::parseProgram() {
     while (!tokenStream.empty()) {
         parseProcedure();
     }
+}
+
+bool SimpleParser::hasTokensLeft(int tokenPos) const {
+    return tokenPos < this -> tokenStream.size();
 }
 
 void SimpleParser::parseProcedure() {

@@ -9,8 +9,10 @@ class SimpleParser {
 public:
     SimpleParser(std::string);
     void parseProgram();
+
 private:
     std::vector<LexicalToken> tokenStream;
+    bool hasTokensLeft(int tokenPos) const;
     void parseProcedure();
     void parseStmtLst();
     void parseStmt();
