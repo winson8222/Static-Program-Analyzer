@@ -8,46 +8,6 @@ using namespace std;
 // Initializes the QueryParser with a vector of Token objects to be parsed.
 QueryParser::QueryParser(const vector<Token>& tokens) : tokens(tokens), currentTokenIndex(0) {}
 
-
-// Returns a constant reference to the current Token being parsed.
-const Token& QueryParser::currentToken() const {
-    return tokens[currentTokenIndex];
-}
-
-// Advances to the next token in the token sequence.
-// Returns true if advancement is successful, false if it reaches the end of the token sequence.
-bool QueryParser::advanceToken() {
-    if (currentTokenIndex < tokens.size() - 1) {
-        ++currentTokenIndex;
-        return true;
-    }
-    return false;
-}
-
-// Checks if the current token matches a given TokenType.
-// Advances to the next token and returns true if it matches.
-// Returns false if there is no match.
-bool QueryParser::match(TokenType type) {
-    if (currentToken().getType() == type) {
-        return true;
-    }
-    return false;
-}
-
-// Ensures the next token matches the expected TokenType.
-// Throws an error if the token does not match the expected type.
-void QueryParser::ensureToken(TokenType expected) {
-    if (!match(expected)) {
-        throwError();
-    }
-}
-
-// Throws a standard invalid_argument exception with a custom error message.
-bool QueryParser::throwError() {
-    throw std::invalid_argument("incorrect grammar at: " + currentToken().getValue());
-    return false;
-}
-
 // Parses the entire query.
 // Processes declarations, select clause, and optional such that and pattern clauses.
 bool QueryParser::parse() {
@@ -163,6 +123,88 @@ void QueryParser::parseRelRef() {
 
 }
 
+// Checks if the current context is a statement reference to statement reference relation.
+bool QueryParser::isStmtRefStmtRef() {
+    if (match(TokenType::Parent) || match(TokenType::ParentT) ||
+        match(TokenType::Follows) || match(TokenType::FollowsT)) {
+        return true;
+
+    }
+    return false;
+}
+
+// Checks if the current context is a 'Uses' or 'Modifies' relation.
+bool QueryParser::isUsesOrModifies() {
+    if (match(TokenType::Uses) || match(TokenType::Modifies)) {
+        return true;
+    }
+    return false;
+}
+
+// Parses a 'Uses' or 'Modifies' relation in the query.
+// Ensures correct syntax and processes statement and entity references.
+void QueryParser::parseUsesOrModifies() {
+    if (match(TokenType::Lparenthesis)) {
+        advanceToken();
+    }
+    else {
+        throwError();
+    }
+
+    bool stmtRefSuccess = false;
+    try {
+        parseStmtRef();
+        stmtRefSuccess = true;
+    }
+    catch (const std::exception& e) {
+        //but no action is needed here because parseEntRef() will be attempted next
+    }
+
+    if (!stmtRefSuccess) {
+        try {
+            parseEntRef(); // If this fails, it throws an exception
+        }
+        catch (const std::exception& e) {
+            throwError();
+        }
+    }
+
+    if (match(TokenType::Comma)) {
+        advanceToken();
+    }
+    else {
+        throwError();
+    }
+    parseEntRef();
+    ensureToken(TokenType::Rparenthesis);
+}
+
+// Parses a statement reference to statement reference relation.
+// Ensures correct syntax and processes multiple statement references.
+void QueryParser::parsestmtRefstmtRef() {
+    if (match(TokenType::Lparenthesis)) {
+        advanceToken();
+    }
+    else {
+        throwError();
+    }
+
+    // stmtRef
+    parseStmtRef();
+
+    //','
+    if (match(TokenType::Comma)) {
+        advanceToken();
+    }
+    else {
+        throwError();
+    }
+
+    parseStmtRef();
+
+    ensureToken(TokenType::Rparenthesis);
+}
+
 // Parses a statement reference in the query.
 // Handles different types of statement references like integer, wildcard, or synonym.
 void QueryParser::parseStmtRef() {
@@ -190,6 +232,29 @@ void QueryParser::parseEntRef() {
         parseSynonym();
     }
 
+}
+
+// Parses the pattern clause in the query.
+// Ensures the correct syntax and processes entity references and expression specifications.
+void QueryParser::parsePatternClause() {
+
+    ensureToken(TokenType::PatternKeyword);
+    advanceToken();
+    // check if it is a syn-assign
+    ensureToken(TokenType::IDENT);
+
+    advanceToken();
+    ensureToken(TokenType::Lparenthesis);
+
+    advanceToken();
+    parseEntRef();
+    ensureToken(TokenType::Comma);
+
+    advanceToken();
+    parseExpressionSpec();
+
+    advanceToken();
+    ensureToken(TokenType::Rparenthesis);
 }
 
 // Parses the expression specification in the query.
@@ -284,107 +349,42 @@ bool QueryParser::isVarName() {
     return match(TokenType::IDENT);
 }
 
-// Parses the pattern clause in the query.
-// Ensures the correct syntax and processes entity references and expression specifications.
-void QueryParser::parsePatternClause() {
-    
-    ensureToken(TokenType::PatternKeyword);
-    advanceToken();
-    // check if it is a syn-assign
-    ensureToken(TokenType::IDENT);
-
-    advanceToken();
-    ensureToken(TokenType::Lparenthesis);
-
-    advanceToken();
-    parseEntRef();
-    ensureToken(TokenType::Comma);
-
-    advanceToken();
-    parseExpressionSpec();
-    
-    advanceToken();
-    ensureToken(TokenType::Rparenthesis);
+// Returns a constant reference to the current Token being parsed.
+const Token& QueryParser::currentToken() const {
+    return tokens[currentTokenIndex];
 }
 
-// Checks if the current context is a statement reference to statement reference relation.
-bool QueryParser::isStmtRefStmtRef() {
-    if (match(TokenType::Parent) || match(TokenType::ParentT) ||
-    match(TokenType::Follows) || match(TokenType::FollowsT)) {
-        return true;
-
-    }
-    return false;
-}
-
-// Checks if the current context is a 'Uses' or 'Modifies' relation.
-bool QueryParser::isUsesOrModifies() {
-    if (match(TokenType::Uses) || match(TokenType::Modifies)) {
+// Advances to the next token in the token sequence.
+// Returns true if advancement is successful, false if it reaches the end of the token sequence.
+bool QueryParser::advanceToken() {
+    if (currentTokenIndex < tokens.size() - 1) {
+        ++currentTokenIndex;
         return true;
     }
     return false;
 }
 
-// Parses a 'Uses' or 'Modifies' relation in the query.
-// Ensures correct syntax and processes statement and entity references.
-void QueryParser::parseUsesOrModifies() {
-    if (match(TokenType::Lparenthesis)) {
-        advanceToken();
-    } else {
-        throwError();
+// Checks if the current token matches a given TokenType.
+// Advances to the next token and returns true if it matches.
+// Returns false if there is no match.
+bool QueryParser::match(TokenType type) {
+    if (currentToken().getType() == type) {
+        return true;
     }
-
-    bool stmtRefSuccess = false;
-    try {
-        parseStmtRef();
-        stmtRefSuccess = true;
-    }
-    catch (const std::exception& e) {
-        //but no action is needed here because parseEntRef() will be attempted next
-    }
-
-    if (!stmtRefSuccess) {
-        try {
-            parseEntRef(); // If this fails, it throws an exception
-        }
-        catch (const std::exception& e) {
-            throwError();
-        }
-    }
-
-    if (match(TokenType::Comma)) {
-        advanceToken();
-    } else {
-        throwError();
-    }
-    parseEntRef();
-    ensureToken(TokenType::Rparenthesis);
+    return false;
 }
 
-// Parses a statement reference to statement reference relation.
-// Ensures correct syntax and processes multiple statement references.
-void QueryParser::parsestmtRefstmtRef() {
-    if (match(TokenType::Lparenthesis)) {
-        advanceToken();
-    } else {
+// Ensures the next token matches the expected TokenType.
+// Throws an error if the token does not match the expected type.
+void QueryParser::ensureToken(TokenType expected) {
+    if (!match(expected)) {
         throwError();
     }
-
-    // stmtRef
-    parseStmtRef();
-
-    //','
-    if (match(TokenType::Comma)) {
-        advanceToken();
-    } else {
-        throwError();
-    }
-
-    parseStmtRef();
-
-    ensureToken(TokenType::Rparenthesis);
 }
 
-
-
+// Throws a standard invalid_argument exception with a custom error message.
+bool QueryParser::throwError() {
+    throw std::invalid_argument("incorrect grammar at: " + currentToken().getValue());
+    return false;
+}
 
