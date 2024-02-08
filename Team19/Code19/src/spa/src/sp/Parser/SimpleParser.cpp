@@ -55,7 +55,8 @@ void SimpleParser::parsePrint() {
     // Add parsing logic for print
 }
 
-void SimpleParser::parseCall(int tokenPos) {
+// To change to void later when building trees.
+CallStmt SimpleParser::parseCall(int tokenPos) {
     // Problem: Need to potential pass tokenPos as a pointer.
     LexicalToken keyword = this->tokenStream[tokenPos];
     tokenPos++;
@@ -77,8 +78,9 @@ void SimpleParser::parseCall(int tokenPos) {
         throw std::runtime_error("Error: Invalid SIMPLE syntax.");
     }
 
-    CallStmt callStmt = CallStmt(variable, keyword.getLine(), semicolon.getLine());
-    // Preferably add the callStmt to the Tree.
+    return CallStmt(variable, keyword.getLine(), semicolon.getLine());
+
+    // Add the callStmt to the Tree.
 }
 
 void SimpleParser::parseWhile() {

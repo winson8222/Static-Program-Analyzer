@@ -11,6 +11,8 @@ private:
 public:
     LexicalToken(LexicalTokenType t, int lineNumber, int linePosition, std::string value);
     LexicalTokenType getTokenType();
+    int getLinePosition();
     int getLine();
+    std::string getValue();
     void print();
 };

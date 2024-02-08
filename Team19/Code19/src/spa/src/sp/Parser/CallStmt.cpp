@@ -2,8 +2,8 @@
 #include <iostream>
 
 CallStmt::CallStmt(LexicalToken variable, int start, int end) {
-    this->variable = variable;
-    this->lines = std::pair<int>(start, end);
+    this->variable = LexicalToken(variable.getTokenType(), variable.getLine(), variable.getLinePosition(), variable.getValue());
+    this->lines = std::make_pair(start, end); 
 }
 
 int CallStmt::getStartLine() const {

@@ -11,7 +11,7 @@ public:
     SimpleParser(std::string);
     void parseProgram();
 
-private:
+// private:
     std::vector<LexicalToken> tokenStream;
     bool hasTokensLeft(int tokenPos) const;
     void parseProcedure();
@@ -19,7 +19,7 @@ private:
     void parseStmt(int tokenPos);
     void parseRead();
     void parsePrint();
-    void parseCall(int tokenPos);
+    CallStmt parseCall(int tokenPos);
     void parseWhile();
     void parseIf();
     void parseAssign();

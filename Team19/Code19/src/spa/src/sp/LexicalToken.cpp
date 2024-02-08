@@ -8,6 +8,14 @@ LexicalToken::LexicalToken(LexicalTokenType t, int lineNumber, int linePosition,
     this->value = value;
 }
 
+std::string LexicalToken::getValue() {
+    return this->value;
+}
+
+int LexicalToken::getLinePosition() {
+    return this->linePosition;
+}
+
 LexicalTokenType LexicalToken::getTokenType() {
     return this->type;
 }
