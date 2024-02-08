@@ -1,380 +1,366 @@
 // Include the Parser class header.
-#include "QueryParser.h"
-
+#include "../../spa/src/qps/QueryParser.h"
+#include <stdexcept>
+#include <iostream>
 
 using namespace std;
 
-// Constructor of the Parser class.
-// Initializes the Parser with a vector of tokens to be parsed.
-QueryParser::QueryParser(const vector<Token>& tokens) : tokens(tokens), currentTokenIndex(0) {}
+// Constructor of the QueryParser class.
+// Initializes the QueryParser with a vector of Token objects to be parsed.
+QueryParser::QueryParser(const vector<Token>& tokens) : tokens(tokens), currentTokenIndex(0), parsingResult() {}
 
-
-
-//bool QueryParser::validateGrammar() {
-// Orchestrates the parsing process by calling specific parsing methods for different parts of the input.
-// Returns true if all parsing is successful, false otherwise.
-// Will probably make it work with the Query Evaluator so that it will give the synonyms and 
-// the relationships that should be passed to the PKB
-
-
-// This should be validate grammar and not parse, change
+// Parses the entire query.
+// Processes declarations, select clause, and optional such that and pattern clauses.
 bool QueryParser::parse() {
 
-    int numberOfDeclarations = 0;
-    while (!match(TokenType::SelectKeyword)) {
-        if (!parseDeclaration()) {
-            return false;
-        } else {
-            numberOfDeclarations++;
-        }
-
-    }
-    if (numberOfDeclarations == 0) {
-        return false;
-    }
-
-    // check if the Select Clause is correctly matched with a synonym
-    if (!parseSelectClause()) {
-        return false;
-    }
-
+    parseDeclarations();
+    parseSelectClause();
     if (currentTokenIndex == tokens.size() - 1) {
         return true;
     }
-
+    advanceToken();
 
     // check if there is a such that or pattern clause with such that coming first
     if (match(TokenType::SuchKeyword)) {
-        advanceToken();
-        if (match(TokenType::ThatKeyword)) {
-            advanceToken();
-            if (!parseSuchThatClause()) {
-                return false;
-            }
-            if (currentTokenIndex == tokens.size() - 1) {
-                return true;
-            } else if (match(TokenType::PatternKeyword)) {
-                advanceToken();
-                if (!parsePatternClause()) {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-            if (currentTokenIndex == tokens.size() - 1) {
-                return true;
-            }
+        parseSuchThatClause();
+
+        if (currentTokenIndex == tokens.size() - 1) {
+            return true;
         }
-        return false;
-    } else if (match(TokenType::PatternKeyword)) {
-        advanceToken();
-        if (!parsePatternClause()) {
-            return false;
-        }
+
+        advanceToken();    
+        parsePatternClause();
+        
     } else {
-        return false;
+        parsePatternClause();        
     }
     if (currentTokenIndex == tokens.size() - 1) {
         return true;
     }
 }
 
+// Parses declarations in the query.
+// Processes design entities and their synonyms, and ensures correct syntax with semicolons.
+void QueryParser::parseDeclarations() {
+    int numberOfDeclarations = 0;
+    while (!match(TokenType::SelectKeyword)) {
+        string assignmentType = parseDesignEntity();
+        parsingResult.addDeclaredSynonym(parseSynonym(), assignmentType);
 
+        while (match(TokenType::Comma)) {
+            advanceToken();
+            parsingResult.addDeclaredSynonym(parseSynonym(), assignmentType);
+        }
 
-// Check if the keyword Select is present
-bool QueryParser::parseSelectClause() {
+        ensureToken(TokenType::Semicolon);
+        advanceToken();
+
+        numberOfDeclarations++;
+    }
+
+    if (numberOfDeclarations == 0) {
+        throwError();
+    }
+    
+}
+
+// Parses a design entity in the query.
+// Ensures the current token is a design entity and advances the token.
+string QueryParser::parseDesignEntity() {
+    if (currentToken().getType() == TokenType::DesignEntity) {
+        string designEntity = currentToken().getValue();
+        advanceToken();
+        return designEntity;
+    }
+    else {
+		throwError();
+    }
+}
+
+// Parses a synonym in the query.
+// Ensures the current token is an identifier and advances the token.
+string QueryParser::parseSynonym() {
+    if (currentToken().getType() == TokenType::IDENT) {
+        string synonym = currentToken().getValue();
+        advanceToken();
+        return synonym;
+    }
+    else {
+		throwError();
+	}
+    
+}
+
+// Parses the select clause in the query.
+// Checks for the 'Select' keyword and ensures the following token is a valid identifier.
+void QueryParser::parseSelectClause() {
     if (currentToken().getValue() != "Select") {
-        return false;
+        throwError();
     }
     advanceToken();
     // check after select if it is a synonym
-    if (match(TokenType::IDENT)) {
-        advanceToken();
-        return true;
-    } else {
-        return false;
-    }
+    ensureToken(TokenType::IDENT);
 
 }
 
+// Parses the 'such that' clause in the query.
+// Ensures the correct syntax and calls the function to process relation references.
+void QueryParser::parseSuchThatClause() {
+    advanceToken();
+    ensureToken(TokenType::ThatKeyword);
+    advanceToken();
 
-
-bool QueryParser::parseDesignEntity() {
-    if (currentToken().getType() == TokenType::DesignEntity) {
-        advanceToken();
-        return true;
-    }
-    return false;
-}
-// The parseDeclaration method of the Parser class.
-// Contains logic to parse declarations.
-// Currently a placeholder, actual implementation logic is needed.
-bool QueryParser::parseDeclaration() {
-    if (!parseDesignEntity()) {
-        return false;
-    }
-
-    if (!parseSynonym()) {
-        return false;
-    }
-
-    while (match(TokenType::Comma)) {
-        advanceToken();
-        if (!parseSynonym()) {
-            return false;
-        }
-    }
-
-    if(match(TokenType::Semicolon)) {
-        advanceToken();
-        return true;
-    }
-
-
-    return false;
+    return parseRelRef();
 }
 
-bool QueryParser::parseSynonym() {
-    if (currentToken().getType() == TokenType::IDENT) {
+// Parses relation references in a 'such that' clause.
+// Determines the type of relation and calls the appropriate parsing function.
+void QueryParser::parseRelRef() {
+    if (isStmtRefStmtRef()) {
         advanceToken();
-        return true;
-    }
-    return false;
-}
-
-
-
-bool QueryParser::parseSuchThatClause() {
-    if (!parseRelRef()) {
-        return false;
-    }
-    return true;
-}
-
-bool QueryParser::parseRelRef() {
-    if (isstmtRefstmtRef()) {
-        advanceToken();
-        if (!parsestmtRefstmtRef()) {
-            return false;
-        }
-        return true;
+        parsestmtRefstmtRef();
     } else if (isUsesOrModifies()) {
         advanceToken();
-        if (!parseUsesOrModifies()) {
-            return false;
-        }
-        return true;
+        parseUsesOrModifies();
     } else {
-        return false;
+        throwError();
     }
 
 }
 
+// Checks if the current context is a statement reference to statement reference relation.
+bool QueryParser::isStmtRefStmtRef() {
+    if (match(TokenType::Parent) || match(TokenType::ParentT) ||
+        match(TokenType::Follows) || match(TokenType::FollowsT)) {
+        return true;
 
+    }
+    return false;
+}
 
-// parsing the stmtRef, check if is a synonym, INTEGER or Wildcard
-bool QueryParser::parseStmtRef() {
-    if (parseSynonym()) {
-
+// Checks if the current context is a 'Uses' or 'Modifies' relation.
+bool QueryParser::isUsesOrModifies() {
+    if (match(TokenType::Uses) || match(TokenType::Modifies)) {
         return true;
     }
+    return false;
+}
 
+// Parses a 'Uses' or 'Modifies' relation in the query.
+// Ensures correct syntax and processes statement and entity references.
+void QueryParser::parseUsesOrModifies() {
+    if (match(TokenType::Lparenthesis)) {
+        advanceToken();
+    }
+    else {
+        throwError();
+    }
+
+    bool stmtRefSuccess = false;
+    try {
+        parseStmtRef();
+        stmtRefSuccess = true;
+    }
+    catch (const std::exception& e) {
+        //but no action is needed here because parseEntRef() will be attempted next
+    }
+
+    if (!stmtRefSuccess) {
+        try {
+            parseEntRef(); // If this fails, it throws an exception
+        }
+        catch (const std::exception& e) {
+            throwError();
+        }
+    }
+
+    if (match(TokenType::Comma)) {
+        advanceToken();
+    }
+    else {
+        throwError();
+    }
+    parseEntRef();
+    ensureToken(TokenType::Rparenthesis);
+}
+
+// Parses a statement reference to statement reference relation.
+// Ensures correct syntax and processes multiple statement references.
+void QueryParser::parsestmtRefstmtRef() {
+    if (match(TokenType::Lparenthesis)) {
+        advanceToken();
+    }
+    else {
+        throwError();
+    }
+
+    // stmtRef
+    parseStmtRef();
+
+    //','
+    if (match(TokenType::Comma)) {
+        advanceToken();
+    }
+    else {
+        throwError();
+    }
+
+    parseStmtRef();
+
+    ensureToken(TokenType::Rparenthesis);
+}
+
+// Parses a statement reference in the query.
+// Handles different types of statement references like integer, wildcard, or synonym.
+void QueryParser::parseStmtRef() {
+    
     if (match(TokenType::INTEGER)) {
         advanceToken();
-        return true;
-    }
-
-    if (match(TokenType::Wildcard)) {
+    } else if (match(TokenType::Wildcard)) {
         advanceToken();
-        return true;
+    } else {
+        parseSynonym();
     }
-
-    return false;
 
 }
 
-
-
-
-// parsing the entRef, check if is a synonym, QuoutIDENT or Wildcard
-bool QueryParser::parseEntRef() {
-    if (parseSynonym()) {
-        return true;
-    }
+// Parses an entity reference in the query.
+// Handles different types of entity references like quoted identifier, wildcard, or synonym.
+void QueryParser::parseEntRef() {
+    
 
     if (match(TokenType::QuoutIDENT)) {
         advanceToken();
-        return true;
-    }
-
-    if (match(TokenType::Wildcard)) {
+    } else if (match(TokenType::Wildcard)) {
         advanceToken();
-        return true;
+    } else {
+        parseSynonym();
     }
-
-    return false;
 
 }
 
-// Parsing the ExpressionSpec,
-bool QueryParser::parseExpressionSpec() {
+// Parses the pattern clause in the query.
+// Ensures the correct syntax and processes entity references and expression specifications.
+void QueryParser::parsePatternClause() {
+
+    ensureToken(TokenType::PatternKeyword);
+    advanceToken();
+    // check if it is a syn-assign
+    ensureToken(TokenType::IDENT);
+
+    advanceToken();
+    ensureToken(TokenType::Lparenthesis);
+
+    advanceToken();
+    parseEntRef();
+    ensureToken(TokenType::Comma);
+
+    advanceToken();
+    parseExpressionSpec();
+
+    advanceToken();
+    ensureToken(TokenType::Rparenthesis);
+}
+
+// Parses the expression specification in the query.
+// Handles different forms of expressions like quoted constants, wildcards, or quoted expressions.
+void QueryParser::parseExpressionSpec() {
 
     if (match(TokenType::QuoutConst) || match(TokenType::QuoutIDENT)) {
         advanceToken();
-        return true;
-    }
-
-    if (match(TokenType::Wildcard)) {
+    } else if (match(TokenType::Wildcard)) {
         advanceToken();
         if (match(TokenType::DoubleQuote)) {
+            parseQuotedExpression();
+            ensureToken(TokenType::Wildcard);
             advanceToken();
-            if (!parseExpression()) {
-                return false;
-            }
-            if (!match(TokenType::DoubleQuote)) {
-                return false;
-            }
-            advanceToken();
-            if (match(TokenType::Wildcard)) {
-                advanceToken();
-                return true;
-            }
-            return false;
-        } else {
-            return true;
         }
+        
     } else if (match(TokenType::DoubleQuote)) {
-        advanceToken();
-        if (!parseExpression()) {
-            return false;
-        }
-        if (!match(TokenType::DoubleQuote)) {
-            return false;
-        }
-        advanceToken();
-        return true;
+        parseQuotedExpression();
     } else {
-        return false;
+        throwError();
     }
 
 
 }
 
-bool QueryParser::parseExpression() {
-    if (!parseTerm()) {
-        return false;
-    }
+// Parses a quoted expression in the query.
+// Processes the expression enclosed in double quotes.
+void QueryParser::parseQuotedExpression() {
+    advanceToken();
+    parseExpression();
+    ensureToken(TokenType::DoubleQuote);
+    advanceToken();
+    
+}
+
+// Parses an expression in the query.
+// Processes terms and operators within the expression.
+void QueryParser::parseExpression() {
+    parseTerm();
 
     while (match(TokenType::Operator)) {
         if (currentToken().getValue() == "+" || currentToken().getValue() == "-") {
             advanceToken();
         } else {
-            return false;
+            throwError();
         }
         advanceToken();
-        if (!parseTerm()) {
-            return false;
-        }
+        parseTerm();
     }
-
-    return true;
 }
 
-bool QueryParser::parseTerm() {
-    if (!parseFactor()) {
-        return false;
-    }
+// Parses a term in an expression.
+// Processes factors and operators within the term.
+void QueryParser::parseTerm() {
+    parseFactor();
 
     while (match(TokenType::Operator)) {
         if (currentToken().getValue() == "*" || currentToken().getValue() == "/"
         || currentToken().getValue() == "%") {
             advanceToken();
-        } else {
-            return false;
-        }
-        if (!parseFactor()) {
-            return false;
-        }
+        } 
+        parseFactor();
     }
-    return true;
 }
 
-bool QueryParser::parseFactor() {
+// Parses a factor in a term.
+// Handles parentheses, variable names, and constant values.
+void QueryParser::parseFactor() {
     if (match(TokenType::Lparenthesis)) {
         advanceToken();
-        if (!parseExpression()) {
-            return false;
-        }
+        parseExpression();
         if (match(TokenType::Rparenthesis)) {
             advanceToken();
-            return true;
         }
-        return false;
-    } else if (parseVarName()) {
-        return true;
-    } else if (parseConstValue()) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-bool QueryParser::parseConstValue() {
-    if (match(TokenType::INTEGER)) {
+        throwError();
+    } else if (isVarName()) {
         advanceToken();
-        return true;
-    } else {
-        return false;
-    }
-}
-
-bool QueryParser::parseVarName() {
-    if (match(TokenType::IDENT)) {
+    } else if (isConstValue()) {
         advanceToken();
-        return true;
+    } else {
+        throwError();
     }
-    return false;
 }
 
-bool QueryParser::parsePatternClause() {
-    // check if it is a syn-assign
-    if (!match(TokenType::IDENT)) {
-        return false;
-    }
-
-    advanceToken();
-    if (!match(TokenType::Lparenthesis)) {
-        return false;
-    }
-    advanceToken();
-    if (!parseEntRef()) {
-        return false;
-    }
-    if (!match(TokenType::Comma)) {
-        return false;
-    }
-    advanceToken();
-    // for now expression == entRef first
-    if (!parseExpressionSpec()) {
-        return false;
-    }
-    advanceToken();
-    if (!match(TokenType::Rparenthesis)) {
-        return false;
-    }
-
-    return true;
+// Checks if the current token is a constant value.
+bool QueryParser::isConstValue() {
+    return match(TokenType::INTEGER);
 }
 
-// The currentToken method of the Parser class.
+// Checks if the current token is a variable name.
+bool QueryParser::isVarName() {
+    return match(TokenType::IDENT);
+}
+
 // Returns a constant reference to the current Token being parsed.
 const Token& QueryParser::currentToken() const {
     return tokens[currentTokenIndex];
 }
 
-// The advanceToken method of the Parser class.
-// Advances to the next token in the sequence.
-// Returns true if advancement is successful, false if it reaches the end of the tokens.
+// Advances to the next token in the token sequence.
+// Returns true if advancement is successful, false if it reaches the end of the token sequence.
 bool QueryParser::advanceToken() {
     if (currentTokenIndex < tokens.size() - 1) {
         ++currentTokenIndex;
@@ -384,91 +370,28 @@ bool QueryParser::advanceToken() {
 }
 
 // Checks if the current token matches a given TokenType.
-// If it matches, advances to the next token and returns true.
-// This should be used in conjunction with Tokenizer::determineTokenType.
+// Advances to the next token and returns true if it matches.
 // Returns false if there is no match.
 bool QueryParser::match(TokenType type) {
     if (currentToken().getType() == type) {
-
         return true;
     }
     return false;
 }
 
-bool QueryParser::isstmtRefstmtRef() {
-    if (match(TokenType::Parent) || match(TokenType::ParentT) ||
-    match(TokenType::Follows) || match(TokenType::FollowsT)) {
-        return true;
-
+// Ensures the next token matches the expected TokenType.
+// Throws an error if the token does not match the expected type.
+void QueryParser::ensureToken(TokenType expected) {
+    if (!match(expected)) {
+        throwError();
     }
-    return false;
 }
 
-bool QueryParser::isUsesOrModifies() {
-    if (match(TokenType::Uses) || match(TokenType::Modifies)) {
-        return true;
-    }
-    return false;
+// Throws a standard invalid_argument exception with a custom error message.
+void QueryParser::throwError() {
+    throw std::invalid_argument("incorrect grammar at: " + currentToken().getValue());
 }
 
-bool QueryParser::parseUsesOrModifies() {
-    if (match(TokenType::Lparenthesis)) {
-        advanceToken();
-    } else {
-        return false;
-    }
-
-    if (!parseStmtRef() && !parseEntRef()) {
-        return false;
-    }
-    if (match(TokenType::Comma)) {
-        advanceToken();
-    } else {
-        return false;
-    }
-    if (!parseEntRef()) {
-        return false;
-    }
-    if (match(TokenType::Rparenthesis)) {
-        advanceToken();
-    } else {
-        return false;
-    }
-    return true;
+ParsingResult QueryParser::getParsingResult() const {
+    return parsingResult;
 }
-
-bool QueryParser::parsestmtRefstmtRef() {
-    if (match(TokenType::Lparenthesis)) {
-        advanceToken();
-    } else {
-        return false;
-    }
-
-    // stmtRef
-    if (!parseStmtRef()) {
-        return false;
-    }
-
-
-    //','
-    if (match(TokenType::Comma)) {
-        advanceToken();
-    } else {
-        return false;
-    }
-
-    if (!parseStmtRef()) {
-        return false;
-    }
-
-    if (match(TokenType::Rparenthesis)) {
-        advanceToken();
-    } else {
-        return false;
-    }
-    return true;
-}
-
-
-
-

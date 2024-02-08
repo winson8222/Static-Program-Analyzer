@@ -1,7 +1,7 @@
 #ifndef TOKENIZER_H
 #define TOKENIZER_H
 
-#include "Token.h"
+#include "../../spa/src/qps/Token.h"
 #include <string>
 #include <vector>
 #include <regex>

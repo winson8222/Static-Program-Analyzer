@@ -12,13 +12,14 @@ LexicalToken::LexicalToken(LexicalTokenType t, int lineNumber, int linePosition,
     this->value = value;
 }
 
+
 LexicalTokenType LexicalToken::getTokenType() {
     return this->type;
 }
 
 void LexicalToken::print() {
-    std::cout << "Token Type: " << LexicalTokenTypeMapper::tokenToStringMap.find(type)->second << " ";
+    /*std::cout << "Token Type: " << LexicalTokenTypeMapper::tokenToStringMap.find(type)->second << " ";
     std::cout << "Line Number: " << lineNumber << " ";
-    std::cout << "Line Position: " << linePosition << " ";
-    std::cout << "Value: " << value << std::endl;
+    std::cout << "Line Position: " << linePosition << " ";*/
+    //std::cout << "Value: " << std::endl;
 }
