@@ -14,6 +14,7 @@ public:
 // private:
     std::vector<LexicalToken> tokenStream;
     bool hasTokensLeft(int tokenPos) const;
+    LexicalToken getToken(int tokenPos) const;
     void parseProcedure();
     void parseStmtLst();
     void parseStmt(int tokenPos);

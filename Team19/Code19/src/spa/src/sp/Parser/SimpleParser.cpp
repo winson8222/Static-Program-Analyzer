@@ -20,6 +20,16 @@ bool SimpleParser::hasTokensLeft(int tokenPos) const {
     return tokenPos < this -> tokenStream.size();
 }
 
+// Implementation of getToken function
+LexicalToken SimpleParser::getToken(int tokenPos) const {
+    if (this->hasTokensLeft(tokenPos)) {
+        return this->tokenStream[tokenPos];
+    }
+    else {
+        return LexicalToken(LexicalTokenType::NULL_TOKEN);
+    }
+}
+
 void SimpleParser::parseProcedure() {
     // Add parsing logic for procedure
 }
@@ -59,29 +69,21 @@ void SimpleParser::parsePrint() {
 // To change to void later when building trees.
 CallStmt SimpleParser::parseCall(int tokenPos) {
     // Problem: Need to potential pass tokenPos as a pointer.
-    LexicalToken keyword = this->tokenStream[tokenPos];
+    LexicalToken keyword = this->getToken(tokenPos);
     tokenPos++;
 
     if (keyword.getTokenType() != LexicalTokenType::KEYWORD_CALL) {
         throw std::runtime_error("Error: Invalid SIMPLE syntax.");
     }
 
-    if (!this->hasTokensLeft(tokenPos)) {
-        throw std::runtime_error("Error: Invalid SIMPLE syntax.");
-    }
-
-    LexicalToken variable = this->tokenStream[tokenPos];
+    LexicalToken variable = this->getToken(tokenPos);
     tokenPos++;
 
     if (variable.getTokenType() != LexicalTokenType::NAME) {
         throw std::runtime_error("Error: Invalid SIMPLE syntax.");
     }
 
-    if (!this->hasTokensLeft(tokenPos)) {
-        throw std::runtime_error("Error: Invalid SIMPLE syntax.");
-    }
-
-    LexicalToken semicolon = this->tokenStream[tokenPos];
+    LexicalToken semicolon = this->getToken(tokenPos);
     tokenPos++;
 
     if (semicolon.getTokenType() != LexicalTokenType::SYMBOL_SEMICOLON) {

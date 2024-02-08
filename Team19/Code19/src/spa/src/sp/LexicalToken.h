@@ -10,8 +10,10 @@ private:
 
 public:
     LexicalToken(LexicalTokenType t, int lineNumber, int linePosition, std::string value);
+    LexicalToken(LexicalTokenType type);
     LexicalToken() = default;
     
+    const LexicalToken& LexicalToken::getNullToken();
     LexicalTokenType getTokenType();
     int getLinePosition();
     int getLine();

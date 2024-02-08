@@ -34,7 +34,10 @@ enum class LexicalTokenType {
     INTEGER, NAME, WHITESPACE, NEW_LINE,
 
     // Error Token
-    ERROR
+    ERROR,
+
+    // Null Token
+    NULL_TOKEN
 };
 
 class LexicalTokenTypeMapper {

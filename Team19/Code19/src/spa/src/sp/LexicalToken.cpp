@@ -1,11 +1,25 @@
 #include "LexicalToken.h"
 #include <iostream>
 
+
+
+LexicalToken::LexicalToken(LexicalTokenType type) {
+    this->type = type;
+    this->lineNumber = NULL;
+    this->linePosition = NULL;
+    this->value = "";
+}
+
 LexicalToken::LexicalToken(LexicalTokenType t, int lineNumber, int linePosition, std::string value) {
     this->type = t;
     this->lineNumber = lineNumber;
     this->linePosition = linePosition;
     this->value = value;
+}
+
+const LexicalToken& LexicalToken::getNullToken() {
+    static const LexicalToken nullToken(LexicalTokenType::NULL_TOKEN);
+    return nullToken;
 }
 
 std::string LexicalToken::getValue() {
