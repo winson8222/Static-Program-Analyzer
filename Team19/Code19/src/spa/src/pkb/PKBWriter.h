@@ -57,10 +57,9 @@ public:
       printStore = pkb->getPrintStore();
     }
     // Entities
-
     /**
      * @brief Inserts a "Constant" entity into the PKB.
-     * @param constant
+     * @param constant: The integer value of the constant.
      */
     void insertConstant(int &constant) {
       constantStore->addEntity(constant);
@@ -68,33 +67,72 @@ public:
 
     /**
      * @brief Inserts a "Variable" Entity into the PKB.
-     * @param variable
+     * @param variable: The name of the variable.
      */
     void insertVariable(string &variable) {
       variableStore->addEntity(variable);
     }
+
+    /**
+     * @brief Inserts a "Procedure" Entity into the PKB.
+     * @param procedure: The name of the procedure.
+     */
     void insertProcedure(string &procedure) {
       procedureStore->addEntity(procedure);
     }
 
+    /**
+     * @brief Inserts a "Statement" Entity into the PKB.
+     * @param stmtNum: The statement number.
+     */
     void insertStatement(int &stmtNum) {
       statementStore->addEntity(stmtNum);
     }
+
+    /**
+     * @brief Inserts an "If" Entity into the PKB.
+     * @param stmtNum: The statement number of the "If" Entity.
+     */
     void insertIf(int &stmtNum) {
       ifStore->addEntity(stmtNum);
     }
+
+    /**
+     * @brief Inserts a "While" Entity into the PKB.
+     * @param stmtNum: The statement number of the "While" Entity.
+     */
     void insertWhile(int &stmtNum) {
       whileStore->addEntity(stmtNum);
     }
+
+    /**
+     * @brief Inserts a "Call" Entity into the PKB.
+     * @param stmtNum: The statement number of the "Call" Entity.
+     */
     void insertCall(int &stmtNum) {
       callStore->addEntity(stmtNum);
     }
+
+    /**
+     * @brief Inserts an "Assign" Entity into the PKB.
+     * @param stmtNum: The statement number of the "Assign" Entity.
+     */
     void insertAssign(int &stmtNum) {
       assignStore->addEntity(stmtNum);
     }
+
+    /**
+     * @brief Inserts a "Read" Entity into the PKB.
+     * @param stmtNum: The statement number of the "Read" Entity.
+     */
     void insertRead(int &stmtNum) {
       readStore->addEntity(stmtNum);
     }
+
+    /**
+     * @brief Inserts a "Print" Entity into the PKB.
+     * @param stmtNum: The statement number of the "Print" Entity.
+     */
     void insertPrint(int &stmtNum) {
       printStore->addEntity(stmtNum);
     }
@@ -102,35 +140,75 @@ public:
     // Relationships
     /**
      * @brief Inserts a Follows relationship "Follows(stmt1, stmt2)".
-     * @param stmt1
-     * @param stmt2
+     * @param stmt1: The statement number of the preceding statement.
+     * @param stmt2: The statement number of the following statement.
      */
     void insertFollows(int &stmt1, int &stmt2) {
       followsStore->addRelationship(stmt1, stmt2);
     }
+
+    /**
+     * @brief Inserts a Follows* relationship "Follows*(stmt1, stmt2)".
+     * @param stmt1: The statement number of the transitively preceding statement.
+     * @param stmt2: The statement number of the transitively following statement.
+     */
     void insertFollowsT(int &stmt1, int &stmt2) {
       followsTStore->addRelationship(stmt1, stmt2);
     }
+
+    /**
+     * @brief Inserts a Parent relationship "Parent(stmt1, stmt2)".
+     * @param stmt1: The statement number of the parent statement.
+     * @param stmt2: The statement number of the child statement.
+     */
     void insertParent(int &stmt1, int &stmt2) {
        parentStore->addRelationship(stmt1, stmt2);
     }
+
+    /**
+     * @brief Inserts a Parent* relationship "Parent*(stmt1, stmt2)".
+     * @param stmt1: The statement number of the transitively parent statement.
+     * @param stmt2: The statement number of the transitively child statement.
+     */
     void insertParentT(int &stmt1, int &stmt2) {
       parentTStore->addRelationship(stmt1, stmt2);
     }
+
+    /**
+     * @brief Inserts a UsesP relationship "UsesP(procedure, variable)".
+     * @param procedure: The name of the procedure.
+     * @param variable: The name of the "Used" variable.
+     */
     void insertUsesP(string &procedure, string &variable) {
       usesPStore->addRelationship(procedure, variable);
     }
+
+    /**
+     * @brief Inserts a UsesS relationship "UsesS(stmt, variable)".
+     * @param stmt: The statement number.
+     * @param variable: The name of the "Used" variable.
+     */
     void insertUsesS(int &stmt, string &variable) {
-        throw "Not implemented";
+      usesSStore->addRelationship(stmt, variable);
     }
+
+    /**
+     * @brief Inserts a ModifiesP relationship "ModifiesP(procedure, variable)".
+     * @param procedure: The name of the procedure.
+     * @param variable: The name of "Modified" variable.
+     */
     void insertModifiesP(string &procedure, string &variable) {
-        throw "Not implemented";
+      modifiesPStore->addRelationship(procedure, variable);
     }
+
+    /**
+     * @brief Inserts a ModifiesS relationship "ModifiesS(stmt, variable)".
+     * @param stmt: The statement number.
+     * @param variable: The name of the "Modified" variable.
+     */
     void insertModifiesS(int &stmt, string &variable) {
-        throw "Not implemented";
+      modifiesSStore->addRelationship(stmt, variable);
     }
-
-
 };
 
 

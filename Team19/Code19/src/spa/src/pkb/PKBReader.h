@@ -56,6 +56,44 @@ public:
         readStore = pkb->getReadStore();
         printStore = pkb->getPrintStore();
     }
+    // Relationships
+
+    /**
+     * @brief Gets the statement number of reversed "Follows" relationships of the given statement.
+     * @param stmt: stmt in Follows(s1, stmt)
+     * @return unordered_set<int>: The set of statement numbers of all s1 in Follows(s1, stmt)
+     */
+    unordered_set<int> getPreFollows(int stmt) {
+      return followsStore->getRelationshipsByValue(stmt);
+    }
+
+    /**
+     * @brief Gets the statement number of "Follows" relationships of the given statement.
+     * @param stmt: stmt in Follows(stmt, s2)
+     * @return unordered_set<int>: The set of statement numbers of all s2 in Follows(stmt, s2)
+     */
+    unordered_set<int> getPostFollows(int stmt) {
+      return followsStore->getRelationshipsByKey(stmt);
+    }
+
+    /**
+     * @brief Gets the statement number of reversed "Follows*" relationships of the given statement.
+     * @param stmt
+     * @return unordered_set<int>: The set of statement number of all s1 in Follows*(s1, stmt)
+     */
+    unordered_set<int> getPreFollowsT(int stmt) {
+      return followsTStore->getRelationshipsByValue(stmt);
+    }
+
+    /**
+     * @brief Gets the statement number of "Follows*" relationships of the given statement.
+     * @param stmt: stmt in Follows*(stmt, s2)
+     * @return: The set of statement number of all s2 in Follows*(stmt, s2)
+     */
+    unordered_set<int> getPostFollowsT(int stmt) {
+      return followsTStore->getRelationshipsByKey(stmt);
+    }
+
     // Entities
 
     /**
@@ -73,28 +111,6 @@ public:
     unordered_set<string> getAllVariables() {
         return variableStore->getAllEntities();
     }
-
-    // Relationships
-
-    /**
-     * @brief Gets the statement number of reversed "Follows" relationships of the given statement.
-     * @param stmt: stmt in Follows(s1, stmt)
-     * @return unordered_set<int>: Statement number of all s1 in Follows(s1, stmt)
-     */
-    unordered_set<int> getPreFollows(int stmt) {
-        return followsStore->getRelationshipsByValue(stmt);
-    }
-
-    /**
-     * @brief Gets the statement number of "Follows" relationships of the given statement.
-     * @param stmt: stmt in Follows(stmt, s2)
-     * @return unordered_set<int>: Statement number of all s2 in Follows(stmt, s2)
-     */
-    unordered_set<int> getPostFollows(int stmt) {
-        return followsStore->getRelationshipsByKey(stmt);
-    }
-
-
 };
 
 
