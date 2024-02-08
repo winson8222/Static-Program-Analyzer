@@ -18,8 +18,8 @@ TEST_CASE("Check Grammar of Valid tokens with no declaration") {
             Token(TokenType::Rparenthesis, ")")
     };
 
-    QueryParser parser(tokens);
-    REQUIRE(!parser.parse());
+    REQUIRE_THROWS_WITH(QueryParser(tokens).parse(),
+        "incorrect grammar at: Select");
 }
 
 
@@ -52,8 +52,8 @@ TEST_CASE("Check Grammar of incomplete query with incomplete modifies clause") {
             Token(TokenType::IDENT, "s"),
     };
 
-    QueryParser parser(tokens);
-    REQUIRE(!parser.parse());
+    REQUIRE_THROWS_WITH(QueryParser(tokens).parse(),
+        "incorrect grammar at: s");
 }
 
 
@@ -75,8 +75,8 @@ TEST_CASE("Check Grammar of Valid tokens with no relref keyword") {
             // Add more tokens as needed to simulate your query
     };
 
-    QueryParser parser(tokens);
-    REQUIRE(!parser.parse());
+    REQUIRE_THROWS_WITH(QueryParser(tokens).parse(),
+        "incorrect grammar at: (");
 }
 
 TEST_CASE("Check Grammar of Valid tokens with pattern query") {
@@ -140,8 +140,8 @@ TEST_CASE("Check Grammars of valid tokens that Follows with a stmtRef and an ent
             Token(TokenType::Rparenthesis, ")")
     };
 
-    QueryParser parser(tokens);
-    REQUIRE(!parser.parse());
+    REQUIRE_THROWS_WITH(QueryParser(tokens).parse(),
+        "incorrect grammar at: \"existentVar\"");
 
 }
 
@@ -184,8 +184,8 @@ TEST_CASE("Check Grammars of valid tokens that Modifies with two stmtRefs in par
             Token(TokenType::Rparenthesis, ")")
     };
 
-    QueryParser parser(tokens);
-    REQUIRE(!parser.parse());
+    REQUIRE_THROWS_WITH(QueryParser(tokens).parse(),
+        "incorrect grammar at: 1");
 
 }
 
@@ -288,7 +288,7 @@ TEST_CASE("Check Grammars of valid tokens have Modifies and pattern clauses") {
             Token(TokenType::Rparenthesis, ")")
     };
 
-    QueryParser parser(tokens);
-    REQUIRE(!parser.parse());
+    REQUIRE_THROWS_WITH(QueryParser(tokens).parse(),
+        "incorrect grammar at: 1");
 
 }
