@@ -61,23 +61,20 @@ void SimpleParser::parseCall(int tokenPos) {
     tokenPos++;
 
     if (keyword.getTokenType() != LexicalTokenType::KEYWORD_CALL) {
-        // RETURN ERROR
-        return;
+        throw std::runtime_error("Error: Invalid SIMPLE syntax.");
     }
 
     LexicalToken variable = this->tokenStream[tokenPos];
     tokenPos++;
 
     if (variable.getTokenType() != LexicalTokenType::NAME) {
-        // RETURN ERROR
-        return;
+        throw std::runtime_error("Error: Invalid SIMPLE syntax.");
     }
     LexicalToken semicolon = this->tokenStream[tokenPos];
     tokenPos++;
 
     if (semicolon.getTokenType() != LexicalTokenType::SYMBOL_SEMICOLON) {
-        // RETURN ERROR
-        return;
+        throw std::runtime_error("Error: Invalid SIMPLE syntax.");
     }
 
     CallStmt callStmt = CallStmt(variable, keyword.getLine(), semicolon.getLine());
