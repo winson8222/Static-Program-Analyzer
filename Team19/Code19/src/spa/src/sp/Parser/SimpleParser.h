@@ -15,10 +15,10 @@ private:
     bool hasTokensLeft(int tokenPos) const;
     void parseProcedure();
     void parseStmtLst();
-    void parseStmt();
+    void parseStmt(int tokenPos);
     void parseRead();
     void parsePrint();
-    void parseCall();
+    void parseCall(int tokenPos);
     void parseWhile();
     void parseIf();
     void parseAssign();

@@ -3,9 +3,10 @@
 
 // ai-gen start(gpt,2,e)
 // Prompt: https://platform.openai.com/playground/p/cJLjmmneCEs4z6ms7ZkBSxJB?model=gpt-4&mode=chat
+
+
 SimpleParser::SimpleParser(std::string filename) {
-    Tokenizer t;
-    this->tokenStream = t.tokenize(t.readFileToString(filename));
+    this->tokenStream = Tokenizer::tokenize(Tokenizer::readFileToString(filename));
 }
 
 void SimpleParser::parseProgram() {
@@ -24,10 +25,26 @@ void SimpleParser::parseProcedure() {
 
 void SimpleParser::parseStmtLst() {
     // Add parsing logic for statement list
+    // Parse every statement until we see a closing bracket.
 }
 
-void SimpleParser::parseStmt() {
+void SimpleParser::parseStmt(int tokenPos) {
     // Add parsing logic for statement
+    // If next token is '=', we are assigning. Call assign.
+    // Then, Check keywords read/print/call.
+    // Then, check keywords while/if.
+    // If dont have keyword, this is an invalid statement.
+    if (!this->hasTokensLeft(tokenPos)) {
+        return;
+    }
+
+    auto firstToken = this->tokenStream[tokenPos];
+    if (firstToken.getTokenType() == LexicalTokenType::KEYWORD_CALL || 
+        firstToken.getTokenType() == LexicalTokenType::KEYWORD_READ || 
+        firstToken.getTokenType() == LexicalTokenType::KEYWORD_PRINT) {
+        this->parseCall(tokenPos);
+    }
+
 }
 
 void SimpleParser::parseRead() {
@@ -38,7 +55,7 @@ void SimpleParser::parsePrint() {
     // Add parsing logic for print
 }
 
-void SimpleParser::parseCall() {
+void SimpleParser::parseCall(int tokenPos) {
     // Add parsing logic for call
 }
 

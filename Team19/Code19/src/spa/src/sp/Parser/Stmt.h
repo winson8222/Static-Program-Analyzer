@@ -1,4 +1,5 @@
 #include "Grammar.h"
+#include "../LexicalTokenType.h"
 #include <string>
 
 // ai-gen start(gpt,2,e)
@@ -7,12 +8,12 @@ class Stmt : public Grammar {
 public:
     Stmt();
     
-    void buildTree() const override;
-    int getStartLine() const override;
-    int getEndLine() const override;
+    void buildTree() const;
+    int getStartLine() const;
+    int getEndLine() const;
 
 private:
-    std::string stmtType;
+    LexicalTokenType tokenType;
     std::pair<int,int> lines;
 };
 // ai-gen end
