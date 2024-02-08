@@ -7,13 +7,11 @@ CallStmt::CallStmt(LexicalToken variable, int start, int end) {
 }
 
 int CallStmt::getStartLine() const {
-    return 0;
-    // Do sth
+    return this->lines.first;
 }
 
 int CallStmt::getEndLine() const {
-    return 0;
-    // Do sth
+    return this->lines.second;
 }
 
 void CallStmt::buildTree() const {

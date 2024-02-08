@@ -56,7 +56,32 @@ void SimpleParser::parsePrint() {
 }
 
 void SimpleParser::parseCall(int tokenPos) {
-    // Add parsing logic for call
+    // Problem: Need to potential pass tokenPos as a pointer.
+    LexicalToken keyword = this->tokenStream[tokenPos];
+    tokenPos++;
+
+    if (keyword.getTokenType() != LexicalTokenType::KEYWORD_CALL) {
+        // RETURN ERROR
+        return;
+    }
+
+    LexicalToken variable = this->tokenStream[tokenPos];
+    tokenPos++;
+
+    if (variable.getTokenType() != LexicalTokenType::NAME) {
+        // RETURN ERROR
+        return;
+    }
+    LexicalToken semicolon = this->tokenStream[tokenPos];
+    tokenPos++;
+
+    if (semicolon.getTokenType() != LexicalTokenType::SYMBOL_SEMICOLON) {
+        // RETURN ERROR
+        return;
+    }
+
+    CallStmt callStmt = CallStmt(variable, keyword.getLine(), semicolon.getLine());
+    // Preferably add the callStmt to the Tree.
 }
 
 void SimpleParser::parseWhile() {

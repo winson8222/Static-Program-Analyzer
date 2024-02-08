@@ -12,6 +12,10 @@ LexicalTokenType LexicalToken::getTokenType() {
     return this->type;
 }
 
+int LexicalToken::getLine() {
+    return this->lineNumber;
+}
+
 void LexicalToken::print() {
     std::cout << "Token Type: " << LexicalTokenTypeMapper::tokenToStringMap.find(type)->second << " ";
     std::cout << "Line Number: " << lineNumber << " ";
