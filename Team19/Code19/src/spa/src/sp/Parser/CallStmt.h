@@ -6,7 +6,7 @@
 // Prompt: https://platform.openai.com/playground/p/3mLKCsoXcgjIM0eMlvP3rIgb?model=gpt-4&mode=chat
 class CallStmt : public Stmt {
 public:
-    CallStmt(LexicalToken variable, int start, int end);
+    CallStmt(const LexicalToken& variable, int start, int end);
 
     void buildTree() const override;
     int getStartLine() const override;

@@ -1,8 +1,9 @@
 #include "CallStmt.h"
+#include "sp/LexicalToken.h"
 #include <iostream>
 
-CallStmt::CallStmt(LexicalToken variable, int start, int end) {
-    this->variable = LexicalToken(variable.getTokenType(), variable.getLine(), variable.getLinePosition(), variable.getValue());
+CallStmt::CallStmt(const LexicalToken& variable, int start, int end) {
+    this->variable = variable;
     this->lines = std::make_pair(start, end); 
 }
 

@@ -1,7 +1,6 @@
 #include "catch.hpp"
 #include "sp/Parser/SimpleParser.h"
 #include <filesystem>
-
 // ai-gen start(gpt,2,e)
 // Prompt: https://platform.openai.com/playground/p/BL0U9QBHRxSO8JyQGo0KpEUZ?mode=chat
 TEST_CASE("CallStmt parsing is working correctly for valid input", "[SimpleParser::parseCall]") {
@@ -27,4 +26,5 @@ TEST_CASE("CallStmt parsing throws an error with invalid syntax", "[SimpleParser
     // For this test, we expect parsing to terminate due to erroneous input.
     CHECK_THROWS_AS(parser.parseCall(0), std::runtime_error);
 }
+
 // ai-gen end

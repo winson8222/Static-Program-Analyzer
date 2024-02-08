@@ -1,1 +1,1 @@
-call procedure;
+call x;

@@ -1,5 +1,6 @@
 #include "SimpleParser.h"
 #include <stdexcept>
+#include <iostream>
 
 // ai-gen start(gpt,2,e)
 // Prompt: https://platform.openai.com/playground/p/cJLjmmneCEs4z6ms7ZkBSxJB?model=gpt-4&mode=chat
@@ -65,12 +66,21 @@ CallStmt SimpleParser::parseCall(int tokenPos) {
         throw std::runtime_error("Error: Invalid SIMPLE syntax.");
     }
 
+    if (!this->hasTokensLeft(tokenPos)) {
+        throw std::runtime_error("Error: Invalid SIMPLE syntax.");
+    }
+
     LexicalToken variable = this->tokenStream[tokenPos];
     tokenPos++;
 
     if (variable.getTokenType() != LexicalTokenType::NAME) {
         throw std::runtime_error("Error: Invalid SIMPLE syntax.");
     }
+
+    if (!this->hasTokensLeft(tokenPos)) {
+        throw std::runtime_error("Error: Invalid SIMPLE syntax.");
+    }
+
     LexicalToken semicolon = this->tokenStream[tokenPos];
     tokenPos++;
 
