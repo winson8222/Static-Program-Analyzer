@@ -10,10 +10,10 @@
 #include "pkb/PKBManager.h"
 
 class TestWrapper : public AbstractWrapper {
-private:
-    shared_ptr<PKBManager> pkbManager;
-    shared_ptr<PKB> pkb;
-    shared_ptr<PKBWriter> pkbWriter;
+//private:
+//    shared_ptr<PKBManager> pkbManager;
+//    shared_ptr<PKB> pkb;
+//    shared_ptr<PKBWriter> pkbWriter;
     shared_ptr<PKBReader> pkbReader;
  public:
   // default constructor
