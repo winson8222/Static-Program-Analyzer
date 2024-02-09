@@ -38,6 +38,7 @@ TEST_CASE("Check Grammar of select all query") {
     REQUIRE(parser.parse());
 }
 
+
 TEST_CASE("Check Grammar of incomplete query with incomplete modifies clause") {
     std::vector<Token> tokens = {
             Token(TokenType::DesignEntity, "stmt"),
@@ -53,7 +54,7 @@ TEST_CASE("Check Grammar of incomplete query with incomplete modifies clause") {
     };
 
     REQUIRE_THROWS_WITH(QueryParser(tokens).parse(),
-        "incorrect grammar at: s");
+                        "incorrect grammar at: s");
 }
 
 
@@ -343,3 +344,28 @@ TEST_CASE("Check Grammars of valid tokens have Modifies and pattern clauses") {
 
 }
 
+
+TEST_CASE("Check Semantic error repeated token declarations") {
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "stmt"),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Modifies, "Modifies"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::QuoutIDENT, "\"existentVar\""),
+            Token(TokenType::Rparenthesis, ")")
+    };
+
+    QueryParser parser(tokens);
+    REQUIRE_THROWS_WITH(QueryParser(tokens).parse(),
+                        "semantic error at: s");
+
+}

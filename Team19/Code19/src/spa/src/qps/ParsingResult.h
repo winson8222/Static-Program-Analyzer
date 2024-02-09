@@ -33,6 +33,7 @@ public:
     bool getPatternClauseRelationship() const;
     const pair<string, string>& getPatternClauseFirstParam() const;
     const pair<string, string>& getPatternClauseSecondParam() const;
+    bool throwSemanticError(string);
 
 private:
     unordered_map<string, string> declaredSynonyms;

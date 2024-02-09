@@ -32,18 +32,6 @@ private:
     size_t currentTokenIndex;
 
 
-    // sets of the declared variables, statements and assignments
-    unordered_set<string> declaredVariables;
-    unordered_set<string> declaredStatements;
-    unordered_set<string> declaredAssignments;
-
-    // maps of the declared variables, statements and assignments, with value of token as key
-    std::unordered_map<std::string, std::unordered_set<std::string>*> designEntityMap = {
-            {"variable", &declaredVariables},
-            {"stmt", &declaredStatements},
-            {"assign", &declaredAssignments}
-    };
-
 
 
 

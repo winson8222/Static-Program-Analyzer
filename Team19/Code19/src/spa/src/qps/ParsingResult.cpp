@@ -44,6 +44,7 @@ string ParsingResult::getDeclaredSynonym(const string& key) const {
     return ""; 
 }
 
+
 const string& ParsingResult::getRequiredSynonym() const {
     return requiredSynonym;
 }
@@ -71,3 +72,4 @@ const pair<string, string>& ParsingResult::getPatternClauseFirstParam() const {
 const pair<string, string>& ParsingResult::getPatternClauseSecondParam() const {
     return patternSecondParam;
 }
+

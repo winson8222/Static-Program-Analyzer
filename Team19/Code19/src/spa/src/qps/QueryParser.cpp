@@ -43,22 +43,21 @@ bool QueryParser::parse() {
 void QueryParser::parseSynonym(string designEntity) {
     ensureToken(TokenType::IDENT);
 
-    if (designEntityMap[designEntity]->find(currentToken().getValue()) != designEntityMap[designEntity]->end()) {
+
+    // check if the token value is declared as synonyms in any of the set
+    if (!parsingResult.getDeclaredSynonym(currentToken().getValue()).empty()) {
         throwSemanticError();
     }
-    unordered_set<string>* temp = designEntityMap[designEntity];
-    temp->insert(currentToken().getValue());
+    parsingResult.addDeclaredSynonym(currentToken().getValue(), designEntity);
     advanceToken();
 
 }
 
-
+// parses the design entity in the query.
 void QueryParser::parseDesignEntity() {;
     string designEntity = currentToken().getValue();
 
-    if(designEntityMap.find(designEntity) == designEntityMap.end()) {
-        throwGrammarError();
-    }
+
     advanceToken();
     parseSynonym(designEntity);
 
@@ -102,9 +101,7 @@ void QueryParser::parseSelectClause() {
     advanceToken();
     ensureToken(TokenType::IDENT);
     //check if the token value is declared as synonyms in any of the set
-if (declaredVariables.find(currentToken().getValue()) == declaredVariables.end() &&
-        declaredStatements.find(currentToken().getValue()) == declaredStatements.end() &&
-        declaredAssignments.find(currentToken().getValue()) == declaredAssignments.end()) {
+if (parsingResult.getDeclaredSynonym(currentToken().getValue()).empty()) {
         throwSemanticError();
     }
 
@@ -263,8 +260,6 @@ void QueryParser::parsePatternClause() {
     // check if it is a syn-assign
     parseAssignSynonyms();
 
-
-    advanceToken();
     ensureToken(TokenType::Lparenthesis);
 
     advanceToken();
@@ -416,7 +411,8 @@ bool QueryParser::throwSemanticError() {
 // Parses a variable synonym in the query.
 void QueryParser::parseVarSynonyms() {
     ensureToken(TokenType::IDENT);
-    if (declaredVariables.find(currentToken().getValue()) == declaredVariables.end()) {
+    // check if the token value is declared as variable synonyms in any of the set
+    if (parsingResult.getDeclaredSynonym(currentToken().getValue()) != "variable") {
         throwSemanticError();
     }
     advanceToken();
@@ -426,7 +422,7 @@ void QueryParser::parseVarSynonyms() {
 // Parses a statement synonym in the query.
 void QueryParser::parseStmtSynonyms() {
     ensureToken(TokenType::IDENT);
-    if (declaredStatements.find(currentToken().getValue()) == declaredStatements.end()) {
+    if (parsingResult.getDeclaredSynonym(currentToken().getValue()) != "stmt") {
         throwSemanticError();
     }
     advanceToken();
@@ -436,7 +432,7 @@ void QueryParser::parseStmtSynonyms() {
 // Parses an assignment synonym in the query.
 void QueryParser::parseAssignSynonyms() {
     ensureToken(TokenType::IDENT);
-    if (declaredAssignments.find(currentToken().getValue()) == declaredAssignments.end()) {
+    if (parsingResult.getDeclaredSynonym(currentToken().getValue()) != "assign") {
         throwSemanticError();
     }
     advanceToken();
