@@ -4,6 +4,7 @@
 #include <string>
 #include <unordered_map>
 #include <utility>
+#include "Token.h"
 
 using namespace std;
 
@@ -16,33 +17,40 @@ public:
     // Method to add a single synonym
     void addDeclaredSynonym(const std::string& key, const std::string& value);
     void setRequiredSynonym(const string& synonym);
-    void setSuchThatClause(bool relationship,
-        const pair<string, string>& firstParam,
-        const pair<string, string>& secondParam);
-    void setPatternClause(bool relationship,
-        const pair<string, string>& firstParam,
-        const pair<string, string>& secondParam);
+
+    // Methods for setting individual parts of SuchThatClause
+    void setSuchThatClauseRelationship(const Token& relationship);
+    void setSuchThatClauseFirstParam(const Token& firstParam);
+    void setSuchThatClauseSecondParam(const Token& secondParam);
+
+    // Methods for setting individual parts of PatternClause
+    void setPatternClauseRelationship(const Token& relationship);
+    void setPatternClauseFirstParam(const Token& firstParam);
+    void setPatternClauseSecondParam(const Token& secondParam);;
+
 
     // Getters
     const unordered_map<string, string>& getDeclaredSynonyms() const;
-    string getDeclaredSynonym(const string& key) const;
+    const string& getDeclaredSynonym(const string& key) const;
     const string& getRequiredSynonym() const;
-    bool getSuchThatClauseRelationship() const;
-    const pair<string, string>& getSuchThatClauseFirstParam() const;
-    const pair<string, string>& getSuchThatClauseSecondParam() const;
-    bool getPatternClauseRelationship() const;
-    const pair<string, string>& getPatternClauseFirstParam() const;
-    const pair<string, string>& getPatternClauseSecondParam() const;
+    const Token& getSuchThatClauseRelationship() const;
+    const Token& getSuchThatClauseFirstParam() const;
+    const Token& getSuchThatClauseSecondParam() const;
+    const Token& getPatternClauseRelationship() const;
+    const Token& getPatternClauseFirstParam() const;
+    const Token& getPatternClauseSecondParam() const;
 
 private:
     unordered_map<string, string> declaredSynonyms;
     string requiredSynonym;
-    bool suchThatClauseRelationship;
-    pair<string, string> suchThatClauseFirstParam;
-    pair<string, string> suchThatClauseSecondParam;
-    bool patternRelationship;
-    pair<string, string> patternFirstParam;
-    pair<string, string> patternSecondParam;
+
+    Token suchThatClauseRelationship;
+    Token suchThatClauseFirstParam;
+    Token suchThatClauseSecondParam;
+    
+    Token patternRelationship;
+    Token patternFirstParam;
+    Token patternSecondParam;
 };
 
 #endif 

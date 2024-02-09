@@ -42,6 +42,7 @@ enum class TokenType {
 // The Token class represents a token with a type and a string value.
 class Token {
 public:
+    Token() = default;  // Default constructor
     // Constructor: creates a Token with a given type and value.
     Token(TokenType type, string value);
 
