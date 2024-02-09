@@ -1,4 +1,5 @@
 #include "ParsingResult.h"
+#include "Token.h"
 
 // Constructor
 ParsingResult::ParsingResult() {
@@ -14,19 +15,29 @@ void ParsingResult::setRequiredSynonym(const string& synonym) {
     requiredSynonym = synonym;
 }
 
-void ParsingResult::setSuchThatClause(bool relationship,
-    const pair<string, string>& firstParam,
-    const pair<string, string>& secondParam) {
+// Implementations for setting individual parts of SuchThatClause
+void ParsingResult::setSuchThatClauseRelationship(const Token& relationship) {
     suchThatClauseRelationship = relationship;
+}
+
+void ParsingResult::setSuchThatClauseFirstParam(const Token& firstParam) {
     suchThatClauseFirstParam = firstParam;
+}
+
+void ParsingResult::setSuchThatClauseSecondParam(const Token& secondParam) {
     suchThatClauseSecondParam = secondParam;
 }
 
-void ParsingResult::setPatternClause(bool relationship,
-    const pair<string, string>& firstParam,
-    const pair<string, string>& secondParam) {
+// Implementations for setting individual parts of PatternClause
+void ParsingResult::setPatternClauseRelationship(const Token& relationship) {
     patternRelationship = relationship;
+}
+
+void ParsingResult::setPatternClauseFirstParam(const Token& firstParam) {
     patternFirstParam = firstParam;
+}
+
+void ParsingResult::setPatternClauseSecondParam(const Token& secondParam) {
     patternSecondParam = secondParam;
 }
 
@@ -35,7 +46,7 @@ const unordered_map<string, string>& ParsingResult::getDeclaredSynonyms() const 
     return declaredSynonyms;
 }
 
-string ParsingResult::getDeclaredSynonym(const string& key) const {
+const string& ParsingResult::getDeclaredSynonym(const string& key) const {
     auto it = declaredSynonyms.find(key);
     if (it != declaredSynonyms.end()) {
         return it->second;
@@ -48,26 +59,26 @@ const string& ParsingResult::getRequiredSynonym() const {
     return requiredSynonym;
 }
 
-bool ParsingResult::getSuchThatClauseRelationship() const {
+const Token& ParsingResult::getSuchThatClauseRelationship() const {
     return suchThatClauseRelationship;
 }
 
-const pair<string, string>& ParsingResult::getSuchThatClauseFirstParam() const {
+const Token& ParsingResult::getSuchThatClauseFirstParam() const {
     return suchThatClauseFirstParam;
 }
 
-const pair<string, string>& ParsingResult::getSuchThatClauseSecondParam() const {
+const Token& ParsingResult::getSuchThatClauseSecondParam() const {
     return suchThatClauseSecondParam;
 }
 
-bool ParsingResult::getPatternClauseRelationship() const {
+const Token& ParsingResult::getPatternClauseRelationship() const {
     return patternRelationship;
 }
 
-const pair<string, string>& ParsingResult::getPatternClauseFirstParam() const {
+const Token& ParsingResult::getPatternClauseFirstParam() const {
     return patternFirstParam;
 }
 
-const pair<string, string>& ParsingResult::getPatternClauseSecondParam() const {
+const Token& ParsingResult::getPatternClauseSecondParam() const {
     return patternSecondParam;
 }
