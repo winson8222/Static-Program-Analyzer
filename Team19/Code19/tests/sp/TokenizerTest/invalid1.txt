@@ -1,0 +1,3 @@
+procedure x {
+	123variable = 1;
+}

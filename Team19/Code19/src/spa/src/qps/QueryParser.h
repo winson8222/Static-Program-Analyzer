@@ -7,6 +7,7 @@
 #include <vector>
 #include <string>
 #include "../../spa/src/qps/Tokenizer.h"
+#include "../../spa/src/qps/ParsingResult.h"
 
 using namespace std;
 
@@ -21,12 +22,15 @@ public:
     // Returns true if parsing is successful, false otherwise.
     bool parse();
 
+    ParsingResult getParsingResult() const;  // Method to retrieve the result
+
 private:
     // Vector of tokens to be parsed.
     vector<Token> tokens;
 
     // Current index in the tokens vector.
     size_t currentTokenIndex;
+
 
     // sets of the declared variables, statements and assignments
     unordered_set<string> declaredVariables;
@@ -44,23 +48,15 @@ private:
 
 
 
+    ParsingResult parsingResult;
+
+
     // Private methods for parsing different parts of the input.
     void parseDeclarations();
     void parseSelectClause();
     void parseSuchThatClause();
     void parsePatternClause();
-    void parseSynAssign();
 
-    // Method to get the current token.
-    // Returns a constant reference to the current Token object.
-    const Token& currentToken() const;
-
-    // Method to advance to the next token in the sequence.
-    bool advanceToken();
-
-    // Method to check if the current token matches a given TokenType.
-    // Returns true if it matches, false otherwise.
-    bool match(TokenType type);
 
     bool isUsesOrModifies();
     bool isStmtRefStmtRef();
@@ -73,15 +69,31 @@ private:
     void parseQuotedExpression();
     void parseRelRef();
     void parseStmtRef();
+    void parseDesignEntity();
     void parseUsesOrModifies();
     void parsestmtRefstmtRef();
     void parseExpression();
     void parseTerm();
     void parseFactor();
+
+    // Method to get the current token.
+    // Returns a constant reference to the current Token object.
+    const Token& currentToken() const;
+
+    // Method to advance to the next token in the sequence.
+    bool advanceToken();
+
+    // Method to check if the current token matches a given TokenType.
+    // Returns true if it matches, false otherwise.
+    bool match(TokenType type);
+
+
+
+
     void parseVarSynonyms();
     void parseStmtSynonyms();
     void parseAssignSynonyms();
-    void parseDesignEntity();
+
 
 
 
@@ -90,6 +102,10 @@ private:
     bool throwGrammarError();
     bool throwSemanticError();
 
+
+
+
+    
 };
 
 #endif // QUERYPARSER_H

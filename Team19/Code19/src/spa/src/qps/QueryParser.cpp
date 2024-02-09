@@ -1,12 +1,13 @@
 // Include the Parser class header.
 #include "../../spa/src/qps/QueryParser.h"
 #include <stdexcept>
+#include <iostream>
 
 using namespace std;
 
 // Constructor of the QueryParser class.
 // Initializes the QueryParser with a vector of Token objects to be parsed.
-QueryParser::QueryParser(const vector<Token>& tokens) : tokens(tokens), currentTokenIndex(0) {}
+QueryParser::QueryParser(const vector<Token>& tokens) : tokens(tokens), currentTokenIndex(0), parsingResult() {}
 
 // Parses the entire query.
 // Processes declarations, select clause, and optional such that and pattern clauses.
@@ -75,7 +76,9 @@ void QueryParser::parseDesignEntity() {;
 void QueryParser::parseDeclarations() {
     int numberOfDeclarations = 0;
     while (!match(TokenType::SelectKeyword)) {
+
         parseDesignEntity();
+
         numberOfDeclarations++;
     }
 
@@ -250,12 +253,6 @@ void QueryParser::parseEntRef() {
 
 
 
-void QueryParser::parseSynAssign() {
-    ensureToken(TokenType::IDENT);
-    if (declaredAssignments.find(currentToken().getValue()) ==  declaredAssignments.end()) {
-        throwSemanticError();
-    }
-}
 
 // Parses the pattern clause in the query.
 // Ensures the correct syntax and processes entity references and expression specifications.
@@ -264,7 +261,7 @@ void QueryParser::parsePatternClause() {
     ensureToken(TokenType::PatternKeyword);
     advanceToken();
     // check if it is a syn-assign
-    parseSynAssign();
+    parseAssignSynonyms();
 
 
     advanceToken();
@@ -445,4 +442,9 @@ void QueryParser::parseAssignSynonyms() {
     advanceToken();
 }
 
+
+
+ParsingResult QueryParser::getParsingResult() const {
+    return parsingResult;
+}
 
