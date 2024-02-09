@@ -10,4 +10,3 @@ add_executable(unit_testing ${srcs} ${headers} ${sp_files} ${qps_files})
 
 
 target_link_libraries(unit_testing spa)
-

@@ -28,11 +28,28 @@ private:
     // Current index in the tokens vector.
     size_t currentTokenIndex;
 
+    // sets of the declared variables, statements and assignments
+    unordered_set<string> declaredVariables;
+    unordered_set<string> declaredStatements;
+    unordered_set<string> declaredAssignments;
+
+    // maps of the declared variables, statements and assignments, with value of token as key
+    std::unordered_map<std::string, std::unordered_set<std::string>*> designEntityMap = {
+            {"variable", &declaredVariables},
+            {"stmt", &declaredStatements},
+            {"assign", &declaredAssignments}
+    };
+
+
+
+
+
     // Private methods for parsing different parts of the input.
     void parseDeclarations();
     void parseSelectClause();
     void parseSuchThatClause();
     void parsePatternClause();
+    void parseSynAssign();
 
     // Method to get the current token.
     // Returns a constant reference to the current Token object.
@@ -50,24 +67,28 @@ private:
     bool isVarName();
     bool isConstValue();
 
-    void parseSynonym();
+    void parseSynonym(string);
     void parseEntRef();
     void parseExpressionSpec();
     void parseQuotedExpression();
     void parseRelRef();
     void parseStmtRef();
-    void parseDesignEntity();
     void parseUsesOrModifies();
     void parsestmtRefstmtRef();
     void parseExpression();
     void parseTerm();
     void parseFactor();
+    void parseVarSynonyms();
+    void parseStmtSynonyms();
+    void parseAssignSynonyms();
+    void parseDesignEntity();
 
-    
+
 
     void ensureToken(TokenType expected);
 
-    bool QueryParser::throwError();
+    bool throwGrammarError();
+    bool throwSemanticError();
 
 };
 
