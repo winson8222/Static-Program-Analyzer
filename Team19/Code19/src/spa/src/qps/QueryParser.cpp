@@ -229,26 +229,21 @@ void QueryParser::parsestmtRefstmtRef() {
 // Parses a statement reference in the query.
 // Handles different types of statement references like integer, wildcard, or synonym.
 void QueryParser::parseStmtRef() {
-    
     if (match(TokenType::INTEGER) || match(TokenType::Wildcard)) {
         return;
     } else {
         parseSynonym();
     }
-
 }
 
 // Parses an entity reference in the query.
 // Handles different types of entity references like quoted identifier, wildcard, or synonym.
 void QueryParser::parseEntRef() {
-    
-
     if (match(TokenType::QuoutIDENT) || match(TokenType::Wildcard)) {
         return;
     } else {
         parseSynonym();
     }
-
 }
 
 // Parses the pattern clause in the query.
@@ -259,18 +254,31 @@ void QueryParser::parsePatternClause() {
     advanceToken();
     // check if it is a syn-assign
     ensureToken(TokenType::IDENT);
+    parsingResult.setPatternClauseRelationship(currentToken());
 
     advanceToken();
     ensureToken(TokenType::Lparenthesis);
 
     advanceToken();
     parseEntRef();
+    parsingResult.setPatternClauseFirstParam(currentToken());
 
     advanceToken();
     ensureToken(TokenType::Comma);
 
     advanceToken();
+    // This is a rudimentary approach to tokenize ExpressionSpec, probably change later
+    // Store the current token index before parsing the expression spec
+    size_t startIndex = currentTokenIndex;
+    
     parseExpressionSpec();
+
+    // Concatenate all token values from startIndex to the current index
+    string concatenatedTokens;
+    for (size_t i = startIndex; i <= currentTokenIndex; ++i) {
+        concatenatedTokens += tokens[i].getValue();
+    }
+    parsingResult.setPatternClauseSecondParam(Token(TokenType::ExpressionSpec, concatenatedTokens));
 
     advanceToken();
     ensureToken(TokenType::Rparenthesis);
@@ -281,17 +289,19 @@ void QueryParser::parsePatternClause() {
 void QueryParser::parseExpressionSpec() {
 
     if (match(TokenType::QuoutConst) || match(TokenType::QuoutIDENT)) {
-        advanceToken();
+        return;
     } else if (match(TokenType::Wildcard)) {
         advanceToken();
         if (match(TokenType::DoubleQuote)) {
             parseQuotedExpression();
-            ensureToken(TokenType::Wildcard);
             advanceToken();
+            ensureToken(TokenType::Wildcard);
+            return;
         }
         
     } else if (match(TokenType::DoubleQuote)) {
         parseQuotedExpression();
+        return;
     } else {
         throwError();
     }
@@ -305,7 +315,7 @@ void QueryParser::parseQuotedExpression() {
     advanceToken();
     parseExpression();
     ensureToken(TokenType::DoubleQuote);
-    advanceToken();
+    
     
 }
 
@@ -380,7 +390,7 @@ bool QueryParser::advanceToken() {
         ++currentTokenIndex;
         return true;
     }
-    return false;
+    throwError();
 }
 
 // Checks if the current token matches a given TokenType.

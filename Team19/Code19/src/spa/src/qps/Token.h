@@ -33,6 +33,7 @@ enum class TokenType {
     ParentT,
     Uses,
     Modifies,
+    ExpressionSpec,
 
 
 };
