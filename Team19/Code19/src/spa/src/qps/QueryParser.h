@@ -44,13 +44,13 @@ private:
     bool isVarName();
     bool isConstValue();
 
-    string parseSynonym();
+    void parseSynonym();
     void parseEntRef();
     void parseExpressionSpec();
     void parseQuotedExpression();
     void parseRelRef();
     void parseStmtRef();
-    string parseDesignEntity();
+    void parseDesignEntity();
     void parseUsesOrModifies();
     void parsestmtRefstmtRef();
     void parseExpression();

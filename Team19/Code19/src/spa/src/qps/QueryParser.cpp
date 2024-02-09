@@ -44,12 +44,19 @@ bool QueryParser::parse() {
 void QueryParser::parseDeclarations() {
     int numberOfDeclarations = 0;
     while (!match(TokenType::SelectKeyword)) {
-        string assignmentType = parseDesignEntity();
-        parsingResult.addDeclaredSynonym(parseSynonym(), assignmentType);
+        parseDesignEntity();
+        string assignmentType = currentToken().getValue();
+        advanceToken();
+        
+        parseSynonym();
+        parsingResult.addDeclaredSynonym(currentToken().getValue(), assignmentType);
+        advanceToken();
 
         while (match(TokenType::Comma)) {
             advanceToken();
-            parsingResult.addDeclaredSynonym(parseSynonym(), assignmentType);
+            parseSynonym();
+            parsingResult.addDeclaredSynonym(currentToken().getValue(), assignmentType);
+            advanceToken();
         }
 
         ensureToken(TokenType::Semicolon);
@@ -66,11 +73,9 @@ void QueryParser::parseDeclarations() {
 
 // Parses a design entity in the query.
 // Ensures the current token is a design entity and advances the token.
-string QueryParser::parseDesignEntity() {
+void QueryParser::parseDesignEntity() {
     if (currentToken().getType() == TokenType::DesignEntity) {
-        string designEntity = currentToken().getValue();
-        advanceToken();
-        return designEntity;
+        return;
     }
     else {
 		throwError();
@@ -79,11 +84,9 @@ string QueryParser::parseDesignEntity() {
 
 // Parses a synonym in the query.
 // Ensures the current token is an identifier and advances the token.
-string QueryParser::parseSynonym() {
+void QueryParser::parseSynonym() {
     if (currentToken().getType() == TokenType::IDENT) {
-        string synonym = currentToken().getValue();
-        advanceToken();
-        return synonym;
+        return ;
     }
     else {
 		throwError();
@@ -100,6 +103,7 @@ void QueryParser::parseSelectClause() {
     advanceToken();
     // check after select if it is a synonym
     ensureToken(TokenType::IDENT);
+    parsingResult.setRequiredSynonym(currentToken().getValue());
 
 }
 
@@ -117,9 +121,11 @@ void QueryParser::parseSuchThatClause() {
 // Determines the type of relation and calls the appropriate parsing function.
 void QueryParser::parseRelRef() {
     if (isStmtRefStmtRef()) {
+        parsingResult.setSuchThatClauseRelationship(currentToken());
         advanceToken();
         parsestmtRefstmtRef();
     } else if (isUsesOrModifies()) {
+        parsingResult.setSuchThatClauseRelationship(currentToken());
         advanceToken();
         parseUsesOrModifies();
     } else {
@@ -159,6 +165,8 @@ void QueryParser::parseUsesOrModifies() {
     bool stmtRefSuccess = false;
     try {
         parseStmtRef();
+        parsingResult.setSuchThatClauseFirstParam(currentToken());
+        advanceToken();
         stmtRefSuccess = true;
     }
     catch (const std::exception& e) {
@@ -168,6 +176,8 @@ void QueryParser::parseUsesOrModifies() {
     if (!stmtRefSuccess) {
         try {
             parseEntRef(); // If this fails, it throws an exception
+            parsingResult.setSuchThatClauseFirstParam(currentToken());
+            advanceToken();
         }
         catch (const std::exception& e) {
             throwError();
@@ -181,6 +191,8 @@ void QueryParser::parseUsesOrModifies() {
         throwError();
     }
     parseEntRef();
+    parsingResult.setSuchThatClauseSecondParam(currentToken());
+    advanceToken();
     ensureToken(TokenType::Rparenthesis);
 }
 
@@ -196,6 +208,8 @@ void QueryParser::parsestmtRefstmtRef() {
 
     // stmtRef
     parseStmtRef();
+    parsingResult.setSuchThatClauseFirstParam(currentToken());
+    advanceToken();
 
     //','
     if (match(TokenType::Comma)) {
@@ -206,6 +220,8 @@ void QueryParser::parsestmtRefstmtRef() {
     }
 
     parseStmtRef();
+    parsingResult.setSuchThatClauseSecondParam(currentToken());
+    advanceToken();
 
     ensureToken(TokenType::Rparenthesis);
 }
@@ -214,10 +230,8 @@ void QueryParser::parsestmtRefstmtRef() {
 // Handles different types of statement references like integer, wildcard, or synonym.
 void QueryParser::parseStmtRef() {
     
-    if (match(TokenType::INTEGER)) {
-        advanceToken();
-    } else if (match(TokenType::Wildcard)) {
-        advanceToken();
+    if (match(TokenType::INTEGER) || match(TokenType::Wildcard)) {
+        return;
     } else {
         parseSynonym();
     }
@@ -229,10 +243,8 @@ void QueryParser::parseStmtRef() {
 void QueryParser::parseEntRef() {
     
 
-    if (match(TokenType::QuoutIDENT)) {
-        advanceToken();
-    } else if (match(TokenType::Wildcard)) {
-        advanceToken();
+    if (match(TokenType::QuoutIDENT) || match(TokenType::Wildcard)) {
+        return;
     } else {
         parseSynonym();
     }
@@ -253,6 +265,8 @@ void QueryParser::parsePatternClause() {
 
     advanceToken();
     parseEntRef();
+
+    advanceToken();
     ensureToken(TokenType::Comma);
 
     advanceToken();
