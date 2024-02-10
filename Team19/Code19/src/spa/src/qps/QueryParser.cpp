@@ -11,12 +11,12 @@ QueryParser::QueryParser(const vector<Token>& tokens) : tokens(tokens), currentT
 
 // Parses the entire query.
 // Processes declarations, select clause, and optional such that and pattern clauses.
-bool QueryParser::parse() {
+ParsingResult QueryParser::parse() {
 
     parseDeclarations();
     parseSelectClause();
     if (currentTokenIndex == tokens.size() - 1) {
-        return true;
+        return parsingResult;
     }
     advanceToken();
 
@@ -25,7 +25,7 @@ bool QueryParser::parse() {
         parseSuchThatClause();
 
         if (currentTokenIndex == tokens.size() - 1) {
-            return true;
+            return parsingResult;
         }
 
         advanceToken();    
@@ -35,8 +35,9 @@ bool QueryParser::parse() {
         parsePatternClause();        
     }
     if (currentTokenIndex == tokens.size() - 1) {
-        return true;
+        return parsingResult;
     }
+    return parsingResult;
 }
 
 // Parses declarations in the query.

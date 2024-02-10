@@ -19,20 +19,19 @@ public:
     explicit QueryEvaluator(PKBReader pkb, ParsingResult& parsingResult) : pkb(pkb), parsingResult(parsingResult) {};
 
     // Main method to evaluate queries based on ParsingResult
-    QueryResult evaluateQuery();
+    string evaluateQuery();
 
 private:
 
 
-    // Methods for evaluating different aspects of the query based on ParsingResult
-    QueryResult evaluateSuchThat();
-    QueryResult evaluatePattern();
-    QueryResult evaluateModifies();
-    QueryResult evaluateUses();
-    QueryResult evaluateParents();
-    QueryResult evaluateFollows();
+    // Helper methods for evaluating different aspects of the query based on ParsingResult
+    string evaluatePattern();
+    string evaluateModifies();
+    string evaluateUses();
+    string evaluateParents();
+    string evaluateFollows();
 
-    // Combine results from various parts of the query
+    // Combine results from various parts of the query (intersects the results)
     QueryResult combineResults(const std::vector<QueryResult>& results);
 
     // Additional helper methods as needed

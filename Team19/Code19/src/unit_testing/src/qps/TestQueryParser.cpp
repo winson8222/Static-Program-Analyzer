@@ -35,7 +35,9 @@ TEST_CASE("Check Grammar of select all query") {
     };
 
     QueryParser parser(tokens);
-    REQUIRE(parser.parse());
+    auto result = parser.parse();
+    bool x = true; //will not reach this line unless parse is successful
+    REQUIRE(x);
 }
 
 TEST_CASE("Check Grammar of incomplete query with incomplete modifies clause") {
@@ -97,7 +99,9 @@ TEST_CASE("Check Grammar of Valid tokens with pattern query") {
     };
 
     QueryParser parser(tokens);
-    REQUIRE(parser.parse());
+    auto result = parser.parse();
+    bool x = true; //will not reach this line unless parse is successful
+    REQUIRE(x);
 }
 
 
@@ -119,7 +123,9 @@ TEST_CASE("Check Grammars of valid tokens that Follows with variable and wildcar
     };
 
     QueryParser parser(tokens);
-    REQUIRE(parser.parse());
+    auto result = parser.parse();
+    bool x = true; //will not reach this line unless parse is successful
+    REQUIRE(x);
 
 }
 
@@ -163,7 +169,9 @@ TEST_CASE("Check Grammars of valid tokens that Modifies with quoted variable") {
     };
 
     QueryParser parser(tokens);
-    REQUIRE(parser.parse());
+    auto result = parser.parse();
+    bool x = true; //will not reach this line unless parse is successful
+    REQUIRE(x);
 
 }
 
@@ -207,7 +215,9 @@ TEST_CASE("Check Grammars of Pattern with variable and constant") {
     };
 
     QueryParser parser(tokens);
-    REQUIRE(parser.parse());
+    auto result = parser.parse();
+    bool x = true; //will not reach this line unless parse is successful
+    REQUIRE(x);
 
 }
 
@@ -232,7 +242,9 @@ TEST_CASE("Check Grammars of Pattern with variable and an expressionSpec") {
     };
 
     QueryParser parser(tokens);
-    REQUIRE(parser.parse());
+    auto result = parser.parse();
+    bool x = true; //will not reach this line unless parse is successful
+    REQUIRE(x);
 }
 
 TEST_CASE("Check Grammars of Pattern with variable and an expressionSpec that contains an expression of _\"expr\"_ format") {
@@ -258,7 +270,9 @@ TEST_CASE("Check Grammars of Pattern with variable and an expressionSpec that co
     };
 
     QueryParser parser(tokens);
-    REQUIRE(parser.parse());
+    auto result = parser.parse();
+    bool x = true; //will not reach this line unless parse is successful
+    REQUIRE(x);
 
 }
 

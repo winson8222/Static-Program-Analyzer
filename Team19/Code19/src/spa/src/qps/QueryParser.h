@@ -20,7 +20,7 @@ public:
 
     // The parse method initiates the parsing process.
     // Returns true if parsing is successful, false otherwise.
-    bool parse();
+    ParsingResult parse();
 
     ParsingResult getParsingResult() const;  // Method to retrieve the result
 

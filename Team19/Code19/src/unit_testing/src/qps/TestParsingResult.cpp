@@ -14,9 +14,9 @@ TEST_CASE("Check Parsing Result of select all query") {
     };
 
     QueryParser parser(tokens);
-    parser.parse();
-    REQUIRE(parser.getParsingResult().getDeclaredSynonym("s") == "stmt");
-    REQUIRE(parser.getParsingResult().getRequiredSynonym() == "s");
+    auto parsingResult = parser.parse();
+    REQUIRE(parsingResult.getDeclaredSynonym("s") == "stmt");
+    REQUIRE(parsingResult.getRequiredSynonym() == "s");
 }
 
 
@@ -38,15 +38,15 @@ TEST_CASE("Check Parsing Result for suchthat-cl Modifies with quoted variable") 
     };
 
     QueryParser parser(tokens);
-    REQUIRE(parser.parse());
-    REQUIRE(parser.getParsingResult().getDeclaredSynonym("s") == "stmt");
-    REQUIRE(parser.getParsingResult().getRequiredSynonym() == "s");
-    REQUIRE(parser.getParsingResult().getSuchThatClauseRelationship().getType() == TokenType::Modifies);
-    REQUIRE(parser.getParsingResult().getSuchThatClauseRelationship().getValue()  == "Modifies");
-    REQUIRE(parser.getParsingResult().getSuchThatClauseFirstParam().getType() == TokenType::IDENT);
-    REQUIRE(parser.getParsingResult().getSuchThatClauseFirstParam().getValue() == "s");
-    REQUIRE(parser.getParsingResult().getSuchThatClauseSecondParam().getType() == TokenType::QuoutIDENT);
-    REQUIRE(parser.getParsingResult().getSuchThatClauseSecondParam().getValue() == "\"existentVar\"");
+    auto parsingResult = parser.parse();
+    REQUIRE(parsingResult.getDeclaredSynonym("s") == "stmt");
+    REQUIRE(parsingResult.getRequiredSynonym() == "s");
+    REQUIRE(parsingResult.getSuchThatClauseRelationship().getType() == TokenType::Modifies);
+    REQUIRE(parsingResult.getSuchThatClauseRelationship().getValue()  == "Modifies");
+    REQUIRE(parsingResult.getSuchThatClauseFirstParam().getType() == TokenType::IDENT);
+    REQUIRE(parsingResult.getSuchThatClauseFirstParam().getValue() == "s");
+    REQUIRE(parsingResult.getSuchThatClauseSecondParam().getType() == TokenType::QuoutIDENT);
+    REQUIRE(parsingResult.getSuchThatClauseSecondParam().getValue() == "\"existentVar\"");
     
 }
 
@@ -69,15 +69,15 @@ TEST_CASE("Check Parsing Result of pattern query Quouted Constant") {
     };
 
     QueryParser parser(tokens);
-    REQUIRE(parser.parse());
-    REQUIRE(parser.getParsingResult().getDeclaredSynonym("a") == "assign");
-    REQUIRE(parser.getParsingResult().getRequiredSynonym() == "a");
-    REQUIRE(parser.getParsingResult().getPatternClauseRelationship().getType() == TokenType::IDENT);
-    REQUIRE(parser.getParsingResult().getPatternClauseRelationship().getValue() == "a");
-    REQUIRE(parser.getParsingResult().getPatternClauseFirstParam().getType() == TokenType::QuoutIDENT);
-    REQUIRE(parser.getParsingResult().getPatternClauseFirstParam().getValue() == "\"x\"");
-    REQUIRE(parser.getParsingResult().getPatternClauseSecondParam().getType() == TokenType::ExpressionSpec);
-    REQUIRE(parser.getParsingResult().getPatternClauseSecondParam().getValue() == "\"1\"");
+    auto parsingResult = parser.parse();
+    REQUIRE(parsingResult.getDeclaredSynonym("a") == "assign");
+    REQUIRE(parsingResult.getRequiredSynonym() == "a");
+    REQUIRE(parsingResult.getPatternClauseRelationship().getType() == TokenType::IDENT);
+    REQUIRE(parsingResult.getPatternClauseRelationship().getValue() == "a");
+    REQUIRE(parsingResult.getPatternClauseFirstParam().getType() == TokenType::QuoutIDENT);
+    REQUIRE(parsingResult.getPatternClauseFirstParam().getValue() == "\"x\"");
+    REQUIRE(parsingResult.getPatternClauseSecondParam().getType() == TokenType::ExpressionSpec);
+    REQUIRE(parsingResult.getPatternClauseSecondParam().getValue() == "\"1\"");
 }
 
 
@@ -99,15 +99,15 @@ TEST_CASE("Check Parsing Result of valid tokens that Follows with variable and w
     };
 
     QueryParser parser(tokens);
-    REQUIRE(parser.parse());
-    REQUIRE(parser.getParsingResult().getDeclaredSynonym("s") == "stmt");
-    REQUIRE(parser.getParsingResult().getRequiredSynonym() == "s");
-    REQUIRE(parser.getParsingResult().getSuchThatClauseRelationship().getType() == TokenType::Follows);
-    REQUIRE(parser.getParsingResult().getSuchThatClauseRelationship().getValue() == "Follows");
-    REQUIRE(parser.getParsingResult().getSuchThatClauseFirstParam().getType() == TokenType::IDENT);
-    REQUIRE(parser.getParsingResult().getSuchThatClauseFirstParam().getValue() == "s");
-    REQUIRE(parser.getParsingResult().getSuchThatClauseSecondParam().getType() == TokenType::Wildcard);
-    REQUIRE(parser.getParsingResult().getSuchThatClauseSecondParam().getValue() == "_");
+    auto parsingResult = parser.parse();
+    REQUIRE(parsingResult.getDeclaredSynonym("s") == "stmt");
+    REQUIRE(parsingResult.getRequiredSynonym() == "s");
+    REQUIRE(parsingResult.getSuchThatClauseRelationship().getType() == TokenType::Follows);
+    REQUIRE(parsingResult.getSuchThatClauseRelationship().getValue() == "Follows");
+    REQUIRE(parsingResult.getSuchThatClauseFirstParam().getType() == TokenType::IDENT);
+    REQUIRE(parsingResult.getSuchThatClauseFirstParam().getValue() == "s");
+    REQUIRE(parsingResult.getSuchThatClauseSecondParam().getType() == TokenType::Wildcard);
+    REQUIRE(parsingResult.getSuchThatClauseSecondParam().getValue() == "_");
 }
 
 
@@ -133,15 +133,15 @@ TEST_CASE("Check Parsing Result of Pattern with variable and an expressionSpec")
     };
 
     QueryParser parser(tokens);
-    REQUIRE(parser.parse());
-    REQUIRE(parser.getParsingResult().getDeclaredSynonym("a") == "assign");
-    REQUIRE(parser.getParsingResult().getRequiredSynonym() == "a");
-    REQUIRE(parser.getParsingResult().getPatternClauseRelationship().getType() == TokenType::IDENT);
-    REQUIRE(parser.getParsingResult().getPatternClauseRelationship().getValue() == "a");
-    REQUIRE(parser.getParsingResult().getPatternClauseFirstParam().getType() == TokenType::QuoutIDENT);
-    REQUIRE(parser.getParsingResult().getPatternClauseFirstParam().getValue() == "\"x\"");
-    REQUIRE(parser.getParsingResult().getPatternClauseSecondParam().getType() == TokenType::ExpressionSpec);
-    REQUIRE(parser.getParsingResult().getPatternClauseSecondParam().getValue() == "\"1*3\"");
+    auto parsingResult = parser.parse();
+    REQUIRE(parsingResult.getDeclaredSynonym("a") == "assign");
+    REQUIRE(parsingResult.getRequiredSynonym() == "a");
+    REQUIRE(parsingResult.getPatternClauseRelationship().getType() == TokenType::IDENT);
+    REQUIRE(parsingResult.getPatternClauseRelationship().getValue() == "a");
+    REQUIRE(parsingResult.getPatternClauseFirstParam().getType() == TokenType::QuoutIDENT);
+    REQUIRE(parsingResult.getPatternClauseFirstParam().getValue() == "\"x\"");
+    REQUIRE(parsingResult.getPatternClauseSecondParam().getType() == TokenType::ExpressionSpec);
+    REQUIRE(parsingResult.getPatternClauseSecondParam().getValue() == "\"1*3\"");
 }
 
 
@@ -168,14 +168,14 @@ TEST_CASE("Check Parsing Result of Pattern with variable and an expressionSpec t
     };
 
     QueryParser parser(tokens);
-    REQUIRE(parser.parse());
-    REQUIRE(parser.getParsingResult().getDeclaredSynonym("a") == "assign");
-    REQUIRE(parser.getParsingResult().getRequiredSynonym() == "a");
-    REQUIRE(parser.getParsingResult().getPatternClauseRelationship().getType() == TokenType::IDENT);
-    REQUIRE(parser.getParsingResult().getPatternClauseRelationship().getValue() == "a");
-    REQUIRE(parser.getParsingResult().getPatternClauseFirstParam().getType() == TokenType::QuoutIDENT);
-    REQUIRE(parser.getParsingResult().getPatternClauseFirstParam().getValue() == "\"x\"");
-    REQUIRE(parser.getParsingResult().getPatternClauseSecondParam().getType() == TokenType::ExpressionSpec);
-    REQUIRE(parser.getParsingResult().getPatternClauseSecondParam().getValue() == "_\"1*3\"_");
+    auto parsingResult = parser.parse();
+    REQUIRE(parsingResult.getDeclaredSynonym("a") == "assign");
+    REQUIRE(parsingResult.getRequiredSynonym() == "a");
+    REQUIRE(parsingResult.getPatternClauseRelationship().getType() == TokenType::IDENT);
+    REQUIRE(parsingResult.getPatternClauseRelationship().getValue() == "a");
+    REQUIRE(parsingResult.getPatternClauseFirstParam().getType() == TokenType::QuoutIDENT);
+    REQUIRE(parsingResult.getPatternClauseFirstParam().getValue() == "\"x\"");
+    REQUIRE(parsingResult.getPatternClauseSecondParam().getType() == TokenType::ExpressionSpec);
+    REQUIRE(parsingResult.getPatternClauseSecondParam().getValue() == "_\"1*3\"_");
 
 }
