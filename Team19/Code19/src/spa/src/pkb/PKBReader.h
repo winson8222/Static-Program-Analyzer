@@ -111,6 +111,22 @@ public:
     unordered_set<string> getAllVariables() {
         return variableStore->getAllEntities();
     }
+
+
+    /**
+     * @brief Gets all Statement numbers
+     * @return unordered_set<int>: Statement number of all "Statement" entities.
+     */
+    unordered_set<int> getAllStmts() {
+        return statementStore->getAllEntities();
+    }
+
+    /**
+     * @brief Gets all procedure names
+     */
+    unordered_set<string> getAllProcedures() {
+        return procedureStore->getAllEntities();
+    }
 };
 
 
