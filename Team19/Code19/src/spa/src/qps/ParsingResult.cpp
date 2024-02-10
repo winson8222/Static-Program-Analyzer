@@ -61,6 +61,10 @@ const string& ParsingResult::getRequiredSynonym() const {
     return requiredSynonym;
 }
 
+const string& ParsingResult::getRequiredSynonymType() const {
+    return getDeclaredSynonym(requiredSynonym);
+}
+
 const Token& ParsingResult::getSuchThatClauseRelationship() const {
     return suchThatClauseRelationship;
 }

@@ -67,6 +67,8 @@ public:
       return followsStore->getRelationshipsByValue(stmt);
     }
 
+    shared_ptr<FollowsStore> getAllFollows();
+
     /**
      * @brief Gets the statement number of "Follows" relationships of the given statement.
      * @param stmt: stmt in Follows(stmt, s2)
