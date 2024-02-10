@@ -1,7 +1,7 @@
 #pragma once
 
 #include "sp/Tokenizer.h"
-#include "sp/Parser/LexicalToken.h"
+#include "sp/LexicalToken.h"
 #include "CallStmt.h"
 
 // ai-gen start(gpt,2,e)
