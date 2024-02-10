@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include "sp/Tokenizer.h"
 #include "sp/LexicalToken.h"
 #include "CallStmt.h"
