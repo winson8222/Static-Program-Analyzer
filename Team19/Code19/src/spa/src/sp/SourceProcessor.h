@@ -1,6 +1,6 @@
 #include "sp/Tokenizer.h"
 #include "sp/LexicalToken.h"
-// #include "pkb/PKBManager.h"
+#include "pkb/PKBManager.h"
 
 class SourceProcessor {
 public:
