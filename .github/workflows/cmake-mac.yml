@@ -1,0 +1,37 @@
+name: CI for CMake Project - macOS
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build-mac:
+    name: Build on macOS
+    runs-on: macos-latest
+    timeout-minutes: 10 # Adjusted to ensure enough time for tests
+    strategy:
+      fail-fast: true
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies (if any)
+        run: |
+          brew update
+          brew install cmake || brew upgrade cmake
+      - name: Build Project on macOS
+        run: |
+          cd Team19/Code19
+          mkdir build
+          cd build
+          cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..
+          cmake --build . --target unit_testing --config Release
+          cmake --build . --target integration_testing --config Release
+          cmake --build . --target autotester --config Release
+          cd ../..
