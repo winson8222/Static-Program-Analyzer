@@ -18,8 +18,8 @@ void SourceProcessor::parseSource(std::string filepath) {
 }
 
 void SourceProcessor::populatePKB() {
-    // Use PKBWriter to insert entities and relationships into PKB
-    PKBWriter pkbWriter(pkbManager);
+    // Use PKBWriterManager to insert entities and relationships into PKB
+    PKBWriterManager pkbWriter(pkbManager);
 
     // Example: Insert entities and relationships
     int stmtNum = 1;

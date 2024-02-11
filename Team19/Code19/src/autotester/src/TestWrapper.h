@@ -13,8 +13,8 @@ class TestWrapper : public AbstractWrapper {
 //private:
 //    shared_ptr<PKBManager> pkbManager;
 //    shared_ptr<PKB> pkb;
-//    shared_ptr<PKBWriter> pkbWriter;
-    shared_ptr<PKBReader> pkbReader;
+//    shared_ptr<PKBWriterManager> pkbWriter;
+    shared_ptr<PKBReaderManager> pkbReader;
  public:
   // default constructor
   TestWrapper();
