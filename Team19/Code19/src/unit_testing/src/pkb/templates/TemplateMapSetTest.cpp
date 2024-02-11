@@ -7,7 +7,7 @@ TEST_CASE("pkb/templates/TemplateMapSet") {
         templateMapSet.addKeyValue(1, 2);
         templateMapSet.addKeyValue(1, 3);
         templateMapSet.addKeyValue(2, 3);
-        auto expected = unordered_map<int, unordered_set<int>>{
+        auto expected = std::unordered_map<int, std::unordered_set<int>>{
                 {1, {2, 3}},
                 {2, {3}}
         };
@@ -15,12 +15,12 @@ TEST_CASE("pkb/templates/TemplateMapSet") {
     }
     SECTION("getMapSet") {
         TemplateMapSet<int, int> templateMapSet;
-        auto expected = unordered_map<int, unordered_set<int>>{};
+        auto expected = std::unordered_map<int, std::unordered_set<int>>{};
         REQUIRE(templateMapSet.getMapSet() == expected);
         templateMapSet.addKeyValue(1, 2);
         templateMapSet.addKeyValue(1, 3);
         templateMapSet.addKeyValue(2, 3);
-        expected = unordered_map<int, unordered_set<int>>{
+        expected = std::unordered_map<int, std::unordered_set<int>>{
                 {1, {2, 3}},
                 {2, {3}}
         };
@@ -44,7 +44,7 @@ TEST_CASE("pkb/templates/TemplateMapSet") {
         templateMapSet.addKeyValue(1, 2);
         templateMapSet.addKeyValue(1, 3);
         templateMapSet.addKeyValue(2, 3);
-        auto expected = unordered_set<int>{1, 2};
+        auto expected = std::unordered_set<int>{1, 2};
         REQUIRE(templateMapSet.getKeys() == expected);
     }
 
@@ -53,7 +53,7 @@ TEST_CASE("pkb/templates/TemplateMapSet") {
         templateMapSet.addKeyValue(1, 2);
         templateMapSet.addKeyValue(1, 3);
         templateMapSet.addKeyValue(2, 3);
-        auto expected = unordered_set<int>{2, 3};
+        auto expected = std::unordered_set<int>{2, 3};
         REQUIRE(templateMapSet.getValues() == expected);
     }
 
@@ -62,9 +62,9 @@ TEST_CASE("pkb/templates/TemplateMapSet") {
         templateMapSet.addKeyValue(1, 2);
         templateMapSet.addKeyValue(1, 3);
         templateMapSet.addKeyValue(2, 3);
-        auto expected = unordered_set<int>{2, 3};
+        auto expected = std::unordered_set<int>{2, 3};
         REQUIRE(templateMapSet.getValuesByKey(1) == expected);
-        expected = unordered_set<int>{3};
+        expected = std::unordered_set<int>{3};
         REQUIRE(templateMapSet.getValuesByKey(2) == expected);
     }
 
@@ -84,7 +84,7 @@ TEST_CASE("pkb/templates/TemplateMapSet") {
         templateMapSet.addKeyValue(1, 3);
         templateMapSet.addKeyValue(2, 3);
         templateMapSet.remove(1);
-        auto expected = unordered_map<int, unordered_set<int>>{
+        auto expected = std::unordered_map<int, std::unordered_set<int>>{
                 {2, {3}}
         };
         REQUIRE(templateMapSet.getMapSet() == expected);
@@ -96,7 +96,7 @@ TEST_CASE("pkb/templates/TemplateMapSet") {
         templateMapSet.addKeyValue(1, 3);
         templateMapSet.addKeyValue(2, 3);
         templateMapSet.clear();
-        auto expected = unordered_map<int, unordered_set<int>>{};
+        auto expected = std::unordered_map<int, std::unordered_set<int>>{};
         REQUIRE(templateMapSet.getMapSet() == expected);
     }
 }

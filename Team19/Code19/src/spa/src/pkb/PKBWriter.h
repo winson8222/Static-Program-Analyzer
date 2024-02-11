@@ -2,37 +2,35 @@
 
 #include "PKB.h"
 
-using namespace std;
-
 class PKBWriter {
 private:
-    shared_ptr<PKB> pkb;
+    std::shared_ptr<PKB> pkb;
 
-    shared_ptr<FollowsStore> followsStore;
-    shared_ptr<FollowsTStore> followsTStore;
+    std::shared_ptr<FollowsStore> followsStore;
+    std::shared_ptr<FollowsTStore> followsTStore;
 
-    shared_ptr<ParentStore> parentStore;
-    shared_ptr<ParentTStore> parentTStore;
+    std::shared_ptr<ParentStore> parentStore;
+    std::shared_ptr<ParentTStore> parentTStore;
 
-    shared_ptr<UsesPStore> usesPStore;
-    shared_ptr<UsesSStore> usesSStore;
+    std::shared_ptr<UsesPStore> usesPStore;
+    std::shared_ptr<UsesSStore> usesSStore;
 
-    shared_ptr<ModifiesPStore> modifiesPStore;
-    shared_ptr<ModifiesSStore> modifiesSStore;
+    std::shared_ptr<ModifiesPStore> modifiesPStore;
+    std::shared_ptr<ModifiesSStore> modifiesSStore;
 
-    shared_ptr<AssignStore> assignStore;
-    shared_ptr<VariableStore> variableStore;
-    shared_ptr<ConstantStore> constantStore;
-    shared_ptr<ProcedureStore> procedureStore;
-    shared_ptr<StatementStore> statementStore;
-    shared_ptr<IfStore> ifStore;
-    shared_ptr<WhileStore> whileStore;
-    shared_ptr<CallStore> callStore;
-    shared_ptr<ReadStore> readStore;
-    shared_ptr<PrintStore> printStore;
+    std::shared_ptr<AssignStore> assignStore;
+    std::shared_ptr<VariableStore> variableStore;
+    std::shared_ptr<ConstantStore> constantStore;
+    std::shared_ptr<ProcedureStore> procedureStore;
+    std::shared_ptr<StatementStore> statementStore;
+    std::shared_ptr<IfStore> ifStore;
+    std::shared_ptr<WhileStore> whileStore;
+    std::shared_ptr<CallStore> callStore;
+    std::shared_ptr<ReadStore> readStore;
+    std::shared_ptr<PrintStore> printStore;
 
 public:
-    explicit PKBWriter(const shared_ptr<PKB>& pkb): pkb(pkb) {
+    explicit PKBWriter(const std::shared_ptr<PKB>& pkb): pkb(pkb) {
       followsStore = pkb->getFollowsStore();
       followsTStore = pkb->getFollowsTStore();
 
@@ -69,7 +67,7 @@ public:
      * @brief Inserts a "Variable" Entity into the PKB.
      * @param variable: The name of the variable.
      */
-    void insertVariable(string &variable) {
+    void insertVariable(std::string &variable) {
       variableStore->addEntity(variable);
     }
 
@@ -77,7 +75,7 @@ public:
      * @brief Inserts a "Procedure" Entity into the PKB.
      * @param procedure: The name of the procedure.
      */
-    void insertProcedure(string &procedure) {
+    void insertProcedure(std::string &procedure) {
       procedureStore->addEntity(procedure);
     }
 
@@ -179,7 +177,7 @@ public:
      * @param procedure: The name of the procedure.
      * @param variable: The name of the "Used" variable.
      */
-    void insertUsesP(string &procedure, string &variable) {
+    void insertUsesP(std::string &procedure, std::string &variable) {
       usesPStore->addRelationship(procedure, variable);
     }
 
@@ -188,7 +186,7 @@ public:
      * @param stmt: The statement number.
      * @param variable: The name of the "Used" variable.
      */
-    void insertUsesS(int &stmt, string &variable) {
+    void insertUsesS(int &stmt, std::string &variable) {
       usesSStore->addRelationship(stmt, variable);
     }
 
@@ -197,7 +195,7 @@ public:
      * @param procedure: The name of the procedure.
      * @param variable: The name of "Modified" variable.
      */
-    void insertModifiesP(string &procedure, string &variable) {
+    void insertModifiesP(std::string &procedure, std::string &variable) {
       modifiesPStore->addRelationship(procedure, variable);
     }
 
@@ -206,7 +204,7 @@ public:
      * @param stmt: The statement number.
      * @param variable: The name of the "Modified" variable.
      */
-    void insertModifiesS(int &stmt, string &variable) {
+    void insertModifiesS(int &stmt, std::string &variable) {
       modifiesSStore->addRelationship(stmt, variable);
     }
 };

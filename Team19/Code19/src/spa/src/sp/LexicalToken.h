@@ -13,7 +13,7 @@ public:
     LexicalToken(LexicalTokenType type);
     LexicalToken() = default;
     
-    const LexicalToken& LexicalToken::getNullToken();
+    const LexicalToken& getNullToken();
     LexicalTokenType getTokenType();
     int getLinePosition();
     int getLine();

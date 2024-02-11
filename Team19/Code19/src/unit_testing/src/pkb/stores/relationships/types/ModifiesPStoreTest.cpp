@@ -37,7 +37,7 @@ TEST_CASE("ModifiesPStore Functionality") {
 
         // Verify retrieval of all procedures that modify the variable "x".
         auto proceduresModifyingX = modifiesPStore.getRelationshipsByValue("x");
-        auto expectedProcedures = unordered_set<std::string>{"main", "finalize"};
+        auto expectedProcedures = std::unordered_set<std::string>{"main", "finalize"};
 
         REQUIRE(proceduresModifyingX == expectedProcedures); // Both "main" and "finalize" modify "x".
     }
@@ -50,7 +50,7 @@ TEST_CASE("ModifiesPStore Functionality") {
 
         // Verify retrieval of all variables modified by the "main" procedure.
         auto variablesModifiedByMain = modifiesPStore.getRelationshipsByKey("main");
-        auto expectedVariables = unordered_set<std::string>{"x", "y"};
+        auto expectedVariables = std::unordered_set<std::string>{"x", "y"};
 
         REQUIRE(variablesModifiedByMain == expectedVariables); // "main" modifies variables "x" and "y".
     }

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "pkb/stores/entities/EntityStore.h"
+#include <string>
 
-using namespace std;
+#include "pkb/stores/entities/EntityStore.h"
 
 /**
  * @class ProcedureStore
@@ -12,7 +12,7 @@ using namespace std;
  * Inherits all functionalities from EntityStore.
  * Template parameters are set to string, representing SIMPLE procedure names.
  */
-class ProcedureStore: public EntityStore<string> {
+class ProcedureStore: public EntityStore<std::string> {
     // This class can be used to instantiate an EntityStore
     // specific for the 'Procedure' Entity.
 };

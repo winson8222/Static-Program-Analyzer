@@ -3,8 +3,6 @@
 #include <unordered_map>
 #include <unordered_set>
 
-using namespace std;
-
 /**
  * @brief Template class for key-set of values store.
  *
@@ -14,7 +12,7 @@ using namespace std;
 template <typename KeyType, typename ValueType>
 class TemplateMapSet {
 private:
-    unordered_map<KeyType, unordered_set<ValueType>> map;
+    std::unordered_map<KeyType, std::unordered_set<ValueType>> map;
 public:
     /**
      * @brief Construct an empty TemplateMapSet.
@@ -33,21 +31,21 @@ public:
         return this->map.empty();
     }
 
-    unordered_map<KeyType, unordered_set<ValueType>> getMapSet();
+    std::unordered_map<KeyType, std::unordered_set<ValueType>> getMapSet();
 
     /**
      * @brief Get all keys in the TemplateMapSet.
      *
      * @return Set of all keys in the TemplateMapSet.
      */
-    unordered_set<KeyType> getKeys();
+    std::unordered_set<KeyType> getKeys();
 
     /**
      * @brief Get all values in the TemplateMapSet.
      *
      * @return Set of all values in the TemplateMapSet.
      */
-    unordered_set<ValueType> getValues();
+    std::unordered_set<ValueType> getValues();
 
     /**
      * @brief Get the set of values associated with the given key.
@@ -55,7 +53,7 @@ public:
      * @param key Key to search for.
      * @return Set of values associated with the given key.
      */
-    unordered_set<ValueType> getValuesByKey(KeyType key);
+    std::unordered_set<ValueType> getValuesByKey(KeyType key);
 
     /**
      * @brief Check if the given key exists in the TemplateMapSet.
@@ -99,16 +97,16 @@ public:
  * Default implementations for TemplateMapSet's methods.
  */
 template <typename KeyType, typename ValueType>
-TemplateMapSet<KeyType, ValueType>::TemplateMapSet() {}
+TemplateMapSet<KeyType, ValueType>::TemplateMapSet() = default;
 
 template <typename KeyType, typename ValueType>
-unordered_map<KeyType, unordered_set<ValueType>> TemplateMapSet<KeyType, ValueType>::getMapSet() {
+std::unordered_map<KeyType, std::unordered_set<ValueType>> TemplateMapSet<KeyType, ValueType>::getMapSet() {
     return this->map;
 }
 
 template <typename KeyType, typename ValueType>
-unordered_set<KeyType> TemplateMapSet<KeyType, ValueType>::getKeys() {
-    unordered_set<KeyType> keys;
+std::unordered_set<KeyType> TemplateMapSet<KeyType, ValueType>::getKeys() {
+  std::unordered_set<KeyType> keys;
     for (auto const& pair : this->map) {
         keys.insert(pair.first);
     }
@@ -116,8 +114,8 @@ unordered_set<KeyType> TemplateMapSet<KeyType, ValueType>::getKeys() {
 }
 
 template <typename KeyType, typename ValueType>
-unordered_set<ValueType> TemplateMapSet<KeyType, ValueType>::getValues() {
-    unordered_set<ValueType> values;
+std::unordered_set<ValueType> TemplateMapSet<KeyType, ValueType>::getValues() {
+  std::unordered_set<ValueType> values;
     for (auto const& pair : this->map) {
         for (auto const& value : pair.second) {
             values.insert(value);
@@ -127,7 +125,7 @@ unordered_set<ValueType> TemplateMapSet<KeyType, ValueType>::getValues() {
 }
 
 template <typename KeyType, typename ValueType>
-unordered_set<ValueType> TemplateMapSet<KeyType, ValueType>::getValuesByKey(KeyType key) {
+std::unordered_set<ValueType> TemplateMapSet<KeyType, ValueType>::getValuesByKey(KeyType key) {
     return this->map[key];
 }
 

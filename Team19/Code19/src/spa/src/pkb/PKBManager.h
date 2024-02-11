@@ -6,22 +6,22 @@
 
 class PKBManager {
 private:
-    shared_ptr<PKB> pkb;
-    shared_ptr<PKBReader> pkbReader;
-    shared_ptr<PKBWriter> pkbWriter;
+    std::shared_ptr<PKB> pkb;
+    std::shared_ptr<PKBReader> pkbReader;
+    std::shared_ptr<PKBWriter> pkbWriter;
 public:
     PKBManager() {
-        pkb = make_shared<PKB>();
-        pkbReader = make_shared<PKBReader>(pkb);
-        pkbWriter = make_shared<PKBWriter>(pkb);
+        pkb = std::make_shared<PKB>();
+        pkbReader = std::make_shared<PKBReader>(pkb);
+        pkbWriter = std::make_shared<PKBWriter>(pkb);
     }
-    shared_ptr<PKB> getPKB() {
+    std::shared_ptr<PKB> getPKB() {
         return pkb;
     }
-    shared_ptr<PKBReader> getPKBReader() {
+    std::shared_ptr<PKBReader> getPKBReader() {
         return pkbReader;
     }
-    shared_ptr<PKBWriter> getPKBWriter() {
+    std::shared_ptr<PKBWriter> getPKBWriter() {
         return pkbWriter;
     }
 };
