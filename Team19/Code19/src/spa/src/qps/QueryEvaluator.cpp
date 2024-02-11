@@ -13,7 +13,6 @@ class QueryEvaluator {
 private:
     shared_ptr<PKBReader> pkbReader;
     ParsingResult& parsingResult;
-    string requiredSynonym;
     unordered_set<string> result;
 
 public:
@@ -23,7 +22,7 @@ public:
 
     void evaluateQuery() {
             // Get the declared synonyms
-            requiredSynonym = parsingResult.getRequiredSynonym();
+            string requiredSynonym = parsingResult.getRequiredSynonym();
             string requiredType = parsingResult.getRequiredSynonymType();
 
             const unordered_map<string, string>& declared = parsingResult.getDeclaredSynonyms();
