@@ -4,10 +4,8 @@
 
 class SourceProcessor {
 public:
-	// SourceProcessor(PKBManager pkbManager);
+	PKBManager pkbManager;
+	SourceProcessor(PKBManager pkbManager);
 	void parseSource(std::string filepath);
 	void populatePKB();
-
-private:
-	// PKBManager pkbManager;
 };
