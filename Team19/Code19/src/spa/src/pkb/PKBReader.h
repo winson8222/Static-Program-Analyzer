@@ -77,6 +77,22 @@ public:
     }
 
     /**
+     * @brief Gets the post statement numbers of all "Follows" relationships.
+     * @return unordered_set<int>: The set of statement numbers of s2 in Follows(s1, s2)
+     */
+    std::unordered_set<int> getAllPostFollows() {
+      return followsStore->getValues();
+    }
+
+    /**
+     * @brief Gets the preceding statement numbers of all "Follows" relationships.
+     * @return unordered_set<int>: The set of statement numbers of s1 in Follows(s1, s2)
+     */
+    std::unordered_set<int> getAllPreFollows() {
+      return followsStore->getKeys();
+    }
+
+    /**
      * @brief Gets the statement number of reversed "Follows*" relationships of the given statement.
      * @param stmt
      * @return unordered_set<int>: The set of statement number of all s1 in Follows*(s1, stmt)
@@ -92,6 +108,22 @@ public:
      */
     std::unordered_set<int> getPostFollowsT(int stmt) {
       return followsTStore->getRelationshipsByKey(stmt);
+    }
+
+    /**
+     * @brief Gets the post statement numbers of all "Follows*" relationships.
+     * @return unordered_set<int>: The set of statement numbers of s2 in Follows*(s1, s2)
+     */
+    std::unordered_set<int> getAllPostFollowsT() {
+      return followsTStore->getValues();
+    }
+
+    /**
+     * @brief Gets the preceding statement numbers of all "Follows*" relationships.
+     * @return unordered_set<int>: The set of statement numbers of s1 in Follows*(s1, s2)
+     */
+    std::unordered_set<int> getAllPreFollowsT() {
+      return followsTStore->getKeys();
     }
 
     // Entities
