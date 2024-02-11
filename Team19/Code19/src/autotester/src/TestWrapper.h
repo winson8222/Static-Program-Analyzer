@@ -7,14 +7,14 @@
 
 // include your other headers here
 #include "AbstractWrapper.h"
-#include "pkb/PKBManager.h"
+// #include "pkb/PKBManager.h"
 
 class TestWrapper : public AbstractWrapper {
 //private:
 //    shared_ptr<PKBManager> pkbManager;
 //    shared_ptr<PKB> pkb;
 //    shared_ptr<PKBWriter> pkbWriter;
-    shared_ptr<PKBReader> pkbReader;
+    // shared_ptr<PKBReader> pkbReader;
  public:
   // default constructor
   TestWrapper();

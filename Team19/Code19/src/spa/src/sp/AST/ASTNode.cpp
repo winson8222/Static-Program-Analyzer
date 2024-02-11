@@ -6,8 +6,6 @@
 // ai-gen start (gpt, 2, e)
 // prompt: https://chat.openai.com/share/a181de60-e76f-496c-9bee-7ea80f2be651
 
-// Initialize static member
-int ASTNode::uniqueIdentifier = 0;
 
 ASTNode::ASTNode(ASTNodeType type, int lineNumber, std::string value) {
     this->type = type;
@@ -23,9 +21,15 @@ void ASTNode::setValue(std::string value) {
     this->value = value;
 }
 
-// Method to generate a unique identifier for the AST node
-int ASTNode::getNewUniqueIdentifier() {
-    return uniqueIdentifier++;
+// Implementation of hash function for ASTNode
+std::size_t ASTNode::hash() const {
+    // Concatenate the properties of ASTNode
+    std::stringstream ss;
+    ss << Utility::getASTNodeType(type) << lineNumber << value;
+
+    // Hash the concatenated string
+    std::hash<std::string> hasher;
+    return hasher(ss.str());
 }
 
 // Method to convert AST node to a string

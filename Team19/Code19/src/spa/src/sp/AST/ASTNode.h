@@ -36,21 +36,20 @@ public:
     // define children of the AST
     std::vector<std::unique_ptr<ASTNode>> children;
     // add children to the AST node
-    void ASTNode::addChild(std::unique_ptr<ASTNode> child);    // hash the AST
+    void addChild(std::unique_ptr<ASTNode> child);    // hash the AST
     // define line number
     int lineNumber;
     // define value of the current node
     std::string value;
     void setValue(std::string value);
     
-    int hashInteger{ ASTNode::getNewUniqueIdentifier() };
+    // hash the ASTNode
+    std::size_t hash() const;
 
     // convert to string
     std::string toString() const;
 
 private:
     std::unique_ptr<ASTNode> root;
-    static int uniqueIdentifier;
-    static int getNewUniqueIdentifier();
     std::string recursiveString(int tabs) const;
 };
