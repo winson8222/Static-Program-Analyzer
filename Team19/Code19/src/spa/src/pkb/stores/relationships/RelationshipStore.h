@@ -51,6 +51,22 @@ public:
     };
 
     /**
+     * Get all keys in the store
+     * @return set of keys
+     */
+    std::unordered_set<KeyType> getKeys() override {
+        return keyToValueMap.getKeys();
+    };
+
+    /**
+     * Get all values in the store
+     * @return set of values
+     */
+    std::unordered_set<ValueType> getValues() override {
+        return valueToKeyMap.getKeys();
+    };
+
+    /**
      * Get all values related to a given key
      * @param key
      * @return The set of values related to the given key

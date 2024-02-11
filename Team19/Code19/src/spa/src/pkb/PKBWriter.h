@@ -207,6 +207,27 @@ public:
     void insertModifiesS(int &stmt, std::string &variable) {
       modifiesSStore->addRelationship(stmt, variable);
     }
+
+    void clear() {
+      followsStore->clear();
+      followsTStore->clear();
+      parentStore->clear();
+      parentTStore->clear();
+      usesPStore->clear();
+      usesSStore->clear();
+      modifiesPStore->clear();
+      modifiesSStore->clear();
+      assignStore->clear();
+      variableStore->clear();
+      constantStore->clear();
+      procedureStore->clear();
+      statementStore->clear();
+      ifStore->clear();
+      whileStore->clear();
+      callStore->clear();
+      readStore->clear();
+      printStore->clear();
+    }
 };
 
 

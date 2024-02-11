@@ -55,4 +55,16 @@ public:
      * @return true if the relationship exists, false otherwise.
      */
     virtual bool hasRelationship(KeyType key, ValueType value) = 0;
+
+    /**
+     * Retrieves all keys in the store.
+     * @return A set of keys.
+     */
+    virtual std::unordered_set<KeyType> getKeys() = 0;
+
+    /**
+     * Retrieves all values in the store.
+     * @return A set of values.
+     */
+    virtual std::unordered_set<ValueType> getValues() = 0;
 };

@@ -126,4 +126,34 @@ TEST_CASE("pkb/stores/relationships/RelationshipStore") {
         expected = std::unordered_set<int>{1, 2};
         REQUIRE(relationshipStore.getRelationshipsByValue(3) == expected);
     }
+
+  SECTION("getKeys: Empty Store") {
+    RelationshipStore<int, int> relationshipStore;
+    auto expected = std::unordered_set<int>{};
+    REQUIRE(relationshipStore.getKeys() == expected);
+  }
+
+    SECTION("getKeys: Non-Empty Store") {
+        RelationshipStore<int, int> relationshipStore;
+        relationshipStore.addRelationship(1, 2);
+        relationshipStore.addRelationship(1, 3);
+        relationshipStore.addRelationship(2, 3);
+        auto expected = std::unordered_set<int>{1, 2};
+        REQUIRE(relationshipStore.getKeys() == expected);
+    }
+
+    SECTION("getValues: Empty Store") {
+        RelationshipStore<int, int> relationshipStore;
+        auto expected = std::unordered_set<int>{};
+        REQUIRE(relationshipStore.getValues() == expected);
+    }
+
+    SECTION("getValues: Non-Empty Store") {
+        RelationshipStore<int, int> relationshipStore;
+        relationshipStore.addRelationship(1, 2);
+        relationshipStore.addRelationship(1, 3);
+        relationshipStore.addRelationship(2, 3);
+        auto expected = std::unordered_set<int>{2, 3};
+        REQUIRE(relationshipStore.getValues() == expected);
+    }
 }
