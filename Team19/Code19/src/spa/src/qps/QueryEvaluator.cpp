@@ -32,14 +32,9 @@ public:
             const unordered_map<string, string>& declared = parsingResult.getDeclaredSynonyms();
             // check what is the type of synonym required
             if (requiredType == "stmt") {
-                unordered_set<int> allStmts = pkbReader->getAllStmts();
-                for (int i : allStmts) {
-                    result.insert(to_string(i));
-                }
                 string suchThatType = parsingResult.getSuchThatClauseRelationship().getValue();
                 if (suchThatType == "Follows") {
                     unordered_set<string> newResults = evaluateFollows();
-                    combineResults(newResults);
                 }
 
 //                } else if (suchThatType == "Modifies") {
@@ -69,7 +64,6 @@ public:
     }
 
     unordered_set<string> evaluateFollows() {
-        const unordered_set<int>& stmts = pkbReader->getAllStmts();
         const Token& suchThatRelationship = parsingResult.getSuchThatClauseRelationship();
         const Token& suchThatFirstParam = parsingResult.getSuchThatClauseFirstParam();
         const Token& suchThatSecondParam = parsingResult.getSuchThatClauseSecondParam();
