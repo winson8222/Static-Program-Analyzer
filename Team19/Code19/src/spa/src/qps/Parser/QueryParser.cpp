@@ -1,5 +1,5 @@
 // Include the Parser class header.
-#include "../../spa/src/qps/QueryParser.h"
+#include "../../spa/src/qps/Parser/QueryParser.h"
 #include <stdexcept>
 #include <iostream>
 

@@ -3,11 +3,11 @@
 #define QUERYPARSER_H
 
 // Include necessary headers.
-#include "../../spa/src/qps/Token.h"
+#include "../../spa/src/qps/Parser/Token.h"
 #include <vector>
 #include <string>
-#include "../../spa/src/qps/Tokenizer.h"
-#include "../../spa/src/qps/ParsingResult.h"
+#include "../../spa/src/qps/Parser/Tokenizer.h"
+#include "../../spa/src/qps/Parser/ParsingResult.h"
 
 using namespace std;
 

@@ -1,4 +1,4 @@
-#include "../../spa/src/qps/QueryParser.h"
+#include "../../spa/src/qps/Parser/QueryParser.h"
 #include "catch.hpp"
 
 using namespace std;

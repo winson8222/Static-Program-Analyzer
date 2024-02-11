@@ -1,4 +1,4 @@
-#include "../../spa/src/qps/Tokenizer.h"
+#include "../../spa/src/qps/Parser/Tokenizer.h"
 #include "catch.hpp"
 
 using namespace std;
