@@ -9,18 +9,6 @@
 #include <vector>
 
 
-struct EnumClassHash {
-    template <typename T> std::size_t operator()(T t) const {
-        return static_cast<std::size_t>(t);
-    }
-};
-
-/*
-How to use:
-1. AST with default root node
-2. 
-*/
-
 class AST {
 public:
 public:
@@ -29,11 +17,4 @@ public:
 
 private:
     std::unique_ptr<ASTNode> root;
-};
-
-class Utility {
-public:
-    static std::string getTNodeTypeString(ASTNodeType t);
-    static std::string getOperatorStringFromTNodeType(ASTNodeType t);
-    static std::string getExprString(const ASTNode& tNode);
 };
