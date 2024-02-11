@@ -1,6 +1,3 @@
-#ifndef QUERYEVALUATOR_H
-#define QUERYEVALUATOR_H
-
 #include <iostream>
 #include <memory>
 #include <string>
@@ -139,5 +136,3 @@ public:
 
 
 };
-
-#endif // QUERYEVALUATOR_H
