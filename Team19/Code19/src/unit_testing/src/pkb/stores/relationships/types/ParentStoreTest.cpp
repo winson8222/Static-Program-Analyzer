@@ -39,7 +39,7 @@ TEST_CASE("ParentStore Functionality") {
         auto keyValueRelationships = parentStore.getKeyValueRelationships();
 
         // Defines the expected mapping of parent to child(ren) for validation.
-        auto expected = unordered_map<int, unordered_set<int>>{{1, {2, 3}}}; // Statement 1 has children Statements 2 and 3.
+        auto expected = std::unordered_map<int, std::unordered_set<int>>{{1, {2, 3}}}; // Statement 1 has children Statements 2 and 3.
 
         // Compares the retrieved relationships against the expected mapping.
         REQUIRE(keyValueRelationships == expected);

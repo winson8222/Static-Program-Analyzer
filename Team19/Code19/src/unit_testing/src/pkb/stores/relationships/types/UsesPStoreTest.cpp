@@ -37,7 +37,7 @@ TEST_CASE("UsesPStore Functionality") {
 
         // Verify retrieval of all procedures that use the variable "x".
         auto proceduresUsingX = usesPStore.getRelationshipsByValue("x");
-        auto expectedProcedures = unordered_set<std::string>{"main", "computeCentroid"};
+        auto expectedProcedures = std::unordered_set<std::string>{"main", "computeCentroid"};
 
         REQUIRE(proceduresUsingX == expectedProcedures); // Both "main" and "computeCentroid" use "x".
     }
@@ -50,7 +50,7 @@ TEST_CASE("UsesPStore Functionality") {
 
         // Verify retrieval of all variables used by the "main" procedure.
         auto variablesUsedByMain = usesPStore.getRelationshipsByKey("main");
-        auto expectedVariables = unordered_set<std::string>{"x", "y"};
+        auto expectedVariables = std::unordered_set<std::string>{"x", "y"};
 
         REQUIRE(variablesUsedByMain == expectedVariables); // "main" uses variables "x" and "y".
     }
