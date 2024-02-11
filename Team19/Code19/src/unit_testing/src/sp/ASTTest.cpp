@@ -21,10 +21,10 @@ TEST_CASE("ast test 1", "[readFileToString]") {
     ast2.setValue("y");
     REQUIRE(ast2.value == "y");
 
-    auto ast2_ptr = std::make_unique<ASTNode>(ASTNodeType::VARIABLE, 1, "x");
-    auto ast3_ptr = std::make_unique<ASTNode>(ASTNodeType::CONSTANT, 1, "1");
+    auto ast2_ptr = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "x");
+    auto ast3_ptr = std::make_shared<ASTNode>(ASTNodeType::CONSTANT, 1, "1");
 
-    auto ast4_ptr = std::make_unique<ASTNode>(ASTNodeType::CONSTANT, 2, "2");
+    auto ast4_ptr = std::make_shared<ASTNode>(ASTNodeType::CONSTANT, 2, "2");
     ast3_ptr->addChild(std::move(ast4_ptr));
     ast1.addChild(std::move(ast2_ptr));
     ast1.addChild(std::move(ast3_ptr));
@@ -33,9 +33,9 @@ TEST_CASE("ast test 1", "[readFileToString]") {
 
 TEST_CASE("ast test 2", "[readFileToString]") {
     ASTNode ast1 = ASTNode(ASTNodeType::ADD, 1, Utility::getASTNodeType(ASTNodeType::ADD));
-    std::unique_ptr<ASTNode> rootNode = std::make_unique<ASTNode>(ASTNodeType::ASSIGN, 1, Utility::getASTNodeType(ASTNodeType::ASSIGN));
-    std::unique_ptr<ASTNode> childNode1 = std::make_unique<ASTNode>(ASTNodeType::VARIABLE, 1, "x");
-    std::unique_ptr<ASTNode> childNode2 = std::make_unique<ASTNode>(ASTNodeType::CONSTANT, 1, "1");
+    auto rootNode = std::make_shared<ASTNode>(ASTNodeType::ASSIGN, 1, Utility::getASTNodeType(ASTNodeType::ASSIGN));
+    auto childNode1 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "x");
+    auto childNode2 = std::make_shared<ASTNode>(ASTNodeType::CONSTANT, 1, "1");
 
     AST ast(std::move(rootNode));
 
@@ -55,20 +55,20 @@ TEST_CASE("ast test 3", "[readFileToString]") {
     */
     ASTNode ast1 = ASTNode(ASTNodeType::STATEMENT_LIST, 1, Utility::getASTNodeType(ASTNodeType::STATEMENT_LIST));
 
-    auto ast2 = std::make_unique<ASTNode>(ASTNodeType::VARIABLE, 1, "i");
-    auto ast3 = std::make_unique<ASTNode>(ASTNodeType::ASSIGN, 1, Utility::getASTNodeType(ASTNodeType::ASSIGN));
-    auto ast4 = std::make_unique<ASTNode>(ASTNodeType::CONSTANT, 1, "1");
+    auto ast2 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "i");
+    auto ast3 = std::make_shared<ASTNode>(ASTNodeType::ASSIGN, 1, Utility::getASTNodeType(ASTNodeType::ASSIGN));
+    auto ast4 = std::make_shared<ASTNode>(ASTNodeType::CONSTANT, 1, "1");
 
-    auto ast5 = std::make_unique<ASTNode>(ASTNodeType::WHILE, 2, Utility::getASTNodeType(ASTNodeType::WHILE));
-    auto ast6 = std::make_unique<ASTNode>(ASTNodeType::VARIABLE, 2, "i");
-    auto ast7 = std::make_unique<ASTNode>(ASTNodeType::LESSER, 2, Utility::getASTNodeType(ASTNodeType::LESSER));
-    auto ast8 = std::make_unique<ASTNode>(ASTNodeType::CONSTANT, 2, "3");
+    auto ast5 = std::make_shared<ASTNode>(ASTNodeType::WHILE, 2, Utility::getASTNodeType(ASTNodeType::WHILE));
+    auto ast6 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 2, "i");
+    auto ast7 = std::make_shared<ASTNode>(ASTNodeType::LESSER, 2, Utility::getASTNodeType(ASTNodeType::LESSER));
+    auto ast8 = std::make_shared<ASTNode>(ASTNodeType::CONSTANT, 2, "3");
 
-    auto ast9 = std::make_unique<ASTNode>(ASTNodeType::VARIABLE, 3, "i");
-    auto ast10 = std::make_unique<ASTNode>(ASTNodeType::ASSIGN, 3, Utility::getASTNodeType(ASTNodeType::ASSIGN));
-    auto ast11 = std::make_unique<ASTNode>(ASTNodeType::VARIABLE, 3, "i");
-    auto ast12 = std::make_unique<ASTNode>(ASTNodeType::ADD, 3, Utility::getASTNodeType(ASTNodeType::ADD));
-    auto ast13 = std::make_unique<ASTNode>(ASTNodeType::CONSTANT, 3, "1");
+    auto ast9 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 3, "i");
+    auto ast10 = std::make_shared<ASTNode>(ASTNodeType::ASSIGN, 3, Utility::getASTNodeType(ASTNodeType::ASSIGN));
+    auto ast11 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 3, "i");
+    auto ast12 = std::make_shared<ASTNode>(ASTNodeType::ADD, 3, Utility::getASTNodeType(ASTNodeType::ADD));
+    auto ast13 = std::make_shared<ASTNode>(ASTNodeType::CONSTANT, 3, "1");
 
     ast12->addChild(std::move(ast11));
     ast12->addChild(std::move(ast13));
@@ -102,6 +102,6 @@ TEST_CASE("ast test 3", "[readFileToString]") {
         lines.insert(line);
     }
     std::cout << output << std::endl;
-    REQUIRE(lines.size() == 13);
+    REQUIRE(lines.size() == 14);
     REQUIRE(lines.find("        Type: Constant, Line Number: 3, Value: 1") != lines.end());
 }

@@ -1,5 +1,4 @@
-#include <sp/SourceProcessor.h>
-#include <sp/LexicalToken.h>
+#include "sp/SourceProcessor.h"
 #include <iostream>
 
 SourceProcessor::SourceProcessor(PKBManager pkbManager) {
@@ -7,17 +6,28 @@ SourceProcessor::SourceProcessor(PKBManager pkbManager) {
     std::cout << "File created" << std::endl;
 }
 
-void SourceProcessor::parseSource(std::string filepath) {
-    // Tokenize and parse source file
-    
-    // Parse tokens into AST (not implemented)
-    // AST ast = parser.parse(tokens);
-
-    // Populate PKB with AST information
-    populatePKB();
+void SourceProcessor::reset() {
 }
 
-void SourceProcessor::populatePKB() {
+void SourceProcessor::tokenize(std::string filepath) {
+    // Tokenize and parse source file
+    std::vector<LexicalToken> tokens = Tokenizer::tokenize(filepath);
+    this->tokens = tokens;
+    // Parse tokens into AST (not implemented)
+    // AST ast = parser.parse(tokens);
+}
+
+void SourceProcessor::parse() {
+	// Parse tokens into AST (not implemented)
+	// AST ast = parser.parse(tokens);
+}
+
+void SourceProcessor::buildAST() {
+	// Build AST from parsed tokens (not implemented)
+	// this->root = ast.build();
+}
+
+void SourceProcessor::extractAndPopulate() {
     // Use PKBWriter to insert entities and relationships into PKB
     std::shared_ptr<PKBWriter> pkbWriter = this->pkbManager.getPKBWriter();
 

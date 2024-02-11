@@ -6,6 +6,11 @@
 // ai-gen start (gpt, 2, e)
 // prompt: https://chat.openai.com/share/a181de60-e76f-496c-9bee-7ea80f2be651
 
+ASTNode::ASTNode() {
+	this->type = ASTNodeType::PROGRAMS;
+	this->lineNumber = 0;
+	this->value = "default";
+}
 
 ASTNode::ASTNode(ASTNodeType type, int lineNumber, std::string value) {
     this->type = type;
@@ -13,7 +18,7 @@ ASTNode::ASTNode(ASTNodeType type, int lineNumber, std::string value) {
     this->value = value;
 }
 
-void ASTNode::addChild(std::unique_ptr<ASTNode> child) {
+void ASTNode::addChild(std::shared_ptr<ASTNode> child) {
     this->children.push_back(std::move(child));
 }
 
@@ -34,7 +39,7 @@ std::size_t ASTNode::hash() const {
 
 // Method to convert AST node to a string
 std::string ASTNode::toString() const {
-    return recursiveString(0);
+    return "String demon: \n" + recursiveString(0);
 }
 
 // Helper method to convert AST node to a string recursively

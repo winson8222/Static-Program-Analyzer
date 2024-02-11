@@ -28,15 +28,15 @@ enum class ASTNodeType {
 class ASTNode {
 public:
     // constructor for AST
-    ASTNode() = default;
+    ASTNode();
     ASTNode(ASTNodeType type, int lineNumber, std::string value);
 
     // define type of AST node
     ASTNodeType type;
     // define children of the AST
-    std::vector<std::unique_ptr<ASTNode>> children;
+    std::vector<std::shared_ptr<ASTNode>> children;
     // add children to the AST node
-    void addChild(std::unique_ptr<ASTNode> child);    // hash the AST
+    void addChild(std::shared_ptr<ASTNode> child);    // hash the AST
     // define line number
     int lineNumber;
     // define value of the current node
@@ -50,6 +50,6 @@ public:
     std::string toString() const;
 
 private:
-    std::unique_ptr<ASTNode> root;
+    std::shared_ptr<ASTNode> root;
     std::string recursiveString(int tabs) const;
 };
