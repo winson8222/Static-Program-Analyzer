@@ -33,16 +33,22 @@ public:
             // check what is the type of synonym required
             if (requiredType == "stmt") {
                 string suchThatType = parsingResult.getSuchThatClauseRelationship().getValue();
+                if (suchThatType == "") {
+                    const unordered_set<int>& follows = pkbReader->getAllStmts();
+                    for (int i : follows) {
+                        result.insert(to_string(i));
+                    }
+				}
                 if (suchThatType == "Follows") {
-                    unordered_set<string> newResults = evaluateFollows();
+                    result = evaluateFollows();
                 }
-
+                // else if (suchThatType == "Parent") {
+                   // evaluateParents();
+                //}
 //                } else if (suchThatType == "Modifies") {
 //                    evaluateModifies();
 //                } else if (suchThatType == "Uses") {
 //                    evaluateUses();
-//                } else if (suchThatType == "Parent") {
-//                    evaluateParents();
 //                }
 
 
