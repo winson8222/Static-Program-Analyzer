@@ -2,60 +2,63 @@
 #include "Utility.h"
 #include <sstream>
 
+// ai-gen start (gpt, 2, e)
+// prompt: https://chat.openai.com/share/a181de60-e76f-496c-9bee-7ea80f2be651
+
 std::string Utility::getASTNodeType(ASTNodeType t) {
     switch (t) {
         case ASTNodeType::PROGRAMS:
             return "Program";
         case ASTNodeType::PROCEDURE:
-            return "procedure";
+            return "Procedure";
         case ASTNodeType::STATEMENT_LIST:
-            return "stmtLst";
+            return "StatementList";
         case ASTNodeType::ASSIGN:
-            return "assign";
+            return "Assign";
         case ASTNodeType::CALL:
-            return "call";
+            return "Call";
         case ASTNodeType::IF_ELSE_THEN:
-            return "if-else-then";
+            return "IfElseThen";
         case ASTNodeType::PRINT:
-            return "print";
+            return "Print";
         case ASTNodeType::READ:
-            return "read";
+            return "Read";
         case ASTNodeType::WHILE:
-            return "while";
+            return "While";
         case ASTNodeType::NOT:
-            return "!";
+            return "Not";
         case ASTNodeType::AND:
-            return "&&";
+            return "And";
         case ASTNodeType::OR:
-            return "||";
+            return "Or";
         case ASTNodeType::GREATER:
-            return ">";
+            return "Greater";
         case ASTNodeType::GREATER_OR_EQUAL:
-            return ">=";
+            return "GreaterOrEqual";
         case ASTNodeType::LESSER:
-            return "<";
+            return "Lesser";
         case ASTNodeType::LESSER_OR_EQUAL:
-            return "<=";
+            return "LesserOrEqual";
         case ASTNodeType::EQUAL:
-            return "==";
+            return "EqualEqual";
         case ASTNodeType::NOT_EQUAL:
-            return "!=";
+            return "NotEqual";
         case ASTNodeType::ADD:
-            return "+";
+            return "Add";
         case ASTNodeType::SUBTRACT:
-            return "-";
+            return "Subtract";
         case ASTNodeType::MULTIPLY:
-            return "*";
+            return "Multiply";
         case ASTNodeType::DIVIDE:
-            return "/";
+            return "Divide";
         case ASTNodeType::MODULO:
-            return "%";
+            return "Modulo";
         case ASTNodeType::VARIABLE:
             return "Variable";
         case ASTNodeType::CONSTANT:
             return "Constant";
         case ASTNodeType::ERROR:
-            return "error";
+            return "Error";
         default:
             throw "Error";
     };

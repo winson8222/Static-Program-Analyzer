@@ -11,7 +11,6 @@
 
 class AST {
 public:
-public:
     AST(std::unique_ptr<ASTNode> root);
     const ASTNode* getRoot() const;
 
