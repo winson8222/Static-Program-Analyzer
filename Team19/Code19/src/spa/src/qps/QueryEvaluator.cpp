@@ -112,17 +112,23 @@ public:
         }
     }
 
+    /**
+     * Modifies the 'result' set to contain only elements that are also present in 'newResult'.
+     * This function effectively computes the intersection of 'result' and 'newResult'.
+     *
+     * @param newResult The set with which the intersection is to be found.
+     */
     void combineResults(const std::unordered_set<std::string>& newResult) {
-        std::unordered_set<std::string> intersection;
-
-        for (const auto& item : newResult) {
-            if (result.find(item) != result.end()) {
-                intersection.insert(item);
+        for (auto it = result.begin(); it != result.end(); ) {
+            if (newResult.find(*it) == newResult.end()) {
+                it = result.erase(it);
+            }
+            else {
+                ++it;
             }
         }
-
-        result = intersection;
     }
+
 
 
 
