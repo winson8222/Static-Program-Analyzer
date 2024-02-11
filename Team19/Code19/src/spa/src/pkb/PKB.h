@@ -18,6 +18,7 @@
 #include "pkb/stores/entities/types/VariableStore.h"
 #include "pkb/stores/entities/types/ConstantStore.h"
 #include "pkb/stores/entities/types/ProcedureStore.h"
+#include <memory>
 
 class PKB {
 private:
