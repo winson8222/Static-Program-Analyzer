@@ -37,6 +37,7 @@ public:
     std::vector<std::shared_ptr<ASTNode>> children;
     // add children to the AST node
     void addChild(std::shared_ptr<ASTNode> child);    // hash the AST
+
     // define line number
     int lineNumber;
     // define value of the current node
@@ -45,6 +46,7 @@ public:
     
     // hash the ASTNode
     std::size_t hash() const;
+    bool operator==(const ASTNode& other) const;
 
     // convert to string
     std::string toString() const;
@@ -53,3 +55,13 @@ private:
     std::shared_ptr<ASTNode> root;
     std::string recursiveString(int tabs) const;
 };
+
+
+namespace std {
+    template<> struct hash<ASTNode> {
+        std::size_t operator()(const ASTNode& node) const {
+            // Combine hash values of type, lineNumber, and value
+            return std::hash<long long>{}(node.hash());
+        }
+    };
+}

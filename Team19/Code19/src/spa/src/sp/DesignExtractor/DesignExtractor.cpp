@@ -3,10 +3,12 @@
 
 #include "sp/AST/ASTNode.h"
 #include "DesignExtractor.h"
+#include <unordered_set>
 
-DesignExtractor::DesignExtractor(std::shared_ptr<ASTNode> root)
-    : root(std::move(root)) {
+DesignExtractor::DesignExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriter> pkbWriter)
+    : root(std::move(root)), pkbWriter(std::move(pkbWriter)) {
     // No need to assign them in the constructor body
+    std::cout << "Initialized" << std::endl;
 }
 
 void DesignExtractor::extractFollows() {
@@ -69,7 +71,32 @@ void DesignExtractor::extractPrint() {
     // Implementation of extractPrint method goes here
 }
 
-void DesignExtractor::extractVariablesRecursive(ASTNode* node, std::unordered_set<std::string>& variables) {
+std::unordered_set<std::string> DesignExtractor::extractVariables() {
     // Recursive function to traverse the AST and extract variables
     // Implementation of extractVariablesRecursive method goes here
+    std::vector<ASTNode> variables;
+    recursivelyExtractVariables(root, variables);
+
+    std::unordered_set<std::string> variableNames;
+    for (auto node : variables) {
+		variableNames.insert(node.value);
+	}
+    
+    for (auto val : variableNames) {
+		this->pkbWriter->insertVariable(val);
+	}
+	return variableNames;
+}
+
+void DesignExtractor::recursivelyExtractVariables(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& variables) {
+    // Check if the current node is of type Variable
+    if (node->type == ASTNodeType::VARIABLE) {
+        // If it's a variable node, add it to the set
+        variables.push_back(*node);
+    }
+
+    // Recursively traverse children
+    for (const auto& child : node->children) {
+        recursivelyExtractVariables(child, variables);
+    }
 }

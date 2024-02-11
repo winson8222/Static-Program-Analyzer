@@ -55,3 +55,9 @@ std::string ASTNode::recursiveString(int tabs) const {
     }
     return stringStream.str();
 }
+
+bool ASTNode::operator==(const ASTNode& other) const {
+    return type == other.type &&
+        lineNumber == other.lineNumber &&
+        value == other.value;
+}

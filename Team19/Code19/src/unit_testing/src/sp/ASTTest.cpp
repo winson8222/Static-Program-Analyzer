@@ -105,3 +105,10 @@ TEST_CASE("ast test 3", "[readFileToString]") {
     REQUIRE(lines.size() == 14);
     REQUIRE(lines.find("        Type: Constant, Line Number: 3, Value: 1") != lines.end());
 }
+
+TEST_CASE("ast test 4", "[readFileToString]") {
+    auto ast1 = std::make_shared<ASTNode>(ASTNodeType::ADD, 1, Utility::getASTNodeType(ASTNodeType::ADD));
+    auto ast2 = std::make_shared<ASTNode>(ASTNodeType::ADD, 1, Utility::getASTNodeType(ASTNodeType::ADD));
+    std::cout << ast1->hash() << std::endl;
+
+}
