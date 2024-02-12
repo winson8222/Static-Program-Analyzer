@@ -69,15 +69,16 @@ void DesignExtractor::extractAll() {
 	extractUses();
 	extractModifies();
 
+    this->stringInformation[Utility::getDesignType(ASTNodeType::PROCEDURE)] = extractProcedures();
 
     this->intInformation[Utility::getDesignType(ASTNodeType::ASSIGN)] = extractAssigns();
-    this->stringInformation[Utility::getDesignType(ASTNodeType::PROCEDURE)] = extractProcedures();
-    this->intInformation[Utility::getDesignType(ASTNodeType::STATEMENT_LIST)] = extractStatements();
     this->intInformation[Utility::getDesignType(ASTNodeType::IF_ELSE_THEN)] = extractIf();
     this->intInformation[Utility::getDesignType(ASTNodeType::WHILE)] = extractWhiles();
     this->intInformation[Utility::getDesignType(ASTNodeType::CALL)] = extractCall();
     this->intInformation[Utility::getDesignType(ASTNodeType::READ)] = extractRead();
     this->intInformation[Utility::getDesignType(ASTNodeType::PRINT)] = extractPrint();
+
+    this->intInformation[Utility::getDesignType(ASTNodeType::STATEMENT_LIST)] = extractStatements();
 
     this->stringInformation[Utility::getDesignType(ASTNodeType::CONSTANT)] = extractConstants();
     this->stringInformation[Utility::getDesignType(ASTNodeType::VARIABLE)] = extractVariables();
@@ -155,7 +156,22 @@ std::unordered_set<int> DesignExtractor::extractAssigns() {
 
 std::unordered_set<int> DesignExtractor::extractStatements() {
     // Implementation of extractStatements method goes here
-    return std::unordered_set<int>();
+    std::unordered_set<int> allStatements;
+    
+    std::unordered_set<int> assigns = this->intInformation[Utility::getDesignType(ASTNodeType::ASSIGN)];
+    std::unordered_set<int> ifs = this->intInformation[Utility::getDesignType(ASTNodeType::IF_ELSE_THEN)];
+    std::unordered_set<int> whiles = this->intInformation[Utility::getDesignType(ASTNodeType::WHILE)];
+    std::unordered_set<int> calls = this->intInformation[Utility::getDesignType(ASTNodeType::CALL)];
+    std::unordered_set<int> reads = this->intInformation[Utility::getDesignType(ASTNodeType::READ)];
+    std::unordered_set<int> prints = this->intInformation[Utility::getDesignType(ASTNodeType::PRINT)];
+
+    allStatements.insert(assigns.begin(), assigns.end());
+    allStatements.insert(ifs.begin(), ifs.end());
+    allStatements.insert(whiles.begin(), whiles.end());
+    allStatements.insert(calls.begin(), calls.end());
+    allStatements.insert(reads.begin(), reads.end());
+    allStatements.insert(prints.begin(), prints.end());
+    return allStatements;
 }
 
 std::unordered_set<int> DesignExtractor::extractIf() {

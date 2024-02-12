@@ -63,4 +63,11 @@ TEST_CASE("Unit tests for Statement Extractor", "[DesignExtractor::extract]") {
     REQUIRE(extractedCall == expectedCall);
     REQUIRE(extractedPrint == expectedPrint);
     REQUIRE(extractedRead == expectedRead);
+
+    ast1->addChild(std::move(std::make_shared<ASTNode>(ASTNodeType::PROCEDURE, 7, "procedure")));
+    designExtractor.extractAll();
+    std::unordered_set<int> extractedStatements = designExtractor.extractStatements();
+    std::unordered_set<int> expectedStatements = {1, 2, 3, 4, 5, 6};
+
+    REQUIRE(extractedStatements == expectedStatements);
 }
