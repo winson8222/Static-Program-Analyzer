@@ -17,8 +17,9 @@ enum class ASTNodeType {
     NOT, AND, OR, GREATER, GREATER_OR_EQUAL, LESSER, LESSER_OR_EQUAL,EQUAL, NOT_EQUAL,
     ADD, SUBTRACT, MULTIPLY, DIVIDE, MODULO,
 
-    // Leaves
+    // Entities
     VARIABLE, CONSTANT,
+
     OTHER,
 
     ERROR,

@@ -32,18 +32,25 @@ public:
     void extractModifies();
     void extractAssigns();
     std::unordered_set<std::string> extractConstants();
-    void extractProcedures();
-    void extractStatements();
+    std::unordered_set<std::string> extractProcedures();
+    std::unordered_set<std::string> extractStatements();
     void extractIf();
     void extractWhiles();
     std::unordered_set<std::string> extractCall();
-    void extractRead();
-    void extractPrint();
+    std::unordered_set<std::string> extractRead();
+    std::unordered_set<std::string> extractPrint();
     std::unordered_set<std::string> extractVariables();
     std::shared_ptr<ASTNode> root;
     std::shared_ptr<PKBWriter> pkbWriter;
 
 private:
-    void recursivelyExtractVariables(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& variables);
-	void recursivelyExtractConstants(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& constants);
+    void entityRecursiveExtractor(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& entities, ASTNodeType type);
+    void statementRecursiveExtractor(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& statements, ASTNodeType type);
+    void procedureRecursiveExtractor(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& procedures);
+
+    // To be implemented later
+    // void relationRecursiveExtractor(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& relations, ASTNodeType type);
+
+    // void recursivelyExtractVariables(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& variables);
+	// void recursivelyExtractConstants(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& constants);
 };

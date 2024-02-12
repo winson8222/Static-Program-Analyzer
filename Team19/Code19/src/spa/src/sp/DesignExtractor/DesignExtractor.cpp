@@ -27,6 +27,16 @@ void DesignExtractor::populatePKB() {
     std::cout << "PKB Populated\n" << std::endl;
 }
 
+/*
+For references
+std::shared_ptr<ASTNode> parseProcedure();
+std::shared_ptr<ASTNode> parseStmtLst();
+std::shared_ptr<ASTNode> parseStmt();
+std::shared_ptr<ASTNode> parseRead();
+std::shared_ptr<ASTNode> parsePrint();
+std::shared_ptr<ASTNode> parseCall();
+*/
+
 void DesignExtractor::extractAll() {
 	// Implementation of extractAll method goes here
 	extractFollows();
@@ -48,6 +58,30 @@ void DesignExtractor::extractAll() {
 
     std::cout << "Information Extracted\n" << std::endl;
 }
+
+void DesignExtractor::entityRecursiveExtractor(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& entities, ASTNodeType type) {
+    if (node->type == type) {
+        // If it's a variable node, add it to the set
+        entities.push_back(*node);
+    }
+    // Recursively traverse children
+    for (const auto& child : node->children) {
+        entityRecursiveExtractor(child, entities, type);
+    }
+}
+
+
+void DesignExtractor::statementRecursiveExtractor(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& statements, ASTNodeType type) {
+
+
+}
+
+void DesignExtractor::procedureRecursiveExtractor(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& procedures) {
+
+}
+
+
+
 
 void DesignExtractor::extractFollows() {
     // Implementation of extractFollows method goes here
@@ -77,39 +111,16 @@ void DesignExtractor::extractAssigns() {
     // Implementation of extractAssigns method goes here
 }
 
-std::unordered_set<std::string> DesignExtractor::extractConstants() {
-    // Implementation of extractConstants method goes here
-    std::vector<ASTNode> constants;
-    recursivelyExtractConstants(root, constants);
-    
-    std::unordered_set<std::string> constantValues;
-    for (auto node : constants) {
-        constantValues.insert(node.value);
-    }
 
-    return constantValues;
-}
 
-void DesignExtractor::recursivelyExtractConstants(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& constants) {
-    	// Check if the current node is of type Constant
-    if (node->type == ASTNodeType::CONSTANT) {
-		// If it's a constant node, add it to the set
-		constants.push_back(*node);
-	}
-
-	// Recursively traverse children
-    for (const auto& child : node->children) {
-		recursivelyExtractConstants(child, constants);
-	}
-
-}
-
-void DesignExtractor::extractProcedures() {
+std::unordered_set<std::string> DesignExtractor::extractProcedures() {
     // Implementation of extractProcedures method goes here
+    return std::unordered_set<std::string>();
 }
 
-void DesignExtractor::extractStatements() {
+std::unordered_set<std::string> DesignExtractor::extractStatements() {
     // Implementation of extractStatements method goes here
+    return std::unordered_set<std::string>();
 }
 
 void DesignExtractor::extractIf() {
@@ -125,19 +136,23 @@ std::unordered_set<std::string> DesignExtractor::extractCall() {
     return std::unordered_set<std::string>();
 }
 
-void DesignExtractor::extractRead() {
+std::unordered_set<std::string> DesignExtractor::extractRead() {
     // Implementation of extractRead method goes here
+    return std::unordered_set<std::string>();
 }
 
-void DesignExtractor::extractPrint() {
+std::unordered_set<std::string> DesignExtractor::extractPrint() {
     // Implementation of extractPrint method goes here
+    return std::unordered_set<std::string>();
 }
+
+// Entities
 
 std::unordered_set<std::string> DesignExtractor::extractVariables() {
     // Recursive function to traverse the AST and extract variables
     // Implementation of extractVariablesRecursive method goes here
     std::vector<ASTNode> variables;
-    recursivelyExtractVariables(root, variables);
+    entityRecursiveExtractor(root, variables, ASTNodeType::VARIABLE);
 
     std::unordered_set<std::string> variableNames;
     for (auto node : variables) {
@@ -147,15 +162,16 @@ std::unordered_set<std::string> DesignExtractor::extractVariables() {
 	return variableNames;
 }
 
-void DesignExtractor::recursivelyExtractVariables(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& variables) {
-    // Check if the current node is of type Variable
-    if (node->type == ASTNodeType::VARIABLE) {
-        // If it's a variable node, add it to the set
-        variables.push_back(*node);
+
+std::unordered_set<std::string> DesignExtractor::extractConstants() {
+    // Implementation of extractConstants method goes here
+    std::vector<ASTNode> constants;
+    entityRecursiveExtractor(root, constants, ASTNodeType::CONSTANT);
+
+    std::unordered_set<std::string> constantValues;
+    for (auto node : constants) {
+        constantValues.insert(node.value);
     }
 
-    // Recursively traverse children
-    for (const auto& child : node->children) {
-        recursivelyExtractVariables(child, variables);
-    }
+    return constantValues;
 }
