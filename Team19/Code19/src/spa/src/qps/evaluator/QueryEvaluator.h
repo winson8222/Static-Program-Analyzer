@@ -13,7 +13,7 @@ private:
 
 public:
     QueryEvaluator(std::shared_ptr<PKBReader> pkb, ParsingResult& parsingResult);
-    void evaluateQuery();
+    std::vector<string> evaluateQuery();
     void addStrategy(std::unique_ptr<QueryEvaluationStrategy> strategy); // Method to add strategies
     void combineResults(const std::unordered_set<std::string>& newResult); // Combine results from multiple strategies
 };
