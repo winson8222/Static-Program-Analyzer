@@ -25,7 +25,7 @@ public:
 	void parseStmtLst();
 	void parseStmt();
 	ReadStmt parseRead();
-	PrintStmt parsePrint();
+	std::shared_ptr<ASTNode> parsePrint();
 	std::shared_ptr<ASTNode> parseCall();
 	void parseWhile();
 	void parseIf();

@@ -117,7 +117,7 @@ ReadStmt SimpleParser::parseRead() {
 	// Add the readStmt to the Tree.
 }
 
-PrintStmt SimpleParser::parsePrint() {
+std::shared_ptr<ASTNode> SimpleParser::parsePrint() {
 	LexicalToken keyword = this->getToken();
 	this->assertToken(keyword, LexicalTokenType::KEYWORD_PRINT);
 
@@ -127,9 +127,9 @@ PrintStmt SimpleParser::parsePrint() {
 	LexicalToken semicolon = this->getToken();
 	this->assertToken(semicolon, LexicalTokenType::SYMBOL_SEMICOLON);
 
-	return PrintStmt(variable, keyword.getLine(), semicolon.getLine());
+	PrintStmt printStmt = PrintStmt(variable, keyword.getLine(), semicolon.getLine());
 
-	// Add the printStmt to the Tree.
+	return printStmt.buildTree();
 }
 
 // To change to void later when building trees.
@@ -146,8 +146,6 @@ std::shared_ptr<ASTNode> SimpleParser::parseCall() {
 	CallStmt callStmt = CallStmt(variable, keyword.getLine(), semicolon.getLine());
 
 	return callStmt.buildTree();
-
-	// Add the callStmt to the Tree.
 }
 
 void SimpleParser::parseWhile() {
