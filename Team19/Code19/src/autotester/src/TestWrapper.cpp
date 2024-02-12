@@ -34,14 +34,19 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
 	  // ...code to evaluate query...
 
 	  // example code
+	std::string x = "x";
+	pkbWriter->insertVariable(x);
+	
 	Tokenizer tokenizer("variable v; Select v");
 	vector<Token> tokens = tokenizer.tokenize();
 	QueryParser parser(tokens);
 	auto parsingResult = parser.parse();
 
 	QueryEvaluator evaluator(pkbReader, parsingResult);
-	results = evaluator.evaluateQuery();
-
+	std::unordered_set<string> res = evaluator.evaluateQuery();
+	for (auto it = res.begin(); it != res.end(); it++) {
+		results.push_back(*it);
+	}
 
 	/*
 	std::unordered_set<string> res = pkbReader->getAllVariables();
