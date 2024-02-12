@@ -69,5 +69,6 @@ TEST_CASE("Unit tests for Statement Extractor", "[DesignExtractor::extract]") {
     std::unordered_set<int> extractedStatements = designExtractor.extractStatements();
     std::unordered_set<int> expectedStatements = {1, 2, 3, 4, 5, 6};
 
+    REQUIRE(extractedStatements.size() == 6);
     REQUIRE(extractedStatements == expectedStatements);
 }

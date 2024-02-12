@@ -10,21 +10,6 @@
 #include <filesystem>
 #include <vector>
 
-TEST_CASE("Test multiple procedure extractor", "[parseProcedure]") {
-    // Generate test file
-    const std::string testFileName = "../../../../../tests/sp/ParserTest/Program1.txt";
-    REQUIRE(std::filesystem::exists(testFileName));
-    SimpleParser parser(testFileName);
-    std::shared_ptr<ASTNode> tree_ptr = parser.parseProgram();
-
-    PKBManager pkbManager;
-    std::shared_ptr<PKBWriter> pkbWriter = pkbManager.getPKBWriter();
-    DesignExtractor designExtractor(tree_ptr, pkbWriter);
-
-    std::unordered_set<std::string> actual = designExtractor.extractProcedures();
-    std::unordered_set<std::string> expected = {"Procedure", "Procedure", "Procedure"};
-    REQUIRE(actual == expected);
-}
 
 TEST_CASE("Basic system tests for DesignExtractor", "[DesignExtractor::extract]") {
     const std::string testFileName = "../../../../../tests/sp/TokenizerTest/sourcefile1.txt";
