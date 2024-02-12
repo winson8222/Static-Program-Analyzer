@@ -21,7 +21,7 @@ bool SimpleParser::hasTokensLeft() const {
 	return this->tokenIndex < this->tokenStream.size();
 }
 
-// Gets token, without advancing the pointer.
+// Gets token, without advancing the index.
 LexicalToken SimpleParser::peekToken() const {
 	if (this->hasTokensLeft()) {
 		return this->tokenStream[this->tokenIndex];
@@ -31,6 +31,7 @@ LexicalToken SimpleParser::peekToken() const {
 	}
 }
 
+// Gets token, and advance the index to look for the next token.
 LexicalToken SimpleParser::getToken() {
 	if (this->hasTokensLeft()) {
 		LexicalToken token = this->tokenStream[this->tokenIndex];
