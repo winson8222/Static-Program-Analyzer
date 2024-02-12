@@ -8,13 +8,14 @@
 #include "PrintStmt.h"
 #include "StmtList.h"
 #include "Procedure.h"
+#include "Program.h"
 
 // ai-gen start(gpt,2,e)
 // Prompt: https://platform.openai.com/playground/p/cJLjmmneCEs4z6ms7ZkBSxJB?model=gpt-4&mode=chat
 class SimpleParser {
 public:
 	SimpleParser(std::string);
-	void parseProgram();
+	std::shared_ptr<ASTNode> parseProgram();
 
 	// private:
 	std::vector<LexicalToken> tokenStream;

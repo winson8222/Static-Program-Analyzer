@@ -11,10 +11,23 @@ SimpleParser::SimpleParser(std::string filename) {
 	this->tokenIndex = 0;
 }
 
-void SimpleParser::parseProgram() {
+std::shared_ptr<ASTNode> SimpleParser::parseProgram() {
+	std::vector<std::shared_ptr<ASTNode>> procedures;
+
 	while (this->hasTokensLeft()) {
-		parseProcedure();
+		if (this->peekToken().getTokenType() == LexicalTokenType::WHITESPACE) {
+			this->getToken();
+			continue;
+		}
+
+		procedures.push_back(this->parseProcedure());
 	}
+
+	// Depending on how important the the number of lines is to the code, find out whether to further go ahead
+	// with finding the number of lines.
+	Program program = Program(-1, procedures);
+
+	return program.buildTree();
 }
 
 bool SimpleParser::hasTokensLeft() const {
