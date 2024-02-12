@@ -102,7 +102,7 @@ void SimpleParser::parseStmt() {
 	}
 }
 
-ReadStmt SimpleParser::parseRead() {
+std::shared_ptr<ASTNode> SimpleParser::parseRead() {
 	LexicalToken keyword = this->getToken();
 	this->assertToken(keyword, LexicalTokenType::KEYWORD_READ);
 
@@ -112,9 +112,9 @@ ReadStmt SimpleParser::parseRead() {
 	LexicalToken semicolon = this->getToken();
 	this->assertToken(semicolon, LexicalTokenType::SYMBOL_SEMICOLON);
 
-	return ReadStmt(variable, keyword.getLine(), semicolon.getLine());
+	ReadStmt readStmt = ReadStmt(variable, keyword.getLine(), semicolon.getLine());
 
-	// Add the readStmt to the Tree.
+	return readStmt.buildTree();
 }
 
 std::shared_ptr<ASTNode> SimpleParser::parsePrint() {

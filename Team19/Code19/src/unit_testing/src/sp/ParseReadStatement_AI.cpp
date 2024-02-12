@@ -3,21 +3,6 @@
 #include <filesystem>
 // ai-gen start(gpt,2,e)
 // Prompt: https://platform.openai.com/playground/p/BL0U9QBHRxSO8JyQGo0KpEUZ?mode=chat
-TEST_CASE("ReadStmt parsing is working correctly for valid input", "[SimpleParser::parseRead]") {
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/ReadStmt1.txt";
-	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParser parser(testFileName);
-
-	ReadStmt lastStmt = parser.parseRead();
-
-	// Assuming parser has a method to get ReadStmt from parser, getReadStmt() 
-	// which returns the last parsed ReadStmt.
-
-	REQUIRE(lastStmt.getStartLine() == 1);
-	REQUIRE(lastStmt.getEndLine() == 1); // Assuming your logic considers start and end line as similar for ReadStmt.
-}
-
-
 TEST_CASE("ReadStmt parsing throws an error with invalid syntax", "[SimpleParser]") {
 	const std::string testFileName = "../../../../../tests/sp/ParserTest/CallStmt1.txt";
 	REQUIRE(std::filesystem::exists(testFileName));
@@ -36,10 +21,8 @@ TEST_CASE("Testing ReadStmt::buildTree()", "[ReadStmt]") {
 	REQUIRE(std::filesystem::exists(testFileName));
 	SimpleParser parser(testFileName);
 
-	ReadStmt readStmt = parser.parseRead();
-
 	SECTION("Testing tree root node") {
-		std::shared_ptr<ASTNode> tree_ptr = readStmt.buildTree();
+		std::shared_ptr<ASTNode> tree_ptr = parser.parseRead();
 
 		REQUIRE(tree_ptr->type == ASTNodeType::READ);
 		REQUIRE(tree_ptr->lineNumber == 1);
