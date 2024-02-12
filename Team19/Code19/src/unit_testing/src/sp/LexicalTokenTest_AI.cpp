@@ -2,6 +2,7 @@
 // prompt: https://platform.openai.com/playground/p/vwMjpyCtExjgJwMs6KZaXnTE?model=gpt-4&mode=chat
 #include "catch.hpp"
 #include "sp/LexicalToken.h"
+#include "sp/Parser/CallStmt.h"
 
 // Test the constructor with only token type.
 TEST_CASE("Constructor with only type", "[LexicalToken]")
@@ -18,7 +19,7 @@ TEST_CASE("Get TokenType", "[LexicalToken]")
 }
 //ai-gen end
 
-/*
+
 // ai-gen start(gpt, 2, e)
 // Prompt: https://platform.openai.com/playground/p/CRO1bXNAQZB3Adua8DmfPuWb?model=gpt-4&mode=chat
 TEST_CASE("Testing CallStmt::buildTree()", "[CallStmt]") {
@@ -29,17 +30,16 @@ TEST_CASE("Testing CallStmt::buildTree()", "[CallStmt]") {
         std::shared_ptr<ASTNode> tree_ptr = callStmt.buildTree();
 
         REQUIRE(tree_ptr->type == ASTNodeType::CALL);
-        REQUIRE(tree_ptr->lineNumber == 2);
+        REQUIRE(tree_ptr->lineNumber == 1);
         REQUIRE(tree_ptr->value == Utility::getASTNodeType(ASTNodeType::CALL));
 
         SECTION("Testing tree child node") {
             const auto& children = tree_ptr->children;
             REQUIRE(children.size() == 1);
             REQUIRE(children[0]->type == ASTNodeType::VARIABLE);
-            REQUIRE(children[0]->lineNumber == 3);
-            REQUIRE(children[0]->value == "exampleVariable");
+            REQUIRE(children[0]->lineNumber == 1);
+            REQUIRE(children[0]->value == "variable");
         }
     }
 }
 // ai-gen end
-*/
