@@ -10,7 +10,7 @@ void QueryEvaluator::addStrategy(std::unique_ptr<QueryEvaluationStrategy> strate
     strategies.push_back(std::move(strategy));
 }
 
-void QueryEvaluator::evaluateQuery() {
+std::vector<string> QueryEvaluator::evaluateQuery() {
     std::string requiredSynonym = parsingResult.getRequiredSynonym();
     std::string requiredType = parsingResult.getRequiredSynonymType();
 
@@ -32,6 +32,9 @@ void QueryEvaluator::evaluateQuery() {
         std::unordered_set<std::string> strategyResult = strategy->evaluateQuery(*pkbReader, parsingResult);
         combineResults(strategyResult);
     }
+
+    return std::vector<std::string>(result.begin(), result.end());
+
 }
 
 /**
