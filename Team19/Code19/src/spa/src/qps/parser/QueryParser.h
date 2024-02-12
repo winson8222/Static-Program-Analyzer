@@ -3,24 +3,24 @@
 #define QUERYPARSER_H
 
 // Include necessary headers.
-#include "../../spa/src/qps/Token.h"
+#include "../../spa/src/qps/parser/Token.h"
 #include <vector>
 #include <string>
-#include "../../spa/src/qps/Tokenizer.h"
-#include "../../spa/src/qps/ParsingResult.h"
+#include "../../spa/src/qps/parser/Tokenizer.h"
+#include "../../spa/src/qps/parser/ParsingResult.h"
 
 using namespace std;
 
-// The Parser class is used for parsing a sequence of tokens.
+// The parser class is used for parsing a sequence of tokens.
 class QueryParser {
 public:
-    // Initializes the Parser with a vector of tokens to be parsed.
-    // The 'explicit' keyword prevents implicit conversions from vector<Token> to Parser.
+    // Initializes the parser with a vector of tokens to be parsed.
+    // The 'explicit' keyword prevents implicit conversions from vector<Token> to parser.
     explicit QueryParser(const vector<Token>& tokens);
 
     // The parse method initiates the parsing process.
     // Returns true if parsing is successful, false otherwise.
-    bool parse();
+    ParsingResult parse();
 
     ParsingResult getParsingResult() const;  // Method to retrieve the result
 

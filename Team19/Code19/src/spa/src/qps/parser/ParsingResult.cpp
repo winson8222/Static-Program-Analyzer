@@ -15,6 +15,8 @@ void ParsingResult::setRequiredSynonym(const string& synonym) {
     requiredSynonym = synonym;
 }
 
+
+
 // Implementations for setting individual parts of SuchThatClause
 void ParsingResult::setSuchThatClauseRelationship(const Token& relationship) {
     suchThatClauseRelationship = relationship;
@@ -59,6 +61,10 @@ const string& ParsingResult::getRequiredSynonym() const {
     return requiredSynonym;
 }
 
+const string& ParsingResult::getRequiredSynonymType() const {
+    return getDeclaredSynonym(requiredSynonym);
+}
+
 const Token& ParsingResult::getSuchThatClauseRelationship() const {
     return suchThatClauseRelationship;
 }
@@ -82,3 +88,4 @@ const Token& ParsingResult::getPatternClauseFirstParam() const {
 const Token& ParsingResult::getPatternClauseSecondParam() const {
     return patternSecondParam;
 }
+
