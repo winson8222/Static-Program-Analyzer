@@ -14,10 +14,23 @@ SimpleParser::SimpleParser(std::string filename) {
 	this->tokenIndex = 0;
 }
 
-void SimpleParser::parseProgram() {
-	while (!tokenStream.empty()) {
-		parseProcedure();
+std::shared_ptr<ASTNode> SimpleParser::parseProgram() {
+	std::vector<std::shared_ptr<ASTNode>> procedures;
+
+	while (this->hasTokensLeft()) {
+		if (this->peekToken().getTokenType() == LexicalTokenType::WHITESPACE) {
+			this->getToken();
+			continue;
+		}
+
+		procedures.push_back(this->parseProcedure());
 	}
+
+	// Depending on how important the the number of lines is to the code, find out whether to further go ahead
+	// with finding the number of lines.
+	Program program = Program(-1, procedures);
+
+	return program.buildTree();
 }
 
 bool SimpleParser::hasTokensLeft() const {
@@ -46,112 +59,123 @@ LexicalToken SimpleParser::getToken() {
 	}
 }
 
-
-void SimpleParser::parseProcedure() {
-	// Add parsing logic for procedure
+void SimpleParser::assertToken(LexicalToken token, LexicalTokenType type) const {
+	if (token.getTokenType() != type) {
+		throw std::runtime_error("Error: Invalid SIMPLE syntax.");
+	}
 }
 
-void SimpleParser::parseStmtLst() {
-	// Add parsing logic for statement list
+std::shared_ptr<ASTNode> SimpleParser::parseProcedure() {
+	if (!this->hasTokensLeft()) {
+		throw std::runtime_error("Error: SimpleParser::parseProcedure encounter empty statement.");
+	}
+
+	LexicalToken procedureKeyword = this->getToken();
+	this->assertToken(procedureKeyword, LexicalTokenType::KEYWORD_PROCEDURE);
+
+	LexicalToken procedureName = this->getToken();
+	this->assertToken(procedureName, LexicalTokenType::NAME);
+	this->assertToken(this->getToken(), LexicalTokenType::SYMBOL_OPEN_BRACE);
+
+	// Parse Statement Lists;
+	std::shared_ptr<ASTNode> statementList = this->parseStmtLst();
+
+	LexicalToken closeBrace = this->getToken();
+	this->assertToken(closeBrace, LexicalTokenType::SYMBOL_CLOSE_BRACE);
+
+	Procedure procedure = Procedure(procedureKeyword.getLine(), closeBrace.getLine(), statementList);
+	return procedure.buildTree();
+}
+
+std::shared_ptr<ASTNode> SimpleParser::parseStmtLst() {
 	// Parse every statement until we see a closing bracket.
+	std::vector<std::shared_ptr<ASTNode>> statements;
+	int firstLine = this->peekToken().getLine();
+	while (this->peekToken().getTokenType() != LexicalTokenType::SYMBOL_CLOSE_BRACE) {
+		if (this->peekToken().getTokenType() == LexicalTokenType::WHITESPACE) {
+			this->getToken();
+			continue;
+		}
+		statements.push_back(this->parseStmt());
+	}
+
+	int lastLine = this->peekToken().getLine();
+
+	StmtList stmtList = StmtList(firstLine, lastLine, statements);
+
+	return stmtList.buildTree();
 }
 
-void SimpleParser::parseStmt() {
+std::shared_ptr<ASTNode> SimpleParser::parseStmt() {
 	// Add parsing logic for statement
 	// If next token is '=', we are assigning. Call assign.
 	// Then, Check keywords read/print/call.
 	// Then, check keywords while/if.
 	// If dont have keyword, this is an invalid statement.
 	if (!this->hasTokensLeft()) {
-		return;
+		throw std::runtime_error("Error: SimpleParser::parseStmt encounter empty statement.");
 	}
 
 	LexicalToken firstToken = this->peekToken();
 	if (firstToken.getTokenType() == LexicalTokenType::KEYWORD_CALL) {
-		this->parseCall();
+		return this->parseCall();
 	}
 
 	if (firstToken.getTokenType() == LexicalTokenType::KEYWORD_PRINT) {
-		this->parsePrint();
+		return this->parsePrint();
 	}
 
 	if (firstToken.getTokenType() == LexicalTokenType::KEYWORD_READ) {
-		this->parseRead();
+		return this->parseRead();
 	}
 
+	throw std::runtime_error("Error: SimpleParser only accepts READ,CALL,PRINT statements now.");
 }
 
-ReadStmt SimpleParser::parseRead() {
+std::shared_ptr<ASTNode> SimpleParser::parseRead() {
 	LexicalToken keyword = this->getToken();
-
-	if (keyword.getTokenType() != LexicalTokenType::KEYWORD_READ) {
-		throw std::runtime_error("Error: Invalid SIMPLE syntax.");
-	}
+	this->assertToken(keyword, LexicalTokenType::KEYWORD_READ);
 
 	LexicalToken variable = this->getToken();
-
-	if (variable.getTokenType() != LexicalTokenType::NAME) {
-		throw std::runtime_error("Error: Invalid SIMPLE syntax.");
-	}
+	this->assertToken(variable, LexicalTokenType::NAME);
 
 	LexicalToken semicolon = this->getToken();
+	this->assertToken(semicolon, LexicalTokenType::SYMBOL_SEMICOLON);
 
-	if (semicolon.getTokenType() != LexicalTokenType::SYMBOL_SEMICOLON) {
-		throw std::runtime_error("Error: Invalid SIMPLE syntax.");
-	}
+	ReadStmt readStmt = ReadStmt(variable, keyword.getLine(), semicolon.getLine());
 
-	return ReadStmt(variable, keyword.getLine(), semicolon.getLine());
-
-	// Add the readStmt to the Tree.
+	return readStmt.buildTree();
 }
 
-PrintStmt SimpleParser::parsePrint() {
+std::shared_ptr<ASTNode> SimpleParser::parsePrint() {
 	LexicalToken keyword = this->getToken();
-
-	if (keyword.getTokenType() != LexicalTokenType::KEYWORD_PRINT) {
-		throw std::runtime_error("Error: Invalid SIMPLE syntax.");
-	}
+	this->assertToken(keyword, LexicalTokenType::KEYWORD_PRINT);
 
 	LexicalToken variable = this->getToken();
-
-	if (variable.getTokenType() != LexicalTokenType::NAME) {
-		throw std::runtime_error("Error: Invalid SIMPLE syntax.");
-	}
+	this->assertToken(variable, LexicalTokenType::NAME);
 
 	LexicalToken semicolon = this->getToken();
+	this->assertToken(semicolon, LexicalTokenType::SYMBOL_SEMICOLON);
 
-	if (semicolon.getTokenType() != LexicalTokenType::SYMBOL_SEMICOLON) {
-		throw std::runtime_error("Error: Invalid SIMPLE syntax.");
-	}
+	PrintStmt printStmt = PrintStmt(variable, keyword.getLine(), semicolon.getLine());
 
-	return PrintStmt(variable, keyword.getLine(), semicolon.getLine());
-
-	// Add the printStmt to the Tree.
+	return printStmt.buildTree();
 }
 
 // To change to void later when building trees.
-CallStmt SimpleParser::parseCall() {
+std::shared_ptr<ASTNode> SimpleParser::parseCall() {
 	LexicalToken keyword = this->getToken();
-
-	if (keyword.getTokenType() != LexicalTokenType::KEYWORD_CALL) {
-		throw std::runtime_error("Error: Invalid SIMPLE syntax.");
-	}
+	this->assertToken(keyword, LexicalTokenType::KEYWORD_CALL);
 
 	LexicalToken variable = this->getToken();
-
-	if (variable.getTokenType() != LexicalTokenType::NAME) {
-		throw std::runtime_error("Error: Invalid SIMPLE syntax.");
-	}
+	this->assertToken(variable, LexicalTokenType::NAME);
 
 	LexicalToken semicolon = this->getToken();
+	this->assertToken(semicolon, LexicalTokenType::SYMBOL_SEMICOLON);
 
-	if (semicolon.getTokenType() != LexicalTokenType::SYMBOL_SEMICOLON) {
-		throw std::runtime_error("Error: Invalid SIMPLE syntax.");
-	}
+	CallStmt callStmt = CallStmt(variable, keyword.getLine(), semicolon.getLine());
 
-	return CallStmt(variable, keyword.getLine(), semicolon.getLine());
-
-	// Add the callStmt to the Tree.
+	return callStmt.buildTree();
 }
 
 void SimpleParser::parseWhile() {
