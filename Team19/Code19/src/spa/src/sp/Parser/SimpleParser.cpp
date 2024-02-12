@@ -75,6 +75,10 @@ std::shared_ptr<ASTNode> SimpleParser::parseStmtLst() {
 	std::vector<std::shared_ptr<ASTNode>> statements;
 	int firstLine = this->peekToken().getLine();
 	while (this->peekToken().getTokenType() != LexicalTokenType::SYMBOL_CLOSE_BRACE) {
+		if (this->peekToken().getTokenType() == LexicalTokenType::WHITESPACE) {
+			this->getToken();
+			continue;
+		}
 		statements.push_back(this->parseStmt());
 	}
 
