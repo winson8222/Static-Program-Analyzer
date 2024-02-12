@@ -19,25 +19,14 @@ TEST_CASE("Test parser of SP on multiple procedures", "[SourceProcessor]") {
     std::shared_ptr<PKBReader> pkbReader = pkbManager->getPKBReader();
 
     auto values1 = pkbReader->getAllVariables();
-    std::cout << "All Extracted variables: ";
-    for (auto& var : values1) {
-        std::cout << var << ", ";
-    }
-    std::cout << std::endl;
+    std::unordered_set<std::string> expectedValues1 = {"x", "y", "z"};
+    REQUIRE(values1 == expectedValues1);
 
     auto values2 = pkbReader->getAllProcedures();
-    std::cout << "All Extracted procedures: ";
-    for (auto& proc : values2) {
-		std::cout << proc << ", ";
-	}
-    std::cout << std::endl;
 
     auto values3 = pkbReader->getAllStmts();
-    std::cout << "All Extracted statements: ";
-    for (auto& stmt : values3) {
-         std::cout << stmt << ", ";
-    }
-    std::cout << std::endl;
+    std::unordered_set<int> expectedValues3 = {2, 6, 10};
+    REQUIRE(values3 == expectedValues3);
 
     std::cout << "SP-PKB-WORKFLOW-TEST ENDS\n\n\n" << std::endl;
 }
@@ -56,25 +45,14 @@ TEST_CASE("Test parser of SP on one procedures and multiple statements", "[Sourc
     std::shared_ptr<PKBReader> pkbReader = pkbManager->getPKBReader();
 
     auto values1 = pkbReader->getAllVariables();
-    std::cout << "All Extracted variables: ";
-    for (auto& var : values1) {
-        std::cout << var << ", ";
-    }
-    std::cout << std::endl;
+    std::unordered_set<std::string> expectedValues1 = { "x", "y", "z" };
+    REQUIRE(values1 == expectedValues1);
 
     auto values2 = pkbReader->getAllProcedures();
-    std::cout << "All Extracted procedures: ";
-    for (auto& proc : values2) {
-        std::cout << proc << ", ";
-    }
-    std::cout << std::endl;
 
     auto values3 = pkbReader->getAllStmts();
-    std::cout << "All Extracted statements: ";
-    for (auto& stmt : values3) {
-        std::cout << stmt << ", ";
-    }
-    std::cout << std::endl;
+    std::unordered_set<int> expectedValues3 = { 2, 3, 4 };
+    REQUIRE(values3 == expectedValues3);
 
     std::cout << "SP-PKB-WORKFLOW-TEST ENDS\n\n\n" << std::endl;
 }
