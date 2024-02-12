@@ -16,14 +16,16 @@ public:
 
 // private:
     std::vector<LexicalToken> tokenStream;
-    bool hasTokensLeft(int tokenPos) const;
-    LexicalToken peekToken(int tokenPos) const;
+    int tokenIndex;
+    bool hasTokensLeft() const;
+    LexicalToken peekToken() const;
+    LexicalToken SimpleParser::getToken();
     void parseProcedure();
     void parseStmtLst();
-    void parseStmt(int tokenPos);
-    ReadStmt parseRead(int tokenPos);
-    PrintStmt parsePrint(int tokenPos);
-    CallStmt parseCall(int tokenPos);
+    void parseStmt();
+    ReadStmt parseRead();
+    PrintStmt parsePrint();
+    CallStmt parseCall();
     void parseWhile();
     void parseIf();
     void parseAssign();

@@ -8,7 +8,7 @@ TEST_CASE("CallStmt parsing is working correctly for valid input", "[SimpleParse
 	REQUIRE(std::filesystem::exists(testFileName));
 	SimpleParser parser(testFileName);
 
-	CallStmt lastStmt = parser.parseCall(0);
+	CallStmt lastStmt = parser.parseCall();
 
 	// Assuming parser has a method to get CallStmt from parser, getCallStmt() 
 	// which returns the last parsed CallStmt.
@@ -24,7 +24,7 @@ TEST_CASE("CallStmt parsing throws an error with invalid syntax", "[SimpleParser
 	SimpleParser parser(testFileName);
 
 	// For this test, we expect parsing to terminate due to erroneous input.
-	CHECK_THROWS_AS(parser.parseCall(0), std::runtime_error);
+	CHECK_THROWS_AS(parser.parseCall(), std::runtime_error);
 }
 // ai-gen end
 
