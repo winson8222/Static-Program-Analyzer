@@ -60,4 +60,12 @@ TEST_CASE("Basic system tests for DesignExtractor", "[DesignExtractor::extract]"
 		std::cout << var << std::endl;
 	}
     std::cout << "end\n" << std::endl;
+
+    auto value3 = designExtractor.extractConstants();
+
+    std::cout << "Extracted constants:" << std::endl;
+    for (auto& var : value3) {
+        std::cout << var << std::endl;
+    }
+    std::cout << "end\n" << std::endl;
 }
