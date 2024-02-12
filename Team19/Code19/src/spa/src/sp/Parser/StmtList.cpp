@@ -1,9 +1,7 @@
 #include "StmtList.h"
 #include <iostream>
 
-StmtList::StmtList() {
-
-}
+StmtList::StmtList() {}
 
 void StmtList::addStmt(std::shared_ptr<Stmt> stmt) {
     this->statements.push_back(stmt);
@@ -20,11 +18,10 @@ int StmtList::getEndLine() const {
 }
 
 std::shared_ptr<ASTNode> StmtList::buildTree() {
-    // Do sth
+    // **IMPORTANT** Placeholder implementation to avoid compilation error.
     std::shared_ptr<ASTNode> tree = std::make_shared<ASTNode>(
-        ASTNodeType::CALL, this->lines.first, Utility::getASTNodeType(ASTNodeType::CALL)
+        ASTNodeType::ERROR, 0, "StmtList::buildTree not implemented."
     );
 
-    return tree;
-
+	return tree;
 }

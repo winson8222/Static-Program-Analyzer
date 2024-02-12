@@ -14,9 +14,11 @@ int Stmt::getEndLine() const {
 }
 
 std::shared_ptr<ASTNode> Stmt::buildTree() {
-    // Do sth
+    // IMPORTANT: In the future, want to make Stmt Abstract class/Interface, and inherit everything in Stmt.
+
+    // **IMPORTANT** Placeholder implementation to avoid compilation error.
     std::shared_ptr<ASTNode> tree = std::make_shared<ASTNode>(
-        ASTNodeType::CALL, this->lines.first, Utility::getASTNodeType(ASTNodeType::CALL)
+        ASTNodeType::ERROR, 0, "Stmt::buildTree() not implemented."
     );
 
     return tree;

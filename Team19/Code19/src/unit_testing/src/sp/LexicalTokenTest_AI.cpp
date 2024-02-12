@@ -19,7 +19,6 @@ TEST_CASE("Get TokenType", "[LexicalToken]")
 }
 //ai-gen end
 
-
 // ai-gen start(gpt, 2, e)
 // Prompt: https://platform.openai.com/playground/p/CRO1bXNAQZB3Adua8DmfPuWb?model=gpt-4&mode=chat
 TEST_CASE("Testing CallStmt::buildTree()", "[CallStmt]") {
