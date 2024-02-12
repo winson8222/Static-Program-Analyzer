@@ -55,7 +55,19 @@ void SimpleParser::parseProcedure() {
 	}
 
 	LexicalToken procedureKeyword = this->getToken();
+	this->assertToken(procedureKeyword, LexicalTokenType::KEYWORD_PROCEDURE);
 
+	LexicalToken procedureName = this->getToken();
+	this->assertToken(procedureName, LexicalTokenType::NAME);
+	this->assertToken(this->getToken(), LexicalTokenType::SYMBOL_OPEN_BRACE);
+
+	// Parse Statement Lists;
+	this->parseStmtLst();
+
+	LexicalToken closeBrace = this->getToken();
+	this->assertToken(closeBrace, LexicalTokenType::SYMBOL_CLOSE_BRACE);
+
+	// Create class name, and create AST;
 }
 
 void SimpleParser::parseStmtLst() {
