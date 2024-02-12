@@ -5,8 +5,8 @@
 
 LexicalToken::LexicalToken(LexicalTokenType type) {
     this->type = type;
-    this->lineNumber = NULL;
-    this->linePosition = NULL;
+    this->lineNumber = -1;
+    this->linePosition = -1;
     this->value = "";
 }
 
