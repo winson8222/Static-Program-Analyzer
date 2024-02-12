@@ -18,7 +18,7 @@ unordered_set<string> FollowsStrategy::evaluateQuery(PKBReader& pkbReader, const
             }
         }
         else if (suchThatSecondParam.getType() == TokenType::Wildcard) {
-            const unordered_set<int>& follows = pkbReader.getPostFollows(-1);
+            const unordered_set<int>& follows = pkbReader.getAllPreFollows();
             for (int i : follows) {
                 result.insert(to_string(i));
             }
@@ -36,7 +36,7 @@ unordered_set<string> FollowsStrategy::evaluateQuery(PKBReader& pkbReader, const
             }
         }
         else if (suchThatSecondParam.getType() == TokenType::Wildcard) {
-            const unordered_set<int>& follows = pkbReader.getPostFollows(-1);
+            const unordered_set<int>& follows = pkbReader.getAllPostFollows();
             for (int i : follows) {
                 result.insert(to_string(i));
             }

@@ -1,5 +1,5 @@
-// Include the Parser class header.
-#include "../../spa/src/qps/Parser/QueryParser.h"
+// Include the parser class header.
+#include "../../spa/src/qps/parser/QueryParser.h"
 #include <stdexcept>
 #include <iostream>
 
@@ -392,6 +392,7 @@ bool QueryParser::advanceToken() {
         return true;
     }
     throwError();
+    return false;
 }
 
 // Checks if the current token matches a given TokenType.

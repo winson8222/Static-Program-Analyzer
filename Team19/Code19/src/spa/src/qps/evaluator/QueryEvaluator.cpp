@@ -23,6 +23,11 @@ void QueryEvaluator::evaluateQuery() {
         // ...
     }
 
+    if (requiredType == "variable") {
+        // now we are only supporting getting all variables
+        result = pkbReader->getAllVariables();
+    }
+
     for (auto& strategy : strategies) {
         std::unordered_set<std::string> strategyResult = strategy->evaluateQuery(*pkbReader, parsingResult);
         combineResults(strategyResult);

@@ -1,3 +1,4 @@
+#pragma
 #include <vector> // For storing multiple strategies
 #include "QueryEvaluationStrategy.h" // Include the strategy interface
 #include <memory>

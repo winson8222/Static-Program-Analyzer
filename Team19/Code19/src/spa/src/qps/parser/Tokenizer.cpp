@@ -1,4 +1,4 @@
-#include "../../spa/src/qps/Parser/Tokenizer.h"
+#include "../../spa/src/qps/parser/Tokenizer.h"
 #include <stdexcept>
 
 using namespace std;

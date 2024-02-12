@@ -67,7 +67,6 @@ public:
       return followsStore->getRelationshipsByValue(stmt);
     }
 
-    shared_ptr<FollowsStore> getAllFollows();
 
     /**
      * @brief Gets the statement number of "Follows" relationships of the given statement.
@@ -151,14 +150,14 @@ public:
      * @brief Gets all Statement numbers
      * @return unordered_set<int>: Statement number of all "Statement" entities.
      */
-    unordered_set<int> getAllStmts() {
+    std::unordered_set<int> getAllStmts() {
         return statementStore->getAllEntities();
     }
 
     /**
      * @brief Gets all procedure names
      */
-    unordered_set<string> getAllProcedures() {
+    std::unordered_set<std::string> getAllProcedures() {
         return procedureStore->getAllEntities();
     }
 };
