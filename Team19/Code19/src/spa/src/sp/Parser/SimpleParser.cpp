@@ -20,8 +20,8 @@ bool SimpleParser::hasTokensLeft(int tokenPos) const {
 	return tokenPos < this->tokenStream.size();
 }
 
-// Implementation of getToken function
-LexicalToken SimpleParser::getToken(int tokenPos) const {
+// Implementation of peekToken function
+LexicalToken SimpleParser::peekToken(int tokenPos) const {
 	if (this->hasTokensLeft(tokenPos)) {
 		return this->tokenStream[tokenPos];
 	}
@@ -66,21 +66,21 @@ void SimpleParser::parseStmt(int tokenPos) {
 
 ReadStmt SimpleParser::parseRead(int tokenPos) {
 	// Problem: Need to potential pass tokenPos as a pointer.
-	LexicalToken keyword = this->getToken(tokenPos);
+	LexicalToken keyword = this->peekToken(tokenPos);
 	tokenPos++;
 
 	if (keyword.getTokenType() != LexicalTokenType::KEYWORD_READ) {
 		throw std::runtime_error("Error: Invalid SIMPLE syntax.");
 	}
 
-	LexicalToken variable = this->getToken(tokenPos);
+	LexicalToken variable = this->peekToken(tokenPos);
 	tokenPos++;
 
 	if (variable.getTokenType() != LexicalTokenType::NAME) {
 		throw std::runtime_error("Error: Invalid SIMPLE syntax.");
 	}
 
-	LexicalToken semicolon = this->getToken(tokenPos);
+	LexicalToken semicolon = this->peekToken(tokenPos);
 	tokenPos++;
 
 	if (semicolon.getTokenType() != LexicalTokenType::SYMBOL_SEMICOLON) {
@@ -94,21 +94,21 @@ ReadStmt SimpleParser::parseRead(int tokenPos) {
 
 PrintStmt SimpleParser::parsePrint(int tokenPos) {
 	// Problem: Need to potential pass tokenPos as a pointer.
-	LexicalToken keyword = this->getToken(tokenPos);
+	LexicalToken keyword = this->peekToken(tokenPos);
 	tokenPos++;
 
 	if (keyword.getTokenType() != LexicalTokenType::KEYWORD_PRINT) {
 		throw std::runtime_error("Error: Invalid SIMPLE syntax.");
 	}
 
-	LexicalToken variable = this->getToken(tokenPos);
+	LexicalToken variable = this->peekToken(tokenPos);
 	tokenPos++;
 
 	if (variable.getTokenType() != LexicalTokenType::NAME) {
 		throw std::runtime_error("Error: Invalid SIMPLE syntax.");
 	}
 
-	LexicalToken semicolon = this->getToken(tokenPos);
+	LexicalToken semicolon = this->peekToken(tokenPos);
 	tokenPos++;
 
 	if (semicolon.getTokenType() != LexicalTokenType::SYMBOL_SEMICOLON) {
@@ -123,21 +123,21 @@ PrintStmt SimpleParser::parsePrint(int tokenPos) {
 // To change to void later when building trees.
 CallStmt SimpleParser::parseCall(int tokenPos) {
 	// Problem: Need to potential pass tokenPos as a pointer.
-	LexicalToken keyword = this->getToken(tokenPos);
+	LexicalToken keyword = this->peekToken(tokenPos);
 	tokenPos++;
 
 	if (keyword.getTokenType() != LexicalTokenType::KEYWORD_CALL) {
 		throw std::runtime_error("Error: Invalid SIMPLE syntax.");
 	}
 
-	LexicalToken variable = this->getToken(tokenPos);
+	LexicalToken variable = this->peekToken(tokenPos);
 	tokenPos++;
 
 	if (variable.getTokenType() != LexicalTokenType::NAME) {
 		throw std::runtime_error("Error: Invalid SIMPLE syntax.");
 	}
 
-	LexicalToken semicolon = this->getToken(tokenPos);
+	LexicalToken semicolon = this->peekToken(tokenPos);
 	tokenPos++;
 
 	if (semicolon.getTokenType() != LexicalTokenType::SYMBOL_SEMICOLON) {
