@@ -16,5 +16,13 @@ int CallStmt::getEndLine() const {
 }
 
 void CallStmt::buildTree() const {
-    // Do sth
+    std::shared_ptr<ASTNode> tree = std::make_shared<ASTNode>(
+        ASTNodeType::CALL, this->lines.first, Utility::getASTNodeType(ASTNodeType::CALL)
+    );
+
+    std::shared_ptr<ASTNode> child = std::make_shared<ASTNode>(
+        ASTNodeType::VARIABLE, this->lines.second, this->variable.getValue()
+    );
+
+    tree.get()->addChild(child);
 }
