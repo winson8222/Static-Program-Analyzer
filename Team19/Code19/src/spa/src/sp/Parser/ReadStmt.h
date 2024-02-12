@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Stmt.h"
 #include "../LexicalToken.h"
 #include <string>

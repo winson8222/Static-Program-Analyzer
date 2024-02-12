@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Grammar.h"
 #include "../LexicalTokenType.h"
 #include <string>
