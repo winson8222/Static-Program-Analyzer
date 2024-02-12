@@ -71,6 +71,9 @@ void SimpleParser::parseProcedure() {
 }
 
 void SimpleParser::parseStmtLst() {
+	while (this->peekToken().getTokenType() != LexicalTokenType::SYMBOL_CLOSE_BRACE) {
+		this->parseStmt();
+	}
 	// Add parsing logic for statement list
 	// Parse every statement until we see a closing bracket.
 }
