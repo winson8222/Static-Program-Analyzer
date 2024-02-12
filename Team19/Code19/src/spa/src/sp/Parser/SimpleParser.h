@@ -17,6 +17,7 @@ public:
 	// private:
 	std::vector<LexicalToken> tokenStream;
 	int tokenIndex;
+	void assertToken(LexicalToken token, LexicalTokenType type) const;
 	bool hasTokensLeft() const;
 	LexicalToken peekToken() const;
 	LexicalToken getToken();

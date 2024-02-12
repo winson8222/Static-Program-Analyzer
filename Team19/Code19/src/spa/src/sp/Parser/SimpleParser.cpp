@@ -11,7 +11,6 @@ SimpleParser::SimpleParser(std::string filename) {
 	this->tokenIndex = 0;
 }
 
-
 void SimpleParser::parseProgram() {
 	while (this->hasTokensLeft()) {
 		parseProcedure();
@@ -44,9 +43,20 @@ LexicalToken SimpleParser::getToken() {
 	}
 }
 
+void SimpleParser::assertToken(LexicalToken token, LexicalTokenType type) const {
+	if (token.getTokenType() != type) {
+		throw std::runtime_error("Error: Invalid SIMPLE syntax.");
+	}
+}
+
 
 void SimpleParser::parseProcedure() {
-	// Add parsing logic for procedure
+	if (!this->hasTokensLeft()) {
+		return;
+	}
+
+	LexicalToken procedureKeyword = this->getToken();
+
 }
 
 void SimpleParser::parseStmtLst() {
