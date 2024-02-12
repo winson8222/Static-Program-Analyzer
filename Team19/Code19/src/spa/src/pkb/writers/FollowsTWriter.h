@@ -1,17 +1,18 @@
 #pragma once
 
-#include <memory>
+#include "pkb/stores/relationships/IRelationshipWriter.h"
 #include "pkb/stores/relationships/types/FollowsTStore.h"
+#include <memory>
 
-class FollowsTWriter {
+class FollowsTWriter : public IRelationshipWriter<int, int> {
 private:
     std::shared_ptr<FollowsTStore> followsTStore;
 
 public:
-    explicit FollowsTWriter(std::shared_ptr<FollowsTStore> store): followsTStore(std::move(store)) {}
+    explicit FollowsTWriter(std::shared_ptr<FollowsTStore> store) : followsTStore(std::move(store)) {}
 
-    void addFollowsT(int precedingStmt, int followingStmt) {
-        followsTStore->addRelationship(precedingStmt, followingStmt);
+    void addRelationship(int precedingStmt, int followingStmt) override {
+        followsTStore->addKeyValue(precedingStmt, followingStmt);
     }
 
     void clear() {
