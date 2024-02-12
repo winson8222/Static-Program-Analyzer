@@ -9,7 +9,12 @@ void Procedure::addStmtList(StmtList stmtList) {
     this->statementLists.push_back(stmtList);
 }
 
-void Procedure::buildTree() const {
+std::shared_ptr<ASTNode> Procedure::buildTree() {
+    std::shared_ptr<ASTNode> tree = std::make_shared<ASTNode>(
+        ASTNodeType::ERROR, 0, ""
+    );
+
+    return tree;
     // Do sth
 }
 

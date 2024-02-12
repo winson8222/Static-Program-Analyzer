@@ -18,7 +18,15 @@ int Program::getEndLine() const {
     // Do sth
 }
 
-void Program::buildTree() const {
+
+
+std::shared_ptr<ASTNode> Program::buildTree() {
     // build a Master root tree here, then populate all Procedures.
+    
+    std::shared_ptr<ASTNode> tree = std::make_shared<ASTNode>(
+        ASTNodeType::CALL, this->lines.first, Utility::getASTNodeType(ASTNodeType::CALL)
+    );
+
+    return tree;  
 }
 // ai-gen end

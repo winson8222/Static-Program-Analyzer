@@ -16,7 +16,7 @@ public:
     virtual ~Grammar() {} // Virtual destructor
 
     // Virtual function for building the tree
-    virtual void buildTree() const = 0;
+    virtual std::shared_ptr<ASTNode> buildTree() = 0;
     virtual int getStartLine() const = 0;
     virtual int getEndLine() const = 0;
 
