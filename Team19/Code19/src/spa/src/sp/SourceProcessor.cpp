@@ -14,7 +14,7 @@ void SourceProcessor::reset() {
 
 void SourceProcessor::parseSIMPLE() {
 	// Parse tokens into AST (not implemented)
-	this->root = parser.parseCall().buildTree();
+	// this->root = parser.parseCall().buildTree();
 }
 
 void SourceProcessor::buildAST() {
