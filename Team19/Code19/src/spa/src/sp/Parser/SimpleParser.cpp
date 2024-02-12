@@ -11,8 +11,9 @@ SimpleParser::SimpleParser(std::string filename) {
 	this->tokenIndex = 0;
 }
 
+
 void SimpleParser::parseProgram() {
-	while (!tokenStream.empty()) {
+	while (this->hasTokensLeft()) {
 		parseProcedure();
 	}
 }
