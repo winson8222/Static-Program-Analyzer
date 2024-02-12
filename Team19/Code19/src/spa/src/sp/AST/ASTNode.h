@@ -25,35 +25,75 @@ enum class ASTNodeType {
     ERROR,
 };
 
-
+/**
+ * @brief Represents a node in the Abstract Syntax Tree (AST).
+ */
 class ASTNode {
 public:
-    // constructor for AST
+    /**
+     * @brief Default constructor for ASTNode.
+     */
     ASTNode();
+
+    /**
+     * @brief Constructor for creating an ASTNode with specified type, line number, and value.
+     *
+     * @param type The type of the AST node.
+     * @param lineNumber The line number associated with the AST node.
+     * @param value The value associated with the AST node.
+     */
     ASTNode(ASTNodeType type, int lineNumber, std::string value);
-
-    // define type of AST node
-    ASTNodeType type;
-    // define children of the AST
-    std::vector<std::shared_ptr<ASTNode>> children;
-    // add children to the AST node
-    void addChild(std::shared_ptr<ASTNode> child);    // hash the AST
-
-    // define line number
-    int lineNumber;
-    // define value of the current node
-    std::string value;
-    void setValue(std::string value);
     
-    // hash the ASTNode
+    /**
+     * @brief Adds a child node to the current AST node.
+     *
+     * @param child A shared pointer to the child AST node to be added.
+     */
+    void addChild(std::shared_ptr<ASTNode> child);
+    
+    /**
+     * @brief Sets the value of the current AST node.
+     *
+     * @param value The value to be set for the current AST node.
+     */
+    void setValue(std::string value);
+
+    /**
+    * @brief Computes the hash value of the current AST node.
+    *
+    * @return The hash value of the current AST node.
+    */
     std::size_t hash() const;
+
+    /**
+     * @brief Checks if two AST nodes are equal.
+     *
+     * @param other The AST node to compare with.
+     * @return True if the two AST nodes are equal, otherwise false.
+     */
     bool operator==(const ASTNode& other) const;
 
-    // convert to string
+    /**
+     * @brief Converts the AST node to a string representation.
+     *
+     * @return A string representation of the AST node.
+     */
     std::string toString() const;
 
+    // To be set as private in future
+    ASTNodeType type;
+    std::vector<std::shared_ptr<ASTNode>> children;
+    int lineNumber;
+    std::string value;
 private:
     std::shared_ptr<ASTNode> root;
+
+    /**
+     * @brief Generates a string representation of the AST node and its children recursively.
+     *
+     * @param tabs The number of tabs to indent the string representation.
+     * @return A string representation of the AST node and its children.
+     */
     std::string recursiveString(int tabs) const;
 };
 
