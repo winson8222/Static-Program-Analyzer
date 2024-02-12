@@ -1,15 +1,19 @@
 #include "Procedure.h"
 #include <iostream>
 
-Procedure::Procedure() {
-
-}
+Procedure::Procedure() {}
 
 void Procedure::addStmtList(StmtList stmtList) {
     this->statementLists.push_back(stmtList);
 }
 
-void Procedure::buildTree() const {
+std::shared_ptr<ASTNode> Procedure::buildTree() {
+    // **IMPORTANT** Placeholder implementation to avoid compilation error.
+    std::shared_ptr<ASTNode> tree = std::make_shared<ASTNode>(
+        ASTNodeType::ERROR, 0, "Procedure::buildTree() not implemented."
+    );
+
+    return tree;
     // Do sth
 }
 

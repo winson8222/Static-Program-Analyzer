@@ -1,22 +1,22 @@
-#include "CallStmt.h"
+#include "PrintStmt.h"
 #include <iostream>
 
-CallStmt::CallStmt(const LexicalToken& variable, int start, int end) {
+PrintStmt::PrintStmt(const LexicalToken& variable, int start, int end) {
     this->variable = variable;
     this->lines = std::make_pair(start, end); 
 }
 
-int CallStmt::getStartLine() const {
+int PrintStmt::getStartLine() const {
     return this->lines.first;
 }
 
-int CallStmt::getEndLine() const {
+int PrintStmt::getEndLine() const {
     return this->lines.second;
 }
 
-std::shared_ptr<ASTNode> CallStmt::buildTree() {
+std::shared_ptr<ASTNode> PrintStmt::buildTree() {
     std::shared_ptr<ASTNode> tree = std::make_shared<ASTNode>(
-        ASTNodeType::CALL, this->lines.first, Utility::getASTNodeType(ASTNodeType::CALL)
+        ASTNodeType::PRINT, this->lines.first, Utility::getASTNodeType(ASTNodeType::PRINT)
     );
 
     std::shared_ptr<ASTNode> child = std::make_shared<ASTNode>(

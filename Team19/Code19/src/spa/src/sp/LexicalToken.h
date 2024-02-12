@@ -17,6 +17,6 @@ public:
     LexicalTokenType getTokenType();
     int getLinePosition();
     int getLine();
-    std::string getValue();
+    std::string getValue() const;
     void print();
 };

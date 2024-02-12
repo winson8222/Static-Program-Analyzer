@@ -1,5 +1,5 @@
-#pragma
-
+#pragma once
+#include <memory>
 #include "PKB.h"
 
 class PKBWriter {

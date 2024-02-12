@@ -18,7 +18,14 @@ int Program::getEndLine() const {
     // Do sth
 }
 
-void Program::buildTree() const {
+std::shared_ptr<ASTNode> Program::buildTree() {
     // build a Master root tree here, then populate all Procedures.
+    
+    // **IMPORTANT** Placeholder implementation to avoid compilation error.
+    std::shared_ptr<ASTNode> tree = std::make_shared<ASTNode>(
+        ASTNodeType::ERROR, 0, "Program::buildTree() not implemented."
+    );
+
+    return tree;  
 }
 // ai-gen end
