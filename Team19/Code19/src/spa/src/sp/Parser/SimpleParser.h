@@ -5,6 +5,7 @@
 #include "sp/LexicalToken.h"
 #include "CallStmt.h"
 #include "ReadStmt.h"
+#include "PrintStmt.h"
 
 // ai-gen start(gpt,2,e)
 // Prompt: https://platform.openai.com/playground/p/cJLjmmneCEs4z6ms7ZkBSxJB?model=gpt-4&mode=chat
@@ -21,7 +22,7 @@ public:
     void parseStmtLst();
     void parseStmt(int tokenPos);
     ReadStmt parseRead(int tokenPos);
-    void parsePrint(int tokenPos);
+    PrintStmt parsePrint(int tokenPos);
     CallStmt parseCall(int tokenPos);
     void parseWhile();
     void parseIf();
