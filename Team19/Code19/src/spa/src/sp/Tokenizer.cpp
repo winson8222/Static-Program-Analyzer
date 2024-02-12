@@ -9,7 +9,7 @@
 /** Splits the text file into a array of strings, with each element representing a line of text.
  *  Returns: A vector of size equal to the number of lines in the input content.
  */
-std::vector<std::string> Tokenizer::splitLine(const std::string& content) {
+std::vector<std::string> SPTokenizer::splitLine(const std::string& content) {
     std::vector<std::string> result;
     std::istringstream stream(content); // Create a stringstream from the content
     std::string line;
@@ -21,9 +21,9 @@ std::vector<std::string> Tokenizer::splitLine(const std::string& content) {
     return result;
 }
 
-std::vector<LexicalToken> Tokenizer::tokenize(const std::string& content) {
+std::vector<LexicalToken> SPTokenizer::tokenize(const std::string& content) {
     std::vector<LexicalToken> results;
-    std::vector<std::string> lines = Tokenizer::splitLine(content);
+    std::vector<std::string> lines = SPTokenizer::splitLine(content);
     int numberOfLines = static_cast<int>(lines.size());
     
     for (int lineNumber = 1; lineNumber <= numberOfLines; lineNumber++) {
@@ -68,7 +68,7 @@ std::vector<LexicalToken> Tokenizer::tokenize(const std::string& content) {
 }
 
 
-std::string Tokenizer::readFileToString(const std::string& filename) {
+std::string SPTokenizer::readFileToString(const std::string& filename) {
     // Create an input file stream to read the file
     std::ifstream inputFile(filename);
 

@@ -1,7 +1,7 @@
 #include "sp/SourceProcessor.h"
 #include <iostream>
 
-SourceProcessor::SourceProcessor(std::string filename, PKBManager pkbManager) {
+SourceProcessor::SourceProcessor(std::string filename, std::shared_ptr<PKBManager> pkbManager) {
     this->pkbManager = pkbManager;
 	this->parser = SimpleParser(filename);
     this->root = std::make_shared<ASTNode>();
@@ -14,7 +14,7 @@ void SourceProcessor::reset() {
 
 void SourceProcessor::parseSIMPLE() {
 	// Parse tokens into AST (not implemented)
-	// AST ast = parser.parse(tokens);
+	this->root = parser.parseCall().buildTree();
 }
 
 void SourceProcessor::buildAST() {
@@ -60,7 +60,7 @@ void SourceProcessor::sampleAST() {
 
 void SourceProcessor::extractAndPopulate() {
     // Use PKBWriter to insert entities and relationships into PKB
-    std::shared_ptr<PKBWriter> pkbWriter = this->pkbManager.getPKBWriter();
+    std::shared_ptr<PKBWriter> pkbWriter = this->pkbManager->getPKBWriter();
 	DesignExtractor designExtractor(this->root, pkbWriter);
 	designExtractor.extractAll();
     designExtractor.populatePKB();

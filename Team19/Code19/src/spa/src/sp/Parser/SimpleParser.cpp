@@ -10,7 +10,7 @@ SimpleParser::SimpleParser() {
 }
 
 SimpleParser::SimpleParser(std::string filename) {
-	this->tokenStream = Tokenizer::tokenize(Tokenizer::readFileToString(filename));
+	this->tokenStream = SPTokenizer::tokenize(SPTokenizer::readFileToString(filename));
 	this->tokenIndex = 0;
 }
 

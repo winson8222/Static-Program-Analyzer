@@ -22,10 +22,10 @@ TestWrapper::TestWrapper() {
 void TestWrapper::parse(std::string filename) {
 	// call your parser to do the parsing
   // ...rest of your code...
-
-  // example code
-	std::string x = "x";
-	pkbWriter->insertVariable(x);
+	std::cout << "REACHED PARSE" << std::endl;
+	SourceProcessor sp = SourceProcessor(filename, this->pkbManager);
+	sp.parseSIMPLE();
+	sp.extractAndPopulate();
 }
 
 // method to evaluating a query

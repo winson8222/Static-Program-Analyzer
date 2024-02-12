@@ -119,8 +119,9 @@ void DesignExtractor::extractWhiles() {
     // Implementation of extractWhiles method goes here
 }
 
-void DesignExtractor::extractCall() {
+std::unordered_set<std::string> DesignExtractor::extractCall() {
     // Implementation of extractCall method goes here
+    return std::unordered_set<std::string>();
 }
 
 void DesignExtractor::extractRead() {

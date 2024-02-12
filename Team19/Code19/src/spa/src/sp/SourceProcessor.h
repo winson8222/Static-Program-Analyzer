@@ -9,9 +9,9 @@ class SourceProcessor {
 public:
 	SimpleParser parser;
 	std::shared_ptr<ASTNode> root;
-	PKBManager pkbManager;
+	std::shared_ptr<PKBManager> pkbManager;
 
-	SourceProcessor(std::string filename, PKBManager pkbManager);
+	SourceProcessor(std::string filename, std::shared_ptr<PKBManager> pkbManager);
 	void reset();
 
 	void parseSIMPLE();

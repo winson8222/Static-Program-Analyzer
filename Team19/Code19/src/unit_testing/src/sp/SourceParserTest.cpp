@@ -14,13 +14,13 @@ TEST_CASE("Test header", "[SourceProcessor]") {
     std::string actualContent;
     REQUIRE(std::filesystem::exists(testFileName));
 
-    PKBManager pkbManager;
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     SourceProcessor sp(testFileName, pkbManager);
 
     REQUIRE_NOTHROW(sp.sampleAST());
     REQUIRE_NOTHROW(sp.extractAndPopulate());
 
-    std::shared_ptr<PKBReader> pkbReader = sp.pkbManager.getPKBReader();
+    std::shared_ptr<PKBReader> pkbReader = sp.pkbManager->getPKBReader();
     
     auto values1 = pkbReader->getAllVariables();
     std::cout << "All Extracted variables: ";
