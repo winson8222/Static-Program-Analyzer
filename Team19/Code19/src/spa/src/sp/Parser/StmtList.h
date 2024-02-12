@@ -6,8 +6,7 @@
 
 class StmtList : public Grammar {
 public:
-	StmtList(int start, int end);
-	void addStmt(std::shared_ptr<ASTNode> statementNode);
+	StmtList(int start, int end, std::vector<std::shared_ptr<ASTNode>> statements);
 	std::shared_ptr<ASTNode> buildTree() override;
 	int getStartLine() const override;
 	int getEndLine() const override;

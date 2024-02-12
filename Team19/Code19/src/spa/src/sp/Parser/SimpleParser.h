@@ -6,6 +6,7 @@
 #include "CallStmt.h"
 #include "ReadStmt.h"
 #include "PrintStmt.h"
+#include "StmtList.h"
 
 // ai-gen start(gpt,2,e)
 // Prompt: https://platform.openai.com/playground/p/cJLjmmneCEs4z6ms7ZkBSxJB?model=gpt-4&mode=chat
@@ -22,7 +23,7 @@ public:
 	LexicalToken peekToken() const;
 	LexicalToken getToken();
 	void parseProcedure();
-	void parseStmtLst();
+	std::shared_ptr<ASTNode> parseStmtLst();
 	std::shared_ptr<ASTNode> parseStmt();
 	std::shared_ptr<ASTNode> parseRead();
 	std::shared_ptr<ASTNode> parsePrint();

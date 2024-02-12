@@ -70,12 +70,19 @@ void SimpleParser::parseProcedure() {
 	// Create class name, and create AST;
 }
 
-void SimpleParser::parseStmtLst() {
+std::shared_ptr<ASTNode> SimpleParser::parseStmtLst() {
 	// Parse every statement until we see a closing bracket.
+	std::vector<std::shared_ptr<ASTNode>> statements;
+	int firstLine = this->peekToken().getLine();
 	while (this->peekToken().getTokenType() != LexicalTokenType::SYMBOL_CLOSE_BRACE) {
-		this->parseStmt();
+		statements.push_back(this->parseStmt());
 	}
 
+	int lastLine = this->peekToken().getLine();
+
+	StmtList stmtList = StmtList(firstLine, lastLine, statements);
+
+	return stmtList.buildTree();
 }
 
 std::shared_ptr<ASTNode> SimpleParser::parseStmt() {

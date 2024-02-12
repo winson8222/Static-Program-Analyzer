@@ -1,12 +1,9 @@
 #include "StmtList.h"
 #include <iostream>
 
-StmtList::StmtList(int start, int end) {
+StmtList::StmtList(int start, int end, std::vector<std::shared_ptr<ASTNode>> statements) {
 	this->lines = std::make_pair(start, end);
-}
-
-void StmtList::addStmt(std::shared_ptr<ASTNode> statementNode) {
-	this->statements.push_back(statementNode);
+	this->statements = statements;
 }
 
 int StmtList::getStartLine() const {
