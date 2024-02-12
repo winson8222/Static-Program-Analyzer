@@ -26,6 +26,8 @@ void TestWrapper::parse(std::string filename) {
   // example code
 	std::string x = "x";
 	pkbWriter->insertVariable(x);
+    int stmtNum= 1;
+    pkbWriter->insertStatement(stmtNum);
 }
 
 // method to evaluating a query
@@ -34,16 +36,9 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
 	  // ...code to evaluate query...
 
 	  // example code
-	std::string x = "x";
-	std::string y = "y";
-	std::string z = "z";
-	std::string a = "a";
-	pkbWriter->insertVariable(x);
-	pkbWriter->insertVariable(y);
-	pkbWriter->insertVariable(z);
-	pkbWriter->insertVariable(a);
+
 	
-	Tokenizer tokenizer("variable v; Select v");
+	Tokenizer tokenizer("stmt s; Select s");
 	vector<Token> tokens = tokenizer.tokenize();
 	QueryParser parser(tokens);
 	auto parsingResult = parser.parse();
