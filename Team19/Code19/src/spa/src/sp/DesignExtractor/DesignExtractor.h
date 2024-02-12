@@ -45,6 +45,9 @@ public:
     std::shared_ptr<ASTNode> root;
     std::shared_ptr<PKBWriter> pkbWriter;
 
+
+    void printContent();
+
 private:
     void entityRecursiveExtractor(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& entities, ASTNodeType type);
     void statementRecursiveExtractor(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& statements, ASTNodeType type);

@@ -19,8 +19,11 @@ void DesignExtractor::populatePKB() {
 				int intValue = std::stoi(value);
 				this->pkbWriter->insertConstant(intValue);
             }
-            else if (pair.first == Utility::getASTNodeType(ASTNodeType::CONSTANT)) {
+            else if (pair.first == Utility::getASTNodeType(ASTNodeType::VARIABLE)) {
                 this->pkbWriter->insertVariable(value);
+			}
+            else if (pair.first == Utility::getASTNodeType(ASTNodeType::PROCEDURE)) {
+				this->pkbWriter->insertProcedure(value);
 			}
 		}
 	}
@@ -45,20 +48,14 @@ void DesignExtractor::populatePKB() {
             else if (pair.first == Utility::getASTNodeType(ASTNodeType::WHILE)) {
 				this->pkbWriter->insertWhile(value);
 			}
+            else if (pair.first == Utility::getASTNodeType(ASTNodeType::STATEMENT_LIST)) {
+                this->pkbWriter->insertStatement(value);
+            }
         }
     }
     std::cout << "PKB Populated\n" << std::endl;
 }
 
-/*
-For references
-std::shared_ptr<ASTNode> parseProcedure();
-std::shared_ptr<ASTNode> parseStmtLst();
-std::shared_ptr<ASTNode> parseStmt();
-std::shared_ptr<ASTNode> parseRead();
-std::shared_ptr<ASTNode> parsePrint();
-std::shared_ptr<ASTNode> parseCall();
-*/
 
 void DesignExtractor::extractAll() {
 	// Implementation of extractAll method goes here
@@ -84,6 +81,33 @@ void DesignExtractor::extractAll() {
     this->stringInformation[Utility::getDesignType(ASTNodeType::VARIABLE)] = extractVariables();
 
     std::cout << "Information Extracted\n" << std::endl;
+
+    printContent();
+}
+
+
+void DesignExtractor::printContent() {
+    // Print contents of stringInformation
+    std::cout << "Contents of stringInformation:" << std::endl;
+    for (const auto& pair : stringInformation) {
+        std::cout << pair.first << ": {";
+        const auto& set = pair.second;
+        for (const auto& str : set) {
+            std::cout << str << ", ";
+        }
+        std::cout << "}" << std::endl;
+    }
+
+    // Print contents of intInformation
+    std::cout << "Contents of intInformation:" << std::endl;
+    for (const auto& pair : intInformation) {
+        std::cout << pair.first << ": {";
+        const auto& set = pair.second;
+        for (const auto& num : set) {
+            std::cout << num << ", ";
+        }
+        std::cout << "}" << std::endl;
+    }
 }
 
 void DesignExtractor::entityRecursiveExtractor(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& entities, ASTNodeType type) {
@@ -110,7 +134,14 @@ void DesignExtractor::statementRecursiveExtractor(const std::shared_ptr<ASTNode>
 }
 
 void DesignExtractor::procedureRecursiveExtractor(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& procedures) {
-
+    if (node->type == ASTNodeType::PROCEDURE) {
+        // If it's a variable node, add it to the set
+        procedures.push_back(*node);
+    }
+    // Recursively traverse children
+    for (const auto& child : node->children) {
+        procedureRecursiveExtractor(child, procedures);
+    }
 }
 
 
@@ -144,7 +175,15 @@ void DesignExtractor::extractModifies() {
 
 std::unordered_set<std::string> DesignExtractor::extractProcedures() {
     // Implementation of extractProcedures method goes here
-    return std::unordered_set<std::string>();
+    std::vector<ASTNode> variables;
+    procedureRecursiveExtractor(root, variables);
+
+    std::unordered_set<std::string> procedureNames;
+    for (auto node : variables) {
+        procedureNames.insert(node.value);
+    }
+
+    return procedureNames;
 }
 
 // Statements
