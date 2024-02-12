@@ -49,7 +49,6 @@ void SimpleParser::assertToken(LexicalToken token, LexicalTokenType type) const 
 	}
 }
 
-
 void SimpleParser::parseProcedure() {
 	if (!this->hasTokensLeft()) {
 		return;
@@ -86,27 +85,17 @@ void SimpleParser::parseStmt() {
 	if (firstToken.getTokenType() == LexicalTokenType::KEYWORD_READ) {
 		this->parseRead();
 	}
-
 }
 
 ReadStmt SimpleParser::parseRead() {
 	LexicalToken keyword = this->getToken();
-
-	if (keyword.getTokenType() != LexicalTokenType::KEYWORD_READ) {
-		throw std::runtime_error("Error: Invalid SIMPLE syntax.");
-	}
+	this->assertToken(keyword, LexicalTokenType::KEYWORD_READ);
 
 	LexicalToken variable = this->getToken();
-
-	if (variable.getTokenType() != LexicalTokenType::NAME) {
-		throw std::runtime_error("Error: Invalid SIMPLE syntax.");
-	}
+	this->assertToken(variable, LexicalTokenType::NAME);
 
 	LexicalToken semicolon = this->getToken();
-
-	if (semicolon.getTokenType() != LexicalTokenType::SYMBOL_SEMICOLON) {
-		throw std::runtime_error("Error: Invalid SIMPLE syntax.");
-	}
+	this->assertToken(semicolon, LexicalTokenType::SYMBOL_SEMICOLON);
 
 	return ReadStmt(variable, keyword.getLine(), semicolon.getLine());
 
@@ -115,22 +104,13 @@ ReadStmt SimpleParser::parseRead() {
 
 PrintStmt SimpleParser::parsePrint() {
 	LexicalToken keyword = this->getToken();
-
-	if (keyword.getTokenType() != LexicalTokenType::KEYWORD_PRINT) {
-		throw std::runtime_error("Error: Invalid SIMPLE syntax.");
-	}
+	this->assertToken(keyword, LexicalTokenType::KEYWORD_PRINT);
 
 	LexicalToken variable = this->getToken();
-
-	if (variable.getTokenType() != LexicalTokenType::NAME) {
-		throw std::runtime_error("Error: Invalid SIMPLE syntax.");
-	}
+	this->assertToken(variable, LexicalTokenType::NAME);
 
 	LexicalToken semicolon = this->getToken();
-
-	if (semicolon.getTokenType() != LexicalTokenType::SYMBOL_SEMICOLON) {
-		throw std::runtime_error("Error: Invalid SIMPLE syntax.");
-	}
+	this->assertToken(semicolon, LexicalTokenType::SYMBOL_SEMICOLON);
 
 	return PrintStmt(variable, keyword.getLine(), semicolon.getLine());
 
@@ -140,22 +120,13 @@ PrintStmt SimpleParser::parsePrint() {
 // To change to void later when building trees.
 CallStmt SimpleParser::parseCall() {
 	LexicalToken keyword = this->getToken();
-
-	if (keyword.getTokenType() != LexicalTokenType::KEYWORD_CALL) {
-		throw std::runtime_error("Error: Invalid SIMPLE syntax.");
-	}
+	this->assertToken(keyword, LexicalTokenType::KEYWORD_CALL);
 
 	LexicalToken variable = this->getToken();
-
-	if (variable.getTokenType() != LexicalTokenType::NAME) {
-		throw std::runtime_error("Error: Invalid SIMPLE syntax.");
-	}
+	this->assertToken(variable, LexicalTokenType::NAME);
 
 	LexicalToken semicolon = this->getToken();
-
-	if (semicolon.getTokenType() != LexicalTokenType::SYMBOL_SEMICOLON) {
-		throw std::runtime_error("Error: Invalid SIMPLE syntax.");
-	}
+	this->assertToken(semicolon, LexicalTokenType::SYMBOL_SEMICOLON);
 
 	return CallStmt(variable, keyword.getLine(), semicolon.getLine());
 
