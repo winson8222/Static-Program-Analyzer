@@ -9,7 +9,8 @@
 // Prompt: https://platform.openai.com/playground/p/cJLjmmneCEs4z6ms7ZkBSxJB?model=gpt-4&mode=chat
 class SimpleParser {
 public:
-    SimpleParser(std::string);
+    SimpleParser(); // Default constructor
+    SimpleParser(std::string filename);
     void parseProgram();
 
 // private:

@@ -7,15 +7,14 @@
 
 class SourceProcessor {
 public:
-	std::vector<LexicalToken> tokens;
+	SimpleParser parser;
 	std::shared_ptr<ASTNode> root;
 	PKBManager pkbManager;
 
-
-	SourceProcessor(PKBManager pkbManager);
+	SourceProcessor(std::string filename, PKBManager pkbManager);
 	void reset();
-	void tokenize(std::string filepath);
-	void parse();
+
+	void parseSIMPLE();
 	void buildAST();
 
 	void sampleAST();	// for testing purposes

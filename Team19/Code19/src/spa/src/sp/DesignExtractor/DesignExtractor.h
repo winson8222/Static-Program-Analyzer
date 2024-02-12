@@ -36,7 +36,7 @@ public:
     void extractStatements();
     void extractIf();
     void extractWhiles();
-    void extractCall();
+    std::unordered_set<std::string> extractCall();
     void extractRead();
     void extractPrint();
     std::unordered_set<std::string> extractVariables();

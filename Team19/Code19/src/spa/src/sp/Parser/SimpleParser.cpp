@@ -5,6 +5,9 @@
 // ai-gen start(gpt,2,e)
 // Prompt: https://platform.openai.com/playground/p/cJLjmmneCEs4z6ms7ZkBSxJB?model=gpt-4&mode=chat
 
+SimpleParser::SimpleParser() {
+	
+}
 
 SimpleParser::SimpleParser(std::string filename) {
     this->tokenStream = Tokenizer::tokenize(Tokenizer::readFileToString(filename));
