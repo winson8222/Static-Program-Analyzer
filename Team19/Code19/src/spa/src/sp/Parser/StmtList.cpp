@@ -1,27 +1,27 @@
 #include "StmtList.h"
 #include <iostream>
 
-StmtList::StmtList() {}
-
-void StmtList::addStmt(std::shared_ptr<Stmt> stmt) {
-    this->statements.push_back(stmt);
+StmtList::StmtList(int start, int end, std::vector<std::shared_ptr<ASTNode>> statements) {
+	this->lines = std::make_pair(start, end);
+	this->statements = statements;
 }
 
 int StmtList::getStartLine() const {
-    return 0;
-    // Do sth
+	return this->lines.first;
 }
 
 int StmtList::getEndLine() const {
-    return 0;
-    // Do sth
+	return this->lines.second;
 }
 
 std::shared_ptr<ASTNode> StmtList::buildTree() {
-    // **IMPORTANT** Placeholder implementation to avoid compilation error.
-    std::shared_ptr<ASTNode> tree = std::make_shared<ASTNode>(
-        ASTNodeType::ERROR, 0, "StmtList::buildTree not implemented."
-    );
+	std::shared_ptr<ASTNode> tree = std::make_shared<ASTNode>(
+		ASTNodeType::STATEMENT_LIST, this->lines.first, Utility::getASTNodeType(ASTNodeType::STATEMENT_LIST)
+	);
+
+	for (auto child : this->statements) {
+		tree.get()->addChild(child);
+	}
 
 	return tree;
 }

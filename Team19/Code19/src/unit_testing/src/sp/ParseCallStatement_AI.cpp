@@ -3,23 +3,8 @@
 #include <filesystem>
 // ai-gen start(gpt,2,e)
 // Prompt: https://platform.openai.com/playground/p/BL0U9QBHRxSO8JyQGo0KpEUZ?mode=chat
-TEST_CASE("CallStmt parsing is working correctly for valid input", "[SimpleParser::parseCall]") {
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/CallStmt1.txt";
-	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParser parser(testFileName);
-
-	CallStmt lastStmt = parser.parseCall();
-
-	// Assuming parser has a method to get CallStmt from parser, getCallStmt() 
-	// which returns the last parsed CallStmt.
-
-	REQUIRE(lastStmt.getStartLine() == 1);
-	REQUIRE(lastStmt.getEndLine() == 1); // Assuming your logic considers start and end line as similar for CallStmt.
-}
-
-
 TEST_CASE("CallStmt parsing throws an error with invalid syntax", "[SimpleParser]") {
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/CallStmt2.txt";
+	const std::string testFileName = "../../../../../tests/sp/ParserTest/Stmt_Invalid1.txt";
 	REQUIRE(std::filesystem::exists(testFileName));
 	SimpleParser parser(testFileName);
 
@@ -31,11 +16,13 @@ TEST_CASE("CallStmt parsing throws an error with invalid syntax", "[SimpleParser
 // ai-gen start(gpt, 2, e)
 // Prompt: https://platform.openai.com/playground/p/CRO1bXNAQZB3Adua8DmfPuWb?model=gpt-4&mode=chat
 TEST_CASE("Testing CallStmt::buildTree()", "[CallStmt]") {
-	LexicalToken lexicalToken(LexicalTokenType::KEYWORD_CALL, 1, 1, "variable");
-	CallStmt callStmt(lexicalToken, 1, 1);
+	// Generate test file
+	const std::string testFileName = "../../../../../tests/sp/ParserTest/CallStmt1.txt";
+	REQUIRE(std::filesystem::exists(testFileName));
+	SimpleParser parser(testFileName);
 
 	SECTION("Testing tree root node") {
-		std::shared_ptr<ASTNode> tree_ptr = callStmt.buildTree();
+		std::shared_ptr<ASTNode> tree_ptr = parser.parseCall();
 
 		REQUIRE(tree_ptr->type == ASTNodeType::CALL);
 		REQUIRE(tree_ptr->lineNumber == 1);
@@ -46,7 +33,7 @@ TEST_CASE("Testing CallStmt::buildTree()", "[CallStmt]") {
 			REQUIRE(children.size() == 1);
 			REQUIRE(children[0]->type == ASTNodeType::VARIABLE);
 			REQUIRE(children[0]->lineNumber == 1);
-			REQUIRE(children[0]->value == "variable");
+			REQUIRE(children[0]->value == "x");
 		}
 	}
 }
