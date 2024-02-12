@@ -17,3 +17,4 @@ TEST_CASE("Get TokenType", "[LexicalToken]")
     REQUIRE(token.getTokenType() == LexicalTokenType::OPERATOR_PLUS);
 }
 //ai-gen end
+

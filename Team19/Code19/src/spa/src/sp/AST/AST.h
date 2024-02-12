@@ -11,9 +11,9 @@
 
 class AST {
 public:
-    AST(std::unique_ptr<ASTNode> root);
+    AST(std::shared_ptr<ASTNode> root);
     const ASTNode* getRoot() const;
 
 private:
-    std::unique_ptr<ASTNode> root;
+    std::shared_ptr<ASTNode> root;
 };

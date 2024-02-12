@@ -11,7 +11,7 @@ public:
     Program();
     void addProcedure(Procedure p);
 
-    void buildTree() const override;
+    std::shared_ptr<ASTNode> buildTree() override;
     int getStartLine() const override;
     int getEndLine() const override;
 

@@ -22,7 +22,7 @@ const LexicalToken& LexicalToken::getNullToken() {
     return nullToken;
 }
 
-std::string LexicalToken::getValue() {
+std::string LexicalToken::getValue() const {
     return this->value;
 }
 

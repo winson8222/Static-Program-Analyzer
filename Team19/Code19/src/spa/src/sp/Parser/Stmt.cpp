@@ -1,9 +1,7 @@
 #include "Stmt.h"
 #include <iostream>
 
-Stmt::Stmt() {
-    // Todo
-}
+Stmt::Stmt() {}
 
 int Stmt::getStartLine() const {
     return 0;
@@ -15,6 +13,13 @@ int Stmt::getEndLine() const {
     // Do sth
 }
 
-void Stmt::buildTree() const {
-    // Do sth
+std::shared_ptr<ASTNode> Stmt::buildTree() {
+    // IMPORTANT: In the future, want to make Stmt Abstract class/Interface, and inherit everything in Stmt.
+
+    // **IMPORTANT** Placeholder implementation to avoid compilation error.
+    std::shared_ptr<ASTNode> tree = std::make_shared<ASTNode>(
+        ASTNodeType::ERROR, 0, "Stmt::buildTree() not implemented."
+    );
+
+    return tree;
 }

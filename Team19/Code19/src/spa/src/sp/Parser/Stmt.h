@@ -8,7 +8,8 @@ class Stmt : public Grammar {
 public:
     Stmt();
     
-    void buildTree() const;
+    // Pure virtual function makes Stmt an abstract class
+    virtual std::shared_ptr<ASTNode> buildTree() override;
     int getStartLine() const;
     int getEndLine() const;
 

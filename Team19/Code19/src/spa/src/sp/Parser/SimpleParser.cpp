@@ -49,7 +49,7 @@ void SimpleParser::parseStmt(int tokenPos) {
         return;
     }
 
-    auto firstToken = this->tokenStream[tokenPos];
+    LexicalToken firstToken = this->tokenStream[tokenPos];
     if (firstToken.getTokenType() == LexicalTokenType::KEYWORD_CALL || 
         firstToken.getTokenType() == LexicalTokenType::KEYWORD_READ || 
         firstToken.getTokenType() == LexicalTokenType::KEYWORD_PRINT) {
