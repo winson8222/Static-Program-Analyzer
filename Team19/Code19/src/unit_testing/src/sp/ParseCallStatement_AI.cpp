@@ -16,11 +16,13 @@ TEST_CASE("CallStmt parsing throws an error with invalid syntax", "[SimpleParser
 // ai-gen start(gpt, 2, e)
 // Prompt: https://platform.openai.com/playground/p/CRO1bXNAQZB3Adua8DmfPuWb?model=gpt-4&mode=chat
 TEST_CASE("Testing CallStmt::buildTree()", "[CallStmt]") {
-	LexicalToken lexicalToken(LexicalTokenType::KEYWORD_CALL, 1, 1, "variable");
-	CallStmt callStmt(lexicalToken, 1, 1);
+	// Generate test file
+	const std::string testFileName = "../../../../../tests/sp/ParserTest/CallStmt1.txt";
+	REQUIRE(std::filesystem::exists(testFileName));
+	SimpleParser parser(testFileName);
 
 	SECTION("Testing tree root node") {
-		std::shared_ptr<ASTNode> tree_ptr = callStmt.buildTree();
+		std::shared_ptr<ASTNode> tree_ptr = parser.parseCall();
 
 		REQUIRE(tree_ptr->type == ASTNodeType::CALL);
 		REQUIRE(tree_ptr->lineNumber == 1);
@@ -31,7 +33,7 @@ TEST_CASE("Testing CallStmt::buildTree()", "[CallStmt]") {
 			REQUIRE(children.size() == 1);
 			REQUIRE(children[0]->type == ASTNodeType::VARIABLE);
 			REQUIRE(children[0]->lineNumber == 1);
-			REQUIRE(children[0]->value == "variable");
+			REQUIRE(children[0]->value == "x");
 		}
 	}
 }
