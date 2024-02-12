@@ -11,6 +11,43 @@ DesignExtractor::DesignExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<
     std::cout << "Initialized" << std::endl;
 }
 
+void DesignExtractor::populatePKB() {
+    for (const auto& pair : designs) {
+        for (auto value : pair.second) {
+            if (pair.first == "c") {
+				int intValue = std::stoi(value);
+				this->pkbWriter->insertConstant(intValue);
+            }
+            else if (pair.first == "v") {
+                this->pkbWriter->insertVariable(value);
+			}
+		}
+	}
+    std::cout << "PKB Populated\n" << std::endl;
+}
+
+void DesignExtractor::extractAll() {
+	// Implementation of extractAll method goes here
+	extractFollows();
+	extractFollowsStar();
+	extractParents();
+	extractParentsStar();
+	extractUses();
+	extractModifies();
+	extractAssigns();
+    this->designs["c"] = extractConstants();
+	extractProcedures();
+	extractStatements();
+	extractIf();
+	extractWhiles();
+	extractCall();
+	extractRead();
+	extractPrint();
+	this->designs["v"] = extractVariables();
+
+    std::cout << "Information Extracted\n" << std::endl;
+}
+
 void DesignExtractor::extractFollows() {
     // Implementation of extractFollows method goes here
 }
@@ -39,8 +76,31 @@ void DesignExtractor::extractAssigns() {
     // Implementation of extractAssigns method goes here
 }
 
-void DesignExtractor::extractConstants() {
+std::unordered_set<std::string> DesignExtractor::extractConstants() {
     // Implementation of extractConstants method goes here
+    std::vector<ASTNode> constants;
+    recursivelyExtractConstants(root, constants);
+    
+    std::unordered_set<std::string> constantValues;
+    for (auto node : constants) {
+        constantValues.insert(node.value);
+    }
+
+    return constantValues;
+}
+
+void DesignExtractor::recursivelyExtractConstants(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& constants) {
+    	// Check if the current node is of type Constant
+    if (node->type == ASTNodeType::CONSTANT) {
+		// If it's a constant node, add it to the set
+		constants.push_back(*node);
+	}
+
+	// Recursively traverse children
+    for (const auto& child : node->children) {
+		recursivelyExtractConstants(child, constants);
+	}
+
 }
 
 void DesignExtractor::extractProcedures() {
@@ -81,10 +141,7 @@ std::unordered_set<std::string> DesignExtractor::extractVariables() {
     for (auto node : variables) {
 		variableNames.insert(node.value);
 	}
-    
-    for (auto val : variableNames) {
-		this->pkbWriter->insertVariable(val);
-	}
+
 	return variableNames;
 }
 

@@ -1,5 +1,5 @@
-// Include the Parser class header.
-#include "../../spa/src/qps/QueryParser.h"
+// Include the parser class header.
+#include "../../spa/src/qps/parser/QueryParser.h"
 #include <stdexcept>
 #include <iostream>
 
@@ -11,12 +11,12 @@ QueryParser::QueryParser(const vector<Token>& tokens) : tokens(tokens), currentT
 
 // Parses the entire query.
 // Processes declarations, select clause, and optional such that and pattern clauses.
-bool QueryParser::parse() {
+ParsingResult QueryParser::parse() {
 
     parseDeclarations();
     parseSelectClause();
     if (currentTokenIndex == tokens.size() - 1) {
-        return true;
+        return parsingResult;
     }
     advanceToken();
 
@@ -25,7 +25,7 @@ bool QueryParser::parse() {
         parseSuchThatClause();
 
         if (currentTokenIndex == tokens.size() - 1) {
-            return true;
+            return parsingResult;
         }
 
         advanceToken();    
@@ -35,8 +35,9 @@ bool QueryParser::parse() {
         parsePatternClause();        
     }
     if (currentTokenIndex == tokens.size() - 1) {
-        return true;
+        return parsingResult;
     }
+    return parsingResult;
 }
 
 // Parses declarations in the query.
@@ -391,6 +392,7 @@ bool QueryParser::advanceToken() {
         return true;
     }
     throwError();
+    return false;
 }
 
 // Checks if the current token matches a given TokenType.
