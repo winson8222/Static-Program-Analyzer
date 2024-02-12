@@ -1,16 +1,20 @@
 #include "StmtList.h"
 #include <iostream>
 
-StmtList::StmtList() {}
+StmtList::StmtList(int start, int end) {
+	this->lines = std::make_pair(start, end);
+}
+
+void StmtList::addStmt(std::shared_ptr<ASTNode> statementNode) {
+	this->statements.push_back(statementNode);
+}
 
 int StmtList::getStartLine() const {
-	return 0;
-	// Do sth
+	return lines.first;
 }
 
 int StmtList::getEndLine() const {
-	return 0;
-	// Do sth
+	return lines.second;
 }
 
 std::shared_ptr<ASTNode> StmtList::buildTree() {
@@ -18,6 +22,10 @@ std::shared_ptr<ASTNode> StmtList::buildTree() {
 	std::shared_ptr<ASTNode> tree = std::make_shared<ASTNode>(
 		ASTNodeType::STATEMENT_LIST, this->lines.first, Utility::getASTNodeType(ASTNodeType::STATEMENT_LIST)
 	);
+
+	for (auto child : this->statements) {
+		tree.get()->addChild(child);
+	}
 
 	return tree;
 }
