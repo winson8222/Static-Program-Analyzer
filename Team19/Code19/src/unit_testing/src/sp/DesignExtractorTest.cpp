@@ -2,7 +2,7 @@
 #include "sp/AST/ASTNode.h"
 #include "pkb/PKBManager.h"
 #include "pkb/PKBWriter.h"
-#include "sp/AST/Utility.h"
+#include "sp/Utility.h"
 #include "catch.hpp"
 #include <fstream>
 #include <iostream>

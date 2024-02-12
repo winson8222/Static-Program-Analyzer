@@ -1,5 +1,5 @@
 #include "ASTNode.h"
-#include "Utility.h"
+#include "sp/Utility.h"
 #include "AST.h"
 #include <sstream>
 
@@ -39,7 +39,7 @@ std::size_t ASTNode::hash() const {
 
 // Method to convert AST node to a string
 std::string ASTNode::toString() const {
-    return "String demon: \n" + recursiveString(0);
+    return "String representations: \n" + recursiveString(0);
 }
 
 // Helper method to convert AST node to a string recursively

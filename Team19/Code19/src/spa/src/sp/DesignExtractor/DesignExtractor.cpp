@@ -2,6 +2,7 @@
 // prompt https://chat.openai.com/share/a181de60-e76f-496c-9bee-7ea80f2be651
 
 #include "sp/AST/ASTNode.h"
+#include "sp/Utility.h"
 #include "DesignExtractor.h"
 #include <unordered_set>
 
@@ -35,15 +36,15 @@ void DesignExtractor::extractAll() {
 	extractUses();
 	extractModifies();
 	extractAssigns();
-    this->designs["c"] = extractConstants();
-	extractProcedures();
-	extractStatements();
+    this->designs[Utility::getDesignType(ASTNodeType::CONSTANT)] = extractConstants();
+    // this->designs[Utility::getDesignType(ASTNodeType::PROCEDURE)] = extractProcedures();
+    // this->designs[Utility::getDesignType(ASTNodeType::STATEMENT_LIST)] = extractStatements();
 	extractIf();
 	extractWhiles();
-	extractCall();
-	extractRead();
-	extractPrint();
-	this->designs["v"] = extractVariables();
+    this->designs[Utility::getDesignType(ASTNodeType::CALL)] = extractCall();
+    // this->designs[Utility::getDesignType(ASTNodeType::READ)] = extractRead();
+    // this->designs[Utility::getDesignType(ASTNodeType::PRINT)] = extractPrint();
+    this->designs [Utility::getDesignType(ASTNodeType::VARIABLE)] = extractVariables();
 
     std::cout << "Information Extracted\n" << std::endl;
 }
