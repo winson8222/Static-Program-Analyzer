@@ -71,11 +71,11 @@ void SimpleParser::parseProcedure() {
 }
 
 void SimpleParser::parseStmtLst() {
+	// Parse every statement until we see a closing bracket.
 	while (this->peekToken().getTokenType() != LexicalTokenType::SYMBOL_CLOSE_BRACE) {
 		this->parseStmt();
 	}
-	// Add parsing logic for statement list
-	// Parse every statement until we see a closing bracket.
+
 }
 
 void SimpleParser::parseStmt() {
@@ -133,7 +133,7 @@ PrintStmt SimpleParser::parsePrint() {
 }
 
 // To change to void later when building trees.
-CallStmt SimpleParser::parseCall() {
+std::shared_ptr<ASTNode> SimpleParser::parseCall() {
 	LexicalToken keyword = this->getToken();
 	this->assertToken(keyword, LexicalTokenType::KEYWORD_CALL);
 
@@ -143,7 +143,9 @@ CallStmt SimpleParser::parseCall() {
 	LexicalToken semicolon = this->getToken();
 	this->assertToken(semicolon, LexicalTokenType::SYMBOL_SEMICOLON);
 
-	return CallStmt(variable, keyword.getLine(), semicolon.getLine());
+	CallStmt callStmt = CallStmt(variable, keyword.getLine(), semicolon.getLine());
+
+	return callStmt.buildTree();
 
 	// Add the callStmt to the Tree.
 }
