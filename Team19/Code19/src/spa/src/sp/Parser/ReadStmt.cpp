@@ -1,5 +1,4 @@
 #include "ReadStmt.h"
-#include "sp/LexicalToken.h"
 #include <iostream>
 
 ReadStmt::ReadStmt(const LexicalToken& variable, int start, int end) {

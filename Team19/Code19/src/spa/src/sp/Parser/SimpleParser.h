@@ -21,7 +21,7 @@ public:
     void parseStmtLst();
     void parseStmt(int tokenPos);
     ReadStmt parseRead(int tokenPos);
-    void parsePrint();
+    void parsePrint(int tokenPos);
     CallStmt parseCall(int tokenPos);
     void parseWhile();
     void parseIf();

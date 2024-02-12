@@ -50,9 +50,15 @@ void SimpleParser::parseStmt(int tokenPos) {
     }
 
     LexicalToken firstToken = this->tokenStream[tokenPos];
-    if (firstToken.getTokenType() == LexicalTokenType::KEYWORD_CALL || 
-        firstToken.getTokenType() == LexicalTokenType::KEYWORD_PRINT) {
+    if (firstToken.getTokenType() == LexicalTokenType::KEYWORD_CALL
+        ) {
         this->parseCall(tokenPos);
+    }
+    if (
+
+        firstToken.getTokenType() == LexicalTokenType::KEYWORD_PRINT
+        ) {
+        this->parsePrint(tokenPos);
     }
 
     if (
@@ -92,7 +98,7 @@ ReadStmt SimpleParser::parseRead(int tokenPos) {
     // Add the readStmt to the Tree.
 }
 
-void SimpleParser::parsePrint() {
+void SimpleParser::parsePrint(int tokenPos) {
     // Add parsing logic for print
 }
 
