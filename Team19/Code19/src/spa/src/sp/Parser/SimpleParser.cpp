@@ -78,28 +78,30 @@ void SimpleParser::parseStmtLst() {
 
 }
 
-void SimpleParser::parseStmt() {
+std::shared_ptr<ASTNode> SimpleParser::parseStmt() {
 	// Add parsing logic for statement
 	// If next token is '=', we are assigning. Call assign.
 	// Then, Check keywords read/print/call.
 	// Then, check keywords while/if.
 	// If dont have keyword, this is an invalid statement.
 	if (!this->hasTokensLeft()) {
-		return;
+		throw std::runtime_error("Error: SimpleParser::parseStmt encounter empty statement.");
 	}
 
 	LexicalToken firstToken = this->peekToken();
 	if (firstToken.getTokenType() == LexicalTokenType::KEYWORD_CALL) {
-		this->parseCall();
+		return this->parseCall();
 	}
 
 	if (firstToken.getTokenType() == LexicalTokenType::KEYWORD_PRINT) {
-		this->parsePrint();
+		return this->parsePrint();
 	}
 
 	if (firstToken.getTokenType() == LexicalTokenType::KEYWORD_READ) {
-		this->parseRead();
+		return this->parseRead();
 	}
+
+	throw std::runtime_error("Error: SimpleParser only accepts READ,CALL,PRINT statements now.");
 }
 
 std::shared_ptr<ASTNode> SimpleParser::parseRead() {

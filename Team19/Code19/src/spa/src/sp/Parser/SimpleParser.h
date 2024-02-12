@@ -23,7 +23,7 @@ public:
 	LexicalToken getToken();
 	void parseProcedure();
 	void parseStmtLst();
-	void parseStmt();
+	std::shared_ptr<ASTNode> parseStmt();
 	std::shared_ptr<ASTNode> parseRead();
 	std::shared_ptr<ASTNode> parsePrint();
 	std::shared_ptr<ASTNode> parseCall();
