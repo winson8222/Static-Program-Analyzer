@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "pkb/stores/relationships/types/FollowsStore.h"
 #include "pkb/stores/relationships/types/FollowsTStore.h"
 #include "pkb/stores/relationships/types/UsesPStore.h"
@@ -23,70 +25,70 @@
 class PKB {
 private:
     // Relationship stores
-    shared_ptr<FollowsStore> followsStore;
-    shared_ptr<FollowsTStore> followsTStore;
-    shared_ptr<ParentStore> parentStore;
-    shared_ptr<ParentTStore> parentTStore;
-    shared_ptr<UsesPStore> usesPStore;
-    shared_ptr<UsesSStore> usesSStore;
-    shared_ptr<ModifiesPStore> modifiesPStore;
-    shared_ptr<ModifiesSStore> modifiesSStore;
+    std::shared_ptr<FollowsStore> followsStore;
+    std::shared_ptr<FollowsTStore> followsTStore;
+    std::shared_ptr<ParentStore> parentStore;
+    std::shared_ptr<ParentTStore> parentTStore;
+    std::shared_ptr<UsesPStore> usesPStore;
+    std::shared_ptr<UsesSStore> usesSStore;
+    std::shared_ptr<ModifiesPStore> modifiesPStore;
+    std::shared_ptr<ModifiesSStore> modifiesSStore;
 
     // Entity stores
-    shared_ptr<StatementStore> statementStore;
-    shared_ptr<ReadStore> readStore;
-    shared_ptr<PrintStore> printStore;
-    shared_ptr<CallStore> callStore;
-    shared_ptr<WhileStore> whileStore;
-    shared_ptr<IfStore> ifStore;
-    shared_ptr<AssignStore> assignStore;
-    shared_ptr<VariableStore> variableStore;
-    shared_ptr<ConstantStore> constantStore;
-    shared_ptr<ProcedureStore> procedureStore;
+    std::shared_ptr<StatementStore> statementStore;
+    std::shared_ptr<ReadStore> readStore;
+    std::shared_ptr<PrintStore> printStore;
+    std::shared_ptr<CallStore> callStore;
+    std::shared_ptr<WhileStore> whileStore;
+    std::shared_ptr<IfStore> ifStore;
+    std::shared_ptr<AssignStore> assignStore;
+    std::shared_ptr<VariableStore> variableStore;
+    std::shared_ptr<ConstantStore> constantStore;
+    std::shared_ptr<ProcedureStore> procedureStore;
 public:
     PKB() {
         // Initialise all relationship stores
-        followsTStore = make_shared<FollowsTStore>();
-        followsStore = make_shared<FollowsStore>();
-        parentStore = make_shared<ParentStore>();
-        parentTStore = make_shared<ParentTStore>();
-        usesPStore = make_shared<UsesPStore>();
-        usesSStore = make_shared<UsesSStore>();
-        modifiesPStore = make_shared<ModifiesPStore>();
-        modifiesSStore = make_shared<ModifiesSStore>();
+        followsTStore = std::make_shared<FollowsTStore>();
+        followsStore = std::make_shared<FollowsStore>();
+        parentStore = std::make_shared<ParentStore>();
+        parentTStore = std::make_shared<ParentTStore>();
+        usesPStore = std::make_shared<UsesPStore>();
+        usesSStore = std::make_shared<UsesSStore>();
+        modifiesPStore = std::make_shared<ModifiesPStore>();
+        modifiesSStore = std::make_shared<ModifiesSStore>();
 
         // Initialize all entities stores
-        statementStore = make_shared<StatementStore>();
-        readStore = make_shared<ReadStore>();
-        printStore = make_shared<PrintStore>();
-        callStore = make_shared<CallStore>();
-        whileStore = make_shared<WhileStore>();
-        ifStore = make_shared<IfStore>();
-        assignStore = make_shared<AssignStore>();
-        variableStore = make_shared<VariableStore>();
-        constantStore = make_shared<ConstantStore>();
-        procedureStore = make_shared<ProcedureStore>();
+        statementStore = std::make_shared<StatementStore>();
+        readStore = std::make_shared<ReadStore>();
+        printStore = std::make_shared<PrintStore>();
+        callStore = std::make_shared<CallStore>();
+        whileStore = std::make_shared<WhileStore>();
+        ifStore = std::make_shared<IfStore>();
+        assignStore = std::make_shared<AssignStore>();
+        variableStore = std::make_shared<VariableStore>();
+        constantStore = std::make_shared<ConstantStore>();
+        procedureStore = std::make_shared<ProcedureStore>();
     }
 
     // Relationship Getters
-    shared_ptr<FollowsStore> getFollowsStore() { return followsStore; }
-    shared_ptr<FollowsTStore> getFollowsTStore() { return followsTStore; }
-    shared_ptr<ParentStore> getParentStore() { return parentStore; }
-    shared_ptr<ParentTStore> getParentTStore() { return parentTStore; }
-    shared_ptr<UsesPStore> getUsesPStore() { return usesPStore; }
-    shared_ptr<UsesSStore> getUsesSStore() { return usesSStore; }
-    shared_ptr<ModifiesPStore> getModifiesPStore() { return modifiesPStore; }
-    shared_ptr<ModifiesSStore> getModifiesSStore() { return modifiesSStore; }
+    std::shared_ptr<FollowsStore> getFollowsStore() { return followsStore; }
+    std::shared_ptr<FollowsTStore> getFollowsTStore() { return followsTStore; }
+    std::shared_ptr<ParentStore> getParentStore() { return parentStore; }
+    std::shared_ptr<ParentTStore> getParentTStore() { return parentTStore; }
+    std::shared_ptr<UsesPStore> getUsesPStore() { return usesPStore; }
+    std::shared_ptr<UsesSStore> getUsesSStore() { return usesSStore; }
+    std::shared_ptr<ModifiesPStore> getModifiesPStore() { return modifiesPStore; }
+    std::shared_ptr<ModifiesSStore> getModifiesSStore() { return modifiesSStore; }
 
     // Entity Getters
-    shared_ptr<StatementStore> getStatementStore() { return statementStore; }
-    shared_ptr<ReadStore> getReadStore() { return readStore; }
-    shared_ptr<PrintStore> getPrintStore() { return printStore; }
-    shared_ptr<CallStore> getCallStore() { return callStore; }
-    shared_ptr<WhileStore> getWhileStore() { return whileStore; }
-    shared_ptr<IfStore> getIfStore() { return ifStore; }
-    shared_ptr<AssignStore> getAssignStore() { return assignStore; }
-    shared_ptr<VariableStore> getVariableStore() { return variableStore; }
-    shared_ptr<ConstantStore> getConstantStore() { return constantStore; }
-    shared_ptr<ProcedureStore> getProcedureStore() { return procedureStore; }
+    std::shared_ptr<StatementStore> getStatementStore() { return statementStore; }
+    std::shared_ptr<ReadStore> getReadStore() { return readStore; }
+    std::shared_ptr<PrintStore> getPrintStore() { return printStore; }
+    std::shared_ptr<CallStore> getCallStore() { return callStore; }
+    std::shared_ptr<WhileStore> getWhileStore() { return whileStore; }
+    std::shared_ptr<IfStore> getIfStore() { return ifStore; }
+    std::shared_ptr<AssignStore> getAssignStore() { return assignStore; }
+    std::shared_ptr<VariableStore> getVariableStore() { return variableStore; }
+    std::shared_ptr<ConstantStore> getConstantStore() { return constantStore; }
+    std::shared_ptr<ProcedureStore> getProcedureStore() { return procedureStore; }
 };

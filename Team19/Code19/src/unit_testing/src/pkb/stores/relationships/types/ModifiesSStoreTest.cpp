@@ -38,7 +38,7 @@ TEST_CASE("ModifiesSStore Functionality") {
 
         // Verify retrieval of all statements that modify the variable "x".
         auto statementsModifyingX = modifiesSStore.getRelationshipsByValue("x");
-        auto expectedStatements = unordered_set<int>{1, 4};
+        auto expectedStatements = std::unordered_set<int>{1, 4};
 
         REQUIRE(statementsModifyingX == expectedStatements); // Statements 1 and 4 modify "x".
     }
@@ -51,7 +51,7 @@ TEST_CASE("ModifiesSStore Functionality") {
 
         // Verify retrieval of all variables modified by Statement 1.
         auto variablesModifiedByStmt1 = modifiesSStore.getRelationshipsByKey(1);
-        auto expectedVariables = unordered_set<std::string>{"x", "y"};
+        auto expectedVariables = std::unordered_set<std::string>{"x", "y"};
 
         REQUIRE(variablesModifiedByStmt1 == expectedVariables); // Statement 1 modifies variables "x" and "y".
     }

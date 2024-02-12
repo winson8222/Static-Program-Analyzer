@@ -4,8 +4,6 @@
 #include "IRelationshipReader.h"
 #include "IRelationshipWriter.h"
 
-using namespace std;
-
 template <typename KeyType, typename ValueType>
 class RelationshipStore: public IRelationshipReader<KeyType, ValueType> , public IRelationshipWriter<KeyType, ValueType> {
 private:
@@ -41,15 +39,31 @@ public:
      * Get all key-value relationships
      * @return map of key-value relationships
      */
-    unordered_map<KeyType, unordered_set<ValueType>> getKeyValueRelationships() override {
+    std::unordered_map<KeyType, std::unordered_set<ValueType>> getKeyValueRelationships() override {
         return keyToValueMap.getMapSet();
     };
     /**
      * Get all value-key relationships
      * @return map of value-key relationships
      */
-    unordered_map<ValueType, unordered_set<KeyType>> getValueKeyRelationships() override {
+    std::unordered_map<ValueType, std::unordered_set<KeyType>> getValueKeyRelationships() override {
         return valueToKeyMap.getMapSet();
+    };
+
+    /**
+     * Get all keys in the store
+     * @return set of keys
+     */
+    std::unordered_set<KeyType> getKeys() override {
+        return keyToValueMap.getKeys();
+    };
+
+    /**
+     * Get all values in the store
+     * @return set of values
+     */
+    std::unordered_set<ValueType> getValues() override {
+        return valueToKeyMap.getKeys();
     };
 
     /**
@@ -57,7 +71,7 @@ public:
      * @param key
      * @return The set of values related to the given key
      */
-    unordered_set<ValueType> getRelationshipsByKey(KeyType key) override {
+    std::unordered_set<ValueType> getRelationshipsByKey(KeyType key) override {
         return keyToValueMap.getValuesByKey(key);
     };
     /**
@@ -65,7 +79,7 @@ public:
      * @param value
      * @return
      */
-    unordered_set<KeyType> getRelationshipsByValue(ValueType value) override {
+    std::unordered_set<KeyType> getRelationshipsByValue(ValueType value) override {
         return valueToKeyMap.getValuesByKey(value);
     };
     /**

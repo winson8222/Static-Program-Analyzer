@@ -1,38 +1,38 @@
 #pragma
 
-#include "PKB.h"
+#include <memory>
 
-using namespace std;
+#include "PKB.h"
 
 class PKBReader {
 private:
-    shared_ptr<PKB> pkb;
+    std::shared_ptr<PKB> pkb;
 
-    shared_ptr<FollowsStore> followsStore;
-    shared_ptr<FollowsTStore> followsTStore;
+    std::shared_ptr<FollowsStore> followsStore;
+    std::shared_ptr<FollowsTStore> followsTStore;
 
-    shared_ptr<ParentStore> parentStore;
-    shared_ptr<ParentTStore> parentTStore;
+    std::shared_ptr<ParentStore> parentStore;
+    std::shared_ptr<ParentTStore> parentTStore;
 
-    shared_ptr<UsesPStore> usesPStore;
-    shared_ptr<UsesSStore> usesSStore;
+    std::shared_ptr<UsesPStore> usesPStore;
+    std::shared_ptr<UsesSStore> usesSStore;
 
-    shared_ptr<ModifiesPStore> modifiesPStore;
-    shared_ptr<ModifiesSStore> modifiesSStore;
+    std::shared_ptr<ModifiesPStore> modifiesPStore;
+    std::shared_ptr<ModifiesSStore> modifiesSStore;
 
-    shared_ptr<AssignStore> assignStore;
-    shared_ptr<VariableStore> variableStore;
-    shared_ptr<ConstantStore> constantStore;
-    shared_ptr<ProcedureStore> procedureStore;
-    shared_ptr<StatementStore> statementStore;
-    shared_ptr<IfStore> ifStore;
-    shared_ptr<WhileStore> whileStore;
-    shared_ptr<CallStore> callStore;
-    shared_ptr<ReadStore> readStore;
-    shared_ptr<PrintStore> printStore;
+    std::shared_ptr<AssignStore> assignStore;
+    std::shared_ptr<VariableStore> variableStore;
+    std::shared_ptr<ConstantStore> constantStore;
+    std::shared_ptr<ProcedureStore> procedureStore;
+    std::shared_ptr<StatementStore> statementStore;
+    std::shared_ptr<IfStore> ifStore;
+    std::shared_ptr<WhileStore> whileStore;
+    std::shared_ptr<CallStore> callStore;
+    std::shared_ptr<ReadStore> readStore;
+    std::shared_ptr<PrintStore> printStore;
 
 public:
-    explicit PKBReader(const shared_ptr<PKB>& pkb): pkb(pkb) {
+    explicit PKBReader(const std::shared_ptr<PKB>& pkb): pkb(pkb) {
         followsStore = pkb->getFollowsStore();
         followsTStore = pkb->getFollowsTStore();
 
@@ -63,7 +63,7 @@ public:
      * @param stmt: stmt in Follows(s1, stmt)
      * @return unordered_set<int>: The set of statement numbers of all s1 in Follows(s1, stmt)
      */
-    unordered_set<int> getPreFollows(int stmt) {
+    std::unordered_set<int> getPreFollows(int stmt) {
       return followsStore->getRelationshipsByValue(stmt);
     }
 
@@ -74,8 +74,24 @@ public:
      * @param stmt: stmt in Follows(stmt, s2)
      * @return unordered_set<int>: The set of statement numbers of all s2 in Follows(stmt, s2)
      */
-    unordered_set<int> getPostFollows(int stmt) {
+    std::unordered_set<int> getPostFollows(int stmt) {
       return followsStore->getRelationshipsByKey(stmt);
+    }
+
+    /**
+     * @brief Gets the post statement numbers of all "Follows" relationships.
+     * @return unordered_set<int>: The set of statement numbers of s2 in Follows(s1, s2)
+     */
+    std::unordered_set<int> getAllPostFollows() {
+      return followsStore->getValues();
+    }
+
+    /**
+     * @brief Gets the preceding statement numbers of all "Follows" relationships.
+     * @return unordered_set<int>: The set of statement numbers of s1 in Follows(s1, s2)
+     */
+    std::unordered_set<int> getAllPreFollows() {
+      return followsStore->getKeys();
     }
 
     /**
@@ -83,7 +99,7 @@ public:
      * @param stmt
      * @return unordered_set<int>: The set of statement number of all s1 in Follows*(s1, stmt)
      */
-    unordered_set<int> getPreFollowsT(int stmt) {
+    std::unordered_set<int> getPreFollowsT(int stmt) {
       return followsTStore->getRelationshipsByValue(stmt);
     }
 
@@ -92,8 +108,24 @@ public:
      * @param stmt: stmt in Follows*(stmt, s2)
      * @return: The set of statement number of all s2 in Follows*(stmt, s2)
      */
-    unordered_set<int> getPostFollowsT(int stmt) {
+    std::unordered_set<int> getPostFollowsT(int stmt) {
       return followsTStore->getRelationshipsByKey(stmt);
+    }
+
+    /**
+     * @brief Gets the post statement numbers of all "Follows*" relationships.
+     * @return unordered_set<int>: The set of statement numbers of s2 in Follows*(s1, s2)
+     */
+    std::unordered_set<int> getAllPostFollowsT() {
+      return followsTStore->getValues();
+    }
+
+    /**
+     * @brief Gets the preceding statement numbers of all "Follows*" relationships.
+     * @return unordered_set<int>: The set of statement numbers of s1 in Follows*(s1, s2)
+     */
+    std::unordered_set<int> getAllPreFollowsT() {
+      return followsTStore->getKeys();
     }
 
     // Entities
@@ -102,7 +134,7 @@ public:
      * @brief Gets the statement number of all "Assign" entities.
      * @return unordered_set<int>: Statement number of all "Assign" entities.
      */
-    unordered_set<int> getAllAssigns() {
+    std::unordered_set<int> getAllAssigns() {
         return assignStore->getAllEntities();
     }
 
@@ -110,7 +142,7 @@ public:
      * @brief Gets the statement number of all "Variable" entities.
      * @return unordered_set<int>: Statement number of all "Variable" entities.
      */
-    unordered_set<string> getAllVariables() {
+    std::unordered_set<std::string> getAllVariables() {
         return variableStore->getAllEntities();
     }
 

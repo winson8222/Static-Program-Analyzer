@@ -33,7 +33,7 @@ TEST_CASE("pkb/stores/relationships/RelationshipStore") {
     SECTION("addRelationship: Basic") {
         RelationshipStore<int, int> relationshipStore;
         relationshipStore.addRelationship(1, 2);
-        auto expected = unordered_map<int, unordered_set<int>>{{1, {2}}};
+        auto expected = std::unordered_map<int, std::unordered_set<int>>{{1, {2}}};
         REQUIRE(relationshipStore.getKeyValueRelationships() == expected);
     }
 
@@ -41,7 +41,7 @@ TEST_CASE("pkb/stores/relationships/RelationshipStore") {
         RelationshipStore<int, int> relationshipStore;
         relationshipStore.addRelationship(1, 2);
         relationshipStore.addRelationship(1, 2);
-        auto expected = unordered_map<int, unordered_set<int>>{{1, {2}}};
+        auto expected = std::unordered_map<int, std::unordered_set<int>>{{1, {2}}};
         REQUIRE(relationshipStore.getKeyValueRelationships() == expected);
     }
 
@@ -61,7 +61,7 @@ TEST_CASE("pkb/stores/relationships/RelationshipStore") {
 
     SECTION("getKeyValueRelationships: Empty Store") {
         RelationshipStore<int, int> relationshipStore;
-        auto expected = unordered_map<int, unordered_set<int>>{};
+        auto expected = std::unordered_map<int, std::unordered_set<int>>{};
         REQUIRE(relationshipStore.getKeyValueRelationships() == expected);
     }
 
@@ -70,7 +70,7 @@ TEST_CASE("pkb/stores/relationships/RelationshipStore") {
         relationshipStore.addRelationship(1, 2);
         relationshipStore.addRelationship(1, 3);
         relationshipStore.addRelationship(2, 3);
-        auto expected = unordered_map<int, unordered_set<int>>{
+        auto expected = std::unordered_map<int, std::unordered_set<int>>{
                 {1, {2, 3}},
                 {2, {3}}
         };
@@ -79,7 +79,7 @@ TEST_CASE("pkb/stores/relationships/RelationshipStore") {
 
     SECTION("getValueKeyRelationships: Empty Store") {
         RelationshipStore<int, int> relationshipStore;
-        auto expected = unordered_map<int, unordered_set<int>>{};
+        auto expected = std::unordered_map<int, std::unordered_set<int>>{};
         REQUIRE(relationshipStore.getValueKeyRelationships() == expected);
     }
 
@@ -88,7 +88,7 @@ TEST_CASE("pkb/stores/relationships/RelationshipStore") {
         relationshipStore.addRelationship(1, 2);
         relationshipStore.addRelationship(1, 3);
         relationshipStore.addRelationship(2, 3);
-        auto expected = unordered_map<int, unordered_set<int>>{
+        auto expected = std::unordered_map<int, std::unordered_set<int>>{
                 {2, {1}},
                 {3, {1, 2}}
         };
@@ -97,7 +97,7 @@ TEST_CASE("pkb/stores/relationships/RelationshipStore") {
 
     SECTION("getRelationshipsByKey: Empty Store") {
         RelationshipStore<int, int> relationshipStore;
-        auto expected = unordered_set<int>{};
+        auto expected = std::unordered_set<int>{};
         REQUIRE(relationshipStore.getRelationshipsByKey(1) == expected);
     }
 
@@ -106,13 +106,13 @@ TEST_CASE("pkb/stores/relationships/RelationshipStore") {
         relationshipStore.addRelationship(1, 2);
         relationshipStore.addRelationship(1, 3);
         relationshipStore.addRelationship(2, 3);
-        auto expected = unordered_set<int>{2, 3};
+        auto expected = std::unordered_set<int>{2, 3};
         REQUIRE(relationshipStore.getRelationshipsByKey(1) == expected);
     }
 
     SECTION("getRelationshipsByValue: Empty Store") {
         RelationshipStore<int, int> relationshipStore;
-        auto expected = unordered_set<int>{};
+        auto expected = std::unordered_set<int>{};
         REQUIRE(relationshipStore.getRelationshipsByValue(1) == expected);
     }
 
@@ -121,9 +121,39 @@ TEST_CASE("pkb/stores/relationships/RelationshipStore") {
         relationshipStore.addRelationship(1, 2);
         relationshipStore.addRelationship(1, 3);
         relationshipStore.addRelationship(2, 3);
-        auto expected = unordered_set<int>{1};
+        auto expected = std::unordered_set<int>{1};
         REQUIRE(relationshipStore.getRelationshipsByValue(2) == expected);
-        expected = unordered_set<int>{1, 2};
+        expected = std::unordered_set<int>{1, 2};
         REQUIRE(relationshipStore.getRelationshipsByValue(3) == expected);
+    }
+
+  SECTION("getKeys: Empty Store") {
+    RelationshipStore<int, int> relationshipStore;
+    auto expected = std::unordered_set<int>{};
+    REQUIRE(relationshipStore.getKeys() == expected);
+  }
+
+    SECTION("getKeys: Non-Empty Store") {
+        RelationshipStore<int, int> relationshipStore;
+        relationshipStore.addRelationship(1, 2);
+        relationshipStore.addRelationship(1, 3);
+        relationshipStore.addRelationship(2, 3);
+        auto expected = std::unordered_set<int>{1, 2};
+        REQUIRE(relationshipStore.getKeys() == expected);
+    }
+
+    SECTION("getValues: Empty Store") {
+        RelationshipStore<int, int> relationshipStore;
+        auto expected = std::unordered_set<int>{};
+        REQUIRE(relationshipStore.getValues() == expected);
+    }
+
+    SECTION("getValues: Non-Empty Store") {
+        RelationshipStore<int, int> relationshipStore;
+        relationshipStore.addRelationship(1, 2);
+        relationshipStore.addRelationship(1, 3);
+        relationshipStore.addRelationship(2, 3);
+        auto expected = std::unordered_set<int>{2, 3};
+        REQUIRE(relationshipStore.getValues() == expected);
     }
 }

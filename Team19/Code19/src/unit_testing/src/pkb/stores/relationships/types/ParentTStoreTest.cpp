@@ -40,7 +40,7 @@ TEST_CASE("ParentTStore Functionality") {
         auto keyValueRelationships = parentTStore.getKeyValueRelationships();
 
         // Defines the expected mapping of parent to child(ren) including transitivity.
-        auto expected = unordered_map<int, unordered_set<int>>{
+        auto expected = std::unordered_map<int, std::unordered_set<int>>{
                 {1, {2, 3}}, // Statement 1 has children Statements 2 and 3 (transitive).
                 {2, {3}}     // Statement 2 has child Statement 3 (direct).
         };

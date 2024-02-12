@@ -38,7 +38,7 @@ TEST_CASE("UsesSStore Functionality") {
 
         // Verify retrieval of all statements that use the variable "x".
         auto statementsUsingX = usesSStore.getRelationshipsByValue("x");
-        auto expectedStatements = unordered_set<int>{1, 4};
+        auto expectedStatements = std::unordered_set<int>{1, 4};
 
         REQUIRE(statementsUsingX == expectedStatements); // Statements 1 and 4 use "x".
     }
@@ -51,7 +51,7 @@ TEST_CASE("UsesSStore Functionality") {
 
         // Verify retrieval of all variables used by Statement 1.
         auto variablesUsedByStmt1 = usesSStore.getRelationshipsByKey(1);
-        auto expectedVariables = unordered_set<std::string>{"x", "y"};
+        auto expectedVariables = std::unordered_set<std::string>{"x", "y"};
 
         REQUIRE(variablesUsedByStmt1 == expectedVariables); // Statement 1 uses variables "x" and "y".
     }

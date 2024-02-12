@@ -1,8 +1,7 @@
 #pragma once
 
+#include <string>
 #include "pkb/stores/entities/EntityStore.h"
-
-using namespace std;
 
 /**
  * @class VariableStore
@@ -12,7 +11,7 @@ using namespace std;
  * Inherits all functionalities from EntityStore.
  * Template parameters are set to string, representing SIMPLE variable names.
  */
-class VariableStore: public EntityStore<string> {
+class VariableStore: public EntityStore<std::string> {
     // This class can be used to instantiate an EntityStore
     // specific for the 'Variable' Entity.
 };

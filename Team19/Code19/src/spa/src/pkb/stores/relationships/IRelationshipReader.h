@@ -26,27 +26,27 @@ public:
      * Retrieves all relationships in a map where each key is associated with a set of values.
      * @return A map of keys to sets of values.
      */
-    virtual unordered_map<KeyType, unordered_set<ValueType>> getKeyValueRelationships() = 0;
+    virtual std::unordered_map<KeyType, std::unordered_set<ValueType>> getKeyValueRelationships() = 0;
 
     /**
      * Retrieves all relationships in a map where each value is associated with a set of keys.
      * @return A map of values to sets of keys.
      */
-    virtual unordered_map<ValueType, unordered_set<KeyType>> getValueKeyRelationships() = 0;
+    virtual std::unordered_map<ValueType, std::unordered_set<KeyType>> getValueKeyRelationships() = 0;
 
     /**
      * Retrieves all values associated with a given key.
      * @param key The key to retrieve values for.
      * @return A set of values associated with the key.
      */
-    virtual unordered_set<ValueType> getRelationshipsByKey(KeyType key) = 0;
+    virtual std::unordered_set<ValueType> getRelationshipsByKey(KeyType key) = 0;
 
     /**
      * Retrieves all keys associated with a given value.
      * @param value The value to retrieve keys for.
      * @return A set of keys associated with the value.
      */
-    virtual unordered_set<KeyType> getRelationshipsByValue(ValueType value) = 0;
+    virtual std::unordered_set<KeyType> getRelationshipsByValue(ValueType value) = 0;
 
     /**
      * Checks if a specific relationship exists between a key and a value.
@@ -55,4 +55,16 @@ public:
      * @return true if the relationship exists, false otherwise.
      */
     virtual bool hasRelationship(KeyType key, ValueType value) = 0;
+
+    /**
+     * Retrieves all keys in the store.
+     * @return A set of keys.
+     */
+    virtual std::unordered_set<KeyType> getKeys() = 0;
+
+    /**
+     * Retrieves all values in the store.
+     * @return A set of values.
+     */
+    virtual std::unordered_set<ValueType> getValues() = 0;
 };
