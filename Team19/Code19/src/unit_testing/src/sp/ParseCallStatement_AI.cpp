@@ -4,7 +4,7 @@
 // ai-gen start(gpt,2,e)
 // Prompt: https://platform.openai.com/playground/p/BL0U9QBHRxSO8JyQGo0KpEUZ?mode=chat
 TEST_CASE("CallStmt parsing throws an error with invalid syntax", "[SimpleParser]") {
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/InvalidStmt1.txt";
+	const std::string testFileName = "../../../../../tests/sp/ParserTest/Stmt_Invalid1.txt";
 	REQUIRE(std::filesystem::exists(testFileName));
 	SimpleParser parser(testFileName);
 

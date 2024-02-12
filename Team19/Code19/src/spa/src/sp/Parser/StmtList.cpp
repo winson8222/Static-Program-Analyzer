@@ -7,15 +7,14 @@ StmtList::StmtList(int start, int end, std::vector<std::shared_ptr<ASTNode>> sta
 }
 
 int StmtList::getStartLine() const {
-	return lines.first;
+	return this->lines.first;
 }
 
 int StmtList::getEndLine() const {
-	return lines.second;
+	return this->lines.second;
 }
 
 std::shared_ptr<ASTNode> StmtList::buildTree() {
-	// **IMPORTANT** Placeholder implementation to avoid compilation error.
 	std::shared_ptr<ASTNode> tree = std::make_shared<ASTNode>(
 		ASTNodeType::STATEMENT_LIST, this->lines.first, Utility::getASTNodeType(ASTNodeType::STATEMENT_LIST)
 	);

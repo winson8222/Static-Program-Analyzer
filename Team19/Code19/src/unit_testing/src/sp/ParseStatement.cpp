@@ -3,7 +3,7 @@
 #include <filesystem>
 
 TEST_CASE("Statement parsing throws an error with invalid syntax", "[parseStmt]") {
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/InvalidStmt1.txt";
+	const std::string testFileName = "../../../../../tests/sp/ParserTest/Stmt_Invalid1.txt";
 	REQUIRE(std::filesystem::exists(testFileName));
 	SimpleParser parser(testFileName);
 

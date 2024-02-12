@@ -49,9 +49,9 @@ void SimpleParser::assertToken(LexicalToken token, LexicalTokenType type) const 
 	}
 }
 
-void SimpleParser::parseProcedure() {
+std::shared_ptr<ASTNode> SimpleParser::parseProcedure() {
 	if (!this->hasTokensLeft()) {
-		return;
+		throw std::runtime_error("Error: SimpleParser::parseProcedure encounter empty statement.");
 	}
 
 	LexicalToken procedureKeyword = this->getToken();
@@ -62,12 +62,13 @@ void SimpleParser::parseProcedure() {
 	this->assertToken(this->getToken(), LexicalTokenType::SYMBOL_OPEN_BRACE);
 
 	// Parse Statement Lists;
-	this->parseStmtLst();
+	std::shared_ptr<ASTNode> statementList = this->parseStmtLst();
 
 	LexicalToken closeBrace = this->getToken();
 	this->assertToken(closeBrace, LexicalTokenType::SYMBOL_CLOSE_BRACE);
 
-	// Create class name, and create AST;
+	Procedure procedure = Procedure(procedureKeyword.getLine(), closeBrace.getLine(), statementList);
+	return procedure.buildTree();
 }
 
 std::shared_ptr<ASTNode> SimpleParser::parseStmtLst() {
