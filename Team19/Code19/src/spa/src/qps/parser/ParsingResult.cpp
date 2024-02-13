@@ -57,6 +57,7 @@ const string& ParsingResult::getDeclaredSynonym(const string& key) const {
     return ""; 
 }
 
+
 const string& ParsingResult::getRequiredSynonym() const {
     return requiredSynonym;
 }

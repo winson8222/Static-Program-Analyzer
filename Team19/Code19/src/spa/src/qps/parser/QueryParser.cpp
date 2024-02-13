@@ -48,7 +48,7 @@ void QueryParser::parseDeclarations() {
         parseDesignEntity();
         string assignmentType = currentToken().getValue();
         advanceToken();
-        
+
         parseSynonym();
         parsingResult.addDeclaredSynonym(currentToken().getValue(), assignmentType);
         advanceToken();
@@ -62,12 +62,13 @@ void QueryParser::parseDeclarations() {
 
         ensureToken(TokenType::Semicolon);
         advanceToken();
+        parseDesignEntity();
 
         numberOfDeclarations++;
     }
 
     if (numberOfDeclarations == 0) {
-        throwError();
+        throwGrammarError();
     }
     
 }
@@ -79,9 +80,10 @@ void QueryParser::parseDesignEntity() {
         return;
     }
     else {
-		throwError();
+		throwGrammarError();
     }
 }
+
 
 // Parses a synonym in the query.
 // Ensures the current token is an identifier and advances the token.
@@ -90,23 +92,34 @@ void QueryParser::parseSynonym() {
         return ;
     }
     else {
-		throwError();
+		throwGrammarError();
 	}
-    
+
 }
+
+
 
 // Parses the select clause in the query.
 // Checks for the 'Select' keyword and ensures the following token is a valid identifier.
 void QueryParser::parseSelectClause() {
     if (currentToken().getValue() != "Select") {
-        throwError();
+        throwGrammarError();
     }
     advanceToken();
     // check after select if it is a synonym
     ensureToken(TokenType::IDENT);
+    //check if the token value is declared as synonyms in any of the set
+if (parsingResult.getDeclaredSynonym(currentToken().getValue()).empty()) {
+        throwSemanticError();
+    }
+
+
     parsingResult.setRequiredSynonym(currentToken().getValue());
 
 }
+
+
+
 
 // Parses the 'such that' clause in the query.
 // Ensures the correct syntax and calls the function to process relation references.
@@ -130,7 +143,7 @@ void QueryParser::parseRelRef() {
         advanceToken();
         parseUsesOrModifies();
     } else {
-        throwError();
+        throwGrammarError();
     }
 
 }
@@ -160,7 +173,7 @@ void QueryParser::parseUsesOrModifies() {
         advanceToken();
     }
     else {
-        throwError();
+        throwGrammarError();
     }
 
     bool stmtRefSuccess = false;
@@ -181,7 +194,7 @@ void QueryParser::parseUsesOrModifies() {
             advanceToken();
         }
         catch (const std::exception& e) {
-            throwError();
+            throwGrammarError();
         }
     }
 
@@ -189,7 +202,7 @@ void QueryParser::parseUsesOrModifies() {
         advanceToken();
     }
     else {
-        throwError();
+        throwGrammarError();
     }
     parseEntRef();
     parsingResult.setSuchThatClauseSecondParam(currentToken());
@@ -204,7 +217,7 @@ void QueryParser::parsestmtRefstmtRef() {
         advanceToken();
     }
     else {
-        throwError();
+        throwGrammarError();
     }
 
     // stmtRef
@@ -217,7 +230,7 @@ void QueryParser::parsestmtRefstmtRef() {
         advanceToken();
     }
     else {
-        throwError();
+        throwGrammarError();
     }
 
     parseStmtRef();
@@ -233,8 +246,9 @@ void QueryParser::parseStmtRef() {
     if (match(TokenType::INTEGER) || match(TokenType::Wildcard)) {
         return;
     } else {
-        parseSynonym();
+        parseStmtSynonyms();
     }
+
 }
 
 // Parses an entity reference in the query.
@@ -243,9 +257,13 @@ void QueryParser::parseEntRef() {
     if (match(TokenType::QuoutIDENT) || match(TokenType::Wildcard)) {
         return;
     } else {
-        parseSynonym();
+        parseVarSynonyms();
     }
+
 }
+
+
+
 
 // Parses the pattern clause in the query.
 // Ensures the correct syntax and processes entity references and expression specifications.
@@ -256,6 +274,7 @@ void QueryParser::parsePatternClause() {
     // check if it is a syn-assign
     ensureToken(TokenType::IDENT);
     parsingResult.setPatternClauseRelationship(currentToken());
+    parseAssignSynonyms();
 
     advanceToken();
     ensureToken(TokenType::Lparenthesis);
@@ -271,7 +290,7 @@ void QueryParser::parsePatternClause() {
     // This is a rudimentary approach to tokenize ExpressionSpec, probably change later
     // Store the current token index before parsing the expression spec
     size_t startIndex = currentTokenIndex;
-    
+
     parseExpressionSpec();
 
     // Concatenate all token values from startIndex to the current index
@@ -304,7 +323,7 @@ void QueryParser::parseExpressionSpec() {
         parseQuotedExpression();
         return;
     } else {
-        throwError();
+        throwGrammarError();
     }
 
 
@@ -316,7 +335,7 @@ void QueryParser::parseQuotedExpression() {
     advanceToken();
     parseExpression();
     ensureToken(TokenType::DoubleQuote);
-    
+
     
 }
 
@@ -329,7 +348,7 @@ void QueryParser::parseExpression() {
         if (currentToken().getValue() == "+" || currentToken().getValue() == "-") {
             advanceToken();
         } else {
-            throwError();
+            throwGrammarError();
         }
         advanceToken();
         parseTerm();
@@ -359,13 +378,13 @@ void QueryParser::parseFactor() {
         if (match(TokenType::Rparenthesis)) {
             advanceToken();
         }
-        throwError();
+        throwGrammarError();
     } else if (isVarName()) {
         advanceToken();
     } else if (isConstValue()) {
         advanceToken();
     } else {
-        throwError();
+        throwGrammarError();
     }
 }
 
@@ -391,7 +410,8 @@ bool QueryParser::advanceToken() {
         ++currentTokenIndex;
         return true;
     }
-    throwError();
+    throwGrammarError();
+
     return false;
 }
 
@@ -409,15 +429,54 @@ bool QueryParser::match(TokenType type) {
 // Throws an error if the token does not match the expected type.
 void QueryParser::ensureToken(TokenType expected) {
     if (!match(expected)) {
-        throwError();
+        throwGrammarError();
     }
 }
 
-// Throws a standard invalid_argument exception with a custom error message.
-void QueryParser::throwError() {
+// Throws a standard invalid_argument exception with a custom error message for grammar error.
+bool QueryParser::throwGrammarError() {
     throw std::invalid_argument("incorrect grammar at: " + currentToken().getValue());
+
 }
+
+// Throws a standard invalid_argument exception with a custom error message for semantic error.
+bool QueryParser::throwSemanticError() {
+    throw std::invalid_argument("semantic error at: " + currentToken().getValue());
+}
+
+// Parses a variable synonym in the query.
+void QueryParser::parseVarSynonyms() {
+    ensureToken(TokenType::IDENT);
+    // check if the token value is declared as variable synonyms in any of the set
+    if (parsingResult.getDeclaredSynonym(currentToken().getValue()) != "variable") {
+        throwSemanticError();
+    }
+    advanceToken();
+
+}
+
+// Parses a statement synonym in the query.
+void QueryParser::parseStmtSynonyms() {
+    ensureToken(TokenType::IDENT);
+    if (parsingResult.getDeclaredSynonym(currentToken().getValue()) != "stmt") {
+        throwSemanticError();
+    }
+    advanceToken();
+}
+
+
+// Parses an assignment synonym in the query.
+void QueryParser::parseAssignSynonyms() {
+    ensureToken(TokenType::IDENT);
+    if (parsingResult.getDeclaredSynonym(currentToken().getValue()) != "assign") {
+        throwSemanticError();
+    }
+    advanceToken();
+}
+
+
 
 ParsingResult QueryParser::getParsingResult() const {
     return parsingResult;
 }
+

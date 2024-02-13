@@ -31,7 +31,13 @@ private:
     // Current index in the tokens vector.
     size_t currentTokenIndex;
 
+
+
+
+
+
     ParsingResult parsingResult;
+
 
     // Private methods for parsing different parts of the input.
     void parseDeclarations();
@@ -68,9 +74,23 @@ private:
     // Returns true if it matches, false otherwise.
     bool match(TokenType type);
 
+
+
+
+    void parseVarSynonyms();
+    void parseStmtSynonyms();
+    void parseAssignSynonyms();
+
+
+
+
     void ensureToken(TokenType expected);
 
-    void throwError();
+    bool throwGrammarError();
+    bool throwSemanticError();
+
+
+
 
     
 };
