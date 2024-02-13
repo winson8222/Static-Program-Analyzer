@@ -1,5 +1,5 @@
-#include "sp/Tokenizer.h"
-#include "sp/LexicalToken.h"
+#include "sp/SPTokenizer/Tokenizer.h"
+#include "sp/SPTokenizer/LexicalToken.h"
 #include "sp/DesignExtractor/DesignExtractor.h"
 #include "sp/Parser/SimpleParser.h"
 #include "sp/AST/ASTNode.h"

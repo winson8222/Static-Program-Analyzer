@@ -1,5 +1,5 @@
 #include "catch.hpp"
-#include "sp/LexicalTokenType.h"
+#include "sp/SPTokenizer/LexicalTokenType.h"
 
 TEST_CASE("Symbol Tokens") {
     REQUIRE(LexicalTokenTypeMapper::getTokenType("}") == LexicalTokenType::SYMBOL_CLOSE_BRACE);

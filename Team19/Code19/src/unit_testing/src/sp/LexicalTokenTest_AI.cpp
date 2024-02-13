@@ -1,7 +1,7 @@
 // ai-gen start(gpt,2,e)
 // prompt: https://platform.openai.com/playground/p/vwMjpyCtExjgJwMs6KZaXnTE?model=gpt-4&mode=chat
 #include "catch.hpp"
-#include "sp/LexicalToken.h"
+#include "sp/SPTokenizer/LexicalToken.h"
 
 // Test the constructor with only token type.
 TEST_CASE("Constructor with only type", "[LexicalToken]")
