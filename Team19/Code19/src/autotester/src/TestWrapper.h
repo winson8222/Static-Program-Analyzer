@@ -11,7 +11,7 @@
 #include "pkb/PKBManager.h"
 #include "qps/Evaluator/QueryEvaluator.h"
 #include "qps/Parser/QueryParser.h"
-#include "sp/SourceProcessor.h"
+
 
 class TestWrapper : public AbstractWrapper {
     //private:

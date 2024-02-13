@@ -20,11 +20,16 @@ TestWrapper::TestWrapper() {
 
 // method for parsing the SIMPLE source
 void TestWrapper::parse(std::string filename) {
+
     // call your parser to do the parsing
-    // ...rest of your code...
-    SourceProcessor sp = SourceProcessor(filename, this->pkbManager);
-    sp.parseSIMPLE();
-    sp.extractAndPopulate();
+
+	// call your parser to do the parsing
+  // ...rest of your code...
+
+  // example code
+	std::string x = "x";
+	pkbWriter->insertVariable(x);
+
 }
 
 // method to evaluating a query
