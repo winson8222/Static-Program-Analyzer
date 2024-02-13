@@ -26,6 +26,8 @@ void TestWrapper::parse(std::string filename) {
   // example code
 	std::string x = "x";
 	pkbWriter->insertVariable(x);
+    int stmtNum= 1;
+    pkbWriter->insertStatement(stmtNum);
 }
 
 // method to evaluating a query
