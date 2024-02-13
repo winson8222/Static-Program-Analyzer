@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "PKB.h"
 
 #include "pkb/writers/entities/AssignWriter.h"
