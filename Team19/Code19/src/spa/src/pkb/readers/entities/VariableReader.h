@@ -19,7 +19,7 @@ public:
         return getAllVariables();
     }
 
-    bool contains(std::string variable) const {
+    bool contains(std::string variable) const override {
       return hasVariable(variable);
     }
 
@@ -28,6 +28,6 @@ public:
     }
 
     bool hasVariable(std::string variable) const {
-      return variableStore->contains(variable);
+      return variableStore->contains(std::move(variable));
     }
 };

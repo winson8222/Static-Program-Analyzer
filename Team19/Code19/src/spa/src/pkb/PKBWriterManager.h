@@ -1,4 +1,4 @@
-#pragma
+#pragma once
 
 #include "PKB.h"
 
@@ -68,7 +68,7 @@ public:
       readWriter = std::make_shared<ReadWriter>(pkb->getReadStore());
       printWriter = std::make_shared<PrintWriter>(pkb->getPrintStore());
     }
-    // Relationsjips
+    // Relationships
     std::shared_ptr<FollowsWriter> getFollowsWriter() {
       return followsWriter;
     }

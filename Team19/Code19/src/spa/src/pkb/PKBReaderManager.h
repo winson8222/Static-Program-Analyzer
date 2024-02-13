@@ -3,64 +3,42 @@
 #include <memory>
 
 #include "PKB.h"
-#include "pkb/readers/VariableReader.h"
 
+#include "pkb/readers/entities/AssignReader.h"
+#include "pkb/readers/entities/VariableReader.h"
+#include "pkb/readers/entities/ProcedureReader.h"
+#include "pkb/readers/entities/StatementReader.h"
+#include "pkb/readers/entities/IfReader.h"
+#include "pkb/readers/entities/WhileReader.h"
+#include "pkb/readers/entities/CallReader.h"
+#include "pkb/readers/entities/ReadReader.h"
+#include "pkb/readers/entities/PrintReader.h"
 
 class PKBReaderManager {
 private:
     std::shared_ptr<PKB> pkb;
 
-//    std::shared_ptr<FollowsStore> followsStore;
-//    std::shared_ptr<FollowsTStore> followsTStore;
-//
-//    std::shared_ptr<ParentStore> parentStore;
-//    std::shared_ptr<ParentTStore> parentTStore;
-//
-//    std::shared_ptr<UsesPStore> usesPStore;
-//    std::shared_ptr<UsesSStore> usesSStore;
-//
-//    std::shared_ptr<ModifiesPStore> modifiesPStore;
-//    std::shared_ptr<ModifiesSStore> modifiesSStore;
-//
-//    std::shared_ptr<AssignStore> assignStore;
-//    std::shared_ptr<VariableStore> variableStore;
-//    std::shared_ptr<ConstantStore> constantStore;
-//    std::shared_ptr<ProcedureStore> procedureStore;
-//    std::shared_ptr<StatementStore> statementStore;
-//    std::shared_ptr<IfStore> ifStore;
-//    std::shared_ptr<WhileStore> whileStore;
-//    std::shared_ptr<CallStore> callStore;
-//    std::shared_ptr<ReadStore> readStore;
-//    std::shared_ptr<PrintStore> printStore;
-
+    std::shared_ptr<AssignReader> assignReader;
     std::shared_ptr<VariableReader> variableReader;
+    std::shared_ptr<ProcedureReader> procedureReader;
+    std::shared_ptr<StatementReader> statementReader;
+    std::shared_ptr<IfReader> ifReader;
+    std::shared_ptr<WhileReader> whileReader;
+    std::shared_ptr<CallReader> callReader;
+    std::shared_ptr<ReadReader> readReader;
+    std::shared_ptr<PrintReader> printReader;
 
 public:
     explicit PKBReaderManager(const std::shared_ptr<PKB>& pkb): pkb(pkb) {
-//        followsStore = pkb->getFollowsStore();
-//        followsTStore = pkb->getFollowsTStore();
-//
-//        parentStore = pkb->getParentStore();
-//        parentTStore = pkb->getParentTStore();
-//
-//        usesPStore = pkb->getUsesPStore();
-//        usesSStore = pkb->getUsesSStore();
-//
-//        modifiesPStore = pkb->getModifiesPStore();
-//        modifiesSStore = pkb->getModifiesSStore();
-//
-//        assignStore = pkb->getAssignStore();
-//        variableStore = pkb->getVariableStore();
-//        constantStore = pkb->getConstantStore();
-//        procedureStore = pkb->getProcedureStore();
-//        statementStore = pkb->getStatementStore();
-//        ifStore = pkb->getIfStore();
-//        whileStore = pkb->getWhileStore();
-//        callStore = pkb->getCallStore();
-//        readStore = pkb->getReadStore();
-//        printStore = pkb->getPrintStore();
-
-        variableReader = std::make_shared<VariableReader>(pkb->getVariableStore());
+      assignReader = std::make_shared<AssignReader>(pkb->getAssignStore());
+      variableReader = std::make_shared<VariableReader>(pkb->getVariableStore());
+      procedureReader = std::make_shared<ProcedureReader>(pkb->getProcedureStore());
+      statementReader = std::make_shared<StatementReader>(pkb->getStatementStore());
+      ifReader = std::make_shared<IfReader>(pkb->getIfStore());
+      whileReader = std::make_shared<WhileReader>(pkb->getWhileStore());
+      callReader = std::make_shared<CallReader>(pkb->getCallStore());
+      readReader = std::make_shared<ReadReader>(pkb->getReadStore());
+      printReader = std::make_shared<PrintReader>(pkb->getPrintStore());
     }
 
     std::shared_ptr<VariableReader> getVariableReader() {

@@ -5,13 +5,13 @@
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
-#include "pkb/PKBWriter.h"
+#include "pkb/PKBWriterManager.h"
 #include "sp/AST/ASTNode.h" // Assuming you have ASTNode defined in ASTNode.h
 
 class DesignExtractor {
 public:
     // Constructor taking in the root node of the AST
-    DesignExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriter> pkbWriter);
+    DesignExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager);
 
     const ASTNode& getRoot() const {
         return *root;
@@ -43,7 +43,7 @@ public:
     std::unordered_set<int> extractPrint();
     std::unordered_set<std::string> extractVariables();
     std::shared_ptr<ASTNode> root;
-    std::shared_ptr<PKBWriter> pkbWriter;
+    std::shared_ptr<PKBWriterManager> pkbWriterManager;
 
 
     void printContent();
