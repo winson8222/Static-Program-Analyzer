@@ -40,28 +40,28 @@ private:
 
 
     // Private methods for parsing different parts of the input.
-    void parseDeclarations();
-    void parseSelectClause();
-    void parseSuchThatClause();
-    void parsePatternClause();
+    bool parseDeclarations();
+    bool parseSelectClause();
+    bool parseSuchThatClause();
+    bool parsePatternClause();
 
     bool isUsesOrModifies();
     bool isStmtRefStmtRef();
     bool isVarName();
     bool isConstValue();
 
-    void parseSynonym();
-    void parseEntRef();
-    void parseExpressionSpec();
-    void parseQuotedExpression();
-    void parseRelRef();
-    void parseStmtRef();
-    void parseDesignEntity();
-    void parseUsesOrModifies();
-    void parsestmtRefstmtRef();
-    void parseExpression();
-    void parseTerm();
-    void parseFactor();
+    bool parseSynonym();
+    bool parseEntRef();
+    bool parseExpressionSpec();
+    bool parseQuotedExpression();
+    bool parseRelRef();
+    bool parseStmtRef();
+    bool parseDesignEntity();
+    bool parseUsesOrModifies();
+    bool parsestmtRefstmtRef();
+    bool parseExpression();
+    bool parseTerm();
+    bool parseFactor();
 
     // Method to get the current token.
     // Returns a constant reference to the current Token object.
@@ -77,17 +77,17 @@ private:
 
 
 
-    void parseVarSynonyms();
-    void parseStmtSynonyms();
-    void parseAssignSynonyms();
+    bool parseVarSynonyms();
+    bool parseStmtSynonyms();
+    bool parseAssignSynonyms();
 
 
 
 
-    void ensureToken(TokenType expected);
+    bool ensureToken(TokenType expected);
 
-    bool throwGrammarError();
-    bool throwSemanticError();
+    string getGrammarError();
+    string getSemanticError();
 
 
 

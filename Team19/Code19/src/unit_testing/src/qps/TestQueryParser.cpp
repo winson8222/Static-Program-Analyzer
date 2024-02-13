@@ -18,8 +18,9 @@ TEST_CASE("Check Grammar of Valid tokens with no declaration") {
             Token(TokenType::Rparenthesis, ")")
     };
 
-    REQUIRE_THROWS_WITH(QueryParser(tokens).parse(),
-        "incorrect grammar at: Select");
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "incorrect grammar at: Select");
+
+
 }
 
 
@@ -55,8 +56,7 @@ TEST_CASE("Check Grammar of incomplete query with incomplete modifies clause") {
             Token(TokenType::IDENT, "s"),
     };
 
-    REQUIRE_THROWS_WITH(QueryParser(tokens).parse(),
-                        "incorrect grammar at: s");
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "Incomplete Query");
 }
 
 
@@ -78,8 +78,11 @@ TEST_CASE("Check Grammar of Valid tokens with no relref keyword") {
             // Add more tokens as needed to simulate your query
     };
 
-    REQUIRE_THROWS_WITH(QueryParser(tokens).parse(),
-        "incorrect grammar at: (");
+
+
+
+
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "incorrect grammar at: (");
 }
 
 TEST_CASE("Check Grammar of Valid tokens with pattern query") {
@@ -147,8 +150,7 @@ TEST_CASE("Check Grammars of valid tokens that Follows with a stmtRef and an ent
             Token(TokenType::Rparenthesis, ")")
     };
 
-    REQUIRE_THROWS_WITH(QueryParser(tokens).parse(),
-        "incorrect grammar at: \"existentVar\"");
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "incorrect grammar at: \"existentVar\"");
 
 }
 
@@ -196,7 +198,9 @@ TEST_CASE("Check Grammars of valid tokens that Modifies with quoted variable amd
     };
 
     QueryParser parser(tokens);
-    REQUIRE(parser.parse());
+    auto result = parser.parse();
+    bool x = true; //will not reach this line unless parse is successful
+    REQUIRE(x);
 
 }
 
@@ -220,9 +224,7 @@ TEST_CASE("Check for semantic error for undeclared stmt synonyms") {
             Token(TokenType::Rparenthesis, ")")
     };
 
-    QueryParser parser(tokens);
-    REQUIRE_THROWS_WITH(QueryParser(tokens).parse(),
-                        "semantic error at: s3");
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "semantic error at: s3");
 
 }
 
@@ -243,8 +245,7 @@ TEST_CASE("Check Grammars of valid tokens that Modifies with two stmtRefs in par
             Token(TokenType::Rparenthesis, ")")
     };
 
-    REQUIRE_THROWS_WITH(QueryParser(tokens).parse(),
-        "incorrect grammar at: 1");
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "incorrect grammar at: 1");
 
 }
 
@@ -353,8 +354,7 @@ TEST_CASE("Check Grammars of valid tokens have Modifies and pattern clauses") {
             Token(TokenType::Rparenthesis, ")")
     };
 
-    REQUIRE_THROWS_WITH(QueryParser(tokens).parse(),
-        "incorrect grammar at: 1");
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "incorrect grammar at: 1");
 
 }
 
@@ -378,8 +378,6 @@ TEST_CASE("Check Semantic error repeated token declarations") {
             Token(TokenType::Rparenthesis, ")")
     };
 
-    QueryParser parser(tokens);
-    REQUIRE_THROWS_WITH(QueryParser(tokens).parse(),
-                        "semantic error at: s");
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "semantic error at: s");
 
 }

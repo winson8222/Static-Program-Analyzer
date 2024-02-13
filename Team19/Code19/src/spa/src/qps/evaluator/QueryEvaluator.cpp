@@ -11,6 +11,13 @@ void QueryEvaluator::addStrategy(std::unique_ptr<QueryEvaluationStrategy> strate
 }
 
 std::vector<string> QueryEvaluator::evaluateQuery() {
+    // if query is not valid, return error message and stop evaluation
+    if (!parsingResult.isQueryValid()) {
+        // convert error message to vector<string>
+        vector<string> error;
+        error.push_back(parsingResult.getErrorMessage());
+        return error;
+    }
     std::string requiredSynonym = parsingResult.getRequiredSynonym();
     std::string requiredType = parsingResult.getRequiredSynonymType();
 
