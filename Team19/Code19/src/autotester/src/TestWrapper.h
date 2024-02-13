@@ -9,15 +9,16 @@
 #include "AbstractWrapper.h"
 // #include "pkb/PKBManager.h"
 #include "pkb/PKBManager.h"
-#include "qps/evaluator/QueryEvaluator.h"
-#include "qps/parser/QueryParser.h"
+#include "qps/Evaluator/QueryEvaluator.h"
+#include "qps/Parser/QueryParser.h"
+#include "sp/SourceProcessor.h"
 
 class TestWrapper : public AbstractWrapper {
     //private:
     //    shared_ptr<PKBManager> pkbManager;
     //    shared_ptr<PKB> pkb;
     //    shared_ptr<PKBWriter> pkbWriter;
-        // shared_ptr<PKBReader> pkbReader;
+    // shared_ptr<PKBReader> pkbReader;
 private:
     std::shared_ptr<PKBManager> pkbManager;
     std::shared_ptr<PKBReader> pkbReader;
