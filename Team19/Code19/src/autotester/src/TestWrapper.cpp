@@ -22,7 +22,6 @@ TestWrapper::TestWrapper() {
 void TestWrapper::parse(std::string filename) {
 	// call your parser to do the parsing
   // ...rest of your code...
-	std::cout << "REACHED PARSE" << std::endl;
 	SourceProcessor sp = SourceProcessor(filename, this->pkbManager);
 	sp.parseSIMPLE();
 	sp.extractAndPopulate();
@@ -31,36 +30,17 @@ void TestWrapper::parse(std::string filename) {
 // method to evaluating a query
 void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
 	// call your evaluator to evaluate the query here
-	  // ...code to evaluate query...
-
-	  // example code
-	std::string x = "x";
-	std::string y = "y";
-	std::string z = "z";
-	std::string a = "a";
-	pkbWriter->insertVariable(x);
-	pkbWriter->insertVariable(y);
-	pkbWriter->insertVariable(z);
-	pkbWriter->insertVariable(a);
-	
-	Tokenizer tokenizer("variable v; Select v");
+    // ...code to evaluate query...
+	Tokenizer tokenizer(query);
 	vector<Token> tokens = tokenizer.tokenize();
 	QueryParser parser(tokens);
 	auto parsingResult = parser.parse();
-
+    std::string result;
 	QueryEvaluator evaluator(pkbReader, parsingResult);
 	std::vector<string> res = evaluator.evaluateQuery();
-	for (auto it = res.begin(); it != res.end(); it++) {
-		results.push_back(*it + ", ");
+	for (auto & re : res) {
+		results.push_back(re);
 	}
-
-	/*
-	std::unordered_set<string> res = pkbReader->getAllVariables();
-	for (auto it = res.begin(); it != res.end(); it++) {
-		results.push_back(*it);
-	}
-	*/
-
 	// store the answers to the query in the results list (it is initially empty)
 	// each result must be a string.
 }
