@@ -1,31 +1,29 @@
 #include "Program.h"
 
-// ai-gen start(gpt,1,e)
+// ai-gen start(gpt,2,e)
 // Prompt: https://platform.openai.com/playground/p/3mLKCsoXcgjIM0eMlvP3rIgb?model=gpt-4&mode=chat
-Program::Program() {}
-
-void Program::addProcedure(Procedure procedure) {
-    this->procedures.push_back(procedure);
+Program::Program(int end, std::vector<std::shared_ptr<ASTNode>> procedures) {
+	this->lines = std::make_pair(1, end);
+	this->procedures = procedures;
 }
 
 int Program::getStartLine() const {
-    return 0;
-    // Do sth
+	return this->lines.first;
 }
-      
+
 int Program::getEndLine() const {
-    return 0;
-    // Do sth
+	return this->lines.second;
 }
 
 std::shared_ptr<ASTNode> Program::buildTree() {
-    // build a Master root tree here, then populate all Procedures.
-    
-    // **IMPORTANT** Placeholder implementation to avoid compilation error.
-    std::shared_ptr<ASTNode> tree = std::make_shared<ASTNode>(
-        ASTNodeType::ERROR, 0, "Program::buildTree() not implemented."
-    );
+	std::shared_ptr<ASTNode> tree = std::make_shared<ASTNode>(
+		ASTNodeType::PROGRAMS, this->lines.first, Utility::getASTNodeType(ASTNodeType::PROGRAMS)
+	);
 
-    return tree;  
+	for (auto child : this->procedures) {
+		tree.get()->addChild(child);
+	}
+
+	return tree;
 }
 // ai-gen end

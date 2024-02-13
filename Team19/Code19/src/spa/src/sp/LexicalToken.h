@@ -3,20 +3,20 @@
 
 class LexicalToken {
 private:
-    LexicalTokenType type;
-    int lineNumber;
-    int linePosition;
-    std::string value;
+	LexicalTokenType type;
+	int lineNumber;
+	int linePosition;
+	std::string value;
 
 public:
-    LexicalToken(LexicalTokenType t, int lineNumber, int linePosition, std::string value);
-    LexicalToken(LexicalTokenType type);
-    LexicalToken() = default;
-    
-    const LexicalToken& getNullToken();
-    LexicalTokenType getTokenType();
-    int getLinePosition();
-    int getLine();
-    std::string getValue() const;
-    void print();
+	LexicalToken(LexicalTokenType t, int lineNumber, int linePosition, std::string value);
+	LexicalToken(LexicalTokenType type);
+	LexicalToken() = default;
+
+	const LexicalToken& getNullToken();
+	LexicalTokenType getTokenType();
+	int getLinePosition();
+	int getLine();
+	std::string getValue() const;
+	void print();
 };
