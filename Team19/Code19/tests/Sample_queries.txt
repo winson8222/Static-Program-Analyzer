@@ -1,5 +1,5 @@
 1 - comment
  variable g;
  Select g
- y, x
+ z, y, x
  5000

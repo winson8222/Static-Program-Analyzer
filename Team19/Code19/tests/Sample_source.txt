@@ -1,3 +1,4 @@
 procedure Example {
    read x;
-   read y;}
+   read y;
+   read z;}

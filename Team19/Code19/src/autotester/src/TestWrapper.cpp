@@ -35,7 +35,6 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
 	vector<Token> tokens = tokenizer.tokenize();
 	QueryParser parser(tokens);
 	auto parsingResult = parser.parse();
-    std::string result;
 	QueryEvaluator evaluator(pkbReader, parsingResult);
 	std::vector<string> res = evaluator.evaluateQuery();
 	for (auto & re : res) {
