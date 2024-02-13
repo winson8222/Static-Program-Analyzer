@@ -1,8 +1,8 @@
 #pragma once
 
 #include <vector>
-#include "sp/Tokenizer.h"
-#include "sp/LexicalToken.h"
+#include "sp/SPTokenizer/Tokenizer.h"
+#include "sp/SPTokenizer/LexicalToken.h"
 #include "CallStmt.h"
 #include "ReadStmt.h"
 #include "PrintStmt.h"

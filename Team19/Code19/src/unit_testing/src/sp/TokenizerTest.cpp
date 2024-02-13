@@ -1,4 +1,4 @@
-#include "sp/Tokenizer.h"
+#include "sp/SPTokenizer/Tokenizer.h"
 #include "catch.hpp"
 #include <fstream>
 #include <filesystem>
