@@ -14,20 +14,20 @@ TEST_CASE("Test header", "[SourceProcessor]") {
     std::string actualContent;
     REQUIRE(std::filesystem::exists(testFileName));
 
-    PKBManager pkbManager;
-    SourceProcessor sp(pkbManager);
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    SourceProcessor sp(testFileName, pkbManager);
 
-    REQUIRE_NOTHROW(sp.tokenize(Tokenizer::readFileToString(testFileName)));
     REQUIRE_NOTHROW(sp.sampleAST());
     REQUIRE_NOTHROW(sp.extractAndPopulate());
 
-    std::shared_ptr<PKBReader> pkbReader = sp.pkbManager.getPKBReader();
+    std::shared_ptr<PKBReader> pkbReader = sp.pkbManager->getPKBReader();
     
     auto values1 = pkbReader->getAllVariables();
-    std::cout << "Extracted variables:" << std::endl;
+    std::cout << "All Extracted variables: ";
     for (auto& var : values1) {
-		std::cout << var << std::endl;
+		std::cout << var << ", ";
 	}
+    std::cout << std::endl;
 
     std::cout << "AST-DESIGN-EXTRACTOR-TEST ENDS\n\n\n" << std::endl;
 }

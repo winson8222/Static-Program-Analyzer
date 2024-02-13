@@ -17,7 +17,8 @@ public:
         return *root;
     }
 
-    std::unordered_map<std::string, std::unordered_set<std::string>> designs;
+    std::unordered_map<std::string, std::unordered_set<std::string>> stringInformation;
+    std::unordered_map<std::string, std::unordered_set<int>> intInformation;
     void extractAll();
     void populatePKB();
 
@@ -30,20 +31,31 @@ public:
     void extractParentsStar();
     void extractUses();
     void extractModifies();
-    void extractAssigns();
+
+    std::unordered_set<int> extractAssigns();
     std::unordered_set<std::string> extractConstants();
-    void extractProcedures();
-    void extractStatements();
-    void extractIf();
-    void extractWhiles();
-    void extractCall();
-    void extractRead();
-    void extractPrint();
+    std::unordered_set<std::string> extractProcedures();
+    std::unordered_set<int> extractStatements();
+    std::unordered_set<int> extractIf();
+    std::unordered_set<int> extractWhiles();
+    std::unordered_set<int> extractCall();
+    std::unordered_set<int> extractRead();
+    std::unordered_set<int> extractPrint();
     std::unordered_set<std::string> extractVariables();
     std::shared_ptr<ASTNode> root;
     std::shared_ptr<PKBWriter> pkbWriter;
 
+
+    void printContent();
+
 private:
-    void recursivelyExtractVariables(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& variables);
-	void recursivelyExtractConstants(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& constants);
+    void entityRecursiveExtractor(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& entities, ASTNodeType type);
+    void statementRecursiveExtractor(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& statements, ASTNodeType type);
+    void procedureRecursiveExtractor(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& procedures);
+
+    // To be implemented later
+    // void relationRecursiveExtractor(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& relations, ASTNodeType type);
+
+    // void recursivelyExtractVariables(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& variables);
+	// void recursivelyExtractConstants(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& constants);
 };
