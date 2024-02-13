@@ -2,7 +2,7 @@
 
 #include "LexicalToken.h"
 
-class Tokenizer {
+class SPTokenizer {
 public:
     static std::vector<LexicalToken> tokenize(const std::string& content);
     static std::vector<std::string> splitLine(const std::string& content);

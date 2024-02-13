@@ -1,5 +1,7 @@
+#pragma once
+
 #include "Stmt.h"
-#include "../LexicalToken.h"
+#include "sp/LexicalToken.h"
 #include <string>
 
 // ai-gen start(gpt,2,e)
@@ -8,7 +10,7 @@ class CallStmt : public Stmt {
 public:
     CallStmt(const LexicalToken& variable, int start, int end);
 
-    void buildTree() const override;
+    std::shared_ptr<ASTNode> buildTree() override;
     int getStartLine() const override;
     int getEndLine() const override;
 

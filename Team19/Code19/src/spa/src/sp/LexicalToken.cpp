@@ -5,8 +5,8 @@
 
 LexicalToken::LexicalToken(LexicalTokenType type) {
     this->type = type;
-    this->lineNumber = NULL;
-    this->linePosition = NULL;
+    this->lineNumber = -1;
+    this->linePosition = -1;
     this->value = "";
 }
 
@@ -22,7 +22,7 @@ const LexicalToken& LexicalToken::getNullToken() {
     return nullToken;
 }
 
-std::string LexicalToken::getValue() {
+std::string LexicalToken::getValue() const {
     return this->value;
 }
 

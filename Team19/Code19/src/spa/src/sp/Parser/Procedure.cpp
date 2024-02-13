@@ -1,24 +1,25 @@
 #include "Procedure.h"
 #include <iostream>
 
-Procedure::Procedure() {
-
-}
-
-void Procedure::addStmtList(StmtList stmtList) {
-    this->statementLists.push_back(stmtList);
-}
-
-void Procedure::buildTree() const {
-    // Do sth
+Procedure::Procedure(int start, int end, std::shared_ptr<ASTNode> statementListTree) {
+	this->lines = std::make_pair(start, end);
+	this->statementListTree = statementListTree;
 }
 
 int Procedure::getStartLine() const {
-    return 0;
-    // Do sth
+	return this->lines.first;
 }
 
 int Procedure::getEndLine() const {
-    return 0;
-    // Do sth
+	return this->lines.second;
+}
+
+std::shared_ptr<ASTNode> Procedure::buildTree() {
+	std::shared_ptr<ASTNode> tree = std::make_shared<ASTNode>(
+		ASTNodeType::PROCEDURE, this->lines.first, Utility::getASTNodeType(ASTNodeType::PROCEDURE)
+	);
+
+	tree.get()->addChild(this->statementListTree);
+
+	return tree;
 }

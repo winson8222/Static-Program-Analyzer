@@ -7,16 +7,15 @@
 // ai-gen start(gpt,2,e)
 // Prompt: https://platform.openai.com/playground/p/3mLKCsoXcgjIM0eMlvP3rIgb?model=gpt-4&mode=chat
 class Program : public Grammar {
-public:    
-    Program();
-    void addProcedure(Procedure p);
+public:
+	Program(int end, std::vector<std::shared_ptr<ASTNode>> procedures);
 
-    void buildTree() const override;
-    int getStartLine() const override;
-    int getEndLine() const override;
+	int getStartLine() const override;
+	int getEndLine() const override;
+	std::shared_ptr<ASTNode> buildTree() override;
 
 private:
-    std::vector<Procedure> procedures;
-    std::pair<int, int> lines;
+	std::vector<std::shared_ptr<ASTNode>> procedures;
+	std::pair<int, int> lines;
 };
 // ai-gen end

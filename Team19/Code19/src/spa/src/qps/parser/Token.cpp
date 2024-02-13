@@ -1,4 +1,4 @@
-#include "../../spa/src/qps/Token.h"
+#include "../../spa/src/qps/Parser/Token.h"
 
 using namespace std;
 

@@ -33,6 +33,7 @@ public:
     const unordered_map<string, string>& getDeclaredSynonyms() const;
     const string& getDeclaredSynonym(const string& key) const;
     const string& getRequiredSynonym() const;
+    const string& getRequiredSynonymType() const;
     const Token& getSuchThatClauseRelationship() const;
     const Token& getSuchThatClauseFirstParam() const;
     const Token& getSuchThatClauseSecondParam() const;
