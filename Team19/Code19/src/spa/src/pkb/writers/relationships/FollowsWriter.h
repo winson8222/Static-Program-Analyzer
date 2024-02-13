@@ -12,10 +12,14 @@ public:
     explicit FollowsWriter(std::shared_ptr<FollowsStore> store) : followsStore(std::move(store)) {}
 
     void addRelationship(int precedingStmt, int followingStmt) override {
-        followsStore->addKeyValue(precedingStmt, followingStmt);
+        addFollows(precedingStmt, followingStmt);
     }
 
-    void clear() {
+    void clear() override {
         followsStore->clear();
+    }
+
+    void addFollows(int stmtNum, int followingStmt) {
+        followsStore->addRelationship(stmtNum, followingStmt);
     }
 };

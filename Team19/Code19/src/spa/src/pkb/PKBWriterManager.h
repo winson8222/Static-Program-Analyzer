@@ -1,239 +1,146 @@
 #pragma
 
 #include "PKB.h"
-#include "pkb/writers/VariableWriter.h"
+
+#include "pkb/writers/entities/AssignWriter.h"
+#include "pkb/writers/entities/VariableWriter.h"
+#include "pkb/writers/entities/ProcedureWriter.h"
+#include "pkb/writers/entities/ConstantWriter.h"
+#include "pkb/writers/entities/StatementWriter.h"
+#include "pkb/writers/entities/IfWriter.h"
+#include "pkb/writers/entities/WhileWriter.h"
+#include "pkb/writers/entities/CallWriter.h"
+#include "pkb/writers/entities/ReadWriter.h"
+#include "pkb/writers/entities/PrintWriter.h"
+
+#include "pkb/writers/relationships/FollowsWriter.h"
+#include "pkb/writers/relationships/FollowsTWriter.h"
+#include "pkb/writers/relationships/ParentWriter.h"
+#include "pkb/writers/relationships/ParentTWriter.h"
+#include "pkb/writers/relationships/UsesPWriter.h"
+#include "pkb/writers/relationships/UsesSWriter.h"
+#include "pkb/writers/relationships/ModifiesPWriter.h"
+#include "pkb/writers/relationships/ModifiesSWriter.h"
 
 class PKBWriterManager {
 private:
     std::shared_ptr<PKB> pkb;
-//    std::shared_ptr<FollowsStore> followsStore;
-//    std::shared_ptr<FollowsTStore> followsTStore;
-//
-//    std::shared_ptr<ParentStore> parentStore;
-//    std::shared_ptr<ParentTStore> parentTStore;
-//
-//    std::shared_ptr<UsesPStore> usesPStore;
-//    std::shared_ptr<UsesSStore> usesSStore;
-//
-//    std::shared_ptr<ModifiesPStore> modifiesPStore;
-//    std::shared_ptr<ModifiesSStore> modifiesSStore;
-//
-//    std::shared_ptr<AssignStore> assignStore;
-//    std::shared_ptr<VariableStore> variableStore;
-//    std::shared_ptr<ConstantStore> constantStore;
-//    std::shared_ptr<ProcedureStore> procedureStore;
-//    std::shared_ptr<StatementStore> statementStore;
-//    std::shared_ptr<IfStore> ifStore;
-//    std::shared_ptr<WhileStore> whileStore;
-//    std::shared_ptr<CallStore> callStore;
-//    std::shared_ptr<ReadStore> readStore;
-//    std::shared_ptr<PrintStore> printStore;
 
+    std::shared_ptr<FollowsWriter> followsWriter;
+    std::shared_ptr<FollowsTWriter> followsTWriter;
+    std::shared_ptr<ParentWriter> parentWriter;
+    std::shared_ptr<ParentTWriter> parentTWriter;
+    std::shared_ptr<UsesPWriter> usesPWriter;
+    std::shared_ptr<UsesSWriter> usesSWriter;
+    std::shared_ptr<ModifiesPWriter> modifiesPWriter;
+    std::shared_ptr<ModifiesSWriter> modifiesSWriter;
+
+    std::shared_ptr<AssignWriter> assignWriter;
     std::shared_ptr<VariableWriter> variableWriter;
+    std::shared_ptr<ConstantWriter> constantWriter;
+    std::shared_ptr<ProcedureWriter> procedureWriter;
+    std::shared_ptr<StatementWriter> statementWriter;
+    std::shared_ptr<IfWriter> ifWriter;
+    std::shared_ptr<WhileWriter> whileWriter;
+    std::shared_ptr<CallWriter> callWriter;
+    std::shared_ptr<ReadWriter> readWriter;
+    std::shared_ptr<PrintWriter> printWriter;
 
 public:
     explicit PKBWriterManager(const std::shared_ptr<PKB>& pkb): pkb(pkb) {
-//      followsStore = pkb->getFollowsStore();
-//      followsTStore = pkb->getFollowsTStore();
-//      parentStore = pkb->getParentStore();
-//      parentTStore = pkb->getParentTStore();
-//
-//      usesPStore = pkb->getUsesPStore();
-//      usesSStore = pkb->getUsesSStore();
-//
-//      modifiesPStore = pkb->getModifiesPStore();
-//      modifiesSStore = pkb->getModifiesSStore();
-//
-//      assignStore = pkb->getAssignStore();
-//      variableStore = pkb->getVariableStore();
-//      constantStore = pkb->getConstantStore();
-//      procedureStore = pkb->getProcedureStore();
-//      statementStore = pkb->getStatementStore();
-//      ifStore = pkb->getIfStore();
-//      whileStore = pkb->getWhileStore();
-//      callStore = pkb->getCallStore();
-//      readStore = pkb->getReadStore();
-//      printStore = pkb->getPrintStore();
+      followsWriter = std::make_shared<FollowsWriter>(pkb->getFollowsStore());
+      followsTWriter = std::make_shared<FollowsTWriter>(pkb->getFollowsTStore());
+      parentWriter = std::make_shared<ParentWriter>(pkb->getParentStore());
+      parentTWriter = std::make_shared<ParentTWriter>(pkb->getParentTStore());
+      usesPWriter = std::make_shared<UsesPWriter>(pkb->getUsesPStore());
+      usesSWriter = std::make_shared<UsesSWriter>(pkb->getUsesSStore());
+      modifiesPWriter = std::make_shared<ModifiesPWriter>(pkb->getModifiesPStore());
+      modifiesSWriter = std::make_shared<ModifiesSWriter>(pkb->getModifiesSStore());
 
+      assignWriter = std::make_shared<AssignWriter>(pkb->getAssignStore());
       variableWriter = std::make_shared<VariableWriter>(pkb->getVariableStore());
+      constantWriter = std::make_shared<ConstantWriter>(pkb->getConstantStore());
+      procedureWriter = std::make_shared<ProcedureWriter>(pkb->getProcedureStore());
+      statementWriter = std::make_shared<StatementWriter>(pkb->getStatementStore());
+      ifWriter = std::make_shared<IfWriter>(pkb->getIfStore());
+      whileWriter = std::make_shared<WhileWriter>(pkb->getWhileStore());
+      callWriter = std::make_shared<CallWriter>(pkb->getCallStore());
+      readWriter = std::make_shared<ReadWriter>(pkb->getReadStore());
+      printWriter = std::make_shared<PrintWriter>(pkb->getPrintStore());
     }
+    // Relationsjips
+    std::shared_ptr<FollowsWriter> getFollowsWriter() {
+      return followsWriter;
+    }
+
+    std::shared_ptr<FollowsTWriter> getFollowsTWriter() {
+      return followsTWriter;
+    }
+
+    std::shared_ptr<ParentWriter> getParentWriter() {
+      return parentWriter;
+    }
+
+    std::shared_ptr<ParentTWriter> getParentTWriter() {
+      return parentTWriter;
+    }
+
+    std::shared_ptr<UsesPWriter> getUsesPWriter() {
+      return usesPWriter;
+    }
+
+    std::shared_ptr<UsesSWriter> getUsesSWriter() {
+      return usesSWriter;
+    }
+
+    std::shared_ptr<ModifiesPWriter> getModifiesPWriter() {
+      return modifiesPWriter;
+    }
+
+    std::shared_ptr<ModifiesSWriter> getModifiesSWriter() {
+      return modifiesSWriter;
+    }
+
     // Entities
     std::shared_ptr<VariableWriter> getVariableWriter() {
       return variableWriter;
     }
-//    /**
-//     * @brief Inserts a "Constant" entity into the PKB.
-//     * @param constant: The integer value of the constant.
-//     */
-//    void insertConstant(int &constant) {
-//      constantStore->addEntity(constant);
-//    }
-//
-//    /**
-//     * @brief Inserts a "Variable" Entity into the PKB.
-//     * @param variable: The name of the variable.
-//     */
-//    void insertVariable(std::string &variable) {
-//      variableStore->addEntity(variable);
-//    }
-//
-//    /**
-//     * @brief Inserts a "Procedure" Entity into the PKB.
-//     * @param procedure: The name of the procedure.
-//     */
-//    void insertProcedure(std::string &procedure) {
-//      procedureStore->addEntity(procedure);
-//    }
-//
-//    /**
-//     * @brief Inserts a "Statement" Entity into the PKB.
-//     * @param stmtNum: The statement number.
-//     */
-//    void insertStatement(int &stmtNum) {
-//      statementStore->addEntity(stmtNum);
-//    }
-//
-//    /**
-//     * @brief Inserts an "If" Entity into the PKB.
-//     * @param stmtNum: The statement number of the "If" Entity.
-//     */
-//    void insertIf(int &stmtNum) {
-//      ifStore->addEntity(stmtNum);
-//    }
-//
-//    /**
-//     * @brief Inserts a "While" Entity into the PKB.
-//     * @param stmtNum: The statement number of the "While" Entity.
-//     */
-//    void insertWhile(int &stmtNum) {
-//      whileStore->addEntity(stmtNum);
-//    }
-//
-//    /**
-//     * @brief Inserts a "Call" Entity into the PKB.
-//     * @param stmtNum: The statement number of the "Call" Entity.
-//     */
-//    void insertCall(int &stmtNum) {
-//      callStore->addEntity(stmtNum);
-//    }
-//
-//    /**
-//     * @brief Inserts an "Assign" Entity into the PKB.
-//     * @param stmtNum: The statement number of the "Assign" Entity.
-//     */
-//    void insertAssign(int &stmtNum) {
-//      assignStore->addEntity(stmtNum);
-//    }
-//
-//    /**
-//     * @brief Inserts a "Read" Entity into the PKB.
-//     * @param stmtNum: The statement number of the "Read" Entity.
-//     */
-//    void insertRead(int &stmtNum) {
-//      readStore->addEntity(stmtNum);
-//    }
-//
-//    /**
-//     * @brief Inserts a "Print" Entity into the PKB.
-//     * @param stmtNum: The statement number of the "Print" Entity.
-//     */
-//    void insertPrint(int &stmtNum) {
-//      printStore->addEntity(stmtNum);
-//    }
-//
-//    // Relationships
-//    /**
-//     * @brief Inserts a Follows relationship "Follows(stmt1, stmt2)".
-//     * @param stmt1: The statement number of the preceding statement.
-//     * @param stmt2: The statement number of the following statement.
-//     */
-//    void insertFollows(int &stmt1, int &stmt2) {
-//      followsStore->addRelationship(stmt1, stmt2);
-//    }
-//
-//    /**
-//     * @brief Inserts a Follows* relationship "Follows*(stmt1, stmt2)".
-//     * @param stmt1: The statement number of the transitively preceding statement.
-//     * @param stmt2: The statement number of the transitively following statement.
-//     */
-//    void insertFollowsT(int &stmt1, int &stmt2) {
-//      followsTStore->addRelationship(stmt1, stmt2);
-//    }
-//
-//    /**
-//     * @brief Inserts a Parent relationship "Parent(stmt1, stmt2)".
-//     * @param stmt1: The statement number of the parent statement.
-//     * @param stmt2: The statement number of the child statement.
-//     */
-//    void insertParent(int &stmt1, int &stmt2) {
-//       parentStore->addRelationship(stmt1, stmt2);
-//    }
-//
-//    /**
-//     * @brief Inserts a Parent* relationship "Parent*(stmt1, stmt2)".
-//     * @param stmt1: The statement number of the transitively parent statement.
-//     * @param stmt2: The statement number of the transitively child statement.
-//     */
-//    void insertParentT(int &stmt1, int &stmt2) {
-//      parentTStore->addRelationship(stmt1, stmt2);
-//    }
-//
-//    /**
-//     * @brief Inserts a UsesP relationship "UsesP(procedure, variable)".
-//     * @param procedure: The name of the procedure.
-//     * @param variable: The name of the "Used" variable.
-//     */
-//    void insertUsesP(std::string &procedure, std::string &variable) {
-//      usesPStore->addRelationship(procedure, variable);
-//    }
-//
-//    /**
-//     * @brief Inserts a UsesS relationship "UsesS(stmt, variable)".
-//     * @param stmt: The statement number.
-//     * @param variable: The name of the "Used" variable.
-//     */
-//    void insertUsesS(int &stmt, std::string &variable) {
-//      usesSStore->addRelationship(stmt, variable);
-//    }
-//
-//    /**
-//     * @brief Inserts a ModifiesP relationship "ModifiesP(procedure, variable)".
-//     * @param procedure: The name of the procedure.
-//     * @param variable: The name of "Modified" variable.
-//     */
-//    void insertModifiesP(std::string &procedure, std::string &variable) {
-//      modifiesPStore->addRelationship(procedure, variable);
-//    }
-//
-//    /**
-//     * @brief Inserts a ModifiesS relationship "ModifiesS(stmt, variable)".
-//     * @param stmt: The statement number.
-//     * @param variable: The name of the "Modified" variable.
-//     */
-//    void insertModifiesS(int &stmt, std::string &variable) {
-//      modifiesSStore->addRelationship(stmt, variable);
-//    }
-//
-//    void clear() {
-//      followsStore->clear();
-//      followsTStore->clear();
-//      parentStore->clear();
-//      parentTStore->clear();
-//      usesPStore->clear();
-//      usesSStore->clear();
-//      modifiesPStore->clear();
-//      modifiesSStore->clear();
-//      assignStore->clear();
-//      variableStore->clear();
-//      constantStore->clear();
-//      procedureStore->clear();
-//      statementStore->clear();
-//      ifStore->clear();
-//      whileStore->clear();
-//      callStore->clear();
-//      readStore->clear();
-//      printStore->clear();
-//    }
+
+    std::shared_ptr<ConstantWriter> getConstantWriter() {
+      return constantWriter;
+    }
+
+    std::shared_ptr<ProcedureWriter> getProcedureWriter() {
+      return procedureWriter;
+    }
+
+    std::shared_ptr<StatementWriter> getStatementWriter() {
+      return statementWriter;
+    }
+
+    std::shared_ptr<IfWriter> getIfWriter() {
+      return ifWriter;
+    }
+
+    std::shared_ptr<WhileWriter> getWhileWriter() {
+      return whileWriter;
+    }
+
+    std::shared_ptr<CallWriter> getCallWriter() {
+      return callWriter;
+    }
+
+    std::shared_ptr<ReadWriter> getReadWriter() {
+      return readWriter;
+    }
+
+    std::shared_ptr<PrintWriter> getPrintWriter() {
+      return printWriter;
+    }
+
+    std::shared_ptr<AssignWriter> getAssignWriter() {
+      return assignWriter;
+    }
 };
 
 
