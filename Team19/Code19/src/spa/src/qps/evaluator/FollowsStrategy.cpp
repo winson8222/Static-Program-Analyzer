@@ -1,5 +1,5 @@
 #include "FollowsStrategy.h"
-#include "../parser/Token.h" // Make sure to include the Token header
+#include "../Parser/Token.h" // Make sure to include the Token header
 
 using namespace std;
 

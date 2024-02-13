@@ -4,7 +4,7 @@
 
 #include <unordered_set>
 #include <string>
-#include "../parser/ParsingResult.h" // Include your ParsingResult header
+#include "../Parser/ParsingResult.h" // Include your ParsingResult header
 #include "../../pkb/PKBManager.h" // Include your PKBReader header
 
 class QueryEvaluationStrategy {

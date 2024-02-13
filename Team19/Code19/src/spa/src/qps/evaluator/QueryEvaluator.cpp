@@ -21,10 +21,6 @@ std::vector<string> QueryEvaluator::evaluateQuery() {
         }
         // Add other strategies based on requiredType
         // ...
-        unordered_set<int> stmtInt = pkbReader->getAllStmts();
-        for (int i : stmtInt) {
-            result.insert(to_string(i));
-        }
     }
 
     if (requiredType == "variable") {
