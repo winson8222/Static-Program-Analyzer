@@ -8,7 +8,7 @@
 
 TEST_CASE("Test header", "[SourceProcessor]") {
     std::cout << "AST-DESIGN-EXTRACTOR-TEST STARTS\n\n\n" << std::endl;  
-    const std::string testFileName = "../../../../../tests/sp/TokenizerTest/sourcefile1.txt";
+    const std::string testFileName = "../../../../../tests/sp/ParserTest/Program1.txt";
     const std::string testFileContent = "x = 1;";
 
     std::string actualContent;
@@ -17,7 +17,7 @@ TEST_CASE("Test header", "[SourceProcessor]") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     SourceProcessor sp(testFileName, pkbManager);
 
-    REQUIRE_NOTHROW(sp.sampleAST());
+    REQUIRE_NOTHROW(sp.parseSIMPLE());
     REQUIRE_NOTHROW(sp.extractAndPopulate());
 
     std::shared_ptr<PKBReaderManager> pkbReaderManager = sp.pkbManager->getPKBReaderManager();

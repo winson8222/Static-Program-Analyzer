@@ -6,7 +6,7 @@
 #include <filesystem>
 #include <vector>
 
-TEST_CASE("Test parser of SP on multiple procedures", "[SourceProcessor]") {
+TEST_CASE("Test parser of SP on multipgole procedures", "[SourceProcessor]") {
     std::cout << "\n\nSP-PKB-WORKFLOW-TEST STARTS\n\n\n" << std::endl;
     const std::string testFileName = "../../../../../tests/sp/ParserTest/Program1.txt";
 
