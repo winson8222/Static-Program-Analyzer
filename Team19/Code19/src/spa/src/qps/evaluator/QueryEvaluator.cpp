@@ -18,6 +18,12 @@ std::vector<string> QueryEvaluator::evaluateQuery() {
         // For 'Follows' type, add FollowsStrategy
         if (parsingResult.getSuchThatClauseRelationship().getValue() == "Follows") {
             addStrategy(std::make_unique<FollowsStrategy>());
+        } else {
+            // if there is no clause, return all statements
+            unordered_set<int> allStmts = pkbReader->getAllStmts();
+            for (int stmt : allStmts) {
+                result.insert(to_string(stmt));
+            }
         }
         // Add other strategies based on requiredType
         // ...
