@@ -25,7 +25,6 @@ TEST_CASE("Test multiple procedure extractor", "[parseProcedure]") {
     std::unordered_set<std::string> actual = designExtractor.extractProcedures();
     std::unordered_set<std::string> expected = { "Procedure", "Procedure", "Procedure" };
 
-    REQUIRE(actual.size() == 3);
     REQUIRE(actual == expected);
 }
 
