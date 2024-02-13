@@ -3,3 +3,8 @@
  Select g
  z, y, x
  5000
+2 - comment
+ stmt s;
+ Select s
+ 2, 3, 4
+ 5000
