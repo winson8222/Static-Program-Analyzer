@@ -3,22 +3,23 @@
 
 using namespace std;
 
-unordered_set<string> FollowsStrategy::evaluateQuery(PKBReader& pkbReader, const ParsingResult& parsingResult) {
+unordered_set<string> FollowsStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult) {
     string requiredSynonym = parsingResult.getRequiredSynonym();
     unordered_set<string> result;
     const Token& suchThatRelationship = parsingResult.getSuchThatClauseRelationship();
     const Token& suchThatFirstParam = parsingResult.getSuchThatClauseFirstParam();
     const Token& suchThatSecondParam = parsingResult.getSuchThatClauseSecondParam();
+    std::shared_ptr<FollowsReader> followsReader = pkbReaderManager.getFollowsReader();
 
     if (suchThatFirstParam.getValue() == requiredSynonym) {
         if (suchThatSecondParam.getType() == TokenType::INTEGER) {
-            const unordered_set<int>& follows = pkbReader.getPreFollows(stoi(suchThatSecondParam.getValue()));
+            const unordered_set<int>& follows = followsReader->getPreFollows(stoi(suchThatSecondParam.getValue()));
             for (int i : follows) {
                 result.insert(to_string(i));
             }
         }
         else if (suchThatSecondParam.getType() == TokenType::Wildcard) {
-            const unordered_set<int>& follows = pkbReader.getAllPreFollows();
+            const unordered_set<int>& follows = followsReader->getAllPreFollows();
             for (int i : follows) {
                 result.insert(to_string(i));
             }
@@ -30,13 +31,13 @@ unordered_set<string> FollowsStrategy::evaluateQuery(PKBReader& pkbReader, const
     }
     else if (suchThatSecondParam.getValue() == requiredSynonym) {
         if (suchThatFirstParam.getType() == TokenType::INTEGER) {
-            const unordered_set<int>& follows = pkbReader.getPostFollows(stoi(suchThatFirstParam.getValue()));
+            const unordered_set<int>& follows = followsReader->getPostFollows(stoi(suchThatFirstParam.getValue()));
             for (int i : follows) {
                 result.insert(to_string(i));
             }
         }
         else if (suchThatSecondParam.getType() == TokenType::Wildcard) {
-            const unordered_set<int>& follows = pkbReader.getAllPostFollows();
+            const unordered_set<int>& follows = followsReader->getAllPostFollows();
             for (int i : follows) {
                 result.insert(to_string(i));
             }

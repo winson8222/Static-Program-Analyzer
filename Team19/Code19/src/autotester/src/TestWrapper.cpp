@@ -14,8 +14,8 @@ TestWrapper::TestWrapper() {
 	// as well as any initialization required for your spa program
 
 	pkbManager = std::make_shared<PKBManager>();
-	pkbReader = pkbManager->getPKBReader();
-	pkbWriter = pkbManager->getPKBWriter();
+	pkbReader = pkbManager->getPKBReaderManager();
+	pkbWriter = pkbManager->getPKBWriterManager();
 }
 
 // method for parsing the SIMPLE source

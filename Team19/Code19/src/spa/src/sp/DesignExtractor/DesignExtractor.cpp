@@ -6,24 +6,36 @@
 #include "DesignExtractor.h"
 #include <unordered_set>
 
-DesignExtractor::DesignExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriter> pkbWriter)
-    : root(std::move(root)), pkbWriter(std::move(pkbWriter)) {
+DesignExtractor::DesignExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
+    : root(std::move(root)), pkbWriterManager(std::move(pkbWriterManager)) {
     // No need to assign them in the constructor body
     std::cout << "Initialized" << std::endl;
 }
 
 void DesignExtractor::populatePKB() {
+  std::shared_ptr<ConstantWriter> constantWriter = pkbWriterManager->getConstantWriter();
+    std::shared_ptr<VariableWriter> variableWriter = pkbWriterManager->getVariableWriter();
+    std::shared_ptr<ProcedureWriter> procedureWriter = pkbWriterManager->getProcedureWriter();
+    std::shared_ptr<CallWriter> callWriter = pkbWriterManager->getCallWriter();
+    std::shared_ptr<PrintWriter> printWriter = pkbWriterManager->getPrintWriter();
+    std::shared_ptr<ReadWriter> readWriter = pkbWriterManager->getReadWriter();
+    std::shared_ptr<AssignWriter> assignWriter = pkbWriterManager->getAssignWriter();
+    std::shared_ptr<IfWriter> ifWriter = pkbWriterManager->getIfWriter();
+    std::shared_ptr<WhileWriter> whileWriter = pkbWriterManager->getWhileWriter();
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+
+
     for (const auto& pair : stringInformation) {
         for (auto value : pair.second) {
             if (pair.first == Utility::getASTNodeType(ASTNodeType::CONSTANT)) {
 				int intValue = std::stoi(value);
-				this->pkbWriter->insertConstant(intValue);
+				constantWriter->insertConstant(intValue);
             }
             else if (pair.first == Utility::getASTNodeType(ASTNodeType::VARIABLE)) {
-                this->pkbWriter->insertVariable(value);
+                variableWriter->insertVariable(value);
 			}
             else if (pair.first == Utility::getASTNodeType(ASTNodeType::PROCEDURE)) {
-				this->pkbWriter->insertProcedure(value);
+				procedureWriter->insertProcedure(value);
 			}
 		}
 	}
@@ -31,25 +43,25 @@ void DesignExtractor::populatePKB() {
     for (const auto& pair : intInformation) {
         for (auto value : pair.second) {
             if (pair.first == Utility::getASTNodeType(ASTNodeType::CALL)) {
-				this->pkbWriter->insertCall(value);
+				callWriter->insertCall(value);
 			}
             else if (pair.first == Utility::getASTNodeType(ASTNodeType::PRINT)) {
-				this->pkbWriter->insertPrint(value);
+				printWriter->insertPrint(value);
 			}
             else if (pair.first == Utility::getASTNodeType(ASTNodeType::READ)) {
-				this->pkbWriter->insertRead(value);
+				readWriter->insertRead(value);
 			}
             else if (pair.first == Utility::getASTNodeType(ASTNodeType::ASSIGN)) {
-				this->pkbWriter->insertAssign(value);
+				assignWriter->insertAssign(value);
 			}
             else if (pair.first == Utility::getASTNodeType(ASTNodeType::IF_ELSE_THEN)) {
-				this->pkbWriter->insertIf(value);
+				ifWriter->insertIf(value);
 			}
             else if (pair.first == Utility::getASTNodeType(ASTNodeType::WHILE)) {
-				this->pkbWriter->insertWhile(value);
+				whileWriter->insertWhile(value);
 			}
             else if (pair.first == Utility::getASTNodeType(ASTNodeType::STATEMENT_LIST)) {
-                this->pkbWriter->insertStatement(value);
+                statementWriter->insertStatement(value);
             }
         }
     }

@@ -5,8 +5,8 @@ TEST_CASE("pkb/readers/VariableReader") {
   std::string x = "x";
   std::string y = "y";
   auto pkbManager = std::make_shared<PKBManager>();
-  auto pkbReader = pkbManager->getPKBReader();
-  auto pkbWriter = pkbManager->getPKBWriter();
+  auto pkbReader = pkbManager->getPKBReaderManager();
+  auto pkbWriter = pkbManager->getPKBWriterManager();
   auto variableReader = pkbReader->getVariableReader();
   auto variableWriter = pkbWriter->getVariableWriter();
 
