@@ -1,5 +1,6 @@
 #include "catch.hpp"
 #include "sp/Parser/SimpleParser.h"
+#include <iostream>
 #include <filesystem>
 
 TEST_CASE("Program parsing throws an error for missing curly brace", "[parseProgram]") {
@@ -85,4 +86,30 @@ TEST_CASE("Calling parseProgram for multiple procedures", "[parseProgram]") {
 
 	REQUIRE(procedures[1]->type == ASTNodeType::PROCEDURE);
 	REQUIRE(procedures[1]->value == Utility::getASTNodeType(ASTNodeType::PROCEDURE));
+}
+
+TEST_CASE("Test string representations of programs", "[parseProcedure]") {
+	// Generate test file
+	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program1.txt";
+	REQUIRE(std::filesystem::exists(testFileName));
+	SimpleParser parser(testFileName);
+	std::shared_ptr<ASTNode> tree_ptr = parser.parseProgram();
+
+	std::cout << "\nPRINT PROGRAM START\n" << std::endl;
+
+	std::string content;
+
+	REQUIRE_NOTHROW(content = tree_ptr->toString());
+
+	std::cout << content << std::endl;
+
+	std::string subcontent1 = "  Type: Procedure, Line Number: 1, Value: Procedure\n";
+	std::string subcontent2 = "  Type: Procedure, Line Number: 5, Value: Procedure\n";
+	std::string subcontent3 = "  Type: Procedure, Line Number: 9, Value: Procedure\n";
+
+	REQUIRE(content.find(subcontent1) != std::string::npos);
+	REQUIRE(content.find(subcontent2) != std::string::npos);
+	REQUIRE(content.find(subcontent3) != std::string::npos);
+
+	std::cout << "\nPRINT END\n" << std::endl;
 }

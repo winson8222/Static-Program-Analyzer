@@ -26,25 +26,27 @@ void TestWrapper::parse(std::string filename) {
 	// call your parser to do the parsing
   // ...rest of your code...
 
-  // example code
-	std::string x = "x";
-	pkbWriter->insertVariable(x);
+	SourceProcessor sp = SourceProcessor(filename, this->pkbManager);
+	sp.parseSIMPLE();
+	sp.extractAndPopulate();
 
 }
 
 // method to evaluating a query
 void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
-    // call your evaluator to evaluate the query here
+
+	// call your evaluator to evaluate the query here
     // ...code to evaluate query...
-    Tokenizer tokenizer(query);
-    vector<Token> tokens = tokenizer.tokenize();
-    QueryParser parser(tokens);
-    auto parsingResult = parser.parse();
-    QueryEvaluator evaluator(pkbReader, parsingResult);
-    std::vector<string> res = evaluator.evaluateQuery();
-    for (auto & re : res) {
-        results.push_back(re);
-    }
-    // store the answers to the query in the results list (it is initially empty)
-    // each result must be a string.
+	Tokenizer tokenizer(query);
+	vector<Token> tokens = tokenizer.tokenize();
+	QueryParser parser(tokens);
+	auto parsingResult = parser.parse();
+	QueryEvaluator evaluator(pkbReader, parsingResult);
+	std::vector<string> res = evaluator.evaluateQuery();
+	for (auto & re : res) {
+		results.push_back(re);
+	}
+	// store the answers to the query in the results list (it is initially empty)
+	// each result must be a string.
+
 }

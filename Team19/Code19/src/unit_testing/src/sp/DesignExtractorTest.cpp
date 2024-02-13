@@ -1,13 +1,15 @@
 #include "sp/DesignExtractor/DesignExtractor.h"
 #include "sp/AST/ASTNode.h"
+#include "sp/Parser/SimpleParser.h"
 #include "pkb/PKBManager.h"
 #include "pkb/PKBWriter.h"
-#include "sp/AST/Utility.h"
+#include "sp/Utility.h"
 #include "catch.hpp"
 #include <fstream>
 #include <iostream>
 #include <filesystem>
 #include <vector>
+
 
 TEST_CASE("Basic system tests for DesignExtractor", "[DesignExtractor::extract]") {
     const std::string testFileName = "../../../../../tests/sp/TokenizerTest/sourcefile1.txt";

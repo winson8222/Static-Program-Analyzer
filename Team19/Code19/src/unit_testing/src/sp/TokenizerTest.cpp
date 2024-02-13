@@ -10,19 +10,19 @@ TEST_CASE("Tokenizer::readFileToString", "[readFileToString]") {
     REQUIRE(std::filesystem::exists(testFileName));
 
     std::string actualContent;
-    REQUIRE_NOTHROW(actualContent = Tokenizer::readFileToString(testFileName));
+    REQUIRE_NOTHROW(actualContent = SPTokenizer::readFileToString(testFileName));
     REQUIRE(actualContent == testFileContent);
 
-    Tokenizer::tokenize(actualContent);
+    SPTokenizer::tokenize(actualContent);
 }
 
 TEST_CASE("Test reading non-existent file", "[readFileToString]") {
-    REQUIRE_THROWS_WITH(Tokenizer::readFileToString("non_existent_file.txt"),
+    REQUIRE_THROWS_WITH(SPTokenizer::readFileToString("non_existent_file.txt"),
         "Error: Unable to open the input file.");
 }
 
 TEST_CASE("Test reading from an empty file", "[readFileToString]") {
-    REQUIRE(Tokenizer::readFileToString("../../../../../tests/sp/TokenizerTest/empty.txt") == "");
+    REQUIRE(SPTokenizer::readFileToString("../../../../../tests/sp/TokenizerTest/empty.txt") == "");
 }
 
 TEST_CASE("Tokenizer::splitLine", "[splitLine]") {
@@ -36,8 +36,8 @@ TEST_CASE("Tokenizer::splitLine", "[splitLine]") {
         "}"
     };
 
-    std::string actualContent = Tokenizer::readFileToString(testFileName);
-    std::vector<std::string> actualOutput = Tokenizer::splitLine(actualContent);
+    std::string actualContent = SPTokenizer::readFileToString(testFileName);
+    std::vector<std::string> actualOutput = SPTokenizer::splitLine(actualContent);
 
     REQUIRE(actualOutput == expectedOutput);
     const size_t expectedLineNumber = 5;
@@ -47,9 +47,9 @@ TEST_CASE("Tokenizer::splitLine", "[splitLine]") {
 TEST_CASE("Tokenize simple file without keywords", "[tokenize]") {
     const std::string testFileName = "../../../../../tests/sp/TokenizerTest/sourcefile1.txt";
     REQUIRE(std::filesystem::exists(testFileName));
-    std::string actualContent = Tokenizer::readFileToString(testFileName);
+    std::string actualContent = SPTokenizer::readFileToString(testFileName);
 
-    auto actualOutput = Tokenizer::tokenize(actualContent);
+    auto actualOutput = SPTokenizer::tokenize(actualContent);
     REQUIRE(actualOutput.size() == 4);
     REQUIRE(actualOutput[0].getTokenType() == LexicalTokenType::NAME);
     REQUIRE(actualOutput[1].getTokenType() == LexicalTokenType::OPERATOR_ASSIGN);
@@ -61,9 +61,9 @@ TEST_CASE("Tokenize simple file without keywords", "[tokenize]") {
 TEST_CASE("Tokenize file with keywords", "[tokenize]") {
     const std::string testFileName = "../../../../../tests/sp/TokenizerTest/sourcefile4.txt";
     REQUIRE(std::filesystem::exists(testFileName));
-    std::string actualContent = Tokenizer::readFileToString(testFileName);
+    std::string actualContent = SPTokenizer::readFileToString(testFileName);
 
-    auto actualOutput = Tokenizer::tokenize(actualContent);
+    auto actualOutput = SPTokenizer::tokenize(actualContent);
     REQUIRE(actualOutput.size() == 9);
     REQUIRE(actualOutput[0].getTokenType() == LexicalTokenType::KEYWORD_IF);
     REQUIRE(actualOutput[1].getTokenType() == LexicalTokenType::KEYWORD_THEN);

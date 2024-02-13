@@ -1,6 +1,6 @@
 #include "sp/ast/AST.h"
 #include "sp/AST/ASTNode.h"
-#include "sp/AST/Utility.h"
+#include "sp/Utility.h"
 #include "catch.hpp"
 #include <fstream>
 #include <iostream>

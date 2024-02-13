@@ -2,6 +2,7 @@
 // prompt https://chat.openai.com/share/a181de60-e76f-496c-9bee-7ea80f2be651
 
 #include "sp/AST/ASTNode.h"
+#include "sp/Utility.h"
 #include "DesignExtractor.h"
 #include <unordered_set>
 
@@ -12,19 +13,49 @@ DesignExtractor::DesignExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<
 }
 
 void DesignExtractor::populatePKB() {
-    for (const auto& pair : designs) {
+    for (const auto& pair : stringInformation) {
         for (auto value : pair.second) {
-            if (pair.first == "c") {
+            if (pair.first == Utility::getASTNodeType(ASTNodeType::CONSTANT)) {
 				int intValue = std::stoi(value);
 				this->pkbWriter->insertConstant(intValue);
             }
-            else if (pair.first == "v") {
+            else if (pair.first == Utility::getASTNodeType(ASTNodeType::VARIABLE)) {
                 this->pkbWriter->insertVariable(value);
+			}
+            else if (pair.first == Utility::getASTNodeType(ASTNodeType::PROCEDURE)) {
+				this->pkbWriter->insertProcedure(value);
 			}
 		}
 	}
+
+    for (const auto& pair : intInformation) {
+        for (auto value : pair.second) {
+            if (pair.first == Utility::getASTNodeType(ASTNodeType::CALL)) {
+				this->pkbWriter->insertCall(value);
+			}
+            else if (pair.first == Utility::getASTNodeType(ASTNodeType::PRINT)) {
+				this->pkbWriter->insertPrint(value);
+			}
+            else if (pair.first == Utility::getASTNodeType(ASTNodeType::READ)) {
+				this->pkbWriter->insertRead(value);
+			}
+            else if (pair.first == Utility::getASTNodeType(ASTNodeType::ASSIGN)) {
+				this->pkbWriter->insertAssign(value);
+			}
+            else if (pair.first == Utility::getASTNodeType(ASTNodeType::IF_ELSE_THEN)) {
+				this->pkbWriter->insertIf(value);
+			}
+            else if (pair.first == Utility::getASTNodeType(ASTNodeType::WHILE)) {
+				this->pkbWriter->insertWhile(value);
+			}
+            else if (pair.first == Utility::getASTNodeType(ASTNodeType::STATEMENT_LIST)) {
+                this->pkbWriter->insertStatement(value);
+            }
+        }
+    }
     std::cout << "PKB Populated\n" << std::endl;
 }
+
 
 void DesignExtractor::extractAll() {
 	// Implementation of extractAll method goes here
@@ -34,19 +65,87 @@ void DesignExtractor::extractAll() {
 	extractParentsStar();
 	extractUses();
 	extractModifies();
-	extractAssigns();
-    this->designs["c"] = extractConstants();
-	extractProcedures();
-	extractStatements();
-	extractIf();
-	extractWhiles();
-	extractCall();
-	extractRead();
-	extractPrint();
-	this->designs["v"] = extractVariables();
+
+    this->stringInformation[Utility::getDesignType(ASTNodeType::PROCEDURE)] = extractProcedures();
+
+    this->intInformation[Utility::getDesignType(ASTNodeType::ASSIGN)] = extractAssigns();
+    this->intInformation[Utility::getDesignType(ASTNodeType::IF_ELSE_THEN)] = extractIf();
+    this->intInformation[Utility::getDesignType(ASTNodeType::WHILE)] = extractWhiles();
+    this->intInformation[Utility::getDesignType(ASTNodeType::CALL)] = extractCall();
+    this->intInformation[Utility::getDesignType(ASTNodeType::READ)] = extractRead();
+    this->intInformation[Utility::getDesignType(ASTNodeType::PRINT)] = extractPrint();
+
+    this->intInformation[Utility::getDesignType(ASTNodeType::STATEMENT_LIST)] = extractStatements();
+
+    this->stringInformation[Utility::getDesignType(ASTNodeType::CONSTANT)] = extractConstants();
+    this->stringInformation[Utility::getDesignType(ASTNodeType::VARIABLE)] = extractVariables();
 
     std::cout << "Information Extracted\n" << std::endl;
+
+    printContent();
 }
+
+
+void DesignExtractor::printContent() {
+    // Print contents of stringInformation
+    std::cout << "Contents of stringInformation:" << std::endl;
+    for (const auto& pair : stringInformation) {
+        std::cout << pair.first << ": {";
+        const auto& set = pair.second;
+        for (const auto& str : set) {
+            std::cout << str << ", ";
+        }
+        std::cout << "}" << std::endl;
+    }
+
+    // Print contents of intInformation
+    std::cout << "Contents of intInformation:" << std::endl;
+    for (const auto& pair : intInformation) {
+        std::cout << pair.first << ": {";
+        const auto& set = pair.second;
+        for (const auto& num : set) {
+            std::cout << num << ", ";
+        }
+        std::cout << "}" << std::endl;
+    }
+}
+
+void DesignExtractor::entityRecursiveExtractor(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& entities, ASTNodeType type) {
+    if (node->type == type) {
+        // If it's a variable node, add it to the set
+        entities.push_back(*node);
+    }
+    // Recursively traverse children
+    for (const auto& child : node->children) {
+        entityRecursiveExtractor(child, entities, type);
+    }
+}
+
+
+void DesignExtractor::statementRecursiveExtractor(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& statements, ASTNodeType type) {
+    if (node->type == type) {
+        // If it's a variable node, add it to the set
+        statements.push_back(*node);
+    }
+    // Recursively traverse children
+    for (const auto& child : node->children) {
+        entityRecursiveExtractor(child, statements, type);
+    }
+}
+
+void DesignExtractor::procedureRecursiveExtractor(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& procedures) {
+    if (node->type == ASTNodeType::PROCEDURE) {
+        // If it's a variable node, add it to the set
+        procedures.push_back(*node);
+    }
+    // Recursively traverse children
+    for (const auto& child : node->children) {
+        procedureRecursiveExtractor(child, procedures);
+    }
+}
+
+
+// Relations
 
 void DesignExtractor::extractFollows() {
     // Implementation of extractFollows method goes here
@@ -72,70 +171,107 @@ void DesignExtractor::extractModifies() {
     // Implementation of extractModifies method goes here
 }
 
-void DesignExtractor::extractAssigns() {
-    // Implementation of extractAssigns method goes here
-}
+// Programs
 
-std::unordered_set<std::string> DesignExtractor::extractConstants() {
-    // Implementation of extractConstants method goes here
-    std::vector<ASTNode> constants;
-    recursivelyExtractConstants(root, constants);
-    
-    std::unordered_set<std::string> constantValues;
-    for (auto node : constants) {
-        constantValues.insert(node.value);
+std::unordered_set<std::string> DesignExtractor::extractProcedures() {
+    // Implementation of extractProcedures method goes here
+    std::vector<ASTNode> variables;
+    procedureRecursiveExtractor(root, variables);
+
+    std::unordered_set<std::string> procedureNames;
+    for (auto node : variables) {
+        procedureNames.insert(node.value);
     }
 
-    return constantValues;
+    return procedureNames;
 }
 
-void DesignExtractor::recursivelyExtractConstants(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& constants) {
-    	// Check if the current node is of type Constant
-    if (node->type == ASTNodeType::CONSTANT) {
-		// If it's a constant node, add it to the set
-		constants.push_back(*node);
-	}
+// Statements
 
-	// Recursively traverse children
-    for (const auto& child : node->children) {
-		recursivelyExtractConstants(child, constants);
-	}
-
+std::unordered_set<int> DesignExtractor::extractAssigns() {
+    // Implementation of extractAssigns method goes here
+    return std::unordered_set<int>();
 }
 
-void DesignExtractor::extractProcedures() {
-    // Implementation of extractProcedures method goes here
-}
-
-void DesignExtractor::extractStatements() {
+std::unordered_set<int> DesignExtractor::extractStatements() {
     // Implementation of extractStatements method goes here
+    std::unordered_set<int> allStatements;
+    
+    std::unordered_set<int> assigns = this->intInformation[Utility::getDesignType(ASTNodeType::ASSIGN)];
+    std::unordered_set<int> ifs = this->intInformation[Utility::getDesignType(ASTNodeType::IF_ELSE_THEN)];
+    std::unordered_set<int> whiles = this->intInformation[Utility::getDesignType(ASTNodeType::WHILE)];
+    std::unordered_set<int> calls = this->intInformation[Utility::getDesignType(ASTNodeType::CALL)];
+    std::unordered_set<int> reads = this->intInformation[Utility::getDesignType(ASTNodeType::READ)];
+    std::unordered_set<int> prints = this->intInformation[Utility::getDesignType(ASTNodeType::PRINT)];
+
+    allStatements.insert(assigns.begin(), assigns.end());
+    allStatements.insert(ifs.begin(), ifs.end());
+    allStatements.insert(whiles.begin(), whiles.end());
+    allStatements.insert(calls.begin(), calls.end());
+    allStatements.insert(reads.begin(), reads.end());
+    allStatements.insert(prints.begin(), prints.end());
+    return allStatements;
 }
 
-void DesignExtractor::extractIf() {
+std::unordered_set<int> DesignExtractor::extractIf() {
     // Implementation of extractIf method goes here
+    return std::unordered_set<int>();
 }
 
-void DesignExtractor::extractWhiles() {
+std::unordered_set<int> DesignExtractor::extractWhiles() {
     // Implementation of extractWhiles method goes here
+    return std::unordered_set<int>();
 }
 
-void DesignExtractor::extractCall() {
+std::unordered_set<int> DesignExtractor::extractCall() {
     // Implementation of extractCall method goes here
+    std::unordered_set<int> callStatements;
+
+    std::vector<ASTNode> prints;
+    statementRecursiveExtractor(root, prints, ASTNodeType::CALL);
+
+    for (auto node : prints) {
+        callStatements.insert(node.lineNumber);
+    }
+
+    return callStatements;
 }
 
-void DesignExtractor::extractRead() {
+std::unordered_set<int> DesignExtractor::extractRead() {
     // Implementation of extractRead method goes here
+    std::unordered_set<int> readStatements;
+
+    std::vector<ASTNode> prints;
+    statementRecursiveExtractor(root, prints, ASTNodeType::READ);
+
+    for (auto node : prints) {
+        readStatements.insert(node.lineNumber);
+    }
+
+    return readStatements;
 }
 
-void DesignExtractor::extractPrint() {
+std::unordered_set<int> DesignExtractor::extractPrint() {
     // Implementation of extractPrint method goes here
+    std::unordered_set<int> printStatements;
+
+    std::vector<ASTNode> prints;
+    statementRecursiveExtractor(root, prints, ASTNodeType::PRINT);
+
+    for (auto node : prints) {
+        printStatements.insert(node.lineNumber);
+    }
+
+    return printStatements;
 }
+
+// Entities
 
 std::unordered_set<std::string> DesignExtractor::extractVariables() {
     // Recursive function to traverse the AST and extract variables
     // Implementation of extractVariablesRecursive method goes here
     std::vector<ASTNode> variables;
-    recursivelyExtractVariables(root, variables);
+    entityRecursiveExtractor(root, variables, ASTNodeType::VARIABLE);
 
     std::unordered_set<std::string> variableNames;
     for (auto node : variables) {
@@ -145,15 +281,16 @@ std::unordered_set<std::string> DesignExtractor::extractVariables() {
 	return variableNames;
 }
 
-void DesignExtractor::recursivelyExtractVariables(const std::shared_ptr<ASTNode>& node, std::vector<ASTNode>& variables) {
-    // Check if the current node is of type Variable
-    if (node->type == ASTNodeType::VARIABLE) {
-        // If it's a variable node, add it to the set
-        variables.push_back(*node);
+
+std::unordered_set<std::string> DesignExtractor::extractConstants() {
+    // Implementation of extractConstants method goes here
+    std::vector<ASTNode> constants;
+    entityRecursiveExtractor(root, constants, ASTNodeType::CONSTANT);
+
+    std::unordered_set<std::string> constantValues;
+    for (auto node : constants) {
+        constantValues.insert(node.value);
     }
 
-    // Recursively traverse children
-    for (const auto& child : node->children) {
-        recursivelyExtractVariables(child, variables);
-    }
+    return constantValues;
 }

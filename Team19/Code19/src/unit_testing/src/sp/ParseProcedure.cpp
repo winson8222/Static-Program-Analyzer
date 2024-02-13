@@ -1,5 +1,6 @@
 #include "catch.hpp"
 #include "sp/Parser/SimpleParser.h"
+#include <iostream>
 #include <filesystem>
 
 TEST_CASE("Procedure parsing throws an error for missing closing curly brace", "[parseProcedure]") {
@@ -60,4 +61,33 @@ TEST_CASE("Calling parseProcedure with print, read, call statements", "[parsePro
 			REQUIRE(readStatement->value == Utility::getASTNodeType(ASTNodeType::READ));
 		}
 	}
+}
+
+TEST_CASE("Test string representations of procedures", "[parseProcedure]") {
+	// Generate test file
+	const std::string testFileName = "../../../../../tests/sp/ParserTest/Procedure1.txt";
+	REQUIRE(std::filesystem::exists(testFileName));
+	SimpleParser parser(testFileName);
+	std::shared_ptr<ASTNode> tree_ptr = parser.parseProcedure();
+
+	REQUIRE(tree_ptr->type == ASTNodeType::PROCEDURE);
+	REQUIRE(tree_ptr->lineNumber == 1);
+	REQUIRE(tree_ptr->value == Utility::getASTNodeType(ASTNodeType::PROCEDURE));
+
+	std::cout << "\nPRINT START\n" << std::endl;
+
+	std::string content;
+
+	REQUIRE_NOTHROW(content = tree_ptr->toString());
+
+	std::string subcontent1 = "    Type: Call, Line Number: 2, Value: Call\n";
+	REQUIRE(content.find(subcontent1) != std::string::npos);
+
+	std::string subcontent2 = "  Type: StatementList, Line Number: 1, Value: StatementList\n";
+	REQUIRE(content.find(subcontent2) != std::string::npos);
+
+	std::string subcontent3 = "Type: Procedure, Line Number: 1, Value: Procedure\n";
+	REQUIRE(content.find(subcontent3) != std::string::npos);
+
+	std::cout << "\nPRINT END\n" << std::endl;
 }

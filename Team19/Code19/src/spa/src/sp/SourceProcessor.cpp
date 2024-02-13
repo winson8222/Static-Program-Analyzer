@@ -1,27 +1,21 @@
 #include "sp/SourceProcessor.h"
 #include <iostream>
 
-SourceProcessor::SourceProcessor(PKBManager pkbManager) {
+SourceProcessor::SourceProcessor(std::string filename, std::shared_ptr<PKBManager> pkbManager) {
     this->pkbManager = pkbManager;
-    this->tokens = std::vector<LexicalToken>();
+	this->parser = SimpleParser(filename);
     this->root = std::make_shared<ASTNode>();
     std::cout << "File created" << std::endl;
 }
 
 void SourceProcessor::reset() {
+	this->root = std::make_shared<ASTNode>();
 }
 
-void SourceProcessor::tokenize(std::string filepath) {
-    // Tokenize and parse source file
-    std::vector<LexicalToken> tokens = Tokenizer::tokenize(filepath);
-    this->tokens = tokens;
-    // Parse tokens into AST (not implemented)
-    // AST ast = parser.parse(tokens);
-}
-
-void SourceProcessor::parse() {
+void SourceProcessor::parseSIMPLE() {
 	// Parse tokens into AST (not implemented)
-	// AST ast = parser.parse(tokens);
+	this->root = parser.parseProgram();
+	std::cout << this->root->toString() << std::endl;
 }
 
 void SourceProcessor::buildAST() {
@@ -30,7 +24,7 @@ void SourceProcessor::buildAST() {
 }
 
 void SourceProcessor::sampleAST() {
-    	// hard coded Sample AST for testing purposes
+    // hard coded Sample AST for testing purposes
 	auto ast1 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "i");
 	auto ast2 = std::make_shared<ASTNode>(ASTNodeType::ASSIGN, 1, Utility::getASTNodeType(ASTNodeType::ASSIGN));
 	auto ast3 = std::make_shared<ASTNode>(ASTNodeType::CONSTANT, 1, "1");
@@ -67,7 +61,7 @@ void SourceProcessor::sampleAST() {
 
 void SourceProcessor::extractAndPopulate() {
     // Use PKBWriter to insert entities and relationships into PKB
-    std::shared_ptr<PKBWriter> pkbWriter = this->pkbManager.getPKBWriter();
+    std::shared_ptr<PKBWriter> pkbWriter = this->pkbManager->getPKBWriter();
 	DesignExtractor designExtractor(this->root, pkbWriter);
 	designExtractor.extractAll();
     designExtractor.populatePKB();
