@@ -22,8 +22,8 @@ class TestWrapper : public AbstractWrapper {
     // shared_ptr<PKBReader> pkbReader;
 private:
     std::shared_ptr<PKBManager> pkbManager;
-    std::shared_ptr<PKBReader> pkbReader;
-    std::shared_ptr<PKBWriter> pkbWriter;
+    std::shared_ptr<PKBReaderManager> pkbReaderManager;
+    std::shared_ptr<PKBWriterManager> pkbWriterManager;
 
 public:
     // default constructor

@@ -16,15 +16,18 @@ TEST_CASE("Test parser of SP on multiple procedures", "[SourceProcessor]") {
     REQUIRE_NOTHROW(sp.parseSIMPLE());
     REQUIRE_NOTHROW(sp.extractAndPopulate());
 
-    std::shared_ptr<PKBReader> pkbReader = pkbManager->getPKBReader();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
 
-    auto values1 = pkbReader->getAllVariables();
+    auto variableReader = pkbReaderManager->getVariableReader();
+    auto values1 = variableReader->getAllVariables();
     std::unordered_set<std::string> expectedValues1 = {"x", "y", "z"};
     REQUIRE(values1 == expectedValues1);
 
-    auto values2 = pkbReader->getAllProcedures();
+    auto procedureReader = pkbReaderManager->getProcedureReader();
+    auto values2 = procedureReader->getAllProcedures();
 
-    auto values3 = pkbReader->getAllStmts();
+    auto statementReader = pkbReaderManager->getStatementReader();
+    auto values3 = statementReader->getAllStatements();
     std::unordered_set<int> expectedValues3 = {2, 6, 10};
     REQUIRE(values3 == expectedValues3);
 
@@ -42,15 +45,17 @@ TEST_CASE("Test parser of SP on one procedures and multiple statements", "[Sourc
     REQUIRE_NOTHROW(sp.parseSIMPLE());
     REQUIRE_NOTHROW(sp.extractAndPopulate());
 
-    std::shared_ptr<PKBReader> pkbReader = pkbManager->getPKBReader();
-
-    auto values1 = pkbReader->getAllVariables();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    auto variableReader = pkbReaderManager->getVariableReader();
+    auto values1 = variableReader->getAllVariables();
     std::unordered_set<std::string> expectedValues1 = { "x", "y", "z" };
     REQUIRE(values1 == expectedValues1);
 
-    auto values2 = pkbReader->getAllProcedures();
+    auto procedureReader = pkbReaderManager->getProcedureReader();
+    auto values2 = procedureReader->getAllProcedures();
 
-    auto values3 = pkbReader->getAllStmts();
+    auto statementReader = pkbReaderManager->getStatementReader();
+    auto values3 = statementReader->getAllStatements();
     std::unordered_set<int> expectedValues3 = { 2, 3, 4 };
     REQUIRE(values3 == expectedValues3);
 

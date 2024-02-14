@@ -3,8 +3,8 @@
 
 using namespace std;
 
-QueryEvaluator::QueryEvaluator(std::shared_ptr<PKBReader> pkb, ParsingResult& parsingResult)
-    : pkbReader(pkb), parsingResult(parsingResult) {}
+QueryEvaluator::QueryEvaluator(std::shared_ptr<PKBReaderManager> pkbReaderManager, ParsingResult& parsingResult)
+    : pkbReaderManager(pkbReaderManager), parsingResult(parsingResult) {}
 
 void QueryEvaluator::addStrategy(std::unique_ptr<QueryEvaluationStrategy> strategy) {
     strategies.push_back(std::move(strategy));
@@ -38,11 +38,12 @@ std::vector<string> QueryEvaluator::evaluateQuery() {
 
     if (requiredType == "variable") {
         // now we are only supporting getting all variables
-        result = pkbReader->getAllVariables();
+        std::shared_ptr<VariableReader> variableReader = pkbReaderManager->getVariableReader();
+        result = variableReader->getAllVariables();
     }
 
     for (auto& strategy : strategies) {
-        std::unordered_set<std::string> strategyResult = strategy->evaluateQuery(*pkbReader, parsingResult);
+        std::unordered_set<std::string> strategyResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult);
         combineResults(strategyResult);
     }
 

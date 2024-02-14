@@ -10,12 +10,13 @@ AbstractWrapper* WrapperFactory::createWrapper() {
 volatile bool AbstractWrapper::GlobalStop = false;
 // a default constructor
 TestWrapper::TestWrapper() {
-    // create any objects here as instance variables of this class
-    // as well as any initialization required for your spa program
 
-    pkbManager = std::make_shared<PKBManager>();
-    pkbReader = pkbManager->getPKBReader();
-    pkbWriter = pkbManager->getPKBWriter();
+	// create any objects here as instance variables of this class
+	// as well as any initialization required for your spa program
+	pkbManager = std::make_shared<PKBManager>();
+	pkbReaderManager = pkbManager->getPKBReaderManager();
+	pkbWriterManager = pkbManager->getPKBWriterManager();
+
 }
 
 // method for parsing the SIMPLE source
@@ -41,7 +42,7 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
 	vector<Token> tokens = tokenizer.tokenize();
 	QueryParser parser(tokens);
 	auto parsingResult = parser.parse();
-	QueryEvaluator evaluator(pkbReader, parsingResult);
+	QueryEvaluator evaluator(pkbReaderManager, parsingResult);
 	std::vector<string> res = evaluator.evaluateQuery();
 	for (auto & re : res) {
 		results.push_back(re);

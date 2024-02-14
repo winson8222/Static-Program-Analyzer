@@ -87,7 +87,7 @@ public:
      * This method resets both the key-to-value and value-to-key mappings, effectively
      * removing all relationships.
      */
-    void clear() {
+    void clear() override {
         keyToValueMap.clear();
         valueToKeyMap.clear();
     }
