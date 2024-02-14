@@ -21,4 +21,7 @@ public:
      * @param value The value to be associated with the key.
      */
     virtual void addRelationship(KeyType key, ValueType value) = 0;
+
+    // Clears all entities from the store.
+    virtual void clear() = 0;
 };

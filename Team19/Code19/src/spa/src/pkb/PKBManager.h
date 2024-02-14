@@ -1,27 +1,27 @@
 #pragma once
 
 #include "PKB.h"
-#include "PKBReader.h"
-#include "PKBWriter.h"
+#include "PKBReaderManager.h"
+#include "PKBWriterManager.h"
 
 class PKBManager {
 private:
     std::shared_ptr<PKB> pkb;
-    std::shared_ptr<PKBReader> pkbReader;
-    std::shared_ptr<PKBWriter> pkbWriter;
+    std::shared_ptr<PKBReaderManager> pkbReaderManager;
+    std::shared_ptr<PKBWriterManager> pkbWriterManager;
 public:
     PKBManager() {
-        pkb = std::make_shared<PKB>();
-        pkbReader = std::make_shared<PKBReader>(pkb);
-        pkbWriter = std::make_shared<PKBWriter>(pkb);
+      pkb = std::make_shared<PKB>(); // TODO: Change to private
+      pkbReaderManager = std::make_shared<PKBReaderManager>(pkb);
+      pkbWriterManager = std::make_shared<PKBWriterManager>(pkb);
     }
     std::shared_ptr<PKB> getPKB() {
         return pkb;
     }
-    std::shared_ptr<PKBReader> getPKBReader() {
-        return pkbReader;
+    std::shared_ptr<PKBReaderManager> getPKBReaderManager() {
+        return pkbReaderManager;
     }
-    std::shared_ptr<PKBWriter> getPKBWriter() {
-        return pkbWriter;
+    std::shared_ptr<PKBWriterManager> getPKBWriterManager() {
+        return pkbWriterManager;
     }
 };

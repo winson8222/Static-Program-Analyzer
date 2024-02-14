@@ -20,9 +20,9 @@ TEST_CASE("Test header", "[SourceProcessor]") {
     REQUIRE_NOTHROW(sp.sampleAST());
     REQUIRE_NOTHROW(sp.extractAndPopulate());
 
-    std::shared_ptr<PKBReader> pkbReader = sp.pkbManager->getPKBReader();
-    
-    auto values1 = pkbReader->getAllVariables();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = sp.pkbManager->getPKBReaderManager();
+    auto variableReader = pkbReaderManager->getVariableReader();
+    auto values1 = variableReader->getAllVariables();
     std::cout << "All Extracted variables: ";
     for (auto& var : values1) {
 		std::cout << var << ", ";
