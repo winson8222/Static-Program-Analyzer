@@ -13,6 +13,10 @@ public:
     // Constructor
     ParsingResult();
 
+    bool isQueryValid();
+    string getErrorMessage();
+    void setErrorMessage(const string& errorMessage);
+
     // Setters
     // Method to add a single synonym
     void addDeclaredSynonym(const std::string& key, const std::string& value);
@@ -52,6 +56,8 @@ private:
     Token patternRelationship;
     Token patternFirstParam;
     Token patternSecondParam;
+
+    string errorMessage;
 };
 
 #endif 

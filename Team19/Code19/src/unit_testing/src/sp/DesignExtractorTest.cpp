@@ -2,7 +2,6 @@
 #include "sp/AST/ASTNode.h"
 #include "sp/Parser/SimpleParser.h"
 #include "pkb/PKBManager.h"
-#include "pkb/PKBWriter.h"
 #include "sp/Utility.h"
 #include "catch.hpp"
 #include <fstream>
@@ -16,12 +15,12 @@ TEST_CASE("Basic system tests for DesignExtractor", "[DesignExtractor::extract]"
     REQUIRE(std::filesystem::exists(testFileName));
 
     PKBManager pkbManager;
-    std::shared_ptr<PKBWriter> pkbWriter = pkbManager.getPKBWriter();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager.getPKBWriterManager();
 
-    DesignExtractor designExtractor(std::make_shared<ASTNode>(), pkbWriter);
+    DesignExtractor designExtractor(std::make_shared<ASTNode>(), pkbWriterManager);
     std::cout << "First stage now\n\n" << std::endl;
 
-    auto value1 = designExtractor.pkbWriter;
+    auto value1 = designExtractor.pkbWriterManager;
     auto ast1 = designExtractor.root;
 
     auto ast2 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "i");

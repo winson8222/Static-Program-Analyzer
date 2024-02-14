@@ -2,7 +2,6 @@
 #include "sp/AST/ASTNode.h"
 #include "sp/Parser/SimpleParser.h"
 #include "pkb/PKBManager.h"
-#include "pkb/PKBWriter.h"
 #include "sp/Utility.h"
 #include "catch.hpp"
 #include <fstream>
@@ -19,13 +18,12 @@ TEST_CASE("Test multiple procedure extractor", "[parseProcedure]") {
     std::shared_ptr<ASTNode> tree_ptr = parser.parseProgram();
 
     PKBManager pkbManager;
-    std::shared_ptr<PKBWriter> pkbWriter = pkbManager.getPKBWriter();
-    DesignExtractor designExtractor(tree_ptr, pkbWriter);
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager.getPKBWriterManager();
+    DesignExtractor designExtractor(tree_ptr, pkbWriterManager);
 
     std::unordered_set<std::string> actual = designExtractor.extractProcedures();
     std::unordered_set<std::string> expected = { "Procedure", "Procedure", "Procedure" };
 
-    REQUIRE(actual.size() == 3);
     REQUIRE(actual == expected);
 }
 
@@ -37,8 +35,8 @@ TEST_CASE("Test single procedure extractor", "[parseProcedure]") {
     std::shared_ptr<ASTNode> tree_ptr = parser.parseProgram();
 
     PKBManager pkbManager;
-    std::shared_ptr<PKBWriter> pkbWriter = pkbManager.getPKBWriter();
-    DesignExtractor designExtractor(tree_ptr, pkbWriter);
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager.getPKBWriterManager();
+    DesignExtractor designExtractor(tree_ptr, pkbWriterManager);
 
     std::unordered_set<std::string> actual = designExtractor.extractProcedures();
     std::unordered_set<std::string> expected = { "Procedure" };

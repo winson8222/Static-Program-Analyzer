@@ -1,7 +1,6 @@
 #include "sp/DesignExtractor/DesignExtractor.h"
 #include "sp/AST/ASTNode.h"
 #include "pkb/PKBManager.h"
-#include "pkb/PKBWriter.h"
 #include "sp/Utility.h"
 #include "catch.hpp"
 #include <fstream>
@@ -15,11 +14,11 @@ TEST_CASE("Unit tests for Statement Extractor", "[DesignExtractor::extract]") {
     std::cout << "DESIGN EXTRACTOR STATEMENT TESTS\n\n" << std::endl;
 
     PKBManager pkbManager;
-    std::shared_ptr<PKBWriter> pkbWriter = pkbManager.getPKBWriter();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager.getPKBWriterManager();
 
-    DesignExtractor designExtractor(std::make_shared<ASTNode>(), pkbWriter);
+    DesignExtractor designExtractor(std::make_shared<ASTNode>(), pkbWriterManager);
 
-    auto value1 = designExtractor.pkbWriter;
+    auto value1 = designExtractor.pkbWriterManager;
     auto ast1 = designExtractor.root;
 
     // Create AST nodes with different names and values
