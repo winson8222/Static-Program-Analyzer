@@ -2,7 +2,7 @@
 #include "catch.hpp"
 
 using namespace std;
-
+// Test for Parsing Result assuming that the query is valid
 TEST_CASE("Check Parsing Result of select all query") {
     std::vector<Token> tokens = {
             Token(TokenType::DesignEntity, "stmt"),

@@ -57,6 +57,7 @@ const string& ParsingResult::getDeclaredSynonym(const string& key) const {
     return ""; 
 }
 
+
 const string& ParsingResult::getRequiredSynonym() const {
     return requiredSynonym;
 }
@@ -87,5 +88,23 @@ const Token& ParsingResult::getPatternClauseFirstParam() const {
 
 const Token& ParsingResult::getPatternClauseSecondParam() const {
     return patternSecondParam;
+}
+
+// check if the query is valid
+bool ParsingResult::isQueryValid() {
+    return errorMessage.empty();
+}
+
+// get the error message
+string ParsingResult::getErrorMessage() {
+    return errorMessage;
+}
+
+// set the error message
+void ParsingResult::setErrorMessage(const string& message) {
+    if (errorMessage.empty()) {
+        errorMessage = message;
+    }
+
 }
 

@@ -1,5 +1,11 @@
 1 - comment
+ stmt s;
+ Select s
+ 1
+ 5000
+2 - comment
  variable g;
  Select g
  z, y, x
  5000
+

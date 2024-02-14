@@ -11,6 +11,13 @@ void QueryEvaluator::addStrategy(std::unique_ptr<QueryEvaluationStrategy> strate
 }
 
 std::vector<string> QueryEvaluator::evaluateQuery() {
+    // if query is not valid, return error message and stop evaluation
+    if (!parsingResult.isQueryValid()) {
+        // convert error message to vector<string>
+        vector<string> error;
+        error.push_back(parsingResult.getErrorMessage());
+        return error;
+    }
     std::string requiredSynonym = parsingResult.getRequiredSynonym();
     std::string requiredType = parsingResult.getRequiredSynonymType();
 
@@ -18,6 +25,12 @@ std::vector<string> QueryEvaluator::evaluateQuery() {
         // For 'Follows' type, add FollowsStrategy
         if (parsingResult.getSuchThatClauseRelationship().getValue() == "Follows") {
             addStrategy(std::make_unique<FollowsStrategy>());
+        } else {
+            // if there is no clause, return all statements
+            unordered_set<int> allStmts = pkbReader->getAllStmts();
+            for (int stmt : allStmts) {
+                result.insert(to_string(stmt));
+            }
         }
         // Add other strategies based on requiredType
         // ...
