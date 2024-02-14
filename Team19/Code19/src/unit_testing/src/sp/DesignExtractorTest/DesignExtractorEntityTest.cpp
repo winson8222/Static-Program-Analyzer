@@ -10,7 +10,7 @@
 #include <vector>
 
 
-TEST_CASE("Unit tests for Entity Extractor", "[DesignExtractor::extract]") {
+TEST_CASE(" tests for Entity Extractor", "[DesignExtractor::extract]") {
     std::cout << "DESIGN EXTRACTOR ENTITY TESTS\n\n" << std::endl;
 
     PKBManager pkbManager;

@@ -10,7 +10,7 @@
 #include <vector>
 
 
-TEST_CASE("Basic system tests for DesignExtractor", "[DesignExtractor::extract]") {
+TEST_CASE(" system tests for DesignExtractor", "[DesignExtractor::extract]") {
     const std::string testFileName = "../../../../../tests/sp/TokenizerTest/sourcefile1.txt";
     REQUIRE(std::filesystem::exists(testFileName));
 
