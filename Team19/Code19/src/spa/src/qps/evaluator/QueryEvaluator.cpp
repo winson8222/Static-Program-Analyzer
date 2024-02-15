@@ -23,11 +23,11 @@ std::vector<string> QueryEvaluator::evaluateQuery() {
 
     if (requiredType == "stmt") {
         // For 'Follows' type, add FollowsStrategy
-        if (parsingResult.getSuchThatClauseRelationship().getValue() == "Follows") {
+        if (parsingResult.getSuchThatClauseRelationship().getValue() == "Follows" || parsingResult.getSuchThatClauseRelationship().getValue() == "Follows*") {
             addStrategy(std::make_unique<FollowsStrategy>());
         } else {
             // if there is no clause, return all statements
-            unordered_set<int> allStmts = pkbReader->getAllStmts();
+            unordered_set<int> allStmts = pkbReaderManager->getStatementReader()->getAllStatements();
             for (int stmt : allStmts) {
                 result.insert(to_string(stmt));
             }
