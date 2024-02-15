@@ -1,5 +1,6 @@
 #include "QueryEvaluator.h"
-#include "FollowsStrategy.h" // Include FollowsStrategy
+#include "qps/evaluator/suchThatStrategies/FollowsStrategy.h" // Include FollowsStrategy
+#include "qps/evaluator/suchThatStrategies/ParentStrategy.h" // Include ParentStrategy
 
 using namespace std;
 
@@ -25,6 +26,9 @@ std::vector<string> QueryEvaluator::evaluateQuery() {
         // For 'Follows' type, add FollowsStrategy
         if (parsingResult.getSuchThatClauseRelationship().getValue() == "Follows" || parsingResult.getSuchThatClauseRelationship().getValue() == "Follows*") {
             addStrategy(std::make_unique<FollowsStrategy>());
+        }
+        else if (parsingResult.getSuchThatClauseRelationship().getValue() == "Parent" || parsingResult.getSuchThatClauseRelationship().getValue() == "ParentT") {
+            addStrategy(std::make_unique<ParentStrategy>());
         } else {
             // if there is no clause, return all statements
             unordered_set<int> allStmts = pkbReaderManager->getStatementReader()->getAllStatements();
@@ -42,9 +46,15 @@ std::vector<string> QueryEvaluator::evaluateQuery() {
         result = variableReader->getAllVariables();
     }
 
+    bool isFirstStrategy = true;
     for (auto& strategy : strategies) {
-        std::unordered_set<std::string> strategyResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult);
-        combineResults(strategyResult);
+        if (isFirstStrategy) {
+            result = strategy->evaluateQuery(*pkbReaderManager, parsingResult);
+            isFirstStrategy = false;
+        } else {
+            combineResults(strategy->evaluateQuery(*pkbReaderManager, parsingResult));
+        }
+
     }
 
     return std::vector<std::string>(result.begin(), result.end());

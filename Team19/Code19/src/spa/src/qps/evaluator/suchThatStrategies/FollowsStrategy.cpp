@@ -1,5 +1,5 @@
 #include "FollowsStrategy.h"
-#include "../Parser/Token.h" // Include the Token header
+#include "qps/parser/Token.h" // Include the Token header
 
 using namespace std;
 
@@ -13,40 +13,34 @@ unordered_set<string> FollowsStrategy::evaluateQuery(PKBReaderManager& pkbReader
     unordered_set<string> result;
 
     // Obtain readers from PKBReaderManager
-    auto followsReader = pkbReaderManager.getFollowsReader();
-    auto followsTReader = pkbReaderManager.getFollowsTReader();
-    auto statementReader = pkbReaderManager.getStatementReader();
+    this->followsReader = pkbReaderManager.getFollowsReader();
+    this->followsTReader = pkbReaderManager.getFollowsTReader();
+    this->statementReader = pkbReaderManager.getStatementReader();
 
     const Token& suchThatFirstParam = parsingResult.getSuchThatClauseFirstParam();
     const Token& suchThatSecondParam = parsingResult.getSuchThatClauseSecondParam();
 
     if (suchThatFirstParam.getValue() == requiredSynonym) {
-        processFirstParam(suchThatSecondParam, variant, followsReader, followsTReader, result);
+        processFirstParam(suchThatSecondParam, variant, result);
     }
     else if (suchThatSecondParam.getValue() == requiredSynonym) {
-        processSecondParam(suchThatFirstParam, variant, followsReader, followsTReader, result);
+        processSecondParam(suchThatFirstParam, variant, result);
     }
     else if (isBothParamsWildcard(suchThatFirstParam, suchThatSecondParam)) {
         const unordered_set<int>& follows = statementReader->getAllStatements();
         fillResult(follows, result);
     }
     else if (isBothParamsInteger(suchThatFirstParam, suchThatSecondParam)) {
-        processIntegerParams(suchThatFirstParam, suchThatSecondParam, followsReader, statementReader, result);
+        processIntegerParams(suchThatFirstParam, suchThatSecondParam, result);
     }
 
     return result;
 }
 
-void FollowsStrategy::fillResult(const unordered_set<int>& follows, unordered_set<string>& result) {
-    for (int statement : follows) {
-        result.insert(to_string(statement));
-    }
-}
+
 
 // Additional helper methods for readability
 void FollowsStrategy::processFirstParam(const Token& secondParam, const string& variant,
-    shared_ptr<FollowsReader> followsReader,
-    shared_ptr<FollowsTReader> followsTReader,
     unordered_set<string>& result) {
     // Implementation of processing when the first parameter matches the required synonym
     if (secondParam.getType() == TokenType::INTEGER) {
@@ -65,8 +59,6 @@ void FollowsStrategy::processFirstParam(const Token& secondParam, const string& 
 }
 
 void FollowsStrategy::processSecondParam(const Token& firstParam, const string& variant,
-    shared_ptr<FollowsReader> followsReader,
-    shared_ptr<FollowsTReader> followsTReader,
     unordered_set<string>& result) {
     // Implementation of processing when the second parameter matches the required synonym
     if (firstParam.getType() == TokenType::INTEGER) {
@@ -84,19 +76,9 @@ void FollowsStrategy::processSecondParam(const Token& firstParam, const string& 
     }
 }
 
-bool FollowsStrategy::isBothParamsWildcard(const Token& firstParam, const Token& secondParam) {
-    // Implementation to check if both parameters are wildcards
-    return firstParam.getType() == TokenType::Wildcard && secondParam.getType() == TokenType::Wildcard;
-}
 
-bool FollowsStrategy::isBothParamsInteger(const Token& firstParam, const Token& secondParam) {
-    // Implementation to check if both parameters are integers
-    return firstParam.getType() == TokenType::INTEGER && secondParam.getType() == TokenType::INTEGER;
-}
 
 void FollowsStrategy::processIntegerParams(const Token& firstParam, const Token& secondParam,
-    shared_ptr<FollowsReader> followsReader,
-    shared_ptr<StatementReader> statementReader,
     unordered_set<string>& result) {
     // Implementation for processing when both parameters are integers
     int firstStmtNum = stoi(firstParam.getValue());

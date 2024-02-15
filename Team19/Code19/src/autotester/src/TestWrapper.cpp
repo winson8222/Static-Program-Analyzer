@@ -17,6 +17,8 @@ TestWrapper::TestWrapper() {
 	pkbReaderManager = pkbManager->getPKBReaderManager();
 	pkbWriterManager = pkbManager->getPKBWriterManager();
 
+    pkbWriterManager->getFollowsWriter()
+
 }
 
 // method for parsing the SIMPLE source
