@@ -1,4 +1,4 @@
-#include "sp/SPTokenizer/Tokenizer.h"
+#include "sp/SPTokenizer/SPTokenizer.h"
 #include "sp/SPTokenizer/LexicalToken.h"
 #include "sp/DesignExtractor/DesignExtractor.h"
 #include "sp/Parser/SimpleParser.h"
