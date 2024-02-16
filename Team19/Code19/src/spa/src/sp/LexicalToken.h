@@ -12,7 +12,7 @@ public:
 	LexicalToken(LexicalTokenType t, int lineNumber, int linePosition, std::string value);
 	LexicalToken(LexicalTokenType type);
 	LexicalToken() = default;
-	bool LexicalToken::isType(LexicalTokenType type);
+	bool isType(LexicalTokenType type);
 	const LexicalToken& getNullToken();
 	LexicalTokenType getTokenType();
 	int getLinePosition();
