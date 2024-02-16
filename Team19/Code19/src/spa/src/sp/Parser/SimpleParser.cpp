@@ -85,7 +85,7 @@ LexicalToken SimpleParser::peekNextNextToken() {
 // ai-gen end
 
 void SimpleParser::assertToken(LexicalToken token, LexicalTokenType type) const {
-	if (token.getTokenType() != type) {
+	if (!token.isType(type)) {
 		throw std::runtime_error("Error: Invalid SIMPLE syntax.");
 	}
 }
