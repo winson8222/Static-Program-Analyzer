@@ -6,7 +6,7 @@
 // Prompt: https://platform.openai.com/playground/p/cJLjmmneCEs4z6ms7ZkBSxJB?model=gpt-4&mode=chat
 
 SimpleParser::SimpleParser() {
-	
+
 }
 
 SimpleParser::SimpleParser(std::string filename) {
@@ -38,9 +38,16 @@ bool SimpleParser::hasTokensLeft() const {
 }
 
 // Gets token, without advancing the index.
-LexicalToken SimpleParser::peekToken() const {
+LexicalToken SimpleParser::peekToken() {
 	if (this->hasTokensLeft()) {
-		return this->tokenStream[this->tokenIndex];
+		LexicalToken token = this->tokenStream[this->tokenIndex];
+
+		if (token.getTokenType() == LexicalTokenType::WHITESPACE) {
+			this->tokenIndex++;
+			return peekToken();
+		}
+
+		return token;
 	}
 	else {
 		return LexicalToken(LexicalTokenType::NULL_TOKEN);
@@ -52,6 +59,11 @@ LexicalToken SimpleParser::getToken() {
 	if (this->hasTokensLeft()) {
 		LexicalToken token = this->tokenStream[this->tokenIndex];
 		this->tokenIndex++;
+
+		if (token.getTokenType() == LexicalTokenType::WHITESPACE) {
+			return getToken();
+		}
+
 		return token;
 	}
 	else {

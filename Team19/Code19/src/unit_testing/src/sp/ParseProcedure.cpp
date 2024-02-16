@@ -38,7 +38,7 @@ TEST_CASE("Calling parseProcedure with print, read, call statements", "[parsePro
 
 
 		REQUIRE(statementList->type == ASTNodeType::STATEMENT_LIST);
-		REQUIRE(statementList->lineNumber == 1);
+		REQUIRE(statementList->lineNumber == 2);
 		REQUIRE(statementList->value == Utility::getASTNodeType(ASTNodeType::STATEMENT_LIST));
 
 		SECTION("Testing Print child node") {
@@ -83,7 +83,7 @@ TEST_CASE("Test string representations of procedures", "[parseProcedure]") {
 	std::string subcontent1 = "    Type: Call, Line Number: 2, Value: Call\n";
 	REQUIRE(content.find(subcontent1) != std::string::npos);
 
-	std::string subcontent2 = "  Type: StatementList, Line Number: 1, Value: StatementList\n";
+	std::string subcontent2 = "  Type: StatementList, Line Number: 2, Value: StatementList\n";
 	REQUIRE(content.find(subcontent2) != std::string::npos);
 
 	std::string subcontent3 = "Type: Procedure, Line Number: 1, Value: Procedure\n";
