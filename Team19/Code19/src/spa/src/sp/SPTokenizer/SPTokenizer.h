@@ -22,5 +22,6 @@ public:
     static std::vector<std::string> splitLine(const std::string& content);
 
 private:
-    static void assertValidName(const std::string& name);
+    static void assertValidToken(LexicalTokenType type, const std::string& name);
+    static void handleKeywordConflict(LexicalTokenType& type, bool& isPreviousTokenKeyword);
 };
