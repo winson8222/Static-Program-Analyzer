@@ -44,7 +44,7 @@ TEST_CASE("Calling parseProgram with print, read, call statements", "[parseProgr
 		const auto& statementList = (procedure->children)[0];
 
 		REQUIRE(statementList->type == ASTNodeType::STATEMENT_LIST);
-		REQUIRE(statementList->lineNumber == 1);
+		REQUIRE(statementList->lineNumber == 2);
 		REQUIRE(statementList->value == Utility::getASTNodeType(ASTNodeType::STATEMENT_LIST));
 
 		SECTION("Testing Print child node") {
