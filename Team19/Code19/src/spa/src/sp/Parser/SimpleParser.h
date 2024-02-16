@@ -14,9 +14,9 @@
 // Prompt: https://platform.openai.com/playground/p/cJLjmmneCEs4z6ms7ZkBSxJB?model=gpt-4&mode=chat
 class SimpleParser {
 public:
-	SimpleParser(); // Default constructor
-	SimpleParser(std::string filename);
-	std::shared_ptr<ASTNode> parseProgram();
+   SimpleParser(); // Default constructor
+   SimpleParser(std::string filename);
+   std::shared_ptr<ASTNode> parseProgram();
 
 	// private:
 	std::vector<LexicalToken> tokenStream;
@@ -31,7 +31,7 @@ public:
 	std::shared_ptr<ASTNode> parseRead();
 	std::shared_ptr<ASTNode> parsePrint();
 	std::shared_ptr<ASTNode> parseCall();
-	std::shared_ptr<ASTNode> parseWhile();
+	void parseWhile();
 	void parseIf();
 	void parseAssign();
 	void parseCondExpr();
