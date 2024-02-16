@@ -6,7 +6,7 @@
 // Prompt: https://platform.openai.com/playground/p/cJLjmmneCEs4z6ms7ZkBSxJB?model=gpt-4&mode=chat
 
 SimpleParser::SimpleParser() {
-	
+
 }
 
 SimpleParser::SimpleParser(std::string filename) {
@@ -18,11 +18,6 @@ std::shared_ptr<ASTNode> SimpleParser::parseProgram() {
 	std::vector<std::shared_ptr<ASTNode>> procedures;
 
 	while (this->hasTokensLeft()) {
-		if (this->peekToken().getTokenType() == LexicalTokenType::WHITESPACE) {
-			this->getToken();
-			continue;
-		}
-
 		procedures.push_back(this->parseProcedure());
 	}
 
@@ -52,6 +47,10 @@ LexicalToken SimpleParser::getToken() {
 	if (this->hasTokensLeft()) {
 		LexicalToken token = this->tokenStream[this->tokenIndex];
 		this->tokenIndex++;
+		if (token.getTokenType() == LexicalTokenType::WHITESPACE) {
+			return getToken();
+		}
+
 		return token;
 	}
 	else {
@@ -92,10 +91,6 @@ std::shared_ptr<ASTNode> SimpleParser::parseStmtLst() {
 	std::vector<std::shared_ptr<ASTNode>> statements;
 	int firstLine = this->peekToken().getLine();
 	while (this->peekToken().getTokenType() != LexicalTokenType::SYMBOL_CLOSE_BRACE) {
-		if (this->peekToken().getTokenType() == LexicalTokenType::WHITESPACE) {
-			this->getToken();
-			continue;
-		}
 		statements.push_back(this->parseStmt());
 	}
 
@@ -178,8 +173,25 @@ std::shared_ptr<ASTNode> SimpleParser::parseCall() {
 	return callStmt.buildTree();
 }
 
-void SimpleParser::parseWhile() {
-	// Add parsing logic for while
+std::shared_ptr<ASTNode> SimpleParser::parseWhile() {
+	LexicalToken keyword = this->getToken();
+	this->assertToken(keyword, LexicalTokenType::KEYWORD_WHILE);
+
+	this->assertToken(this->getToken(), LexicalTokenType::SYMBOL_OPEN_PAREN);
+
+	LexicalToken condition = this->getToken();
+	this->assertToken(condition, LexicalTokenType::NAME);
+	this->assertToken(this->getToken(), LexicalTokenType::SYMBOL_CLOSE_PAREN);
+	this->assertToken(this->getToken(), LexicalTokenType::SYMBOL_OPEN_BRACE);
+
+	// Parse Stmt List
+
+	this->assertToken(this->getToken(), LexicalTokenType::SYMBOL_CLOSE_BRACE);
+
+	//WhileStmt whileStmt = WhileStmt();
+
+	return whileStmt.buildTree();
+
 }
 
 void SimpleParser::parseIf() {
