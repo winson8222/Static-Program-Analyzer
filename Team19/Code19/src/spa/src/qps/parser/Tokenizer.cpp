@@ -42,6 +42,8 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     }
     // ClauseKeyword: Specific clause keywords.
     else if (regex_match(tokenStr, regex("^(Select|pattern|such|that)$"))) {
+        // The first case check if there is unconventional naming 
+        // and avoids assigning wrong token type
         if (!tokens.empty() && (tokens.back().getType() == TokenType::SelectKeyword || checkIfDeclaration())) {
             return TokenType::IDENT;
         }
@@ -137,6 +139,8 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
 
 }
 
+
+// Check if the current token is a declaration token
 bool Tokenizer::checkIfDeclaration() {
     int i = tokens.size() - 1;
     while(i >= 0) {
