@@ -11,8 +11,6 @@
 
 
 TEST_CASE("Unit tests for Statement Extractor", "[DesignExtractor::extract]") {
-    std::cout << "DESIGN EXTRACTOR STATEMENT TESTS\n\n" << std::endl;
-
     PKBManager pkbManager;
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager.getPKBWriterManager();
 

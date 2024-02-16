@@ -7,7 +7,6 @@
 #include <vector>
 
 TEST_CASE("Test header", "[SourceProcessor]") {
-    std::cout << "AST-DESIGN-EXTRACTOR-TEST STARTS\n\n\n" << std::endl;  
     const std::string testFileName = "../../../../../tests/sp/ParserTest/Program1.txt";
     const std::string testFileContent = "x = 1;";
 
@@ -28,6 +27,4 @@ TEST_CASE("Test header", "[SourceProcessor]") {
 		std::cout << var << ", ";
 	}
     std::cout << std::endl;
-
-    std::cout << "AST-DESIGN-EXTRACTOR-TEST ENDS\n\n\n" << std::endl;
 }

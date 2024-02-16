@@ -11,8 +11,6 @@
 
 
 TEST_CASE(" tests for Entity Extractor", "[DesignExtractor::extract]") {
-    std::cout << "DESIGN EXTRACTOR ENTITY TESTS\n\n" << std::endl;
-
     PKBManager pkbManager;
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager.getPKBWriterManager();
 

@@ -95,7 +95,6 @@ TEST_CASE("Test string representations of programs", "[parseProcedure]") {
 	SimpleParser parser(testFileName);
 	std::shared_ptr<ASTNode> tree_ptr = parser.parseProgram();
 
-	std::cout << "\nPRINT PROGRAM START\n" << std::endl;
 
 	std::string content;
 
@@ -111,5 +110,4 @@ TEST_CASE("Test string representations of programs", "[parseProcedure]") {
 	REQUIRE(content.find(subcontent2) != std::string::npos);
 	REQUIRE(content.find(subcontent3) != std::string::npos);
 
-	std::cout << "\nPRINT END\n" << std::endl;
 }

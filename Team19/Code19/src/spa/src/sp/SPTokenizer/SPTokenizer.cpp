@@ -25,6 +25,8 @@ std::vector<LexicalToken> SPTokenizer::tokenize(const std::string& content) {
 	std::vector<std::string> lines = SPTokenizer::splitLine(content);
 	int numberOfLines = static_cast<int>(lines.size());
 
+	bool isPreviousTokenKeyword = false;
+
 	for (int lineNumber = 1; lineNumber <= numberOfLines; lineNumber++) {
 		std::string line = lines[lineNumber - 1];
 		std::string originalLine = line.substr();
@@ -35,11 +37,24 @@ std::vector<LexicalToken> SPTokenizer::tokenize(const std::string& content) {
 				std::smatch match;
 				if (std::regex_search(line, match, std::regex(rule.second))) {
 
-					LexicalToken t(rule.first, lineNumber, (int)(originalLine.size() - line.size()), match.str());
+					LexicalTokenType type = rule.first;
+
+					if (isPreviousTokenKeyword && (LexicalTokenTypeMapper::isKeyword(type) || type == LexicalTokenType::NAME)) {
+						type = LexicalTokenType::NAME;
+						isPreviousTokenKeyword = false;
+					}
+					else {
+						if (LexicalTokenTypeMapper::isKeyword(type)) {
+							isPreviousTokenKeyword = true;
+						}
+					}
+
+					LexicalToken t(type, lineNumber, (int)(originalLine.size() - line.size()), match.str());
+
+
 
 					if (rule.first == LexicalTokenType::NAME) {
-						// assertValidName(match.str());
-						std::cout << match.str() << std::endl;
+						assertValidName(match.str());
 					}
 					if (rule.first != LexicalTokenType::WHITESPACE) {
 						results.push_back(t);
@@ -64,7 +79,6 @@ std::vector<LexicalToken> SPTokenizer::tokenize(const std::string& content) {
 }
 
 void SPTokenizer::assertValidName(const std::string& name) {
-	std::cout << name << std::endl;
 	std::string pattern = "([a-zA-Z][a-zA-Z0-9]*)"; // Pattern to match an alphanumeric string with the first character being a letter
 	std::regex regexPattern(pattern);
 	if (!std::regex_match(name, regexPattern)) {
