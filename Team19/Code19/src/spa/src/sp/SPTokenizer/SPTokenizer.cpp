@@ -34,8 +34,13 @@ std::vector<LexicalToken> SPTokenizer::tokenize(const std::string& content) {
 			for (auto const& rule : LexicalTokenTypeMapper::tokenToRegexPairs) {
 				std::smatch match;
 				if (std::regex_search(line, match, std::regex(rule.second))) {
+
 					LexicalToken t(rule.first, lineNumber, (int)(originalLine.size() - line.size()), match.str());
 
+					if (rule.first == LexicalTokenType::NAME) {
+						// assertValidName(match.str());
+						std::cout << match.str() << std::endl;
+					}
 					if (rule.first != LexicalTokenType::WHITESPACE) {
 						results.push_back(t);
 					}
@@ -56,4 +61,13 @@ std::vector<LexicalToken> SPTokenizer::tokenize(const std::string& content) {
 		}
 	}
 	return results;
+}
+
+void SPTokenizer::assertValidName(const std::string& name) {
+	std::cout << name << std::endl;
+	std::string pattern = "([a-zA-Z][a-zA-Z0-9]*)"; // Pattern to match an alphanumeric string with the first character being a letter
+	std::regex regexPattern(pattern);
+	if (!std::regex_match(name, regexPattern)) {
+		throw std::runtime_error("ERROR: Name not valid " + name);
+	}
 }

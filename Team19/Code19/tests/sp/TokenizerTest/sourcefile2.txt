@@ -1,5 +1,10 @@
-procedure testproc {
+procedure procedure {
    x = 1;
-   y = 2;
-   z = x + y;
+   read y12;
+   call abc;
+   if (x > y) then {
+	  z = x - y;
+   } else {
+	  z = y - x;
+   }
 }

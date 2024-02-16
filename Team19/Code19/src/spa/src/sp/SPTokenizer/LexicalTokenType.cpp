@@ -116,8 +116,9 @@ const std::vector<std::pair<LexicalTokenType, std::string>> LexicalTokenTypeMapp
     {LexicalTokenType::OPERATOR_MODULO, "^(%)"},
 
     // Other matches
+    // "^([a-zA-Z]\\w*)\\b"
     {LexicalTokenType::NAME, "^([a-zA-Z]\\w*)\\b"},
-    {LexicalTokenType::INTEGER,  "^(\\d+)"},
+    {LexicalTokenType::INTEGER,  "^(\\d+\\b)"},
     {LexicalTokenType::WHITESPACE, "^(\\s+)"}
 };
 
