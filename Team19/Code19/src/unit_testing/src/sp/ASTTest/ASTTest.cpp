@@ -101,7 +101,7 @@ TEST_CASE("ast test 3", "[readFileToString]") {
     while (std::getline(ss, line, '\n')) {
         lines.insert(line);
     }
-    std::cout << output << std::endl;
+    // std::cout << output << std::endl;
     REQUIRE(lines.size() == 14);
     REQUIRE(lines.find("        Type: Constant, Line Number: 3, Value: 1") != lines.end());
 }
