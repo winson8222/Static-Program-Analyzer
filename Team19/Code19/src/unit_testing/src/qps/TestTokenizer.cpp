@@ -258,3 +258,98 @@ TEST_CASE("quoted constant with wildcards") {
     REQUIRE(tokens[13].getValue() == ")");
 }
 
+TEST_CASE("Check unconventional naming tokenization") {
+    Tokenizer tokenizer("stmt stmt; Select stmt");
+    vector<Token> tokens = tokenizer.tokenize();
+
+    REQUIRE(tokens.size() == 5);  // Expecting 5 tokens
+
+    REQUIRE(tokens[0].getType() == TokenType::DesignEntity);
+    REQUIRE(tokens[0].getValue() == "stmt");
+
+    REQUIRE(tokens[1].getType() == TokenType::IDENT);
+    REQUIRE(tokens[1].getValue() == "stmt");
+
+    REQUIRE(tokens[2].getType() == TokenType::Semicolon);
+    REQUIRE(tokens[2].getValue() == ";");
+
+    REQUIRE(tokens[3].getType() == TokenType::SelectKeyword);
+    REQUIRE(tokens[3].getValue() == "Select");
+
+    REQUIRE(tokens[4].getType() == TokenType::IDENT);
+    REQUIRE(tokens[4].getValue() == "stmt");
+
+
+}
+
+TEST_CASE("Check unconventional naming tokenization 2") {
+    Tokenizer tokenizer("stmt Select; Select Select");
+    vector<Token> tokens = tokenizer.tokenize();
+
+    REQUIRE(tokens.size() == 5);  // Expecting 5 tokens
+
+    REQUIRE(tokens[0].getType() == TokenType::DesignEntity);
+    REQUIRE(tokens[0].getValue() == "stmt");
+
+    REQUIRE(tokens[1].getType() == TokenType::IDENT);
+    REQUIRE(tokens[1].getValue() == "Select");
+
+    REQUIRE(tokens[2].getType() == TokenType::Semicolon);
+    REQUIRE(tokens[2].getValue() == ";");
+
+    REQUIRE(tokens[3].getType() == TokenType::SelectKeyword);
+    REQUIRE(tokens[3].getValue() == "Select");
+
+    REQUIRE(tokens[4].getType() == TokenType::IDENT);
+    REQUIRE(tokens[4].getValue() == "Select");
+
+
+}
+
+
+TEST_CASE("Check unconventional naming tokenization 3") {
+    Tokenizer tokenizer("stmt Follows; Select Follows such that Follows(1,2)");
+    vector<Token> tokens = tokenizer.tokenize();
+
+    REQUIRE(tokens.size() == 13);  // Expecting 5 tokens
+
+    REQUIRE(tokens[0].getType() == TokenType::DesignEntity);
+    REQUIRE(tokens[0].getValue() == "stmt");
+
+    REQUIRE(tokens[1].getType() == TokenType::IDENT);
+    REQUIRE(tokens[1].getValue() == "Follows");
+
+    REQUIRE(tokens[2].getType() == TokenType::Semicolon);
+    REQUIRE(tokens[2].getValue() == ";");
+
+    REQUIRE(tokens[3].getType() == TokenType::SelectKeyword);
+    REQUIRE(tokens[3].getValue() == "Select");
+
+    REQUIRE(tokens[4].getType() == TokenType::IDENT);
+    REQUIRE(tokens[4].getValue() == "Follows");
+
+    REQUIRE(tokens[5].getType() == TokenType::SuchKeyword);
+    REQUIRE(tokens[5].getValue() == "such");
+
+    REQUIRE(tokens[6].getType() == TokenType::ThatKeyword);
+    REQUIRE(tokens[6].getValue() == "that");
+
+    REQUIRE(tokens[7].getType() == TokenType::Follows);
+    REQUIRE(tokens[7].getValue() == "Follows");
+
+    REQUIRE(tokens[8].getType() == TokenType::Lparenthesis);
+    REQUIRE(tokens[8].getValue() == "(");
+
+    REQUIRE(tokens[9].getType() == TokenType::INTEGER);
+    REQUIRE(tokens[9].getValue() == "1");
+
+    REQUIRE(tokens[10].getType() == TokenType::Comma);
+    REQUIRE(tokens[10].getValue() == ",");
+
+    REQUIRE(tokens[11].getType() == TokenType::INTEGER);
+    REQUIRE(tokens[11].getValue() == "2");
+
+    REQUIRE(tokens[12].getType() == TokenType::Rparenthesis);
+    REQUIRE(tokens[12].getValue() == ")");
+
+}

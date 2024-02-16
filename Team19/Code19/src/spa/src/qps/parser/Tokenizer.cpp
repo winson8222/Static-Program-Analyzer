@@ -139,7 +139,7 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
 
 bool Tokenizer::checkIfDeclaration() {
     int i = tokens.size() - 1;
-    while(i != 0) {
+    while(i >= 0) {
 		if (tokens[i].getType() == TokenType::DesignEntity) {
 			return true;
 		}
