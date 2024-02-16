@@ -137,7 +137,14 @@ std::shared_ptr<ASTNode> SimpleParser::parseStmt() {
 		throw std::runtime_error("Error: SimpleParser::parseStmt encounter empty statement.");
 	}
 
+	LexicalToken secondToken = this->peekNextNextToken();
+	if (secondToken.getTokenType() == LexicalTokenType::OPERATOR_ASSIGN) {
+		return this->parseAssign();
+	}
+
 	LexicalToken firstToken = this->peekNextToken();
+
+
 	if (firstToken.getTokenType() == LexicalTokenType::KEYWORD_CALL) {
 		return this->parseCall();
 	}
@@ -207,8 +214,25 @@ void SimpleParser::parseIf() {
 	// Add parsing logic for if statement
 }
 
-void SimpleParser::parseAssign() {
+std::shared_ptr<ASTNode> SimpleParser::parseAssign() {
 	// Add parsing logic for assignment
+	LexicalToken variable = this->getNextToken();
+	this->assertToken(variable, LexicalTokenType::NAME);
+	this->assertToken(this->getNextToken(), LexicalTokenType::OPERATOR_ASSIGN);
+
+	// Comment Start:
+	// To be replaced with parseExpr() and adding it as a child.
+	LexicalToken expr = this->getNextToken();
+	this->assertToken(expr, LexicalTokenType::INTEGER);
+	// Comment end
+
+	LexicalToken semicolon = this->getNextToken();
+	this->assertToken(semicolon, LexicalTokenType::SYMBOL_SEMICOLON);
+
+	// In the case of changing expr to parseExpr, make sure function signature also changes for expr type = std::shared_ptr<ASTNode>
+	AssignStmt assignStmt = AssignStmt(variable, expr, variable.getLine(), semicolon.getLine());
+
+	return assignStmt.buildTree();
 }
 
 void SimpleParser::parseCondExpr() {

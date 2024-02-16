@@ -6,6 +6,7 @@
 #include "CallStmt.h"
 #include "ReadStmt.h"
 #include "PrintStmt.h"
+#include "AssignStmt.h"
 #include "StmtList.h"
 #include "Procedure.h"
 #include "Program.h"
@@ -34,7 +35,7 @@ public:
 	std::shared_ptr<ASTNode> parseCall();
 	void parseWhile();
 	void parseIf();
-	void parseAssign();
+	std::shared_ptr<ASTNode> parseAssign();
 	void parseCondExpr();
 	void parseRelExpr();
 	void parseRelFactor();
