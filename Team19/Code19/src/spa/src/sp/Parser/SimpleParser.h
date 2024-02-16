@@ -3,6 +3,7 @@
 #include <vector>
 #include "sp/SPTokenizer/SPTokenizer.h"
 #include "sp/SPTokenizer/LexicalToken.h"
+#include "sp/SPTokenizer/FileProcessor.h"
 #include "CallStmt.h"
 #include "ReadStmt.h"
 #include "PrintStmt.h"
