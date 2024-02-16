@@ -53,9 +53,8 @@ TEST_CASE(" system tests for DesignExtractor", "[DesignExtractor::extract]") {
 
     ast1->addChild(std::move(ast3));
     ast1->addChild(std::move(ast5));
-
+    /*
     auto value2 = designExtractor.extractVariables();
-
     std::cout << "Extracted variables:" << std::endl;
     for (auto& var : value2) {
         std::cout << var << std::endl;
@@ -68,5 +67,5 @@ TEST_CASE(" system tests for DesignExtractor", "[DesignExtractor::extract]") {
     for (auto& var : value3) {
         std::cout << var << std::endl;
     }
-    std::cout << "end\n" << std::endl;
+    std::cout << "end\n" << std::endl;*/
 }

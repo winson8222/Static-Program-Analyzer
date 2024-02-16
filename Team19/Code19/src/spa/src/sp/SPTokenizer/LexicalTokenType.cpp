@@ -141,3 +141,10 @@ LexicalTokenType LexicalTokenTypeMapper::getTokenType(std::string str) {
 
     return LexicalTokenType::ERROR;
 }
+
+bool LexicalTokenTypeMapper::isKeyword(LexicalTokenType token) {
+    return token == LexicalTokenType::KEYWORD_PROCEDURE
+        || token == LexicalTokenType::KEYWORD_READ
+        || token == LexicalTokenType::KEYWORD_PRINT
+        || token == LexicalTokenType::KEYWORD_CALL;
+}

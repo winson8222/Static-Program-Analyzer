@@ -74,11 +74,7 @@ TEST_CASE("Test string representations of procedures", "[parseProcedure]") {
 	REQUIRE(tree_ptr->lineNumber == 1);
 	REQUIRE(tree_ptr->value == Utility::getASTNodeType(ASTNodeType::PROCEDURE));
 
-	std::cout << "\nPRINT START\n" << std::endl;
-
-	std::string content;
-
-	REQUIRE_NOTHROW(content = tree_ptr->toString());
+	std::string content = tree_ptr->toString();
 
 	std::string subcontent1 = "    Type: Call, Line Number: 2, Value: Call\n";
 	REQUIRE(content.find(subcontent1) != std::string::npos);
@@ -88,6 +84,4 @@ TEST_CASE("Test string representations of procedures", "[parseProcedure]") {
 
 	std::string subcontent3 = "Type: Procedure, Line Number: 1, Value: Procedure\n";
 	REQUIRE(content.find(subcontent3) != std::string::npos);
-
-	std::cout << "\nPRINT END\n" << std::endl;
 }
