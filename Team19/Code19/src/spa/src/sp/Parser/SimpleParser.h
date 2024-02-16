@@ -23,8 +23,9 @@ public:
 	int tokenIndex;
 	void assertToken(LexicalToken token, LexicalTokenType type) const;
 	bool hasTokensLeft() const;
-	LexicalToken peekToken();
-	LexicalToken getToken();
+	LexicalToken peekNextToken();
+	LexicalToken getNextToken();
+	LexicalToken peekNextNextToken();
 	std::shared_ptr<ASTNode> parseProcedure();
 	std::shared_ptr<ASTNode> parseStmtLst();
 	std::shared_ptr<ASTNode> parseStmt();

@@ -31,13 +31,13 @@ bool SimpleParser::hasTokensLeft() const {
 }
 
 // Gets token, without advancing the index.
-LexicalToken SimpleParser::peekToken() {
+LexicalToken SimpleParser::peekNextToken() {
 	if (this->hasTokensLeft()) {
 		LexicalToken token = this->tokenStream[this->tokenIndex];
 
 		if (token.getTokenType() == LexicalTokenType::WHITESPACE) {
 			this->tokenIndex++;
-			return peekToken();
+			return peekNextToken();
 		}
 
 		return token;
@@ -48,13 +48,13 @@ LexicalToken SimpleParser::peekToken() {
 }
 
 // Gets token, and advance the index to look for the next token.
-LexicalToken SimpleParser::getToken() {
+LexicalToken SimpleParser::getNextToken() {
 	if (this->hasTokensLeft()) {
 		LexicalToken token = this->tokenStream[this->tokenIndex];
 		this->tokenIndex++;
 
 		if (token.getTokenType() == LexicalTokenType::WHITESPACE) {
-			return getToken();
+			return getNextToken();
 		}
 
 		return token;
@@ -63,6 +63,26 @@ LexicalToken SimpleParser::getToken() {
 		return LexicalToken(LexicalTokenType::NULL_TOKEN);
 	}
 }
+
+// ai-gen start(gpt, 1, e)
+// Prompt: https://platform.openai.com/playground/p/qA4gXcRsT0cbjv8cZDNsfqSW?mode=chat
+LexicalToken SimpleParser::peekNextNextToken() {
+	// Store the current index
+	int originalIndex = this->tokenIndex;
+
+	// Skip potential whitespace and get the token
+	this->getNextToken();
+
+	// Check the token after the one just returned by getNextToken()
+	LexicalToken nextToken = this->peekNextToken();
+
+	// Reset the token index to its original value
+	this->tokenIndex = originalIndex;
+
+	// Return the peeked token
+	return nextToken;
+}
+// ai-gen end
 
 void SimpleParser::assertToken(LexicalToken token, LexicalTokenType type) const {
 	if (token.getTokenType() != type) {
@@ -75,17 +95,17 @@ std::shared_ptr<ASTNode> SimpleParser::parseProcedure() {
 		throw std::runtime_error("Error: SimpleParser::parseProcedure encounter empty statement.");
 	}
 
-	LexicalToken procedureKeyword = this->getToken();
+	LexicalToken procedureKeyword = this->getNextToken();
 	this->assertToken(procedureKeyword, LexicalTokenType::KEYWORD_PROCEDURE);
 
-	LexicalToken procedureName = this->getToken();
+	LexicalToken procedureName = this->getNextToken();
 	this->assertToken(procedureName, LexicalTokenType::NAME);
-	this->assertToken(this->getToken(), LexicalTokenType::SYMBOL_OPEN_BRACE);
+	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_OPEN_BRACE);
 
 	// Parse Statement Lists;
 	std::shared_ptr<ASTNode> statementList = this->parseStmtLst();
 
-	LexicalToken closeBrace = this->getToken();
+	LexicalToken closeBrace = this->getNextToken();
 	this->assertToken(closeBrace, LexicalTokenType::SYMBOL_CLOSE_BRACE);
 
 	Procedure procedure = Procedure(procedureKeyword.getLine(), closeBrace.getLine(), statementList);
@@ -95,12 +115,12 @@ std::shared_ptr<ASTNode> SimpleParser::parseProcedure() {
 std::shared_ptr<ASTNode> SimpleParser::parseStmtLst() {
 	// Parse every statement until we see a closing bracket.
 	std::vector<std::shared_ptr<ASTNode>> statements;
-	int firstLine = this->peekToken().getLine();
-	while (this->peekToken().getTokenType() != LexicalTokenType::SYMBOL_CLOSE_BRACE) {
+	int firstLine = this->peekNextToken().getLine();
+	while (this->peekNextToken().getTokenType() != LexicalTokenType::SYMBOL_CLOSE_BRACE) {
 		statements.push_back(this->parseStmt());
 	}
 
-	int lastLine = this->peekToken().getLine();
+	int lastLine = this->peekNextToken().getLine();
 
 	StmtList stmtList = StmtList(firstLine, lastLine, statements);
 
@@ -117,7 +137,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseStmt() {
 		throw std::runtime_error("Error: SimpleParser::parseStmt encounter empty statement.");
 	}
 
-	LexicalToken firstToken = this->peekToken();
+	LexicalToken firstToken = this->peekNextToken();
 	if (firstToken.getTokenType() == LexicalTokenType::KEYWORD_CALL) {
 		return this->parseCall();
 	}
@@ -134,13 +154,13 @@ std::shared_ptr<ASTNode> SimpleParser::parseStmt() {
 }
 
 std::shared_ptr<ASTNode> SimpleParser::parseRead() {
-	LexicalToken keyword = this->getToken();
+	LexicalToken keyword = this->getNextToken();
 	this->assertToken(keyword, LexicalTokenType::KEYWORD_READ);
 
-	LexicalToken variable = this->getToken();
+	LexicalToken variable = this->getNextToken();
 	this->assertToken(variable, LexicalTokenType::NAME);
 
-	LexicalToken semicolon = this->getToken();
+	LexicalToken semicolon = this->getNextToken();
 	this->assertToken(semicolon, LexicalTokenType::SYMBOL_SEMICOLON);
 
 	ReadStmt readStmt = ReadStmt(variable, keyword.getLine(), semicolon.getLine());
@@ -149,13 +169,13 @@ std::shared_ptr<ASTNode> SimpleParser::parseRead() {
 }
 
 std::shared_ptr<ASTNode> SimpleParser::parsePrint() {
-	LexicalToken keyword = this->getToken();
+	LexicalToken keyword = this->getNextToken();
 	this->assertToken(keyword, LexicalTokenType::KEYWORD_PRINT);
 
-	LexicalToken variable = this->getToken();
+	LexicalToken variable = this->getNextToken();
 	this->assertToken(variable, LexicalTokenType::NAME);
 
-	LexicalToken semicolon = this->getToken();
+	LexicalToken semicolon = this->getNextToken();
 	this->assertToken(semicolon, LexicalTokenType::SYMBOL_SEMICOLON);
 
 	PrintStmt printStmt = PrintStmt(variable, keyword.getLine(), semicolon.getLine());
@@ -165,13 +185,13 @@ std::shared_ptr<ASTNode> SimpleParser::parsePrint() {
 
 // To change to void later when building trees.
 std::shared_ptr<ASTNode> SimpleParser::parseCall() {
-	LexicalToken keyword = this->getToken();
+	LexicalToken keyword = this->getNextToken();
 	this->assertToken(keyword, LexicalTokenType::KEYWORD_CALL);
 
-	LexicalToken variable = this->getToken();
+	LexicalToken variable = this->getNextToken();
 	this->assertToken(variable, LexicalTokenType::NAME);
 
-	LexicalToken semicolon = this->getToken();
+	LexicalToken semicolon = this->getNextToken();
 	this->assertToken(semicolon, LexicalTokenType::SYMBOL_SEMICOLON);
 
 	CallStmt callStmt = CallStmt(variable, keyword.getLine(), semicolon.getLine());
