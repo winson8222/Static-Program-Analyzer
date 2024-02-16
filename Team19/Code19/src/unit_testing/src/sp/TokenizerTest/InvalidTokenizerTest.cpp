@@ -16,8 +16,4 @@ TEST_CASE("Tokenizer invalid cases", "[readFileToString]") {
     std::string actualContent;
     REQUIRE_NOTHROW(actualContent = FileProcessor::readFileToString(testFileName));
     auto arr = SPTokenizer::tokenize(actualContent);
-
-    for (auto token : arr) {
-		std::cout << LexicalTokenTypeMapper::tokenToStringMap.find(token.getTokenType())->second << std::endl;
-	}
 }

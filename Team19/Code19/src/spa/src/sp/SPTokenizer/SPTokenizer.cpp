@@ -35,35 +35,21 @@ std::vector<LexicalToken> SPTokenizer::tokenize(const std::string& content) {
 			bool matchedSomething = false;
 			for (auto const& rule : LexicalTokenTypeMapper::tokenToRegexPairs) {
 				std::smatch match;
-				if (std::regex_search(line, match, std::regex(rule.second))) {
-
-					LexicalTokenType type = rule.first;
-
-					if (isPreviousTokenKeyword && (LexicalTokenTypeMapper::isKeyword(type) || type == LexicalTokenType::NAME)) {
-						type = LexicalTokenType::NAME;
-						isPreviousTokenKeyword = false;
-					}
-					else {
-						if (LexicalTokenTypeMapper::isKeyword(type)) {
-							isPreviousTokenKeyword = true;
-						}
-					}
-
-					LexicalToken t(type, lineNumber, (int)(originalLine.size() - line.size()), match.str());
-
-
-
-					if (rule.first == LexicalTokenType::NAME) {
-						assertValidName(match.str());
-					}
-					if (rule.first != LexicalTokenType::WHITESPACE) {
-						results.push_back(t);
-					}
-
-					matchedSomething = true;
-					line = line.substr(match.str().size());
-					break;
+				if (!std::regex_search(line, match, std::regex(rule.second))) {
+					continue;
 				}
+				LexicalTokenType type = rule.first;
+
+				handleKeywordConflict(type, isPreviousTokenKeyword);
+				LexicalToken t(type, lineNumber, (int)(originalLine.size() - line.size()), match.str());
+				assertValidToken(type, match.str());
+
+				if (rule.first != LexicalTokenType::WHITESPACE) {
+					results.push_back(t);
+				}
+				matchedSomething = true;
+				line = line.substr(match.str().size());
+				break;
 			}
 			if (!matchedSomething) {
 				throw std::runtime_error("Error: Invalid SIMPLE syntax.");
@@ -78,10 +64,25 @@ std::vector<LexicalToken> SPTokenizer::tokenize(const std::string& content) {
 	return results;
 }
 
-void SPTokenizer::assertValidName(const std::string& name) {
+void SPTokenizer::assertValidToken(LexicalTokenType type, const std::string& name) {
+	if (type != LexicalTokenType::NAME) {
+		return;
+	}
 	std::string pattern = "([a-zA-Z][a-zA-Z0-9]*)"; // Pattern to match an alphanumeric string with the first character being a letter
 	std::regex regexPattern(pattern);
 	if (!std::regex_match(name, regexPattern)) {
 		throw std::runtime_error("ERROR: Name not valid " + name);
+	}
+}
+
+void SPTokenizer::handleKeywordConflict(LexicalTokenType& type, bool& isPreviousTokenKeyword) {
+	if (isPreviousTokenKeyword && (LexicalTokenTypeMapper::isKeyword(type) || type == LexicalTokenType::NAME)) {
+		type = LexicalTokenType::NAME;
+		isPreviousTokenKeyword = false;
+	}
+	else {
+		if (LexicalTokenTypeMapper::isKeyword(type)) {
+			isPreviousTokenKeyword = true;
+		}
 	}
 }
