@@ -1,4 +1,4 @@
-#include "sp/SPTokenizer/Tokenizer.h"
+#include "sp/SPTokenizer/SPTokenizer.h"
 #include "LexicalToken.h"
 #include <iostream>
 #include <fstream>
