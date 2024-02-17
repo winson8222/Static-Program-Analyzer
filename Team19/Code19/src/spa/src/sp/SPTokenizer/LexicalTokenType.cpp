@@ -116,8 +116,9 @@ const std::vector<std::pair<LexicalTokenType, std::string>> LexicalTokenTypeMapp
     {LexicalTokenType::OPERATOR_MODULO, "^(%)"},
 
     // Other matches
+    // "^([a-zA-Z]\\w*)\\b"
     {LexicalTokenType::NAME, "^([a-zA-Z]\\w*)\\b"},
-    {LexicalTokenType::INTEGER,  "^(\\d+)"},
+    {LexicalTokenType::INTEGER,  "^(\\d+\\b)"},
     {LexicalTokenType::WHITESPACE, "^(\\s+)"}
 };
 
@@ -139,4 +140,11 @@ LexicalTokenType LexicalTokenTypeMapper::getTokenType(std::string str) {
     }
 
     return LexicalTokenType::ERROR;
+}
+
+bool LexicalTokenTypeMapper::isKeyword(LexicalTokenType token) {
+    return token == LexicalTokenType::KEYWORD_PROCEDURE
+        || token == LexicalTokenType::KEYWORD_READ
+        || token == LexicalTokenType::KEYWORD_PRINT
+        || token == LexicalTokenType::KEYWORD_CALL;
 }

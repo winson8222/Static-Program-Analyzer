@@ -11,8 +11,6 @@
 
 
 TEST_CASE("Unit tests for Statement Extractor", "[DesignExtractor::extract]") {
-    std::cout << "DESIGN EXTRACTOR STATEMENT TESTS\n\n" << std::endl;
-
     PKBManager pkbManager;
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager.getPKBWriterManager();
 
@@ -66,7 +64,7 @@ TEST_CASE("Unit tests for Statement Extractor", "[DesignExtractor::extract]") {
     ast1->addChild(std::move(std::make_shared<ASTNode>(ASTNodeType::PROCEDURE, 7, "procedure")));
     designExtractor.extractAll();
     std::unordered_set<int> extractedStatements = designExtractor.extractStatements();
-    std::unordered_set<int> expectedStatements = {1, 2, 3, 4, 5, 6};
+    std::unordered_set<int> expectedStatements = { 1, 2, 3, 4, 5, 6 };
 
     REQUIRE(extractedStatements.size() == 6);
     REQUIRE(extractedStatements == expectedStatements);

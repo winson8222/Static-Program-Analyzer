@@ -1,4 +1,4 @@
-#include "sp/Tokenizer.h"
+#include "sp/SPTokenizer/SPTokenizer.h"
 #include "sp/SourceProcessor.h"
 #include "catch.hpp"
 #include <iostream>
@@ -6,8 +6,7 @@
 #include <filesystem>
 #include <vector>
 
-TEST_CASE("Test parser of SP on multiple procedures", "[SourceProcessor]") {
-    std::cout << "\n\nSP-PKB-WORKFLOW-TEST STARTS\n\n\n" << std::endl;
+TEST_CASE("Test parser of SP on multipgole procedures", "[SourceProcessor]") {
     const std::string testFileName = "../../../../../tests/sp/ParserTest/Program1.txt";
 
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
@@ -31,12 +30,10 @@ TEST_CASE("Test parser of SP on multiple procedures", "[SourceProcessor]") {
     std::unordered_set<int> expectedValues3 = {2, 6, 10};
     REQUIRE(values3 == expectedValues3);
 
-    std::cout << "SP-PKB-WORKFLOW-TEST ENDS\n\n\n" << std::endl;
 }
 
 
 TEST_CASE("Test parser of SP on one procedures and multiple statements", "[SourceProcessor]") {
-    std::cout << "\n\nSP-PKB-WORKFLOW-TEST STARTS\n\n\n" << std::endl;
     const std::string testFileName = "../../../../../tests/sp/ParserTest/Procedure1.txt";
 
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
@@ -58,6 +55,4 @@ TEST_CASE("Test parser of SP on one procedures and multiple statements", "[Sourc
     auto values3 = statementReader->getAllStatements();
     std::unordered_set<int> expectedValues3 = { 2, 3, 4 };
     REQUIRE(values3 == expectedValues3);
-
-    std::cout << "SP-PKB-WORKFLOW-TEST ENDS\n\n\n" << std::endl;
 }

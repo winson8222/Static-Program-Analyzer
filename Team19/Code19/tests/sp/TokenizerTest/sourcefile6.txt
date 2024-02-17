@@ -1,0 +1,4 @@
+procedure procedure {}
+call call;
+read read;
+print print;

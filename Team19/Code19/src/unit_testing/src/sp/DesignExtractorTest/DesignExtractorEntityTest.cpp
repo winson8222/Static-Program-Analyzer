@@ -10,9 +10,7 @@
 #include <vector>
 
 
-TEST_CASE("Unit tests for Entity Extractor", "[DesignExtractor::extract]") {
-    std::cout << "DESIGN EXTRACTOR ENTITY TESTS\n\n" << std::endl;
-
+TEST_CASE(" tests for Entity Extractor", "[DesignExtractor::extract]") {
     PKBManager pkbManager;
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager.getPKBWriterManager();
 

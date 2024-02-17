@@ -10,7 +10,7 @@
 #include <vector>
 
 
-TEST_CASE("Basic system tests for DesignExtractor", "[DesignExtractor::extract]") {
+TEST_CASE(" system tests for DesignExtractor", "[DesignExtractor::extract]") {
     const std::string testFileName = "../../../../../tests/sp/TokenizerTest/sourcefile1.txt";
     REQUIRE(std::filesystem::exists(testFileName));
 
@@ -53,13 +53,12 @@ TEST_CASE("Basic system tests for DesignExtractor", "[DesignExtractor::extract]"
 
     ast1->addChild(std::move(ast3));
     ast1->addChild(std::move(ast5));
-
+    /*
     auto value2 = designExtractor.extractVariables();
-
-    std::cout << "Extracted variables:" << std::endl; 
+    std::cout << "Extracted variables:" << std::endl;
     for (auto& var : value2) {
-		std::cout << var << std::endl;
-	}
+        std::cout << var << std::endl;
+    }
     std::cout << "end\n" << std::endl;
 
     auto value3 = designExtractor.extractConstants();
@@ -68,5 +67,5 @@ TEST_CASE("Basic system tests for DesignExtractor", "[DesignExtractor::extract]"
     for (auto& var : value3) {
         std::cout << var << std::endl;
     }
-    std::cout << "end\n" << std::endl;
+    std::cout << "end\n" << std::endl;*/
 }
