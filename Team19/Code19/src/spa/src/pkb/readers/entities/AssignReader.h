@@ -2,6 +2,7 @@
 
 #include "pkb/stores/entities/IEntityReader.h"
 #include "pkb/stores/entities/types/AssignStore.h"
+#include <memory>
 
 class AssignReader: public IEntityReader<int> {
 private:
