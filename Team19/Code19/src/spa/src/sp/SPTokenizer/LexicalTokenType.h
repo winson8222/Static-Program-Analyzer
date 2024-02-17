@@ -64,7 +64,7 @@ public:
     /**
     * @brief Convert a token to its regex representations
     */
-    static const std::vector<std::pair<LexicalTokenType, std::string>> tokenToRegexPairs;
+    static const std::unordered_map<LexicalTokenType, std::string> tokenToRegexPairs;
 
     /**
     * @brief Check whether a token is a keyword
