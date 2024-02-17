@@ -31,7 +31,11 @@ public:
 	*/
 	LexicalToken(LexicalTokenType type);
 	LexicalToken() = default;
+<<<<<<< HEAD
 	bool isType(LexicalTokenType type);
+=======
+
+>>>>>>> ad4a5eef481e375aef92d14540687bd1e6ff0d87
 	const LexicalToken& getNullToken();
 	LexicalTokenType getTokenType();
 	int getLinePosition();

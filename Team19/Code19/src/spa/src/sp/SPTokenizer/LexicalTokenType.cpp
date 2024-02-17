@@ -82,7 +82,7 @@ const std::unordered_map<LexicalTokenType, std::string> LexicalTokenTypeMapper::
     {LexicalTokenType::NEW_LINE, "NEWLINES"}
 };
 
-const std::unordered_map<LexicalTokenType, std::string> LexicalTokenTypeMapper::tokenToRegexPairs = {
+const std::vector<std::pair<LexicalTokenType, std::string>> LexicalTokenTypeMapper::tokenToRegexPairs = {
     // Keywords
     {LexicalTokenType::KEYWORD_IF, "^(if\\b)"},
     {LexicalTokenType::KEYWORD_THEN, "^(then\\b)"},
