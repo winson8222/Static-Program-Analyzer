@@ -59,7 +59,7 @@ public:
     /**
     * @brief Convert a token type to a string
     */
-    static const std::vector<std::pair<LexicalTokenType, std::string>> tokenToStringMap;
+    static const std::unordered_map<LexicalTokenType, std::string> tokenToStringMap;
 
     /**
     * @brief Convert a token to its regex representations
