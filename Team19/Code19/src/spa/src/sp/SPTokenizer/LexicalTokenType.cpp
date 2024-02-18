@@ -117,7 +117,7 @@ const std::vector<std::pair<LexicalTokenType, std::string>> LexicalTokenTypeMapp
 
     // Other matches
     // "^([a-zA-Z]\\w*)\\b"
-    {LexicalTokenType::NAME, "^([a-zA-Z]\\w*)\\b"},
+    {LexicalTokenType::NAME, "^([a-zA-Z][a-zA-Z0-9]*)\\b"},
     {LexicalTokenType::INTEGER,  "^(\\d+\\b)"},
     {LexicalTokenType::WHITESPACE, "^(\\s+)"}
 };
@@ -156,4 +156,69 @@ const std::string LexicalTokenTypeMapper::printType(LexicalTokenType type) {
     } 
 
     return "ERROR";
+}
+
+const bool LexicalTokenTypeMapper::isType(LexicalTokenType t1, LexicalTokenType t2) {
+    std::unordered_map<LexicalTokenType, std::vector<LexicalTokenType>> lexicalTokenTypes = {
+        // Symbols
+        {LexicalTokenType::SYMBOL_OPEN_BRACE, {LexicalTokenType::SYMBOL_OPEN_BRACE}},
+        {LexicalTokenType::SYMBOL_CLOSE_BRACE, {LexicalTokenType::SYMBOL_CLOSE_BRACE}},
+        {LexicalTokenType::SYMBOL_OPEN_PAREN, {LexicalTokenType::SYMBOL_OPEN_PAREN}},
+        {LexicalTokenType::SYMBOL_CLOSE_PAREN, {LexicalTokenType::SYMBOL_CLOSE_PAREN}},
+        {LexicalTokenType::SYMBOL_SEMICOLON, {LexicalTokenType::SYMBOL_SEMICOLON}},
+
+        // Operators
+        {LexicalTokenType::OPERATOR_ASSIGN, {LexicalTokenType::OPERATOR_ASSIGN}},
+        {LexicalTokenType::OPERATOR_NOT, {LexicalTokenType::OPERATOR_NOT}},
+        {LexicalTokenType::OPERATOR_AND, {LexicalTokenType::OPERATOR_CONDITIONAL, LexicalTokenType::OPERATOR_AND}},
+        {LexicalTokenType::OPERATOR_OR, {LexicalTokenType::OPERATOR_CONDITIONAL, LexicalTokenType::OPERATOR_OR}},
+        {LexicalTokenType::OPERATOR_GREATER, {LexicalTokenType::OPERATOR_RELATIONAL, LexicalTokenType::OPERATOR_GREATER}},
+        {LexicalTokenType::OPERATOR_GREATER_EQUAL, {LexicalTokenType::OPERATOR_RELATIONAL, LexicalTokenType::OPERATOR_GREATER_EQUAL}},
+        {LexicalTokenType::OPERATOR_LESS, {LexicalTokenType::OPERATOR_RELATIONAL, LexicalTokenType::OPERATOR_LESS}},
+        {LexicalTokenType::OPERATOR_LESS_EQUAL, {LexicalTokenType::OPERATOR_RELATIONAL, LexicalTokenType::OPERATOR_LESS_EQUAL}},
+        {LexicalTokenType::OPERATOR_IS_EQUAL, {LexicalTokenType::OPERATOR_RELATIONAL, LexicalTokenType::OPERATOR_IS_EQUAL}},
+        {LexicalTokenType::OPERATOR_NOT_EQUAL, {LexicalTokenType::OPERATOR_RELATIONAL, LexicalTokenType::OPERATOR_NOT_EQUAL}},
+        {LexicalTokenType::OPERATOR_PLUS, {LexicalTokenType::OPERATOR_EXPR, LexicalTokenType::OPERATOR_PLUS}},
+        {LexicalTokenType::OPERATOR_MINUS, {LexicalTokenType::OPERATOR_EXPR, LexicalTokenType::OPERATOR_MINUS}},
+        {LexicalTokenType::OPERATOR_MULTIPLY, {LexicalTokenType::OPERATOR_TERM, LexicalTokenType::OPERATOR_MULTIPLY}},
+        {LexicalTokenType::OPERATOR_DIVIDE, {LexicalTokenType::OPERATOR_TERM, LexicalTokenType::OPERATOR_DIVIDE}},
+        {LexicalTokenType::OPERATOR_MODULO, {LexicalTokenType::OPERATOR_TERM, LexicalTokenType::OPERATOR_MODULO}},
+
+        // Keywords
+        {LexicalTokenType::KEYWORD_PROCEDURE,{LexicalTokenType::KEYWORD_PROCEDURE}},
+        {LexicalTokenType::KEYWORD_WHILE,{LexicalTokenType::KEYWORD_WHILE}},
+        {LexicalTokenType::KEYWORD_IF,{LexicalTokenType::KEYWORD_IF}},
+        {LexicalTokenType::KEYWORD_THEN,{LexicalTokenType::KEYWORD_THEN}},
+        {LexicalTokenType::KEYWORD_ELSE,{LexicalTokenType::KEYWORD_ELSE}},
+        {LexicalTokenType::KEYWORD_READ,{LexicalTokenType::KEYWORD_READ}},
+        {LexicalTokenType::KEYWORD_CALL,{LexicalTokenType::KEYWORD_CALL}},
+        {LexicalTokenType::KEYWORD_PRINT,{LexicalTokenType::KEYWORD_PRINT}},
+
+        // General Tokens
+        {LexicalTokenType::INTEGER,{LexicalTokenType::INTEGER}},
+        {LexicalTokenType::NAME,{LexicalTokenType::NAME}},
+        {LexicalTokenType::WHITESPACE,{LexicalTokenType::WHITESPACE}},
+        {LexicalTokenType::NEW_LINE,{LexicalTokenType::NEW_LINE}},
+
+        // Error Token and Null Token
+        {LexicalTokenType::ERROR,{LexicalTokenType::ERROR}},
+        {LexicalTokenType::NULL_TOKEN,{LexicalTokenType::NULL_TOKEN}}
+    };
+
+    auto search = lexicalTokenTypes.find(t1);
+
+    if (search != lexicalTokenTypes.end()) {
+        // Key exists, search the TokenType in the vector
+        auto& vec = search->second;
+
+        if (std::find(vec.begin(), vec.end(), t2) != vec.end()) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    else {
+        return false;
+    }
 }
