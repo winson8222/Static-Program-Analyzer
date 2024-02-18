@@ -11,9 +11,6 @@ public:
         : root(root), pkbWriterManager(pkbWriterManager) {}
 
     void extractAll() {
-        // Example: Extracting variables using VariableExtractorVisitor
-       
-        // Use the extracted data to populate PKB or perform other actions
     }
 
 private:

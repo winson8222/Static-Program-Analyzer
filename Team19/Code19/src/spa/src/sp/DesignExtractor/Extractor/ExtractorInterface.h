@@ -1,3 +1,7 @@
+#include <memory>
+#include "sp/AST/ASTNode.h"
+#include "pkb/PKBWriterManager.h"
+
 class AssignNode;
 class ReadNode;
 class PrintNode;
