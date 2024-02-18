@@ -233,8 +233,51 @@ std::shared_ptr<ASTNode> SimpleParser::parseAssign() {
 	return assignStmt.buildTree();
 }
 
-void SimpleParser::parseCondExpr() {
-	// Add parsing logic for condition expression
+std::shared_ptr<ASTNode> SimpleParser::parseCondExpr() {
+	LexicalToken firstToken = this->peekNextToken();
+
+	if (firstToken.isType(LexicalTokenType::OPERATOR_NOT)) {
+		this->getNextToken(); //consume NOT operator
+		this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_OPEN_PAREN);
+
+		std::shared_ptr<ASTNode> condExpr = this->parseCondExpr(); // Recursive parsing of cond_expr
+
+		this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_PAREN);
+
+		// Pass firstToken (NOT operator) and condExpr (inner condition) to NotOp constructor, and its line numbers 
+		NotOp notOp = NotOp(firstToken, condExpr, firstToken.getLine(), this->peekNextToken().getLine());
+
+		return notOp.buildTree();
+	}
+
+	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_OPEN_PAREN);
+
+	std::shared_ptr<ASTNode> condExpr1 = this->parseCondExpr(); // Recursive parsing of cond_expr1
+	LexicalToken logicalOperator = this->getNextToken(); // Retrieve logical operator (AND, OR)
+
+	// Must be SYMBOL and value must be either && or ||
+	if (!logicalOperator.isType(LexicalTokenType::SYMBOL) ||
+		(logicalOperator.getValue() != "&&" && logicalOperator.getValue() != "||")) {
+		throw std::runtime_error("Expected && or || but got " + logicalOperator.getValue());
+	}
+
+	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_OPEN_PAREN);
+
+	std::shared_ptr<ASTNode> condExpr2 = this->parseCondExpr(); // Recursive parsing of cond_expr2
+
+	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_PAREN);
+
+	if (logicalOperator.getValue() == "&&") {
+		AndOp andOp = AndOp(logicalOperator, condExpr1, condExpr2, firstToken.getLine(), this->peekNextToken().getLine());
+		return andOp.buildTree();
+	}
+	else if (logicalOperator.getValue() == "||") {
+		OrOp orOp = OrOp(logicalOperator, condExpr1, condExpr2, firstToken.getLine(), this->peekNextToken().getLine());
+		return orOp.buildTree();
+	}
+	
+// Default case should not be reachable
+	throw std::runtime_error("Unexpected logical operator: " + logicalOperator.getValue());
 }
 
 void SimpleParser::parseRelExpr() {

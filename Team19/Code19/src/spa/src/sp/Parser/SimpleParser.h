@@ -36,7 +36,7 @@ private:
 	void parseWhile();
 	void parseIf();
 	std::shared_ptr<ASTNode> parseAssign();
-	void parseCondExpr();
+	std::shared_ptr<ASTNode> parseCondExpr();
 	void parseRelExpr();
 	void parseRelFactor();
 	void parseExpr();
