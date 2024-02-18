@@ -127,15 +127,11 @@ std::shared_ptr<ASTNode> SimpleParser::parseStmtLst() {
 }
 
 std::shared_ptr<ASTNode> SimpleParser::parseStmt() {
-	// Add parsing logic for statement
-	// If next token is '=', we are assigning. Call assign.
-	// Then, Check keywords read/print/call.
-	// Then, check keywords while/if.
-	// If dont have keyword, this is an invalid statement.
 	if (!this->hasTokensLeft()) {
 		throw std::runtime_error("Error: SimpleParser::parseStmt encounter empty statement.");
 	}
 
+	// If next next token is '=', we are assigning. Call assign.
 	LexicalToken secondToken = this->peekNextNextToken();
 	if (secondToken.isType(LexicalTokenType::OPERATOR_ASSIGN)) {
 		return this->parseAssign();
@@ -144,6 +140,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseStmt() {
 	LexicalToken firstToken = this->peekNextToken();
 
 
+	// Then, Check keywords read/print/call.
 	if (firstToken.isType(LexicalTokenType::KEYWORD_CALL)) {
 		return this->parseCall();
 	}
@@ -156,7 +153,18 @@ std::shared_ptr<ASTNode> SimpleParser::parseStmt() {
 		return this->parseRead();
 	}
 
-	throw std::runtime_error("Error: SimpleParser only accepts READ,CALL,PRINT statements now.");
+	// Then, check keywords while/if.
+	if (firstToken.isType(LexicalTokenType::KEYWORD_IF)) {
+		return this->parseIf();
+	}
+
+	if (firstToken.isType(LexicalTokenType::KEYWORD_WHILE)) {
+		return this->parseWhile();
+	}
+
+
+	// If dont have keyword, this is an invalid statement.
+	throw std::runtime_error("Error: Invalid Statement.");
 }
 
 std::shared_ptr<ASTNode> SimpleParser::parseRead() {
@@ -241,6 +249,8 @@ std::shared_ptr<ASTNode> SimpleParser::parseIf() {
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_OPEN_BRACE);
 	std::shared_ptr<ASTNode> thenStmtLst = this->parseStmtLst();
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_BRACE);
+
+	this->assertToken(this->getNextToken(), LexicalTokenType::KEYWORD_ELSE);
 
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_OPEN_BRACE);
 	std::shared_ptr<ASTNode> elseStmtLst = this->parseStmtLst();
