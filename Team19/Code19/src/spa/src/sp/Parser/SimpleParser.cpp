@@ -288,19 +288,44 @@ std::shared_ptr<ASTNode> SimpleParser::parseCondExpr() {
 	throw std::runtime_error("Unexpected logical operator: " + logicalOperator.getValue());
 }
 
+//  rel_factor : var_name | const_value | expr
 std::shared_ptr<ASTNode> SimpleParser::parseRelExpr() {
-	std::shared_ptr<ASTNode> relFactor1 = this->parseRelFactor();
+	std::shared_ptr<ASTNode> left = this->parseRelFactor();
+
 	LexicalToken operatorToken = this->getNextToken();
-	std::shared_ptr<ASTNode> relFactor2 = this->parseRelFactor();
+	this->assertToken(operatorToken, LexicalTokenType::OPERATOR_RELATIONAL);
 
-	RelExpr relExpr = RelExpr(relFactor1, relFactor2, operatorToken,
-		relFactor1->getFirstLine(), relFactor2->getLastLine());
+	std::shared_ptr<ASTNode> right = this->parseRelFactor();
 
-	return relExpr.buildTree();
+	std::shared_ptr<ASTNode> operationNode;
+
+	if (operatorToken.isType(LexicalTokenType::OPERATOR_GREATER)) {
+		operationNode = std::make_shared<ASTNode>(ASTNodeType::GREATER, operatorToken.getLine(), Utility::getASTNodeType(ASTNodeType::GREATER));
+	}
+	else if (operatorToken.isType(LexicalTokenType::OPERATOR_GREATER_EQUAL)) {
+		operationNode = std::make_shared<ASTNode>(ASTNodeType::GREATER_OR_EQUAL, operatorToken.getLine(), Utility::getASTNodeType(ASTNodeType::GREATER_OR_EQUAL));
+	}
+	else if (operatorToken.isType(LexicalTokenType::OPERATOR_LESS)) {
+		operationNode = std::make_shared<ASTNode>(ASTNodeType::LESSER, operatorToken.getLine(), Utility::getASTNodeType(ASTNodeType::LESSER));
+	}
+	else if (operatorToken.isType(LexicalTokenType::OPERATOR_LESS_EQUAL)) {
+		operationNode = std::make_shared<ASTNode>(ASTNodeType::LESSER_OR_EQUAL, operatorToken.getLine(), Utility::getASTNodeType(ASTNodeType::LESSER_OR_EQUAL));
+	}
+	else if (operatorToken.isType(LexicalTokenType::OPERATOR_IS_EQUAL)) {
+		operationNode = std::make_shared<ASTNode>(ASTNodeType::EQUAL, operatorToken.getLine(), Utility::getASTNodeType(ASTNodeType::EQUAL));
+	}
+	else if (operatorToken.isType(LexicalTokenType::OPERATOR_NOT_EQUAL)) {
+		operationNode = std::make_shared<ASTNode>(ASTNodeType::NOT_EQUAL, operatorToken.getLine(), Utility::getASTNodeType(ASTNodeType::NOT_EQUAL));
+	}
+
+	operationNode->addChild(left);
+	operationNode->addChild(right);
+
+	return operationNode;
 }
 
 std::shared_ptr<ASTNode> SimpleParser::parseRelFactor() {
-	LexicalToken nextToken = this->peekNextToken();
+	/*LexicalToken nextToken = this->peekNextToken();
 
 	if (nextToken.isType(LexicalTokenType::NAME)) {
 		return parseVarName();
@@ -308,9 +333,9 @@ std::shared_ptr<ASTNode> SimpleParser::parseRelFactor() {
 	else if (nextToken.isType(LexicalTokenType::INTEGER)) {
 		return parseConstValue();
 	}
-	else {
+	else {*/
 		return parseExpr();
-	}
+	//}
 }
 
 // ai-gen start(gpt,1,e)
