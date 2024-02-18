@@ -171,45 +171,51 @@ std::shared_ptr<ASTNode> SimpleParser::parseRead() {
 	LexicalToken keyword = this->getNextToken();
 	this->assertToken(keyword, LexicalTokenType::KEYWORD_READ);
 
-	LexicalToken variable = this->getNextToken();
-	this->assertToken(variable, LexicalTokenType::NAME);
+	std::shared_ptr<ASTNode> variable = this->parseVarName();
 
-	LexicalToken semicolon = this->getNextToken();
-	this->assertToken(semicolon, LexicalTokenType::SYMBOL_SEMICOLON);
+	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_SEMICOLON);
 
-	ReadStmt readStmt = ReadStmt(variable, keyword.getLine(), semicolon.getLine());
+	std::shared_ptr<ASTNode> readTree = std::make_shared<ASTNode>(
+		ASTNodeType::READ, keyword.getLine(), Utility::getASTNodeType(ASTNodeType::READ)
+	);
 
-	return readStmt.buildTree();
+	readTree->addChild(variable);
+
+	return readTree;
 }
 
 std::shared_ptr<ASTNode> SimpleParser::parsePrint() {
 	LexicalToken keyword = this->getNextToken();
 	this->assertToken(keyword, LexicalTokenType::KEYWORD_PRINT);
 
-	LexicalToken variable = this->getNextToken();
-	this->assertToken(variable, LexicalTokenType::NAME);
+	std::shared_ptr<ASTNode> variable = this->parseVarName();
 
-	LexicalToken semicolon = this->getNextToken();
-	this->assertToken(semicolon, LexicalTokenType::SYMBOL_SEMICOLON);
+	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_SEMICOLON);
 
-	PrintStmt printStmt = PrintStmt(variable, keyword.getLine(), semicolon.getLine());
+	std::shared_ptr<ASTNode> printTree = std::make_shared<ASTNode>(
+		ASTNodeType::PRINT, keyword.getLine(), Utility::getASTNodeType(ASTNodeType::PRINT)
+	);
 
-	return printStmt.buildTree();
+	printTree->addChild(variable);
+
+	return printTree;
 }
 
 std::shared_ptr<ASTNode> SimpleParser::parseCall() {
 	LexicalToken keyword = this->getNextToken();
 	this->assertToken(keyword, LexicalTokenType::KEYWORD_CALL);
 
-	LexicalToken variable = this->getNextToken();
-	this->assertToken(variable, LexicalTokenType::NAME);
+	std::shared_ptr<ASTNode> variable = this->parseVarName();
 
-	LexicalToken semicolon = this->getNextToken();
-	this->assertToken(semicolon, LexicalTokenType::SYMBOL_SEMICOLON);
+	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_SEMICOLON);
 
-	CallStmt callStmt = CallStmt(variable, keyword.getLine(), semicolon.getLine());
+	std::shared_ptr<ASTNode> callTree = std::make_shared<ASTNode>(
+		ASTNodeType::CALL, keyword.getLine(), Utility::getASTNodeType(ASTNodeType::CALL)
+	);
 
-	return callStmt.buildTree();
+	callTree->addChild(variable);
+
+	return callTree;
 }
 
 // ‘while’ ‘(’ cond_expr ‘)’  ‘{‘ stmtLst ‘}’
