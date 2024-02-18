@@ -244,48 +244,46 @@ std::shared_ptr<ASTNode> SimpleParser::parseCondExpr() {
 		return this->parseRelExpr();
 	}
 
+	std::shared_ptr<ASTNode> operationNode;
+	// If of form ‘!’ ‘(’ cond_expr ‘)’.
 	if (firstToken.isType(LexicalTokenType::OPERATOR_NOT)) {
-		this->getNextToken(); //consume NOT operator
+		this->assertToken(this->getNextToken(), LexicalTokenType::OPERATOR_NOT);
 		this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_OPEN_PAREN);
 
 		std::shared_ptr<ASTNode> condExpr = this->parseCondExpr(); // Recursive parsing of cond_expr
 
 		this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_PAREN);
 
-		// Pass firstToken (NOT operator) and condExpr (inner condition) to NotOp constructor, and its line numbers 
-		NotOp notOp = NotOp(firstToken, condExpr, firstToken.getLine(), this->peekNextToken().getLine());
+		operationNode = std::make_shared<ASTNode>(ASTNodeType::NOT, firstToken.getLine(), Utility::getASTNodeType(ASTNodeType::NOT));
+		operationNode->addChild(condExpr);
 
-		return notOp.buildTree();
+		return operationNode;
 	}
 
+	// If of form  ‘(’ cond_expr ‘)’ ‘&&’ ‘(’ cond_expr ‘)’ OR ‘(’ cond_expr ‘)’ ‘||’ ‘(’ cond_expr ‘)’
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_OPEN_PAREN);
+	std::shared_ptr<ASTNode> left = this->parseCondExpr(); 
+	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_PAREN); 
 
-	std::shared_ptr<ASTNode> condExpr1 = this->parseCondExpr(); // Recursive parsing of cond_expr1
-	LexicalToken logicalOperator = this->getNextToken(); // Retrieve logical operator (AND, OR)
-
-	// Must be SYMBOL and value must be either && or ||
-	if (!logicalOperator.isType(LexicalTokenType::SYMBOL) ||
-		(logicalOperator.getValue() != "&&" && logicalOperator.getValue() != "||")) {
-		throw std::runtime_error("Expected && or || but got " + logicalOperator.getValue());
-	}
+	// Retrieve logical operator (AND, OR)
+	LexicalToken logicalOperator = this->getNextToken(); 
+	this->assertToken(logicalOperator, LexicalTokenType::OPERATOR_CONDITIONAL);
 
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_OPEN_PAREN);
-
-	std::shared_ptr<ASTNode> condExpr2 = this->parseCondExpr(); // Recursive parsing of cond_expr2
-
+	std::shared_ptr<ASTNode> right = this->parseCondExpr(); 
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_PAREN);
 
-	if (logicalOperator.getValue() == "&&") {
-		AndOp andOp = AndOp(logicalOperator, condExpr1, condExpr2, firstToken.getLine(), this->peekNextToken().getLine());
-		return andOp.buildTree();
+	if (logicalOperator.isType(LexicalTokenType::OPERATOR_AND)) {
+		operationNode = std::make_shared<ASTNode>(ASTNodeType::AND, logicalOperator.getLine(), Utility::getASTNodeType(ASTNodeType::AND));
 	}
-	else if (logicalOperator.getValue() == "||") {
-		OrOp orOp = OrOp(logicalOperator, condExpr1, condExpr2, firstToken.getLine(), this->peekNextToken().getLine());
-		return orOp.buildTree();
+	else if (logicalOperator.isType(LexicalTokenType::OPERATOR_OR)) {
+		operationNode = std::make_shared<ASTNode>(ASTNodeType::OR, logicalOperator.getLine(), Utility::getASTNodeType(ASTNodeType::OR));
 	}
 
-	// Default case should not be reachable
-	throw std::runtime_error("Unexpected logical operator: " + logicalOperator.getValue());
+	operationNode->addChild(left);
+	operationNode->addChild(right);
+
+	return operationNode;
 }
 
 //  rel_factor : var_name | const_value | expr
@@ -325,17 +323,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseRelExpr() {
 }
 
 std::shared_ptr<ASTNode> SimpleParser::parseRelFactor() {
-	/*LexicalToken nextToken = this->peekNextToken();
-
-	if (nextToken.isType(LexicalTokenType::NAME)) {
-		return parseVarName();
-	}
-	else if (nextToken.isType(LexicalTokenType::INTEGER)) {
-		return parseConstValue();
-	}
-	else {*/
-		return parseExpr();
-	//}
+	return parseExpr();
 }
 
 // ai-gen start(gpt,1,e)
@@ -345,7 +333,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseExpr() {
 
 	LexicalToken operation = peekNextToken();
 
-	while (operation.isType(LexicalTokenType::OPERATOR_PLUS) || operation.isType(LexicalTokenType::OPERATOR_MINUS)) {
+	while (operation.isType(LexicalTokenType::OPERATOR_EXPR)) {
 		this->getNextToken(); //consume operation token		
 
 		std::shared_ptr<ASTNode> operationNode;
@@ -354,9 +342,6 @@ std::shared_ptr<ASTNode> SimpleParser::parseExpr() {
 		}
 		else if (operation.isType(LexicalTokenType::OPERATOR_MINUS)) {
 			operationNode = std::make_shared<ASTNode>(ASTNodeType::SUBTRACT, operation.getLine(), Utility::getASTNodeType(ASTNodeType::SUBTRACT));
-		}
-		else {
-			throw std::runtime_error("Parsing Expr but operator is not of the following: +, -");
 		}
 
 		std::shared_ptr<ASTNode> right = parseTerm();
@@ -378,7 +363,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseTerm() {
 
 	LexicalToken operation = peekNextToken();
 
-	while (operation.isType(LexicalTokenType::OPERATOR_MULTIPLY) || operation.isType(LexicalTokenType::OPERATOR_DIVIDE) || operation.isType(LexicalTokenType::OPERATOR_MODULO)) {
+	while (operation.isType(LexicalTokenType::OPERATOR_TERM)) {
 		this->getNextToken(); //consume operation token
 
 		return std::make_shared<ASTNode>(ASTNodeType::CONSTANT, operation.getLine(), Utility::getASTNodeType(ASTNodeType::CONSTANT));

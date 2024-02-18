@@ -158,6 +158,8 @@ const std::string LexicalTokenTypeMapper::printType(LexicalTokenType type) {
     return "ERROR";
 }
 
+// ai-gen start(gpt, 1, e)
+// Prompt: https://platform.openai.com/playground/p/hqmTI5WojSoGp9ObQfd7Yegx?mode=chat
 const bool LexicalTokenTypeMapper::isType(LexicalTokenType t1, LexicalTokenType t2) {
     std::unordered_map<LexicalTokenType, std::vector<LexicalTokenType>> lexicalTokenTypes = {
         // Symbols
@@ -222,3 +224,4 @@ const bool LexicalTokenTypeMapper::isType(LexicalTokenType t1, LexicalTokenType 
         return false;
     }
 }
+// ai-gen end
