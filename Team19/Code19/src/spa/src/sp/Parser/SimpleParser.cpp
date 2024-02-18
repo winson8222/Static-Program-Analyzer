@@ -4,7 +4,6 @@
 
 // ai-gen start(gpt,2,e)
 // Prompt: https://platform.openai.com/playground/p/cJLjmmneCEs4z6ms7ZkBSxJB?model=gpt-4&mode=chat
-
 SimpleParser::SimpleParser(std::string filename) {
 	this->tokenStream = SPTokenizer::tokenize(FileProcessor::readFileToString(filename));
 	this->tokenIndex = 0;
@@ -119,11 +118,15 @@ std::shared_ptr<ASTNode> SimpleParser::parseStmtLst() {
 		statements.push_back(this->parseStmt());
 	}
 
-	int lastLine = this->peekNextToken().getLine();
+	std::shared_ptr<ASTNode> statementListTree = std::make_shared<ASTNode>(
+		ASTNodeType::STATEMENT_LIST, firstLine, Utility::getASTNodeType(ASTNodeType::STATEMENT_LIST)
+	);
 
-	StmtList stmtList = StmtList(firstLine, lastLine, statements);
+	for (auto& statement : statements) {
+		statementListTree->addChild(statement);
+	}
 
-	return stmtList.buildTree();
+	return statementListTree;
 }
 
 std::shared_ptr<ASTNode> SimpleParser::parseStmt() {
