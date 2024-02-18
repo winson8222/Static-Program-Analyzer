@@ -20,21 +20,13 @@ class StatementListNode;
 
 class IVisitor {
 public:
-    virtual void visit(AssignNode& node) = 0;
-    virtual void visit(ReadNode& node) = 0;
-    virtual void visit(PrintNode& node) = 0;
-    virtual void visit(CallNode& node) = 0;
-    virtual void visit(WhileNode& node) = 0;
-    virtual void visit(IfNode& node) = 0;
-    virtual void visit(ProcedureNode& node) = 0;
-    virtual void visit(StatementListNode& node) = 0;
+    virtual void visit(std::shared_ptr<ASTNode> node) = 0;
     // Add more visit methods for other specific node types
 
     virtual ~IVisitor() {}
     explicit IVisitor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
 		: root(root), pkbWriterManager(pkbWriterManager) {}
     
-private:
     std::shared_ptr<ASTNode> root;
     std::shared_ptr<PKBWriterManager> pkbWriterManager;
 };

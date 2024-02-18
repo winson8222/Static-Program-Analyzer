@@ -23,7 +23,6 @@ public:
 
 	virtual void extract() = 0;
 
-private:
 	std::shared_ptr<ASTNode> root;
 	std::shared_ptr<PKBWriterManager> pkbWriterManager;
 };
