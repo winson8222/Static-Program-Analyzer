@@ -11,7 +11,6 @@ private:
 
 public:
     SimpleParserFacade(const std::string& filename);
-
     std::shared_ptr<ASTNode> parse();
 };
 // ai-gen end
