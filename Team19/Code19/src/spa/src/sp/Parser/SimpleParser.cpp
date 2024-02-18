@@ -26,7 +26,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseProgram() {
 
 void SimpleParser::assertToken(LexicalToken token, LexicalTokenType type) const {
 	if (!token.isType(type)) {
-		throw std::runtime_error("Error: Expected " + LexicalTokenTypeMapper::printType(type) + "but got " + LexicalTokenTypeMapper::printType(token.getTokenType()));
+		throw std::runtime_error("Error: Expected " + LexicalTokenTypeMapper::printType(type) + " but got " + LexicalTokenTypeMapper::printType(token.getTokenType()));
 	}
 }
 
@@ -213,24 +213,21 @@ void SimpleParser::parseIf() {
 }
 
 std::shared_ptr<ASTNode> SimpleParser::parseAssign() {
-	// Add parsing logic for assignment
-	LexicalToken variable = this->getNextToken();
-	this->assertToken(variable, LexicalTokenType::NAME);
+	std::shared_ptr<ASTNode> variable = this->parseVarName();
+
+	LexicalToken assign = this->getNextToken();
 	this->assertToken(this->getNextToken(), LexicalTokenType::OPERATOR_ASSIGN);
+	std::shared_ptr<ASTNode> assignNode = std::make_shared<ASTNode>(
+		ASTNodeType::ASSIGN, assign.getLine(), Utility::getASTNodeType(ASTNodeType::ASSIGN)
+	);
 
-	// Comment Start:
-	// To be replaced with parseExpr() and adding it as a child.
-	LexicalToken expr = this->getNextToken();
-	this->assertToken(expr, LexicalTokenType::INTEGER);
-	// Comment end
+	std::shared_ptr<ASTNode> expr = this -> parseExpr();
+	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_SEMICOLON);
 
-	LexicalToken semicolon = this->getNextToken();
-	this->assertToken(semicolon, LexicalTokenType::SYMBOL_SEMICOLON);
+	assignNode->addChild(variable);
+	assignNode->addChild(expr);
 
-	// In the case of changing expr to parseExpr, make sure function signature also changes for expr type = std::shared_ptr<ASTNode>
-	AssignStmt assignStmt = AssignStmt(variable, expr, variable.getLine(), semicolon.getLine());
-
-	return assignStmt.buildTree();
+	return assignNode;
 }
 
 // cond_expr: rel_expr
@@ -419,19 +416,19 @@ std::shared_ptr<ASTNode> SimpleParser::parseFactor() {
 std::shared_ptr<ASTNode> SimpleParser::parseVarName() {
 	LexicalToken variable = this->getNextToken();
 	this->assertToken(variable, LexicalTokenType::NAME);
-	return std::make_shared<ASTNode>(ASTNodeType::VARIABLE, variable.getLine(), Utility::getASTNodeType(ASTNodeType::VARIABLE));
+	return std::make_shared<ASTNode>(ASTNodeType::VARIABLE, variable.getLine(), variable.getValue());
 }
 
 std::shared_ptr<ASTNode> SimpleParser::parseProcName() {
 	LexicalToken procedureName = this->getNextToken();
 	this->assertToken(procedureName, LexicalTokenType::NAME);
-	return std::make_shared<ASTNode>(ASTNodeType::VARIABLE, procedureName.getLine(), Utility::getASTNodeType(ASTNodeType::VARIABLE));
+	return std::make_shared<ASTNode>(ASTNodeType::VARIABLE, procedureName.getLine(), procedureName.getValue());
 }
 
 std::shared_ptr<ASTNode> SimpleParser::parseConstValue() {
 	LexicalToken constant = this->getNextToken();
 	this->assertToken(constant, LexicalTokenType::INTEGER);
-	return std::make_shared<ASTNode>(ASTNodeType::CONSTANT, constant.getLine(), Utility::getASTNodeType(ASTNodeType::CONSTANT));
+	return std::make_shared<ASTNode>(ASTNodeType::CONSTANT, constant.getLine(), constant.getValue());
 }
 
 // ai-gen end
