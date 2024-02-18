@@ -1,5 +1,5 @@
 #include "catch.hpp"
-#include "iostream"
+
 #include "pkb/stores/patterns/assign/AssignPatternStore.h"
 
 TEST_CASE("pkb/stores/patterns/assign/AssignPatternStore") {
@@ -28,6 +28,14 @@ TEST_CASE("pkb/stores/patterns/assign/AssignPatternStore") {
         REQUIRE(assignPatternStore.getPattern(1).second == "1");
     }
 
+  SECTION("Get All Patterns") {
+        AssignPatternStore assignPatternStore;
+        assignPatternStore.addAssignPattern(1, "x", "1");
+        assignPatternStore.addAssignPattern(2, "y", "2");
+        auto expected = std::unordered_map<int, std::pair<std::string, std::string>>{{1, {"x", "1"}}, {2, {"y", "2"}}};
+        REQUIRE(assignPatternStore.getAllPatterns() == expected);
+    }
+
     SECTION("Get LHS") {
         AssignPatternStore assignPatternStore;
         assignPatternStore.addAssignPattern(1, "x", "1");
@@ -40,6 +48,25 @@ TEST_CASE("pkb/stores/patterns/assign/AssignPatternStore") {
         REQUIRE(assignPatternStore.getRHS(1) == "1");
     }
 
+    SECTION("Contains LHS") {
+        AssignPatternStore assignPatternStore;
+        assignPatternStore.addAssignPattern(1, "x", "1");
+        assignPatternStore.addAssignPattern(2, "x", "2");
+        auto expected = std::unordered_set<int>{1, 2};
+        REQUIRE(assignPatternStore.getStatementNumbersWithLHS("x") == expected);
+        expected = std::unordered_set<int>{};
+        REQUIRE(assignPatternStore.getStatementNumbersWithLHS("y") == expected);
+    }
+
+    SECTION("Contains RHS") {
+        AssignPatternStore assignPatternStore;
+        assignPatternStore.addAssignPattern(1, "x", "1");
+        assignPatternStore.addAssignPattern(2, "x", "2");
+        auto expected = std::unordered_set<int>{1};
+        REQUIRE(assignPatternStore.getStatementNumbersWithRHS("1") == expected);
+        expected = std::unordered_set<int>{};
+        REQUIRE(assignPatternStore.getStatementNumbersWithRHS("3") == expected);
+    }
 
     SECTION("Contains Partial RHS") {
         AssignPatternStore assignPatternStore;
@@ -47,7 +74,7 @@ TEST_CASE("pkb/stores/patterns/assign/AssignPatternStore") {
         assignPatternStore.addAssignPattern(2, "x", "122+3");
         assignPatternStore.addAssignPattern(3, "x", "143+3");
         auto expected = std::unordered_set<int>{1, 3};
-        REQUIRE(assignPatternStore.containsPartialRHS("3+3") == expected);
+        REQUIRE(assignPatternStore.getStatementNumbersWithPartialRHS("3+3") == expected);
     }
 
     SECTION("Contains LHS and RHS") {
@@ -59,7 +86,7 @@ TEST_CASE("pkb/stores/patterns/assign/AssignPatternStore") {
         assignPatternStore.addAssignPattern(5, "z", "143+3");
         assignPatternStore.addAssignPattern(6, "x", "123+3");
         auto expected = std::unordered_set<int>{1, 6};
-        REQUIRE(assignPatternStore.containsLHSRHS("x", "123+3") == expected);
+        REQUIRE(assignPatternStore.getStatementNumbersWithLHSRHS("x", "123+3") == expected);
     }
 
   SECTION("Contains LHS and Partial RHS") {
@@ -71,6 +98,6 @@ TEST_CASE("pkb/stores/patterns/assign/AssignPatternStore") {
         assignPatternStore.addAssignPattern(5, "z", "143+3");
         assignPatternStore.addAssignPattern(6, "x", "523+3");
         auto expected = std::unordered_set<int>{1, 3, 6};
-        REQUIRE(assignPatternStore.containsLHSPartialRHS("x", "3+3") == expected);
+        REQUIRE(assignPatternStore.getStatementNumbersWithLHSPartialRHS("x", "3+3") == expected);
     }
 }
