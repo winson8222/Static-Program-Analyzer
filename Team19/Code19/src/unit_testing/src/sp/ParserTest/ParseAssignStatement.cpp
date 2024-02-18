@@ -1,41 +1,31 @@
-/*
 #include "catch.hpp"
-#include "sp/Parser/SimpleParser.h"
+#include "sp/Parser/SimpleParserFacade.h"
 #include <filesystem>
 
-TEST_CASE("AssignStmt parsing throws an error with invalid syntax", "[AssignStmt]") {
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/CallStmt1.txt";
-	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParser parser(testFileName);
-
-	// For this test, we expect parsing to terminate due to erroneous input.
-	CHECK_THROWS_AS(parser.parseAssign(), std::runtime_error);
-}
-
-TEST_CASE("Testing AssignStmt::buildTree()", "[AssignStmt]") {
+TEST_CASE("Testing AssignStmt::buildTree()", "[parse][assign]") {
 	// Generate test file
 	const std::string testFileName = "../../../../../tests/sp/ParserTest/AssignStmt1.txt";
 	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParser parser(testFileName);
+	SimpleParserFacade parser(testFileName);
 
 	SECTION("Testing tree root node") {
-		std::shared_ptr<ASTNode> tree_ptr = parser.parseAssign();
+		std::shared_ptr<ASTNode> tree_ptr = parser.parse();
+		std::shared_ptr<ASTNode> assignStatement = (((tree_ptr->children)[0]->children)[0]->children)[0];
 
-		REQUIRE(tree_ptr->type == ASTNodeType::ASSIGN);
-		REQUIRE(tree_ptr->lineNumber == 1);
-		REQUIRE(tree_ptr->value == Utility::getASTNodeType(ASTNodeType::ASSIGN));
+		REQUIRE(assignStatement->type == ASTNodeType::ASSIGN);
+		REQUIRE(assignStatement->lineNumber == 2);
+		REQUIRE(assignStatement->value == Utility::getASTNodeType(ASTNodeType::ASSIGN));
 
 		SECTION("Testing tree child node") {
-			const auto& children = tree_ptr->children;
+			const auto& children = assignStatement->children;
 			REQUIRE(children.size() == 2);
 			REQUIRE(children[0]->type == ASTNodeType::VARIABLE);
-			REQUIRE(children[0]->lineNumber == 1);
+			REQUIRE(children[0]->lineNumber == 2);
 			REQUIRE(children[0]->value == "x");
 
-			REQUIRE(children[1]->type == ASTNodeType::VARIABLE);
-			REQUIRE(children[1]->lineNumber == 1);
+			REQUIRE(children[1]->type == ASTNodeType::CONSTANT);
+			REQUIRE(children[1]->lineNumber == 2);
 			REQUIRE(children[1]->value == "1");
 		}
 	}
 }
-*/

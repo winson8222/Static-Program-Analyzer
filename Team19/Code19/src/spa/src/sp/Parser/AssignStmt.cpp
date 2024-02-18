@@ -25,7 +25,7 @@ std::shared_ptr<ASTNode> AssignStmt::buildTree() {
 	);
 
 	std::shared_ptr<ASTNode> expression = std::make_shared<ASTNode>(
-		ASTNodeType::VARIABLE, this->lines.second, this->expr.getValue()
+		ASTNodeType::CONSTANT, this->lines.second, this->expr.getValue()
 	);
 
 	tree.get()->addChild(variable_name);
