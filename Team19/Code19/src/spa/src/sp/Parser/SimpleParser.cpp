@@ -216,7 +216,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseAssign() {
 	std::shared_ptr<ASTNode> variable = this->parseVarName();
 
 	LexicalToken assign = this->getNextToken();
-	this->assertToken(this->getNextToken(), LexicalTokenType::OPERATOR_ASSIGN);
+	this->assertToken(assign, LexicalTokenType::OPERATOR_ASSIGN);
 	std::shared_ptr<ASTNode> assignNode = std::make_shared<ASTNode>(
 		ASTNodeType::ASSIGN, assign.getLine(), Utility::getASTNodeType(ASTNodeType::ASSIGN)
 	);
