@@ -32,8 +32,8 @@ private:
 	std::shared_ptr<ASTNode> parseRead();
 	std::shared_ptr<ASTNode> parsePrint();
 	std::shared_ptr<ASTNode> parseCall();
-	void parseWhile();
-	void parseIf();
+	std::shared_ptr<ASTNode> parseWhile();
+	std::shared_ptr<ASTNode> parseIf();
 	std::shared_ptr<ASTNode> parseAssign();
 	std::shared_ptr<ASTNode> parseCondExpr();
 	std::shared_ptr<ASTNode> parseRelExpr();

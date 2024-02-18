@@ -208,8 +208,8 @@ std::shared_ptr<ASTNode> SimpleParser::parseCall() {
 std::shared_ptr<ASTNode> SimpleParser::parseWhile() {
 	LexicalToken keyword = this->getNextToken();
 	this->assertToken(keyword, LexicalTokenType::KEYWORD_WHILE);
-	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_OPEN_PAREN);
 
+	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_OPEN_PAREN);
 	std::shared_ptr<ASTNode> condExpr = this->parseCondExpr();
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_PAREN);
 
@@ -227,8 +227,35 @@ std::shared_ptr<ASTNode> SimpleParser::parseWhile() {
 	return whileTree;
 }
 
-void SimpleParser::parseIf() {
-	// Add parsing logic for if statement
+// ‘if’ ‘(’ cond_expr‘)’ ‘then’ ‘{‘ stmtLst ‘}’ ‘else’ ‘{ ‘ stmtLst ‘ }’
+std::shared_ptr<ASTNode> SimpleParser::parseIf() {
+	LexicalToken keyword = this->getNextToken();
+	this->assertToken(keyword, LexicalTokenType::KEYWORD_IF);
+
+	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_OPEN_PAREN);
+	std::shared_ptr<ASTNode> condExpr = this->parseCondExpr();
+	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_PAREN);
+
+	this->assertToken(this->getNextToken(), LexicalTokenType::KEYWORD_THEN);
+	
+	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_OPEN_BRACE);
+	std::shared_ptr<ASTNode> thenStmtLst = this->parseStmtLst();
+	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_BRACE);
+
+	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_OPEN_BRACE);
+	std::shared_ptr<ASTNode> elseStmtLst = this->parseStmtLst();
+	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_BRACE);
+
+	// Warning: If_ELSE_THEN ASTNodeType encountered. May need to seperate into IF, ELSE, THEN keywords.
+	std::shared_ptr<ASTNode> ifTree = std::make_shared<ASTNode>(
+		ASTNodeType::IF_ELSE_THEN, keyword.getLine(), Utility::getASTNodeType(ASTNodeType::IF_ELSE_THEN)
+	);
+
+	ifTree->addChild(condExpr);
+	ifTree->addChild(thenStmtLst);
+	ifTree->addChild(elseStmtLst);
+
+	return ifTree;
 }
 
 std::shared_ptr<ASTNode> SimpleParser::parseAssign() {
