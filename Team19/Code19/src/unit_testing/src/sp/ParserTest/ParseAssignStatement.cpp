@@ -57,14 +57,14 @@ TEST_CASE("Testing parseAssign with an expression", "[parse][assign]") {
 
 			SECTION("Testing expression of children") {
 				const auto& constants = children[1]->children;
-				REQUIRE(children.size() == 2);
-				REQUIRE(children[0]->type == ASTNodeType::CONSTANT);
-				REQUIRE(children[0]->lineNumber == 2);
-				REQUIRE(children[0]->value == "1");
+				REQUIRE(constants.size() == 2);
+				REQUIRE(constants[0]->type == ASTNodeType::CONSTANT);
+				REQUIRE(constants[0]->lineNumber == 2);
+				REQUIRE(constants[0]->value == "1");
 
-				REQUIRE(children[1]->type == ASTNodeType::CONSTANT);
-				REQUIRE(children[1]->lineNumber == 2);
-				REQUIRE(children[1]->value == "3");
+				REQUIRE(constants[1]->type == ASTNodeType::CONSTANT);
+				REQUIRE(constants[1]->lineNumber == 2);
+				REQUIRE(constants[1]->value == "3");
 			}
 
 		}

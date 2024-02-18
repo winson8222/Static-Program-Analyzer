@@ -7,7 +7,6 @@
 #include "CallStmt.h"
 #include "ReadStmt.h"
 #include "PrintStmt.h"
-#include "AssignStmt.h"
 #include "StmtList.h"
 #include "Procedure.h"
 #include "Program.h"
