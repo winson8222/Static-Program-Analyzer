@@ -10,7 +10,7 @@ public:
 	CallVisitor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
 			: IVisitor(root, pkbWriterManager) {}
 
-	void visit(CallNode& node) override;
+	virtual void visit(std::shared_ptr<ASTNode> node) = 0;
 };
 
 // ai-gen ends
