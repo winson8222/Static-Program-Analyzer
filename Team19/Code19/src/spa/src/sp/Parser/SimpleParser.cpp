@@ -233,8 +233,16 @@ std::shared_ptr<ASTNode> SimpleParser::parseAssign() {
 	return assignStmt.buildTree();
 }
 
+// cond_expr: rel_expr
+//          | ‘!’ ‘(’ cond_expr ‘)’
+//          | ‘(’ cond_expr ‘)’ ‘&&’ ‘(’ cond_expr ‘)’
+//          | ‘(’ cond_expr ‘)’ ‘||’ ‘(’ cond_expr ‘)’
 std::shared_ptr<ASTNode> SimpleParser::parseCondExpr() {
 	LexicalToken firstToken = this->peekNextToken();
+
+	if (firstToken.isType(LexicalTokenType::NAME)) {
+		return this->parseRelExpr();
+	}
 
 	if (firstToken.isType(LexicalTokenType::OPERATOR_NOT)) {
 		this->getNextToken(); //consume NOT operator

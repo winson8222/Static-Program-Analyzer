@@ -37,13 +37,13 @@ private:
 	void parseIf();
 	std::shared_ptr<ASTNode> parseAssign();
 	std::shared_ptr<ASTNode> parseCondExpr();
-	void parseRelExpr();
-	void parseRelFactor();
-	void parseExpr();
-	void parseTerm();
-	void parseFactor();
-	void parseVarName();
-	void parseProcName();
-	void parseConstValue();
+	std::shared_ptr<ASTNode> parseRelExpr();
+	std::shared_ptr<ASTNode> parseRelFactor();
+	std::shared_ptr<ASTNode> parseExpr();
+	std::shared_ptr<ASTNode> parseTerm();
+	std::shared_ptr<ASTNode> parseFactor();
+	std::shared_ptr<ASTNode> parseVarName();
+	std::shared_ptr<ASTNode> parseProcName();
+	std::shared_ptr<ASTNode> parseConstValue();
 };
 // ai-gen end
