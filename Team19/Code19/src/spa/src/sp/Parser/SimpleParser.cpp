@@ -288,35 +288,100 @@ std::shared_ptr<ASTNode> SimpleParser::parseCondExpr() {
 	throw std::runtime_error("Unexpected logical operator: " + logicalOperator.getValue());
 }
 
-void SimpleParser::parseRelExpr() {
-	// Add parsing logic for relational expression
+std::shared_ptr<ASTNode> SimpleParser::parseRelExpr() {
+	std::shared_ptr<ASTNode> relFactor1 = this->parseRelFactor();
+	LexicalToken operatorToken = this->getNextToken();
+	std::shared_ptr<ASTNode> relFactor2 = this->parseRelFactor();
+
+	RelExpr relExpr = RelExpr(relFactor1, relFactor2, operatorToken,
+		relFactor1->getFirstLine(), relFactor2->getLastLine());
+
+	return relExpr.buildTree();
 }
 
-void SimpleParser::parseRelFactor() {
-	// Add parsing logic for relational factor (variable name or constant value or expression)
+std::shared_ptr<ASTNode> SimpleParser::parseRelFactor() {
+	LexicalToken nextToken = this->peekNextToken();
+
+	if (nextToken.isType(LexicalTokenType::NAME)) {
+		return parseVarName();
+	}
+	else if (nextToken.isType(LexicalTokenType::INTEGER)) {
+		return parseConstValue();
+	}
+	else {
+		return parseExpr();
+	}
 }
 
-void SimpleParser::parseExpr() {
-	// Add parsing logic for expression (term or expression "+" term or expression "-" term)
+std::shared_ptr<ASTNode> SimpleParser::parseExpr() {
+	std::shared_ptr<ASTNode> term = parseTerm();
+
+	if (!hasTokensLeft()) {
+		return term;
+	}
+
+	LexicalToken operation = peekNextToken();
+
+	if (operation.isType(LexicalTokenType::OPERATOR_PLUS) || operation.isType(LexicalTokenType::OPERATOR_MINUS)) {
+		this->getNextToken(); //consume operation token
+		return Expr(term, operation, parseExpr(), //recursive call for next expr
+			term->getFirstLine(), peekNextToken().getLine()).buildTree();
+	}
+
+	return term;
 }
 
-void SimpleParser::parseTerm() {
-	// Add parsing logic for term (factor or term "*" factor or term "/" factor or term "%" factor)
+std::shared_ptr<ASTNode> SimpleParser::parseTerm() {
+	std::shared_ptr<ASTNode> factor = parseFactor();
+
+	if (!hasTokensLeft()) {
+		return factor;
+	}
+
+	LexicalToken operation = peekNextToken();
+
+	if (operation.isType(LexicalTokenType::OPERATOR_MULT) || operation.isType(LexicalTokenType::OPERATOR_DIV) || operation.isType(LexicalTokenType::OPERATOR_MOD)) {
+		this->getNextToken(); //consume operation token
+		return Term(factor, operation, parseTerm(), //recursive call for next term
+			factor->getFirstLine(), peekNextToken().getLine()).buildTree();
+	}
+
+	return factor;
 }
 
-void SimpleParser::parseFactor() {
-	// Add parsing logic for factor (variable name or constant value or "(" expr ")")
+std::shared_ptr<ASTNode> SimpleParser::parseFactor() {
+	LexicalToken nextToken = peekNextToken();
+
+	if (nextToken.isType(LexicalTokenType::SYMBOL_OPEN_PARAN)) {
+		this->getNextToken(); // consume open paran
+		std::shared_ptr<ASTNode> expr = parseExpr();
+		this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_PARAN);
+		return expr;
+	}
+	else if (nextToken.isType(LexicalTokenType::NAME)) {
+		return this->parseVarName();
+	}
+	else {
+		return this->parseConstValue();
+	}
 }
 
-void SimpleParser::parseVarName() {
-	// Add parsing logic for variable name
+std::shared_ptr<ASTNode> SimpleParser::parseVarName() {
+	LexicalToken variable = this->getNextToken();
+	this->assertToken(variable, LexicalTokenType::NAME);
+	return std::make_shared<ASTNode>(ASTNodeType::VARIABLE, variable.getLine(), Utility::getASTNodeType(ASTNodeType::VARIABLE));
 }
 
-void SimpleParser::parseProcName() {
-	// Add parsing logic for procedure name
+std::shared_ptr<ASTNode> SimpleParser::parseProcName() {
+	LexicalToken procedureName = this->getNextToken();
+	this->assertToken(procedureName, LexicalTokenType::NAME);
+	return std::make_shared<ASTNode>(ASTNodeType::VARIABLE, procedureName.getLine(), Utility::getASTNodeType(ASTNodeType::VARIABLE));
 }
 
-void SimpleParser::parseConstValue() {
-	// Add parsing logic for constant value parsing
+std::shared_ptr<ASTNode> SimpleParser::parseConstValue() {
+	LexicalToken constant = this->getNextToken();
+	this->assertToken(constant, LexicalTokenType::INTEGER);
+	return std::make_shared<ASTNode>(ASTNodeType:: CONSTANT, constant.getLine(), Utility::getASTNodeType(ASTNodeType::CONSTANT));
 }
+
 // ai-gen end
