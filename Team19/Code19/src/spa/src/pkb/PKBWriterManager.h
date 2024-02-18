@@ -24,6 +24,8 @@
 #include "pkb/writers/relationships/ModifiesPWriter.h"
 #include "pkb/writers/relationships/ModifiesSWriter.h"
 
+#include "pkb/writers/patterns/AssignPatternWriter.h"
+
 class PKBWriterManager {
 private:
     std::shared_ptr<PKB> pkb;
@@ -48,6 +50,8 @@ private:
     std::shared_ptr<ReadWriter> readWriter;
     std::shared_ptr<PrintWriter> printWriter;
 
+    std::shared_ptr<AssignPatternWriter> assignPatternWriter;
+
 public:
     explicit PKBWriterManager(const std::shared_ptr<PKB>& pkb): pkb(pkb) {
       followsWriter = std::make_shared<FollowsWriter>(pkb->getFollowsStore());
@@ -69,6 +73,8 @@ public:
       callWriter = std::make_shared<CallWriter>(pkb->getCallStore());
       readWriter = std::make_shared<ReadWriter>(pkb->getReadStore());
       printWriter = std::make_shared<PrintWriter>(pkb->getPrintStore());
+
+      assignPatternWriter = std::make_shared<AssignPatternWriter>(pkb->getAssignPatternStore());
     }
     // Relationships
     std::shared_ptr<FollowsWriter> getFollowsWriter() {
@@ -143,6 +149,12 @@ public:
     std::shared_ptr<AssignWriter> getAssignWriter() {
       return assignWriter;
     }
+
+    // Patterns
+    std::shared_ptr<AssignPatternWriter> getAssignPatternWriter() {
+      return assignPatternWriter;
+    }
+
 };
 
 
