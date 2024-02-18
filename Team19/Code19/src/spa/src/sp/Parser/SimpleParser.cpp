@@ -321,19 +321,26 @@ std::shared_ptr<ASTNode> SimpleParser::parseExpr() {
 	LexicalToken operation = peekNextToken();
 
 	while (operation.isType(LexicalTokenType::OPERATOR_PLUS) || operation.isType(LexicalTokenType::OPERATOR_MINUS)) {
-		this->getNextToken(); //consume operation token
+		this->getNextToken(); //consume operation token		
 
-		auto operationNode = std::make_shared<ASTNode>();
-		operationNode->setNodeType(ASTNodeType::Expr);
-		operationNode->setText(operation.getValue());
+		std::shared_ptr<ASTNode> operationNode;
+		if (operation.isType(LexicalTokenType::OPERATOR_PLUS)) {
+			operationNode = std::make_shared<ASTNode>(ASTNodeType::ADD, operation.getLine(), Utility::getASTNodeType(ASTNodeType::ADD));
+		}
+		else if (operation.isType(LexicalTokenType::OPERATOR_MINUS)) {
+			operationNode = std::make_shared<ASTNode>(ASTNodeType::SUBTRACT, operation.getLine(), Utility::getASTNodeType(ASTNodeType::SUBTRACT));
+		}
+		else {
+			throw std::runtime_error("Parsing Expr but operator is not of the following: +, -");
+		}
 
 		std::shared_ptr<ASTNode> right = parseTerm();
 
-		// Create a new AST node to combine the operation with terms
+		// Create a new AST node to combine the expr and term and add it under current operation
 		operationNode->addChild(left);
 		operationNode->addChild(right);
 
-		//Swap left operand and operation for next iteration
+		// Swap left operand and operation for next iteration
 		left = operationNode;
 		operation = peekNextToken();
 	}
