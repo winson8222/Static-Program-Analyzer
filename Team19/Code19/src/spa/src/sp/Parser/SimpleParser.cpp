@@ -352,18 +352,21 @@ std::shared_ptr<ASTNode> SimpleParser::parseTerm() {
 std::shared_ptr<ASTNode> SimpleParser::parseFactor() {
 	LexicalToken nextToken = peekNextToken();
 
-	if (nextToken.isType(LexicalTokenType::SYMBOL_OPEN_PARAN)) {
+	if (nextToken.isType(LexicalTokenType::SYMBOL_OPEN_PAREN)) {
 		this->getNextToken(); // consume open paran
 		std::shared_ptr<ASTNode> expr = parseExpr();
-		this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_PARAN);
+		this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_PAREN);
 		return expr;
 	}
 	else if (nextToken.isType(LexicalTokenType::NAME)) {
 		return this->parseVarName();
 	}
-	else {
+	else if (nextToken.isType(LexicalTokenType::INTEGER)) {
 		return this->parseConstValue();
 	}
+
+	// Should not come to this code.
+	throw std::runtime_error("Error: SimpleParser tries to parse factor, but does not see parenthesis, name nor integer");
 }
 
 std::shared_ptr<ASTNode> SimpleParser::parseVarName() {
