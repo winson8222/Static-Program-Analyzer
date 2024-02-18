@@ -13,6 +13,20 @@
 #include "sp/DesignExtractor/Visitor/WhileVisitor.h"
 #include "sp/DesignExtractor/Visitor/ProcedureVisitor.h"
 
+#include "sp/DesignExtractor/Extractor/AssignExtractor.h"
+#include "sp/DesignExtractor/Extractor/CallExtractor.h"
+#include "sp/DesignExtractor/Extractor/IfElseThenExtractor.h"
+#include "sp/DesignExtractor/Extractor/PrintExtractor.h"
+#include "sp/DesignExtractor/Extractor/ReadExtractor.h"
+#include "sp/DesignExtractor/Extractor/WhileExtractor.h"
+#include "sp/DesignExtractor/Extractor/ProcedureExtractor.h"
+#include "sp/DesignExtractor/Extractor/ParentExtractor.h"
+#include "sp/DesignExtractor/Extractor/ModifiesExtractor.h"
+#include "sp/DesignExtractor/Extractor/ModifiesExtractor.h"
+#include "sp/DesignExtractor/Extractor/UsesExtractor.h"
+#include "sp/DesignExtractor/Extractor/ConstantExtractor.h"
+#include "sp/DesignExtractor/Extractor/VariableExtractor.h"
+
 class FDesignExtractor {
 public:
     FDesignExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
