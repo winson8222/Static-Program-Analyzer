@@ -5,8 +5,6 @@
 // ai-gen start(gpt,2,e)
 // Prompt: https://platform.openai.com/playground/p/cJLjmmneCEs4z6ms7ZkBSxJB?model=gpt-4&mode=chat
 
-SimpleParser::SimpleParser() {}
-
 SimpleParser::SimpleParser(std::string filename) {
 	this->tokenStream = SPTokenizer::tokenize(FileProcessor::readFileToString(filename));
 	this->tokenIndex = 0;
@@ -26,6 +24,12 @@ std::shared_ptr<ASTNode> SimpleParser::parseProgram() {
 	return program.buildTree();
 }
 
+void SimpleParser::assertToken(LexicalToken token, LexicalTokenType type) const {
+	if (!token.isType(type)) {
+		throw std::runtime_error("Error: Expected " + LexicalTokenTypeMapper::printType(type) + "but got " + LexicalTokenTypeMapper::printType(token.getTokenType()));
+	}
+}
+
 bool SimpleParser::hasTokensLeft() const {
 	return this->tokenIndex < this->tokenStream.size();
 }
@@ -35,7 +39,7 @@ LexicalToken SimpleParser::peekNextToken() {
 	if (this->hasTokensLeft()) {
 		LexicalToken token = this->tokenStream[this->tokenIndex];
 
-		if (token.getTokenType() == LexicalTokenType::WHITESPACE) {
+		if (token.isType(LexicalTokenType::WHITESPACE)) {
 			this->tokenIndex++;
 			return peekNextToken();
 		}
@@ -53,7 +57,7 @@ LexicalToken SimpleParser::getNextToken() {
 		LexicalToken token = this->tokenStream[this->tokenIndex];
 		this->tokenIndex++;
 
-		if (token.getTokenType() == LexicalTokenType::WHITESPACE) {
+		if (token.isType(LexicalTokenType::WHITESPACE)) {
 			return getNextToken();
 		}
 
@@ -84,12 +88,6 @@ LexicalToken SimpleParser::peekNextNextToken() {
 }
 // ai-gen end
 
-void SimpleParser::assertToken(LexicalToken token, LexicalTokenType type) const {
-	if (!token.isType(type)) {
-		throw std::runtime_error("Error: Invalid SIMPLE syntax.");
-	}
-}
-
 std::shared_ptr<ASTNode> SimpleParser::parseProcedure() {
 	if (!this->hasTokensLeft()) {
 		throw std::runtime_error("Error: SimpleParser::parseProcedure encounter empty statement.");
@@ -113,10 +111,11 @@ std::shared_ptr<ASTNode> SimpleParser::parseProcedure() {
 }
 
 std::shared_ptr<ASTNode> SimpleParser::parseStmtLst() {
-	// Parse every statement until we see a closing bracket.
 	std::vector<std::shared_ptr<ASTNode>> statements;
 	int firstLine = this->peekNextToken().getLine();
-	while (this->peekNextToken().getTokenType() != LexicalTokenType::SYMBOL_CLOSE_BRACE) {
+
+	// Parse every statement until we see a closing bracket.
+	while (!this->peekNextToken().isType(LexicalTokenType::SYMBOL_CLOSE_BRACE)) {
 		statements.push_back(this->parseStmt());
 	}
 
@@ -138,22 +137,22 @@ std::shared_ptr<ASTNode> SimpleParser::parseStmt() {
 	}
 
 	LexicalToken secondToken = this->peekNextNextToken();
-	if (secondToken.getTokenType() == LexicalTokenType::OPERATOR_ASSIGN) {
+	if (secondToken.isType(LexicalTokenType::OPERATOR_ASSIGN)) {
 		return this->parseAssign();
 	}
 
 	LexicalToken firstToken = this->peekNextToken();
 
 
-	if (firstToken.getTokenType() == LexicalTokenType::KEYWORD_CALL) {
+	if (firstToken.isType(LexicalTokenType::KEYWORD_CALL)) {
 		return this->parseCall();
 	}
 
-	if (firstToken.getTokenType() == LexicalTokenType::KEYWORD_PRINT) {
+	if (firstToken.isType(LexicalTokenType::KEYWORD_PRINT)) {
 		return this->parsePrint();
 	}
 
-	if (firstToken.getTokenType() == LexicalTokenType::KEYWORD_READ) {
+	if (firstToken.isType(LexicalTokenType::KEYWORD_READ)) {
 		return this->parseRead();
 	}
 
@@ -190,7 +189,6 @@ std::shared_ptr<ASTNode> SimpleParser::parsePrint() {
 	return printStmt.buildTree();
 }
 
-// To change to void later when building trees.
 std::shared_ptr<ASTNode> SimpleParser::parseCall() {
 	LexicalToken keyword = this->getNextToken();
 	this->assertToken(keyword, LexicalTokenType::KEYWORD_CALL);

@@ -1,2 +1,10 @@
+procedure proc{
+call x;
 print x;
+read x;
+
+
+
+
+
 }

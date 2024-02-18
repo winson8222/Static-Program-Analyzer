@@ -148,3 +148,12 @@ bool LexicalTokenTypeMapper::isKeyword(LexicalTokenType token) {
         || token == LexicalTokenType::KEYWORD_PRINT
         || token == LexicalTokenType::KEYWORD_CALL;
 }
+
+const std::string LexicalTokenTypeMapper::printType(LexicalTokenType type) {
+    auto it = tokenToStringMap.find(type);
+    if (it != tokenToStringMap.end()) {
+        return it->second;
+    } 
+
+    return "ERROR";
+}

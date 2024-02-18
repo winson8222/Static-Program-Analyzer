@@ -1,1 +1,3 @@
-read read;
+procedure testingRead2 {
+	read read;
+}

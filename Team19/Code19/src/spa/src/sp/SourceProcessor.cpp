@@ -1,10 +1,7 @@
 #include "sp/SourceProcessor.h"
 #include <iostream>
 
-SourceProcessor::SourceProcessor(std::string filename, std::shared_ptr<PKBManager> pkbManager) {
-	this->pkbManager = pkbManager;
-	this->parser = SimpleParser(filename);
-	this->root = std::make_shared<ASTNode>();
+SourceProcessor::SourceProcessor(std::string filename, std::shared_ptr<PKBManager> pkbManager) : parser(filename), pkbManager(pkbManager), root(std::make_shared<ASTNode>()) {
 	std::cout << "File created" << std::endl;
 }
 
@@ -14,7 +11,7 @@ void SourceProcessor::reset() {
 
 void SourceProcessor::parseSIMPLE() {
 	// Parse tokens into AST (not implemented)
-	this->root = parser.parseProgram();
+	this->root = parser.parse();
 	std::cout << this->root->toString() << std::endl;
 }
 

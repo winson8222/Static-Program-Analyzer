@@ -1,1 +1,3 @@
-read readableVariable;
+procedure testingRead1 {
+	read readableVariable;
+}

@@ -16,11 +16,10 @@
 // Prompt: https://platform.openai.com/playground/p/cJLjmmneCEs4z6ms7ZkBSxJB?model=gpt-4&mode=chat
 class SimpleParser {
 public:
-	SimpleParser(); // Default constructor
 	SimpleParser(std::string filename);
 	std::shared_ptr<ASTNode> parseProgram();
 
-	// private:
+private:
 	std::vector<LexicalToken> tokenStream;
 	int tokenIndex;
 	void assertToken(LexicalToken token, LexicalTokenType type) const;
