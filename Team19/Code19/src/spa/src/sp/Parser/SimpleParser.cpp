@@ -313,41 +313,60 @@ std::shared_ptr<ASTNode> SimpleParser::parseRelFactor() {
 	}
 }
 
+// ai-gen start(gpt,1,e)
+// Prompt: https://platform.openai.com/playground/p/NGm3fHHy62WWafdKCc95vHpD?mode=chat
 std::shared_ptr<ASTNode> SimpleParser::parseExpr() {
-	std::shared_ptr<ASTNode> term = parseTerm();
-
-	if (!hasTokensLeft()) {
-		return term;
-	}
+	std::shared_ptr<ASTNode> left = parseTerm();
 
 	LexicalToken operation = peekNextToken();
 
-	if (operation.isType(LexicalTokenType::OPERATOR_PLUS) || operation.isType(LexicalTokenType::OPERATOR_MINUS)) {
+	while (operation.isType(LexicalTokenType::OPERATOR_PLUS) || operation.isType(LexicalTokenType::OPERATOR_MINUS)) {
 		this->getNextToken(); //consume operation token
-		return Expr(term, operation, parseExpr(), //recursive call for next expr
-			term->getFirstLine(), peekNextToken().getLine()).buildTree();
+
+		auto operationNode = std::make_shared<ASTNode>();
+		operationNode->setNodeType(ASTNodeType::Expr);
+		operationNode->setText(operation.getValue());
+
+		std::shared_ptr<ASTNode> right = parseTerm();
+
+		// Create a new AST node to combine the operation with terms
+		operationNode->addChild(left);
+		operationNode->addChild(right);
+
+		//Swap left operand and operation for next iteration
+		left = operationNode;
+		operation = peekNextToken();
 	}
 
-	return term;
+	return left;
 }
 
 std::shared_ptr<ASTNode> SimpleParser::parseTerm() {
-	std::shared_ptr<ASTNode> factor = parseFactor();
-
-	if (!hasTokensLeft()) {
-		return factor;
-	}
+	std::shared_ptr<ASTNode> left = parseFactor();
 
 	LexicalToken operation = peekNextToken();
 
-	if (operation.isType(LexicalTokenType::OPERATOR_MULT) || operation.isType(LexicalTokenType::OPERATOR_DIV) || operation.isType(LexicalTokenType::OPERATOR_MOD)) {
+	while (operation.isType(LexicalTokenType::OPERATOR_MULT) || operation.isType(LexicalTokenType::OPERATOR_DIV) || operation.isType(LexicalTokenType::OPERATOR_MOD)) {
 		this->getNextToken(); //consume operation token
-		return Term(factor, operation, parseTerm(), //recursive call for next term
-			factor->getFirstLine(), peekNextToken().getLine()).buildTree();
+
+		auto operationNode = std::make_shared<ASTNode>();
+		operationNode->setNodeType(ASTNodeType::Term);
+		operationNode->setText(operation.getValue());
+
+		std::shared_ptr<ASTNode> right = parseFactor();
+
+		// Create a new AST node to combine the factor and term and add it under current operation
+		operationNode->addChild(left);
+		operationNode->addChild(right);
+
+		// Swap left operand and operation for next iteration
+		left = operationNode;
+		operation = peekNextToken();
 	}
 
-	return factor;
+	return left;
 }
+// ai-gen end
 
 std::shared_ptr<ASTNode> SimpleParser::parseFactor() {
 	LexicalToken nextToken = peekNextToken();
