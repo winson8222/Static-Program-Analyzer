@@ -3,7 +3,7 @@
 #include <filesystem>
 
 TEST_CASE("StatementList parsing throws an error with invalid syntax", "[parse][statementList]") {
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/Stmt_Invalid1.txt";
+	const std::string testFileName = "../../../../../tests/sp/ParserTest/StmtList_Invalid1.txt";
 	REQUIRE(std::filesystem::exists(testFileName));
 	SimpleParserFacade parser(testFileName);
 
