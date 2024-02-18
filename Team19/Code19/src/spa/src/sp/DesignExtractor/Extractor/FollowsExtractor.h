@@ -1,3 +1,5 @@
+#pragma once
+
 #include "sp/DesignExtractor/Extractor/IExtractor.h"
 
 class FollowsExtractor : public IExtractor {

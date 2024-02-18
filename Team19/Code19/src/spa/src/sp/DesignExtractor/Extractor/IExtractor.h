@@ -1,3 +1,5 @@
+#pragma once
+
 #include <memory>
 #include "sp/AST/ASTNode.h"
 #include "pkb/PKBWriterManager.h"
@@ -20,4 +22,8 @@ public:
 		: root(root), pkbWriterManager(pkbWriterManager) {}
 
 	virtual void extract() = 0;
+
+private:
+	std::shared_ptr<ASTNode> root;
+	std::shared_ptr<PKBWriterManager> pkbWriterManager;
 };

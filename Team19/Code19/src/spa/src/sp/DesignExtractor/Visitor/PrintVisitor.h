@@ -1,3 +1,5 @@
+#pragma once
+
 #include "sp/DesignExtractor/Visitor/IVisitor.h"
 
 class PrintVisitor : public IVisitor {

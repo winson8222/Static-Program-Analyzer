@@ -1,3 +1,5 @@
+#pragma once
+
 #include "sp/DesignExtractor/Visitor/IVisitor.h"
 
 // ai-gen start (gpt, 2, e)
