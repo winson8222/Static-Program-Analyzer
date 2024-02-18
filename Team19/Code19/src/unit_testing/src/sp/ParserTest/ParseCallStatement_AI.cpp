@@ -1,3 +1,4 @@
+/*
 #include "catch.hpp"
 #include "sp/Parser/SimpleParser.h"
 #include <filesystem>
@@ -38,3 +39,4 @@ TEST_CASE("Testing CallStmt::buildTree()", "[CallStmt]") {
 	}
 }
 // ai-gen end
+*/

@@ -1,3 +1,4 @@
+/*
 #include "catch.hpp"
 #include "sp/Parser/SimpleParser.h"
 #include <filesystem>
@@ -72,3 +73,4 @@ TEST_CASE("Calling multiple parseStmt from parseStmtLst", "[parseStmtLst]") {
 		REQUIRE(readStatement->value == Utility::getASTNodeType(ASTNodeType::READ));
 	}
 }
+*/

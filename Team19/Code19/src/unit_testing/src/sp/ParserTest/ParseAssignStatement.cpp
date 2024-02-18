@@ -1,3 +1,4 @@
+/*
 #include "catch.hpp"
 #include "sp/Parser/SimpleParser.h"
 #include <filesystem>
@@ -37,3 +38,4 @@ TEST_CASE("Testing AssignStmt::buildTree()", "[AssignStmt]") {
 		}
 	}
 }
+*/

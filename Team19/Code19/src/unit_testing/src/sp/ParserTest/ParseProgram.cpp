@@ -1,33 +1,33 @@
 #include "catch.hpp"
-#include "sp/Parser/SimpleParser.h"
+#include "sp/Parser/SimpleParserFacade.h"
 #include <iostream>
 #include <filesystem>
 
 TEST_CASE("Program parsing throws an error for missing curly brace", "[parseProgram]") {
 	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program_Invalid1.txt";
 	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParser parser(testFileName);
+	SimpleParserFacade parser(testFileName);
 
 	// For this test, we expect parsing to terminate due to erroneous input.
-	CHECK_THROWS_AS(parser.parseProcedure(), std::runtime_error);
+	CHECK_THROWS_AS(parser.parse(), std::runtime_error);
 }
 
 
 TEST_CASE("Program parsing throws an error for missing curly braces", "[parseProgram]") {
 	const std::string testFileName = "../../../../../tests/sp/ParserTest/Procedure_Invalid2.txt";
 	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParser parser(testFileName);
+	SimpleParserFacade parser(testFileName);
 
 	// For this test, we expect parsing to terminate due to erroneous input.
-	CHECK_THROWS_AS(parser.parseProcedure(), std::runtime_error);
+	CHECK_THROWS_AS(parser.parse(), std::runtime_error);
 }
 
 TEST_CASE("Calling parseProgram with print, read, call statements", "[parseProgram]") {
 	// Generate test file
 	const std::string testFileName = "../../../../../tests/sp/ParserTest/Procedure1.txt";
 	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParser parser(testFileName);
-	std::shared_ptr<ASTNode> tree_ptr = parser.parseProgram();
+	SimpleParserFacade parser(testFileName);
+	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
 
 	REQUIRE(tree_ptr->type == ASTNodeType::PROGRAMS);
 	REQUIRE(tree_ptr->lineNumber == 1);
@@ -70,11 +70,10 @@ TEST_CASE("Calling parseProgram with print, read, call statements", "[parseProgr
 }
 
 TEST_CASE("Calling parseProgram for multiple procedures", "[parseProgram]") {
-	// Generate test file
 	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program1.txt";
 	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParser parser(testFileName);
-	std::shared_ptr<ASTNode> tree_ptr = parser.parseProgram();
+	SimpleParserFacade parser(testFileName);
+	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
 
 	REQUIRE(tree_ptr->type == ASTNodeType::PROGRAMS);
 	REQUIRE(tree_ptr->lineNumber == 1);
@@ -92,8 +91,8 @@ TEST_CASE("Test string representations of programs", "[parseProcedure]") {
 	// Generate test file
 	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program1.txt";
 	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParser parser(testFileName);
-	std::shared_ptr<ASTNode> tree_ptr = parser.parseProgram();
+	SimpleParserFacade parser(testFileName);
+	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
 
 
 	std::string content;

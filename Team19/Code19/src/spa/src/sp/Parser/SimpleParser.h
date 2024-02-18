@@ -19,7 +19,7 @@ public:
 	SimpleParser(std::string filename);
 	std::shared_ptr<ASTNode> parseProgram();
 
-	// private:
+private:
 	std::vector<LexicalToken> tokenStream;
 	int tokenIndex;
 	void assertToken(LexicalToken token, LexicalTokenType type) const;
