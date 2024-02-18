@@ -1,6 +1,9 @@
-#include "ExtractorInterface.h"
+#include "sp/DesignExtractor/Extractor/IExtractor.h"
 
 class AssignExtractor : public IExtractor {
 public:
-    void extract(const std::shared_ptr<ASTNode>& node) override;
+	explicit AssignExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
+		: IExtractor(root, pkbWriterManager) {}
+
+	void extract() override;
 };
