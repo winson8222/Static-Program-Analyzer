@@ -65,8 +65,14 @@ public:
     * @brief Convert a token to its regex representations
     */
     static const std::vector<std::pair<LexicalTokenType, std::string>> tokenToRegexPairs;
+
     /**
     * @brief Check whether a token is a keyword
     */
     static bool isKeyword(LexicalTokenType type);
+
+    /**
+    * @brief Check whether a token is a keyword
+    */
+    static const std::string printType(LexicalTokenType type);
 };

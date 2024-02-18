@@ -84,7 +84,7 @@ LexicalToken SimpleParser::peekNextNextToken() {
 
 void SimpleParser::assertToken(LexicalToken token, LexicalTokenType type) const {
 	if (!token.isType(type)) {
-		throw std::runtime_error("Error: Invalid SIMPLE syntax.");
+		throw std::runtime_error("Error: Expected " + LexicalTokenTypeMapper::printType(type) + "but got " + LexicalTokenTypeMapper::printType(token.getTokenType()));
 	}
 }
 
