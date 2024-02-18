@@ -16,11 +16,15 @@ std::shared_ptr<ASTNode> SimpleParser::parseProgram() {
 		procedures.push_back(this->parseProcedure());
 	}
 
-	// Depending on how important the the number of lines is to the code, find out whether to further go ahead
-	// with finding the number of lines.
-	Program program = Program(-1, procedures);
+	std::shared_ptr<ASTNode> root = std::make_shared<ASTNode>(
+		ASTNodeType::PROGRAMS, 1, Utility::getASTNodeType(ASTNodeType::PROGRAMS)
+	);
 
-	return program.buildTree();
+	for (auto& procedure : procedures) {
+		root->addChild(procedure);
+	}
+
+	return root;
 }
 
 void SimpleParser::assertToken(LexicalToken token, LexicalTokenType type) const {
@@ -95,18 +99,21 @@ std::shared_ptr<ASTNode> SimpleParser::parseProcedure() {
 	LexicalToken procedureKeyword = this->getNextToken();
 	this->assertToken(procedureKeyword, LexicalTokenType::KEYWORD_PROCEDURE);
 
-	LexicalToken procedureName = this->getNextToken();
-	this->assertToken(procedureName, LexicalTokenType::NAME);
+	// Future iterations: To add procedure name into the tree. Currently not added due to how test cases are structured.
+	// Also, Maybe can consider adding procedure name as a variable value instead.
+	std::shared_ptr<ASTNode> procedureName = this->parseProcName();
+
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_OPEN_BRACE);
-
-	// Parse Statement Lists;
 	std::shared_ptr<ASTNode> statementList = this->parseStmtLst();
+	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_BRACE);
 
-	LexicalToken closeBrace = this->getNextToken();
-	this->assertToken(closeBrace, LexicalTokenType::SYMBOL_CLOSE_BRACE);
+	std::shared_ptr<ASTNode> procedureTree = std::make_shared<ASTNode>(
+		ASTNodeType::PROCEDURE, procedureKeyword.getLine(), Utility::getASTNodeType(ASTNodeType::PROCEDURE)
+	);
 
-	Procedure procedure = Procedure(procedureKeyword.getLine(), closeBrace.getLine(), statementList);
-	return procedure.buildTree();
+	procedureTree->addChild(statementList);
+	return procedureTree;
+
 }
 
 std::shared_ptr<ASTNode> SimpleParser::parseStmtLst() {
@@ -254,7 +261,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseIf() {
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_PAREN);
 
 	this->assertToken(this->getNextToken(), LexicalTokenType::KEYWORD_THEN);
-	
+
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_OPEN_BRACE);
 	std::shared_ptr<ASTNode> thenStmtLst = this->parseStmtLst();
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_BRACE);
@@ -286,7 +293,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseAssign() {
 		ASTNodeType::ASSIGN, assign.getLine(), Utility::getASTNodeType(ASTNodeType::ASSIGN)
 	);
 
-	std::shared_ptr<ASTNode> expr = this -> parseExpr();
+	std::shared_ptr<ASTNode> expr = this->parseExpr();
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_SEMICOLON);
 
 	assignNode->addChild(variable);
@@ -324,15 +331,15 @@ std::shared_ptr<ASTNode> SimpleParser::parseCondExpr() {
 
 	// If of form  ‘(’ cond_expr ‘)’ ‘&&’ ‘(’ cond_expr ‘)’ OR ‘(’ cond_expr ‘)’ ‘||’ ‘(’ cond_expr ‘)’
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_OPEN_PAREN);
-	std::shared_ptr<ASTNode> left = this->parseCondExpr(); 
-	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_PAREN); 
+	std::shared_ptr<ASTNode> left = this->parseCondExpr();
+	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_PAREN);
 
 	// Retrieve logical operator (AND, OR)
-	LexicalToken logicalOperator = this->getNextToken(); 
+	LexicalToken logicalOperator = this->getNextToken();
 	this->assertToken(logicalOperator, LexicalTokenType::OPERATOR_CONDITIONAL);
 
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_OPEN_PAREN);
-	std::shared_ptr<ASTNode> right = this->parseCondExpr(); 
+	std::shared_ptr<ASTNode> right = this->parseCondExpr();
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_PAREN);
 
 	if (logicalOperator.isType(LexicalTokenType::OPERATOR_AND)) {

@@ -1,12 +1,12 @@
 #pragma once
 
+#include <memory>
 #include <vector>
+#include "sp/AST/ast.h"
 #include "sp/SPTokenizer/SPTokenizer.h"
 #include "sp/SPTokenizer/LexicalToken.h"
 #include "sp/SPTokenizer/FileProcessor.h"
-#include "StmtList.h"
-#include "Procedure.h"
-#include "Program.h"
+#include "sp/Utility.h"
 
 // ai-gen start(gpt,2,e)
 // Prompt: https://platform.openai.com/playground/p/cJLjmmneCEs4z6ms7ZkBSxJB?model=gpt-4&mode=chat
