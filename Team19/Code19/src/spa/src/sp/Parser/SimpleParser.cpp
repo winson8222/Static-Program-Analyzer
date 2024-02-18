@@ -204,8 +204,27 @@ std::shared_ptr<ASTNode> SimpleParser::parseCall() {
 	return callStmt.buildTree();
 }
 
-void SimpleParser::parseWhile() {
-	// Add parsing logic for while
+// ‘while’ ‘(’ cond_expr ‘)’  ‘{‘ stmtLst ‘}’
+std::shared_ptr<ASTNode> SimpleParser::parseWhile() {
+	LexicalToken keyword = this->getNextToken();
+	this->assertToken(keyword, LexicalTokenType::KEYWORD_WHILE);
+	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_OPEN_PAREN);
+
+	std::shared_ptr<ASTNode> condExpr = this->parseCondExpr();
+	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_PAREN);
+
+	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_OPEN_BRACE);
+	std::shared_ptr<ASTNode> stmtLst = this->parseStmtLst();
+	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_BRACE);
+
+	std::shared_ptr<ASTNode> whileTree = std::make_shared<ASTNode>(
+		ASTNodeType::WHILE, keyword.getLine(), Utility::getASTNodeType(ASTNodeType::WHILE)
+	);
+
+	whileTree->addChild(condExpr);
+	whileTree->addChild(stmtLst);
+
+	return whileTree;
 }
 
 void SimpleParser::parseIf() {
@@ -397,7 +416,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseFactor() {
 	LexicalToken nextToken = peekNextToken();
 
 	if (nextToken.isType(LexicalTokenType::SYMBOL_OPEN_PAREN)) {
-		this->getNextToken(); // consume open paran
+		this->getNextToken();
 		std::shared_ptr<ASTNode> expr = parseExpr();
 		this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_PAREN);
 		return expr;
