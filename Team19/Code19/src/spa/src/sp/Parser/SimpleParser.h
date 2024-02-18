@@ -23,7 +23,6 @@ private:
 	std::vector<LexicalToken> tokenStream;
 	int tokenIndex;
 	void assertToken(LexicalToken token, LexicalTokenType type) const;
-	bool isTokenType(LexicalToken token, LexicalTokenType type) const;
 	bool hasTokensLeft() const;
 	LexicalToken peekNextToken();
 	LexicalToken getNextToken();
