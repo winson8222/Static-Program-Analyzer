@@ -1,8 +1,10 @@
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
+#include <stdexcept>
+
 #include "pkb/PKBWriterManager.h"
-#include "sp/AST/ASTNode.h" // Assuming you have ASTNode defined in ASTNode.h
+#include "sp/AST/ASTNode.h"
 #include "sp/DesignExtractor/Visitor/IVisitor.h"
 
 #include "sp/DesignExtractor/Visitor/AssignVisitor.h"
