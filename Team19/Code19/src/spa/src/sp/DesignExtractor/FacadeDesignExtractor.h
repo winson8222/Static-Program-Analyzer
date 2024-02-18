@@ -3,15 +3,20 @@
 #include <unordered_set>
 #include "pkb/PKBWriterManager.h"
 #include "sp/AST/ASTNode.h" // Assuming you have ASTNode defined in ASTNode.h
+#include "sp/DesignExtractor/Visitor/IVisitor.h"
 
-class DesignExtractor {
+class FDesignExtractor {
 public:
-	// Constructor taking in the root node of the AST
-	std::shared_ptr<ASTNode> root;
-	std::shared_ptr<PKBWriterManager> pkbWriterManager;
-	explicit DesignExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager);
-	explicit DesignExtractor(std::shared_ptr<ASTNode> root);
-	explicit DesignExtractor(std::shared_ptr<PKBWriterManager> pkbWriterManager);
+    FDesignExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
+        : root(root), pkbWriterManager(pkbWriterManager) {}
 
-	void extractAndPopulateAll();
+    void extractAll() {
+        // Example: Extracting variables using VariableExtractorVisitor
+       
+        // Use the extracted data to populate PKB or perform other actions
+    }
+
+private:
+    std::shared_ptr<ASTNode> root;
+    std::shared_ptr<PKBWriterManager> pkbWriterManager;
 };
