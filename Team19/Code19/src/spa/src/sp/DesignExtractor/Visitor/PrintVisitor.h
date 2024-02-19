@@ -10,7 +10,11 @@
 class PrintVisitor : public IVisitor {
 public:
 	PrintVisitor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
-		: IVisitor(root, pkbWriterManager) {}
+		: IVisitor(root, pkbWriterManager) {
+		if (root->type != ASTNodeType::PRINT) {
+			throw std::invalid_argument("PrintVisitor - root is not of type PRINT");
+		}
+	}
 
 	void visit(std::shared_ptr<ASTNode> node) override;
 	void visit() override;
