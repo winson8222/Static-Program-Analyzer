@@ -3,6 +3,9 @@
 RelExpressionVisitor::RelExpressionVisitor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
 	: IVisitor(root, pkbWriterManager) {
 	// for now, do nothing
+	if (!Utility::nodeIsExpression(root->type) && !Utility::nodeIsConditionalOperator) {
+		throw std::runtime_error("ERROR: RelExpressionVisitor root node type not supported");
+	}
 }
 
 void RelExpressionVisitor::visit() {
