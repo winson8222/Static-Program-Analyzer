@@ -5,10 +5,10 @@ ExpressionVisitor::ExpressionVisitor(std::shared_ptr<ASTNode> root, std::shared_
 	
 }
 
-ExpressionVisitor::visit() {
+void ExpressionVisitor::visit() {
 
 }
 
-ExpressionVisitor::visit(std::shared_ptr<ASTNode> node) {
+void ExpressionVisitor::visit(std::shared_ptr<ASTNode> node) {
 	
 }
