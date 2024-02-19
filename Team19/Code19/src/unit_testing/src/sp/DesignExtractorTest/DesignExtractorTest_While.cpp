@@ -65,3 +65,19 @@ TEST_CASE("Tests for while statements", "[DesignExtractor::extract]") {
 	std::unordered_set<int> expectedWhiles = { 2 };
 	REQUIRE(whiles == expectedWhiles);
 }
+
+TEST_CASE("Tests invalid while statements", "[DesignExtractor::extract]") {
+	std::shared_ptr<ASTNode> whileNode = std::make_shared<ASTNode>(ASTNode(ASTNodeType::WHILE, 2, "while"));
+	std::shared_ptr<ASTNode> var1 = std::make_shared<ASTNode>(ASTNode(ASTNodeType::VARIABLE, 2, "x"));
+
+	whileNode->addChild(var1);
+	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
+	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
+
+	REQUIRE_THROWS_WITH(WhileVisitor(whileNode, pkbWriterManager),
+		"ERROR: While node is not correct");
+
+	std::shared_ptr<ASTNode> relExprNode = std::make_shared<ASTNode>(ASTNode(ASTNodeType::LESSER, 2, "<"));
+	REQUIRE_THROWS_WITH(WhileVisitor(relExprNode, pkbWriterManager),
+		"ERROR: Cannot initialized a non-WHILE node");
+}
