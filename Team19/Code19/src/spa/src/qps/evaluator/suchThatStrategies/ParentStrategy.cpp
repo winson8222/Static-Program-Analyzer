@@ -88,4 +88,6 @@ void ParentStrategy::processIntegerParams(const Token& firstParam, const Token& 
         const unordered_set<int>& parents = statementReader->getAllStatements();
         fillResult(parents, result);
     }
+    // Should stop processing if the relationship is not satisfied
+    // Should this just be true or false?
 }

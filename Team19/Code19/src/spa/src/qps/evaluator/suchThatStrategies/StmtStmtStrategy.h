@@ -24,6 +24,9 @@ public:
 
     virtual void processSecondParam(const Token& firstParam, const string& variant,
                             unordered_set<string>& result) = 0;
+
+//    virtual void processBothParam(const Token& firstParam, const Token& secondParam,
+//                                  unordered_set<string>& result) = 0;
 protected:
     static bool isBothParamsWildcard(const Token& firstParam, const Token& secondParam);
     static bool isBothParamsInteger(const Token& firstParam, const Token& secondParam);
