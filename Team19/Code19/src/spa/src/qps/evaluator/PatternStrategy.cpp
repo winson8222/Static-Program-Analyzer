@@ -1,6 +1,7 @@
 #include "PatternStrategy.h"
 #include "qps/parser/Token.h" // Include the Token header
 #include <regex>
+#include <iostream>
 
 using namespace std;
 
@@ -39,6 +40,7 @@ void PatternStrategy::processLHS(const Token& firstParam,  unordered_set<string>
     // now there are 3 cases, either wildcard where we retrieve all assignments
     // or quoted variable where we retrieve all assignment with this variable
     // or synonym - not sure how to handle this yet
+
     if (firstParam.getType() == TokenType::QuoutIDENT) {
 
         //extract the Identifier from the token
@@ -120,7 +122,11 @@ void PatternStrategy::combineResults(const unordered_set<int>& newResult, unorde
     }
 }
 
-
+void PatternStrategy::fillResult(const unordered_set<int>& follows, unordered_set<std::string>& result) {
+    for (int statement : follows) {
+        result.insert(to_string(statement));
+    }
+}
 
 
 
