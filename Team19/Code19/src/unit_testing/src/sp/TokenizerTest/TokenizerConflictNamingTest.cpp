@@ -13,8 +13,13 @@ TEST_CASE("Tokenizer throws error for invalid syntax", "[tokenize]") {
 }
 
 TEST_CASE("Procedure test", "[tokenize]") {
-    std::vector<LexicalToken> output = SPTokenizer::tokenize("procedure procedure { procedure = procedure + 1; }");
-    for (auto token : output) {
-		std::cout << LexicalTokenTypeMapper::tokenToStringMap.find(token.getTokenType())->second << std::endl;
+    std::vector<LexicalToken> output = SPTokenizer::tokenize("procedure procedure { procedure = 2 }");
+    REQUIRE(output[0].getTokenType() == LexicalTokenType::KEYWORD_PROCEDURE);
+    REQUIRE(output[1].getTokenType() == LexicalTokenType::NAME);
+
+    std::cout << "procedure procedure { procedure = 2 }" << std::endl;
+    for (auto val : output) {
+        std::cout << LexicalTokenTypeMapper::tokenToStringMap.find(val.getTokenType())->second << std::endl;
 	}
+
 }

@@ -22,9 +22,4 @@ TEST_CASE("Test header", "[SourceProcessor]") {
     std::shared_ptr<PKBReaderManager> pkbReaderManager = sp.pkbManager->getPKBReaderManager();
     auto variableReader = pkbReaderManager->getVariableReader();
     auto values1 = variableReader->getAllVariables();
-    std::cout << "All Extracted variables: ";
-    for (auto& var : values1) {
-		std::cout << var << ", ";
-	}
-    std::cout << std::endl;
 }
