@@ -30,15 +30,15 @@ public:
         return store->getValueKeyRelationships();
     }
 
-    std::unordered_set<std::string> getRelationshipsByKey(const std::string& key) {
+    std::unordered_set<std::string> getRelationshipsByKey(std::string key) override {
         return store->getRelationshipsByKey(key);
     }
 
-    std::unordered_set<std::string> getRelationshipsByValue(const std::string& value) {
+    std::unordered_set<std::string> getRelationshipsByValue(std::string value) override {
         return store->getRelationshipsByValue(value);
     }
 
-    bool hasRelationship(const std::string& key, const std::string& value) {
+    bool hasRelationship(std::string key, std::string value) override {
         return store->hasRelationship(key, value);
     }
 

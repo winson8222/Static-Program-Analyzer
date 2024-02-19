@@ -7,10 +7,6 @@
 #include <unordered_set>
 #include <unordered_map>
 
-/**
- * Provides read-only access to the Uses relationships for statements.
- * Specifically, it accesses data about which statements use which variables.
- */
 class UsesSReader : public IRelationshipReader<int, std::string> {
 private:
     std::shared_ptr<UsesSStore> store; // Store for Uses relationships involving statements.
@@ -34,11 +30,11 @@ public:
         return store->getRelationshipsByKey(key);
     }
 
-    std::unordered_set<int> getRelationshipsByValue(const std::string& value) {
+    std::unordered_set<int> getRelationshipsByValue(std::string value) override {
         return store->getRelationshipsByValue(value);
     }
 
-    bool hasRelationship(int key, const std::string& value) {
+    bool hasRelationship(int key, std::string value) override {
         return store->hasRelationship(key, value);
     }
 

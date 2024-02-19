@@ -28,19 +28,18 @@ public:
     }
 
     std::unordered_map<std::string, std::unordered_set<int>> getValueKeyRelationships() override {
-        // This implementation needs to be adjusted if IRelationshipReader's signature expects this return type.
-        // It might require rethinking how the data is stored or transforming the data to fit this requirement.
+        return store->getValueKeyRelationships();
     }
 
     std::unordered_set<std::string> getRelationshipsByKey(int key) override {
         return store->getRelationshipsByKey(key);
     }
 
-    std::unordered_set<int> getRelationshipsByValue(const std::string& value) override {
+    std::unordered_set<int> getRelationshipsByValue(std::string value) override {
         return store->getRelationshipsByValue(value);
     }
 
-    bool hasRelationship(int key, const std::string& value) override {
+    bool hasRelationship(int key, std::string value) override {
         return store->hasRelationship(key, value);
     }
 
