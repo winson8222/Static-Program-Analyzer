@@ -1,5 +1,4 @@
 #include "catch.hpp"
-#include "pkb/PKBManager.h"
 #include "pkb/stores/relationships/types/ModifiesPStore.h"
 #include "pkb/readers/relationships/ModifiesPReader.h"
 
