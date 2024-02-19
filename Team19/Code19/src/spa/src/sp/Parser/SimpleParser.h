@@ -1,16 +1,12 @@
 #pragma once
 
+#include <memory>
 #include <vector>
+#include "sp/AST/ast.h"
 #include "sp/SPTokenizer/SPTokenizer.h"
 #include "sp/SPTokenizer/LexicalToken.h"
 #include "sp/SPTokenizer/FileProcessor.h"
-#include "CallStmt.h"
-#include "ReadStmt.h"
-#include "PrintStmt.h"
-#include "AssignStmt.h"
-#include "StmtList.h"
-#include "Procedure.h"
-#include "Program.h"
+#include "sp/Utility.h"
 
 // ai-gen start(gpt,2,e)
 // Prompt: https://platform.openai.com/playground/p/cJLjmmneCEs4z6ms7ZkBSxJB?model=gpt-4&mode=chat
@@ -33,17 +29,17 @@ private:
 	std::shared_ptr<ASTNode> parseRead();
 	std::shared_ptr<ASTNode> parsePrint();
 	std::shared_ptr<ASTNode> parseCall();
-	void parseWhile();
-	void parseIf();
+	std::shared_ptr<ASTNode> parseWhile();
+	std::shared_ptr<ASTNode> parseIf();
 	std::shared_ptr<ASTNode> parseAssign();
-	void parseCondExpr();
-	void parseRelExpr();
-	void parseRelFactor();
-	void parseExpr();
-	void parseTerm();
-	void parseFactor();
-	void parseVarName();
-	void parseProcName();
-	void parseConstValue();
+	std::shared_ptr<ASTNode> parseCondExpr();
+	std::shared_ptr<ASTNode> parseRelExpr();
+	std::shared_ptr<ASTNode> parseRelFactor();
+	std::shared_ptr<ASTNode> parseExpr();
+	std::shared_ptr<ASTNode> parseTerm();
+	std::shared_ptr<ASTNode> parseFactor();
+	std::shared_ptr<ASTNode> parseVarName();
+	std::shared_ptr<ASTNode> parseProcName();
+	std::shared_ptr<ASTNode> parseConstValue();
 };
 // ai-gen end
