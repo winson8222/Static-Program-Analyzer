@@ -20,7 +20,10 @@ void WhileVisitor::visit() {
 	std::shared_ptr<ASTNode> expression = root->children[0];
 	std::shared_ptr<ASTNode> statementList = root->children[1];
 
-	ExpressionVisitor expressionVisitor(expression, pkbWriterManager);
+	WhileExtractor whileExtractor(root, pkbWriterManager);
+	whileExtractor.extract();
+
+	RelExpressionVisitor expressionVisitor(expression, pkbWriterManager);
 	expressionVisitor.visit();
 
 	StatementListVisitor statementListVisitor(statementList, pkbWriterManager);

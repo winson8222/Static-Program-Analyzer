@@ -84,4 +84,16 @@ bool Utility::nodeIsConditionalOperator(ASTNodeType t) {
 		|| t == ASTNodeType::NOT;
 }
 
+
+/*
+static bool isCondExpr(ASTNodeType t);
+static bool isRelExpr(ASTNodeType t);
+static bool isRelFactor(ASTNodeType t);
+static bool isExpr(ASTNodeType t);
+static bool isTerm(ASTNodeType t);
+static bool isFactor(ASTNodeType t);
+static bool isVariable(ASTNodeType t);
+static bool isProcName(ASTNodeType t);
+static bool isConstant(ASTNodeType t);
+*/
 // ai-gen end

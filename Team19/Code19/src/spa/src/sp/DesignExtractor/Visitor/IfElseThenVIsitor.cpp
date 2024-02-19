@@ -18,11 +18,14 @@ void IfElseThenVisitor::visit(std::shared_ptr<ASTNode> node) {
 
 void IfElseThenVisitor::visit() {
 	// TODO
+	IfThenElseExtractor ifThenElseExtractor(root, pkbWriterManager);
+	ifThenElseExtractor.extract();
+
 	std::shared_ptr<ASTNode> condition = root->children[0];
 	std::shared_ptr<ASTNode> thenStatementList = root->children[1];
 	std::shared_ptr<ASTNode> elseStatementList = root->children[2];
 
-	ExpressionVisitor expressionVisitor(condition, pkbWriterManager);
+	RelExpressionVisitor expressionVisitor(condition, pkbWriterManager);
 	expressionVisitor.visit();
 
 	StatementListVisitor thenStatementListVisitor(thenStatementList, pkbWriterManager);
