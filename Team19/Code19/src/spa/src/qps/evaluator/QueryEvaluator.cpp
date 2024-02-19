@@ -1,6 +1,7 @@
 #include "QueryEvaluator.h"
 #include "qps/evaluator/suchThatStrategies/FollowsStrategy.h" // Include FollowsStrategy
 #include "qps/evaluator/suchThatStrategies/ParentStrategy.h" // Include ParentStrategy
+#include "PatternStrategy.h"
 
 using namespace std;
 
@@ -29,7 +30,8 @@ std::vector<string> QueryEvaluator::evaluateQuery() {
         }
         else if (parsingResult.getSuchThatClauseRelationship().getValue() == "Parent" || parsingResult.getSuchThatClauseRelationship().getValue() == "ParentT") {
             addStrategy(std::make_unique<ParentStrategy>());
-        } else {
+        }
+        else {
             // if there is no clause, return all statements
             unordered_set<int> allStmts = pkbReaderManager->getStatementReader()->getAllStatements();
             for (int stmt : allStmts) {
@@ -44,6 +46,12 @@ std::vector<string> QueryEvaluator::evaluateQuery() {
         // now we are only supporting getting all variables
         std::shared_ptr<VariableReader> variableReader = pkbReaderManager->getVariableReader();
         result = variableReader->getAllVariables();
+    }
+
+    if (requiredType == "assign") {
+        if (parsingResult.getPatternClauseRelationship().getValue() != "") {
+            addStrategy(std::make_unique<PatternStrategy>());
+        }
     }
 
     bool isFirstStrategy = true;
