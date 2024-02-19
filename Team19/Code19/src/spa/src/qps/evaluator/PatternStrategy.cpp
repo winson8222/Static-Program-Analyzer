@@ -15,15 +15,15 @@ unordered_set<string> PatternStrategy::evaluateQuery(PKBReaderManager& pkbReader
     unordered_set<string> result;
 
     // Obtain readers from PKBReaderManager
-    this->patternReader = pkbReaderManager.getPatternReader();//dummy function
+    this->patternReader = pkbReaderManager.getAssignPatternReader();//dummy function
     this->assignReader = pkbReaderManager.getAssignReader();
 
     const Token& patternFirstParam = parsingResult.getPatternClauseFirstParam();
     const Token& patternSecondParam = parsingResult.getPatternClauseSecondParam();
-    bool partialMatch = patternSecondParam.getValue()[0] == "_";
+    bool partialMatch = patternSecondParam.getValue()[0] == '_';
 
-    processLHS(patternFirstParam, patternReader, result);
-    processRHS(patternSecondParam, patternReader, result, partialMatch);
+    processLHS(patternFirstParam, result);
+    processRHS(patternSecondParam, result, partialMatch);
 
 
     return result;
@@ -44,17 +44,18 @@ void PatternStrategy::processLHS(const Token& firstParam,  unordered_set<string>
         //extract the Identifier from the token
         regex pattern(R"(["](.*?)["])");
         smatch matches;
-        std::regex_search(firstParam.getValue(), matches, pattern);
+        string firstParamValue = firstParam.getValue();
+        std::regex_search(firstParamValue, matches, pattern);
         string variable = matches[1].str();
 
-		const unordered_set<int>& assignments = patternReader->getAssignmentsWithLHS(variable); //dummy function
+		const unordered_set<int>& assignments = patternReader->getStatementNumbersWithLHS(variable); //dummy function
 		fillResult(assignments, result);
 	}
     else if (firstParam.getType() == TokenType::Wildcard) {
 		const unordered_set<int>& assignments = assignReader->getAllAssigns();
 		// can skip filling the result as all that matters is the RHS now
 	}
-    else if (firstParam.getType() == TokenType::Synonym) {
+    else if (firstParam.getType() == TokenType::IDENT) {
 		// not sure how to handle this yet
 	}
 }
@@ -77,15 +78,16 @@ void PatternStrategy::processRHS(const Token& secondParam, unordered_set<string>
         //extract the quoted expression from the token
         regex pattern(R"(["](.*?)["])");
         smatch matches;
-        std::regex_search(secondParam.getValue(), matches, pattern);
+        string secondParamValue = secondParam.getValue();
+        std::regex_search(secondParamValue, matches, pattern);
         string expressionValue = matches[1].str();
 
         if (partialMatch) {
-			const unordered_set<int>& assignments = patternReader->getPartialAssignmentsWithRHS(expressionValue); //dummy function
+			const unordered_set<int>& assignments = patternReader->getStatementNumbersWithPartialRHS(expressionValue); //dummy function
             combineResults(assignments, result);
         }
         else {
-            const unordered_set<int>& assignments = patternReader->getAssignmentsWithRHS(expressionValue); //dummy function
+            const unordered_set<int>& assignments = patternReader->getStatementNumbersWithRHS(expressionValue); //dummy function
             combineResults(assignments, result);
         }
         
@@ -108,14 +110,14 @@ void PatternStrategy::processRHS(const Token& secondParam, unordered_set<string>
  * @param result - The existing set of results to be updated.
  */
 void PatternStrategy::combineResults(const unordered_set<int>& newResult, unordered_set<string>& result) {
-    unordered_set<string> intersectedResult;
-    for (const string& val : result) {
-        int num = stoi(val);
-        if (newResult.find(num) != newResult.end()) {
-            intersectedResult.insert(val);
+    for (auto it = result.begin(); it != result.end(); ) {
+        if (newResult.find(stoi(*it)) == newResult.end()) {
+            it = result.erase(it);
+        }
+        else {
+            ++it;
         }
     }
-    result = std::move(intersectedResult);
 }
 
 
