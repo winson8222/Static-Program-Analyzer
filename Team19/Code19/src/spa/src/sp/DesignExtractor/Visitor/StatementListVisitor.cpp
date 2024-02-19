@@ -5,12 +5,11 @@ void StatementListVisitor::visit(std::shared_ptr<ASTNode> node) {
 }
 
 void StatementListVisitor::visit() {
-
-	std::cout << "REACHED STATEMENT LIST" << std::endl;
 	auto statementLists = this->root->children;
 	for (auto statement : statementLists) {
+		std::cout << Utility::getASTNodeType(statement->type) << std::endl;
 		if (!Utility::nodeIsStatement(statement->type)) {
-			throw std::runtime_error("Not a statement!");
+			throw std::runtime_error("ERROR: Not a statement!");
 		}
 
 		if (statement->type == ASTNodeType::ASSIGN) {
@@ -38,7 +37,7 @@ void StatementListVisitor::visit() {
 			whileVisitor.visit();
 		}
 		else {
-			throw std::runtime_error("Unknown statement type!");
+			throw std::runtime_error("ERROR: Not a statement!");
 		}
 	}
 }

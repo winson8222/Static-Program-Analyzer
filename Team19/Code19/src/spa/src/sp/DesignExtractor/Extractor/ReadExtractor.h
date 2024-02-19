@@ -1,6 +1,7 @@
 #pragma once
 
 #include "sp/DesignExtractor/Extractor/IExtractor.h"
+#include <iostream>
 
 class ReadExtractor : public IExtractor {
 public:

@@ -1,5 +1,15 @@
 #include "sp/DesignExtractor/Visitor/PrintVisitor.h"
 
+PrintVisitor::PrintVisitor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
+	: IVisitor(root, pkbWriterManager) {
+	if (root->type != ASTNodeType::PRINT) {
+		throw std::invalid_argument("PrintVisitor - root is not of type PRINT");
+	}
+	if (root->children.size() != 1) {
+		throw std::invalid_argument("PrintVisitor - root does not have 1 child");
+	}
+}
+
 void PrintVisitor::visit(std::shared_ptr<ASTNode> node) {
 	// do nothing for now
 }

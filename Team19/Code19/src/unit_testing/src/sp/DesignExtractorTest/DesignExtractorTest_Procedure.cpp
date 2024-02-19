@@ -11,15 +11,12 @@
 
 
 TEST_CASE("Tests for DesignExtractors for Procedure", "[DesignExtractor::extract]") {
-	std::cout << "BEGIN DESIGN EXTRACTOR TEST FOR PROCEDURE" << std::endl;
 	std::shared_ptr<ASTNode> root = std::make_shared<ASTNode>(ASTNode());
-	std::shared_ptr<ASTNode> prog = std::make_shared<ASTNode>(ASTNode(ASTNodeType::PROGRAMS, 0, "prog"));
 	std::shared_ptr<ASTNode> proc1 = std::make_shared<ASTNode>(ASTNode(ASTNodeType::PROCEDURE, 1, "proc1"));
 	std::shared_ptr<ASTNode> proc2 = std::make_shared<ASTNode>(ASTNode(ASTNodeType::PROCEDURE, 2, "proc2"));
 
-	prog->addChild(proc1);
-	prog->addChild(proc2);
-	root->addChild(prog);
+	root->addChild(proc1);
+	root->addChild(proc2);
 	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
 	FDesignExtractor fde(root, pkbWriterManager);
@@ -30,6 +27,15 @@ TEST_CASE("Tests for DesignExtractors for Procedure", "[DesignExtractor::extract
 
 	auto val = pkbReaderManager->getProcedureReader()->getAllProcedures();
 	REQUIRE(val == expectedProcNames);
+}
 
-	std::cout << "END DESIGN EXTRACTOR TEST FOR PROCEDURE" << std::endl;
+TEST_CASE("Tests invalid DesignExtractors for Procedure", "[DesignExtractor::extract]") {
+	std::shared_ptr<ASTNode> root = std::make_shared<ASTNode>(ASTNode(ASTNodeType::PROCEDURE, 0, "proc"));
+	std::shared_ptr<ASTNode> proc1 = std::make_shared<ASTNode>(ASTNode(ASTNodeType::PROCEDURE, 1, "proc1"));
+
+	root->addChild(proc1);
+	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
+	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
+	FDesignExtractor fde(root, pkbWriterManager);
+	REQUIRE_THROWS_WITH(fde.extractAll(), "ERROR: This is not the start node!");
 }
