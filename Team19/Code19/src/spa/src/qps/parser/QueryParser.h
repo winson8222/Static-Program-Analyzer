@@ -70,16 +70,17 @@ private:
     // Method to advance to the next token in the sequence.
     bool advanceToken();
 
+    // Method to check if the next token matches a given TokenType.
+    bool peekNextToken(TokenType type);
+
     // Method to check if the current token matches a given TokenType.
     // Returns true if it matches, false otherwise.
     bool match(TokenType type);
 
-
-
-
     bool parseVarSynonyms();
     bool parseStmtSynonyms();
     bool parseAssignSynonyms();
+
 
 
 

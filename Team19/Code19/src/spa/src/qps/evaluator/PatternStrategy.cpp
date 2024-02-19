@@ -55,6 +55,7 @@ void PatternStrategy::processLHS(const Token& firstParam,  unordered_set<string>
 	}
     else if (firstParam.getType() == TokenType::Wildcard) {
 		const unordered_set<int>& assignments = assignReader->getAllAssigns();
+        fillResult(assignments, result);
 		// can skip filling the result as all that matters is the RHS now
 	}
     else if (firstParam.getType() == TokenType::IDENT) {
@@ -77,6 +78,17 @@ void PatternStrategy::processRHS(const Token& secondParam, unordered_set<string>
 
     if (secondParam.getType() == TokenType::ExpressionSpec) {
 
+        // if the second param is a wildcard, we need to combine the results with the LHS
+        if (secondParam.getValue() == "_") {
+            if (result.empty()) {
+                const unordered_set<int>& assignments = assignReader->getAllAssigns();
+                combineResults(assignments, result);
+                return;
+            }
+            return;
+            // no need to do anything if the set is not empty as the intersection will be LHS only
+        }
+
         //extract the quoted expression from the token
         regex pattern(R"(["](.*?)["])");
         smatch matches;
@@ -86,21 +98,17 @@ void PatternStrategy::processRHS(const Token& secondParam, unordered_set<string>
 
         if (partialMatch) {
 			const unordered_set<int>& assignments = patternReader->getStatementNumbersWithPartialRHS(expressionValue); //dummy function
+
             combineResults(assignments, result);
         }
         else {
             const unordered_set<int>& assignments = patternReader->getStatementNumbersWithRHS(expressionValue); //dummy function
+
             combineResults(assignments, result);
         }
         
     }
-    else if (secondParam.getType() == TokenType::Wildcard) {
-        if (result.empty()) {
-            const unordered_set<int>& assignments = assignReader->getAllAssigns();
-            fillResult(assignments, result);
-        }
-        // no need to do anything if the set is not empty as the intersection will be LHS only
-	}
+
     
     
 

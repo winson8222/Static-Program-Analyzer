@@ -446,6 +446,9 @@ bool QueryParser::parseExpressionSpec() {
     if (match(TokenType::QuoutConst) || match(TokenType::QuoutIDENT)) {
         return true;
     } else if (match(TokenType::Wildcard)) {
+        if (!peekNextToken(TokenType::DoubleQuote)) {
+            return true;
+        }
         if (!advanceToken()) {
             return false;
         }
@@ -685,5 +688,13 @@ bool QueryParser::parseAssignSynonyms() {
 
 ParsingResult QueryParser::getParsingResult() const {
     return parsingResult;
+}
+
+// peek the next token
+bool QueryParser::peekNextToken(TokenType type) {
+    if (currentTokenIndex < tokens.size() - 1) {
+        return tokens[currentTokenIndex + 1].getType() == type;
+    }
+    return false;
 }
 
