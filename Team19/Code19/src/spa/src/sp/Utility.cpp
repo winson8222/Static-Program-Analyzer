@@ -73,4 +73,15 @@ bool Utility::nodeIsStatement(ASTNodeType t) {
         || t == ASTNodeType::READ || t == ASTNodeType::WHILE;
 }
 
+bool Utility::nodeIsExpression(ASTNodeType t) {
+	return  t == ASTNodeType::GREATER || t == ASTNodeType::GREATER_OR_EQUAL 
+        || t == ASTNodeType::LESSER || t == ASTNodeType::LESSER_OR_EQUAL 
+        || t == ASTNodeType::EQUAL || t == ASTNodeType::NOT_EQUAL;
+}
+
+bool Utility::nodeIsConditionalOperator(ASTNodeType t) {
+	return t == ASTNodeType::AND || t == ASTNodeType::OR 
+		|| t == ASTNodeType::NOT;
+}
+
 // ai-gen end

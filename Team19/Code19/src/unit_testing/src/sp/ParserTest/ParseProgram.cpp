@@ -73,5 +73,4 @@ TEST_CASE("Test string representations of programs", "[parse][program]") {
 	REQUIRE(content.find(subcontent1) != std::string::npos);
 	REQUIRE(content.find(subcontent2) != std::string::npos);
 	REQUIRE(content.find(subcontent3) != std::string::npos);
-
 }

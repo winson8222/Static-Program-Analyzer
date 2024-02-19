@@ -1,6 +1,7 @@
 #pragma once
 
 #include "sp/DesignExtractor/Visitor/IVisitor.h"
+#include "sp/DesignExtractor/Visitor/ExpressionVisitor.h"
 #include "sp/DesignExtractor/Visitor/StatementListVisitor.h"
 #include <stdexcept>
 #include <memory>

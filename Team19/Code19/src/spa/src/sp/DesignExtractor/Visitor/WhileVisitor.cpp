@@ -5,6 +5,10 @@ WhileVisitor::WhileVisitor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWri
 	if (root->type != ASTNodeType::WHILE) {
 		throw std::runtime_error("ERROR: Cannot initialized a non-WHILE node");
 	}
+
+	if (root->children.size() != 2) {
+		throw std::runtime_error("ERROR: While node is not correct");
+	}
 }
 
 void WhileVisitor::visit(std::shared_ptr<ASTNode> node) {
@@ -13,10 +17,12 @@ void WhileVisitor::visit(std::shared_ptr<ASTNode> node) {
 
 void WhileVisitor::visit() {
 	// do nothing
-	if (root->children.size() != 2) {
-		throw std::runtime_error("ERROR: While node is not correct");
-	}
-	auto statementList = root->children[0];
+	std::shared_ptr<ASTNode> expression = root->children[0];
+	std::shared_ptr<ASTNode> statementList = root->children[1];
+
+	ExpressionVisitor expressionVisitor(expression, pkbWriterManager);
+	expressionVisitor.visit();
+
 	StatementListVisitor statementListVisitor(statementList, pkbWriterManager);
 	statementListVisitor.visit();
 }

@@ -2,7 +2,7 @@
 
 ExpressionVisitor::ExpressionVisitor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
 	: IVisitor(root, pkbWriterManager) {
-	
+	// for now, do nothing
 }
 
 void ExpressionVisitor::visit() {
