@@ -10,7 +10,7 @@
 /**
  * @brief A store for managing assign patterns.
  */
-class AssignPatternStore : public IAssignPatternReader, IAssignPatternWriter {
+class AssignPatternStore : public IAssignPatternReader, public IAssignPatternWriter {
 private:
     std::unordered_map<int, std::string> LHSMap;
     std::unordered_map<int, std::string> RHSMap;
@@ -59,6 +59,15 @@ public:
     // Checks if the store contains a given assign pattern.
     bool contains(int statementNumber) override {
         return LHSMap.find(statementNumber) != LHSMap.end();
+    }
+
+    // Retrieves all statement numbers from the store.
+    std::unordered_set<int> getAllStatementNumbers() override {
+        std::unordered_set<int> result;
+        for (auto const& [key, value] : LHSMap) {
+            result.insert(key);
+        }
+        return result;
     }
 
     // Checks if the store contains a LHS and returns the set of statement numbers that contain the LHS.

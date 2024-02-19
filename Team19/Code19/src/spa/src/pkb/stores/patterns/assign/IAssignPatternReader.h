@@ -14,6 +14,8 @@ public:
 
     virtual std::unordered_map<int, std::pair<std::string, std::string>> getAllPatterns() = 0;
 
+    virtual std::unordered_set<int> getAllStatementNumbers() = 0;
+
     virtual std::pair<std::string, std::string> getPattern(int statementNumber) = 0;
 
     virtual bool contains(int statementNumber) = 0;

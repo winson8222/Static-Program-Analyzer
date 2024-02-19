@@ -21,6 +21,8 @@
 #include "pkb/stores/entities/types/ConstantStore.h"
 #include "pkb/stores/entities/types/ProcedureStore.h"
 #include "pkb/stores/patterns/assign/AssignPatternStore.h"
+#include "pkb/stores/patterns/control/IfPatternStore.h"
+#include "pkb/stores/patterns/control/WhilePatternStore.h"
 #include <memory>
 
 class PKB {
@@ -48,7 +50,9 @@ private:
     std::shared_ptr<ProcedureStore> procedureStore;
 
     // Pattern stores
-   std::shared_ptr<AssignPatternStore> assignPatternStore;
+    std::shared_ptr<AssignPatternStore> assignPatternStore;
+    std::shared_ptr<IfPatternStore> ifPatternStore;
+    std::shared_ptr<WhilePatternStore> whilePatternStore;
 public:
     PKB() {
         // Initialise all relationship stores
@@ -75,6 +79,8 @@ public:
 
         // Initialize all pattern stores
         assignPatternStore = std::make_shared<AssignPatternStore>();
+        ifPatternStore = std::make_shared<IfPatternStore>();
+        whilePatternStore = std::make_shared<WhilePatternStore>();
     }
 
     // Relationship Getters
@@ -101,4 +107,6 @@ public:
 
     // Pattern Getters
     std::shared_ptr<AssignPatternStore> getAssignPatternStore() { return assignPatternStore; }
+    std::shared_ptr<IfPatternStore> getIfPatternStore() { return ifPatternStore; }
+    std::shared_ptr<WhilePatternStore> getWhilePatternStore() { return whilePatternStore; }
 };

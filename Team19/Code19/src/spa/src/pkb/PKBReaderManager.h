@@ -21,6 +21,8 @@
 #include "pkb/readers/relationships/ParentTReader.h"
 
 #include "pkb/readers/patterns/AssignPatternReader.h"
+#include "pkb/readers/patterns/IfPatternReader.h"
+#include "pkb/readers/patterns/WhilePatternReader.h"
 
 class PKBReaderManager {
 private:
@@ -43,6 +45,8 @@ private:
     std::shared_ptr<ParentTReader> parentTReader;
 
     std::shared_ptr<AssignPatternReader> assignPatternReader;
+    std::shared_ptr<IfPatternReader> ifPatternReader;
+    std::shared_ptr<WhilePatternReader> whilePatternReader;
 
 public:
     explicit PKBReaderManager(const std::shared_ptr<PKB>& pkb): pkb(pkb) {
@@ -63,6 +67,8 @@ public:
       parentTReader = std::make_shared<ParentTReader>(pkb->getParentTStore());
 
       assignPatternReader = std::make_shared<AssignPatternReader>(pkb->getAssignPatternStore());
+      ifPatternReader = std::make_shared<IfPatternReader>(pkb->getIfPatternStore());
+        whilePatternReader = std::make_shared<WhilePatternReader>(pkb->getWhilePatternStore());
     }
 
     // Entity Readers
@@ -127,6 +133,14 @@ public:
     // Pattern Readers
     std::shared_ptr<AssignPatternReader> getAssignPatternReader() {
         return assignPatternReader;
+    }
+
+    std::shared_ptr<IfPatternReader> getIfPatternReader() {
+        return ifPatternReader;
+    }
+
+    std::shared_ptr<WhilePatternReader> getWhilePatternReader() {
+        return whilePatternReader;
     }
 };
 

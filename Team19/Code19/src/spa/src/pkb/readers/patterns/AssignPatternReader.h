@@ -35,6 +35,10 @@ public:
         return assignPatternStore->contains(statementNumber);
     }
 
+    std::unordered_set<int> getAllStatementNumbers() override {
+        return assignPatternStore->getAllStatementNumbers();
+    }
+
     std::unordered_set<int> getStatementNumbersWithLHS(const std::string& LHS) override {
         return assignPatternStore->getStatementNumbersWithLHS(LHS);
     }
