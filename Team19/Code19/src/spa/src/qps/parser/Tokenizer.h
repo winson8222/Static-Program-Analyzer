@@ -28,11 +28,15 @@ private:
 
     // A private method that splits the query into tokens based on the regular expression.
     // Returns a vector of Token objects.
-    vector<Token> splitQuery();
+    void splitQuery();
+
+    vector<Token> tokens;
 
     // A private method to determine the type of a token given its string representation.
     // Returns the TokenType of the token which is usefull in the QueryParser.
     TokenType determineTokenType(const string& tokenStr);
+    bool checkIfDeclaration();
+
 };
 
 #endif // TOKENIZER_H
