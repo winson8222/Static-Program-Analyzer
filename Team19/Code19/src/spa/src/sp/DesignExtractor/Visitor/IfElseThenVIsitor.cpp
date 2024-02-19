@@ -4,3 +4,7 @@ void IfElseThenVisitor::visit(std::shared_ptr<ASTNode> node) {
 
 	// do nothing for now
 }
+
+void IfElseThenVisitor::visit() {
+	// TODO
+}

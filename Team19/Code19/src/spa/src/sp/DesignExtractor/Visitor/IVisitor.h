@@ -21,6 +21,7 @@ class StatementListNode;
 class IVisitor {
 public:
     virtual void visit(std::shared_ptr<ASTNode> node) = 0;
+    virtual void visit() = 0;
     // Add more visit methods for other specific node types
 
     virtual ~IVisitor() {}
