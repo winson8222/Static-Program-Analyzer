@@ -20,6 +20,8 @@
 #include "pkb/readers/relationships/ParentReader.h"
 #include "pkb/readers/relationships/ParentTReader.h"
 
+#include "pkb/readers/patterns/AssignPatternReader.h"
+
 class PKBReaderManager {
 private:
     std::shared_ptr<PKB> pkb;
@@ -40,6 +42,8 @@ private:
     std::shared_ptr<ParentReader> parentReader;
     std::shared_ptr<ParentTReader> parentTReader;
 
+    std::shared_ptr<AssignPatternReader> assignPatternReader;
+
 public:
     explicit PKBReaderManager(const std::shared_ptr<PKB>& pkb): pkb(pkb) {
       assignReader = std::make_shared<AssignReader>(pkb->getAssignStore());
@@ -57,6 +61,8 @@ public:
       followsTReader = std::make_shared<FollowsTReader>(pkb->getFollowsTStore());
       parentReader = std::make_shared<ParentReader>(pkb->getParentStore());
       parentTReader = std::make_shared<ParentTReader>(pkb->getParentTStore());
+
+      assignPatternReader = std::make_shared<AssignPatternReader>(pkb->getAssignPatternStore());
     }
 
     // Entity Readers
@@ -116,6 +122,11 @@ public:
 
     std::shared_ptr<ParentTReader> getParentTReader() {
         return parentTReader;
+    }
+
+    // Pattern Readers
+    std::shared_ptr<AssignPatternReader> getAssignPatternReader() {
+        return assignPatternReader;
     }
 };
 

@@ -1,0 +1,4 @@
+procedure proc {
+	call variable123;
+	print xyz call;
+}

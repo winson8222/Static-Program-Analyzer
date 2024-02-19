@@ -1,11 +1,13 @@
 #pragma once
 
 #include <vector>
-#include "sp/Tokenizer.h"
-#include "sp/LexicalToken.h"
+#include "sp/SPTokenizer/SPTokenizer.h"
+#include "sp/SPTokenizer/LexicalToken.h"
+#include "sp/SPTokenizer/FileProcessor.h"
 #include "CallStmt.h"
 #include "ReadStmt.h"
 #include "PrintStmt.h"
+#include "AssignStmt.h"
 #include "StmtList.h"
 #include "Procedure.h"
 #include "Program.h"
@@ -14,17 +16,17 @@
 // Prompt: https://platform.openai.com/playground/p/cJLjmmneCEs4z6ms7ZkBSxJB?model=gpt-4&mode=chat
 class SimpleParser {
 public:
-   SimpleParser(); // Default constructor
-   SimpleParser(std::string filename);
-   std::shared_ptr<ASTNode> parseProgram();
+	SimpleParser(std::string filename);
+	std::shared_ptr<ASTNode> parseProgram();
 
-	// private:
+private:
 	std::vector<LexicalToken> tokenStream;
 	int tokenIndex;
 	void assertToken(LexicalToken token, LexicalTokenType type) const;
 	bool hasTokensLeft() const;
-	LexicalToken peekToken() const;
-	LexicalToken getToken();
+	LexicalToken peekNextToken();
+	LexicalToken getNextToken();
+	LexicalToken peekNextNextToken();
 	std::shared_ptr<ASTNode> parseProcedure();
 	std::shared_ptr<ASTNode> parseStmtLst();
 	std::shared_ptr<ASTNode> parseStmt();
@@ -33,7 +35,7 @@ public:
 	std::shared_ptr<ASTNode> parseCall();
 	void parseWhile();
 	void parseIf();
-	void parseAssign();
+	std::shared_ptr<ASTNode> parseAssign();
 	void parseCondExpr();
 	void parseRelExpr();
 	void parseRelFactor();

@@ -1,1 +1,1 @@
-call x;
+procedure p{call x;}

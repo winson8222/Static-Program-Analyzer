@@ -1,1 +1,0 @@
-call variable123 print;
