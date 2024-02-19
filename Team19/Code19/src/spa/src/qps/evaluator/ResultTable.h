@@ -39,6 +39,7 @@ public:
                                    const std::unordered_map<std::string, std::string>& row2,
                                    const std::vector<std::string>& commonColumns);
 
+
     // this is the function to get all the table content
     std::vector<std::unordered_map<std::string, std::string>> getRows() const;
 
@@ -46,21 +47,28 @@ public:
     std::vector<std::string> getColSet() const;
 
     // this is the insert function to insert an existing row
-    void insertRow(const std::unordered_map<std::string, std::string>& row);
+    void insertNewRow(const std::unordered_map<std::string, std::string>& row);
 
     // this is the function to insert a column
     void insertColumn(const std::string& colName);
 
+
+    //reset the columns and add new set of columns
     void insertAllColumns(const std::vector<std::string>& colNames);
+
+    // add a set of columns to the existing columns
+    void addColumnsSet(const std::vector<std::string>& colNames);
+
 
     // this function insert a column value to a specific row
     void insertValue(const std::string& colName, const std::string& value, const int rowNumber);
 
     // this function get the entire empty row at rowNumber
-    void insertNewRow();
+    void insertEmptyRow();
 
     // this function join the table on columns, combining the columns and merging the rows
     std::shared_ptr<ResultTable> joinOnColumns(const std::shared_ptr<ResultTable>& table2);
+
 
     // identify common and unique columns
     void identifyColumns(const std::shared_ptr<ResultTable>& table2,

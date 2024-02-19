@@ -3,6 +3,7 @@
 //
 
 #include "ResultTable.h"
+#include <initializer_list>
 
 std::shared_ptr<ResultTable> ResultTable::joinOnColumns(const std::shared_ptr<ResultTable>& table2) {
     //build a new empty table
@@ -12,6 +13,12 @@ std::shared_ptr<ResultTable> ResultTable::joinOnColumns(const std::shared_ptr<Re
 
     // find common columns and unique columns
     identifyColumns(table2, commonColumns, uniqueToTable1, uniqueToTable2);
+    // set the columns of the new table
+    result->addColumnsSet(commonColumns);
+    result->addColumnsSet(uniqueToTable2);
+    result->addColumnsSet(uniqueToTable1);
+
+
 
 
     // Iterate through rows of table1
@@ -22,7 +29,7 @@ std::shared_ptr<ResultTable> ResultTable::joinOnColumns(const std::shared_ptr<Re
             if (commonColumnsMatch(row1, row2, commonColumns)) {
                 // Merge rows (Implementation of `mergeRows` not shown)
                 std::unordered_map<std::string, std::string> mergedRow = mergeRows(row1, row2, commonColumns, uniqueToTable2);
-                result->insertRow(mergedRow);
+                result->insertNewRow(mergedRow);
             }
         }
     }
@@ -58,32 +65,32 @@ std::unordered_map<std::string, std::string> ResultTable::mergeRows(const std::u
 
 // this function identify common and unique columns
 
-void ResultTable::identifyColumns(const std::shared_ptr<ResultTable>& table2,
-                            std::vector<std::string>& commonColumns,
-                            std::vector<std::string>& uniqueToTable1,
-                            std::vector<std::string>& uniqueToTable2) {
-    // Convert colSet to set for easier comparison
-    std::unordered_set<std::string> columns1(this->colSet.begin(), this->colSet.end());
-    std::unordered_set<std::string> columns2(table2->colSet.begin(), table2->colSet.end());
+void ResultTable::identifyColumns(const std::shared_ptr<ResultTable> &table2, std::vector<std::string> &commonColumns,
+                                  std::vector<std::string> &uniqueToTable1, std::vector<std::string> &uniqueToTable2) {
+    // Step 1: Convert unordered_sets to vectors
+    std::vector<std::string> cols1(this->colSet.begin(), this->colSet.end());
+    std::vector<std::string> cols2(table2->colSet.begin(), table2->colSet.end());
+
+    // Step 2: Sort the vectors to prepare for set operations
+    std::sort(cols1.begin(), cols1.end());
+    std::sort(cols2.begin(), cols2.end());
 
     // Temporary containers for set operations
     std::vector<std::string> tempCommonColumns;
     std::vector<std::string> tempUniqueToTable1;
     std::vector<std::string> tempUniqueToTable2;
 
-    // Identify common columns
-    std::set_intersection(columns1.begin(), columns1.end(),
-                          columns2.begin(), columns2.end(),
+    // Step 3: Perform set operations
+    std::set_intersection(cols1.begin(), cols1.end(),
+                          cols2.begin(), cols2.end(),
                           std::back_inserter(tempCommonColumns));
 
-    // Identify columns unique to table1
-    std::set_difference(columns1.begin(), columns1.end(),
-                        columns2.begin(), columns2.end(),
+    std::set_difference(cols1.begin(), cols1.end(),
+                        cols2.begin(), cols2.end(),
                         std::back_inserter(tempUniqueToTable1));
 
-    // Identify columns unique to table2
-    std::set_difference(columns2.begin(), columns2.end(),
-                        columns1.begin(), columns1.end(),
+    std::set_difference(cols2.begin(), cols2.end(),
+                        cols1.begin(), cols1.end(),
                         std::back_inserter(tempUniqueToTable2));
 
     // Update references
@@ -109,7 +116,8 @@ bool ResultTable::commonColumnsMatch(const std::unordered_map<std::string, std::
     return true;
 }
 
-void ResultTable::insertRow(const std::unordered_map<std::string, std::string>& row) {
+// insert a whole exisitng row into the table
+void ResultTable::insertNewRow(const std::unordered_map<std::string, std::string>& row) {
     // check if the row has the same size as the number of col
     if (row.size() != colSet.size()) {
         throw std::exception();
@@ -121,7 +129,7 @@ void ResultTable::insertColumn(const std::string& colName) {
     colSet.push_back(colName);
 }
 
-void ResultTable::insertNewRow() {
+void ResultTable::insertEmptyRow() {
     rows.push_back(std::unordered_map<std::string, std::string>());
 }
 
@@ -166,6 +174,18 @@ bool ResultTable::isTableIdentical(const std::shared_ptr<ResultTable> &table2) {
     return true;
 }
 
-void ResultTable::insertAllColumns(const std::vector<std::string>& colNames) {
+
+void ResultTable::addColumnsSet(const std::vector<std::string> &colNames) {
+    for (const auto &colName : colNames) {
+        insertColumn(colName);
+    }
+}
+
+void ResultTable::insertAllColumns(const std::vector<std::string> &colNames) {
     colSet = colNames;
 }
+
+
+
+
+
