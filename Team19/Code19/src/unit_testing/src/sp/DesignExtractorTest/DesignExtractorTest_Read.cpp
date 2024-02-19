@@ -11,8 +11,6 @@
 
 
 TEST_CASE("Tests for DesignExtractors for Read", "[DesignExtractor::extract]") {
-	std::cout << "BEGIN DESIGN EXTRACTOR TEST FOR READ" << std::endl;
-
 	/*
 	procedure proc1 {
 		read x;
@@ -21,7 +19,6 @@ TEST_CASE("Tests for DesignExtractors for Read", "[DesignExtractor::extract]") {
 	}
 	*/
 	std::shared_ptr<ASTNode> root = std::make_shared<ASTNode>(ASTNode());
-	std::shared_ptr<ASTNode> prog = std::make_shared<ASTNode>(ASTNode(ASTNodeType::PROGRAMS, 0, "prog"));
 	std::shared_ptr<ASTNode> proc1 = std::make_shared<ASTNode>(ASTNode(ASTNodeType::PROCEDURE, 1, "proc1"));
 
 	std::shared_ptr<ASTNode> stmtLst1 = std::make_shared<ASTNode>(ASTNode(ASTNodeType::STATEMENT_LIST, 1, "stmtLst1"));
@@ -38,8 +35,7 @@ TEST_CASE("Tests for DesignExtractors for Read", "[DesignExtractor::extract]") {
 	stmtLst1->addChild(read2);
 	stmtLst1->addChild(read3);
 	proc1->addChild(stmtLst1);
-	prog->addChild(proc1);
-	root->addChild(prog);
+	root->addChild(proc1);
 
 	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
@@ -56,6 +52,4 @@ TEST_CASE("Tests for DesignExtractors for Read", "[DesignExtractor::extract]") {
 
 	REQUIRE(expectedReads == actualReads);
 	REQUIRE(expectedReadVars == actualReadVars);
-
-	std::cout << "END DESIGN EXTRACTOR TEST FOR READ" << std::endl;
 }

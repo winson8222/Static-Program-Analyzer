@@ -17,6 +17,9 @@ void ProcedureVisitor::visit() {
 	if (this->root->children[0]->type != ASTNodeType::STATEMENT_LIST) {
 		throw std::runtime_error("Procedure node does not have a statement list node");
 	}
+	if (this->root->children.size() != 1) {
+		throw std::runtime_error("Procedure node has more than 1 child");
+	}
 	StatementListVisitor statementListVisitor(this->root->children[0], this->pkbWriterManager);
 	statementListVisitor.visit();
 }

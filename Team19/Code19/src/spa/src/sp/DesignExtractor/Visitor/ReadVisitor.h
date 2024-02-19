@@ -11,7 +11,10 @@ public:
 	ReadVisitor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
 		: IVisitor(root, pkbWriterManager) {
 		if (root->type != ASTNodeType::READ) {
-			throw std::invalid_argument("PrintVisitor - root is not of type PRINT");
+			throw std::invalid_argument("ReadVisitor - root is not of type PRINT");
+		}
+		if (root->children.size() != 1) {
+			throw std::invalid_argument("ReadVisitor - root does not have 1 child");
 		}
 	}
 

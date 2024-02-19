@@ -2,16 +2,14 @@
 
 void FDesignExtractor::extractAll() {
 	if (root->type != ASTNodeType::PROGRAMS) {
-		throw std::runtime_error("Not start node!");
+		throw std::runtime_error("ERROR: This is not the start node!");
 	}
 
-	auto program = root->children[0];
-
-	for (auto& child : program->children) {
-		if (child->type != ASTNodeType::PROCEDURE) {
-			throw std::runtime_error("Not procedure node!");
+	for (auto& procs : root->children) {
+		if (procs->type != ASTNodeType::PROCEDURE) {
+			throw std::runtime_error("ERROR: This is not a procedure node!");
 		}
-		ProcedureVisitor procedureVisitor(child, pkbWriterManager);
+		ProcedureVisitor procedureVisitor(procs, pkbWriterManager);
 		procedureVisitor.visit();
 	}
 }

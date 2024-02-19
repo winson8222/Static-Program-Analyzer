@@ -11,7 +11,6 @@
 
 
 TEST_CASE("Tests for DesignExtractors for Print", "[DesignExtractor::extract]") {
-	std::cout << "BEGIN DESIGN EXTRACTOR TEST FOR PRINT" << std::endl;
 
 	/*
 	procedure proc1 {
@@ -20,7 +19,6 @@ TEST_CASE("Tests for DesignExtractors for Print", "[DesignExtractor::extract]") 
 	}
 	*/
 	std::shared_ptr<ASTNode> root = std::make_shared<ASTNode>(ASTNode());
-	std::shared_ptr<ASTNode> prog = std::make_shared<ASTNode>(ASTNode(ASTNodeType::PROGRAMS, 0, "prog"));
 	std::shared_ptr<ASTNode> proc1 = std::make_shared<ASTNode>(ASTNode(ASTNodeType::PROCEDURE, 1, "proc1"));
 
 
@@ -33,8 +31,7 @@ TEST_CASE("Tests for DesignExtractors for Print", "[DesignExtractor::extract]") 
 	stmtLst1->addChild(print1);
 	stmtLst1->addChild(print2);
 	proc1->addChild(stmtLst1);
-	prog->addChild(proc1);
-	root->addChild(prog);
+	root->addChild(proc1);
 	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
 	FDesignExtractor fde(root, pkbWriterManager);
@@ -50,6 +47,4 @@ TEST_CASE("Tests for DesignExtractors for Print", "[DesignExtractor::extract]") 
 
 	REQUIRE(expectedPrints == actualPrints);
 	REQUIRE(expectedPrintVars == actualPrintVars);
-
-	std::cout << "END DESIGN EXTRACTOR TEST FOR PRINT" << std::endl;
 }
