@@ -7,8 +7,15 @@
 
 class ProcedureVisitor : public IVisitor {
 public:
-	ProcedureVisitor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
-		: IVisitor(root, pkbWriterManager) {}
+	ProcedureVisitor(std::shared_ptr<ASTNode> node, std::shared_ptr<PKBWriterManager> pkbWriterManager)
+		: IVisitor(node, pkbWriterManager) {
+		if (node->type != ASTNodeType::PROCEDURE) {
+			throw std::invalid_argument("ProcedureVisitor - input node type must be of type PROCEDURE");
+		}
+	}
 
-	virtual void visit(std::shared_ptr<ASTNode> node) = 0;
+	// Purpose: From this node, extract information from the current node
+	// then recursively call other visitor to visit children nodes
+	void visit(std::shared_ptr<ASTNode> node) override;
+	void visit();
 };

@@ -1,5 +1,5 @@
 #include "sp/DesignExtractor/Visitor/WhileVisitor.h"
 
-void WhileVisitor::visit(WhileNode& node) {
+void WhileVisitor::visit(std::shared_ptr<ASTNode> node) {
 	// do nothing
 }

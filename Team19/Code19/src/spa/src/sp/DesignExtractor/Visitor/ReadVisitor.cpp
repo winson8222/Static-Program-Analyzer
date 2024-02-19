@@ -1,6 +1,6 @@
 #include "sp/DesignExtractor/Visitor/ReadVisitor.h"
 
-void ReadVisitor::visit(ReadNode& node) {
+void ReadVisitor::visit(std::shared_ptr<ASTNode> node) {
 	// std::string readVar = node.getReadVar();
 	// pkbWriterManager->insertReadStmt(node.getStatementNumber(), readVar);
 }
