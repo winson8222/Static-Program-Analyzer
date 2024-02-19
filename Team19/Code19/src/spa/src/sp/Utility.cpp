@@ -67,4 +67,10 @@ std::string Utility::getDesignType(ASTNodeType t) {
     return getASTNodeType(t);
 }
 
+bool Utility::nodeIsStatement(ASTNodeType t) {
+    return t == ASTNodeType::ASSIGN || t == ASTNodeType::CALL 
+        || t == ASTNodeType::IF_ELSE_THEN || t == ASTNodeType::PRINT 
+        || t == ASTNodeType::READ || t == ASTNodeType::WHILE;
+}
+
 // ai-gen end

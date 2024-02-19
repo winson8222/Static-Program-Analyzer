@@ -9,4 +9,5 @@ class Utility {
 public:
     static std::string getASTNodeType(ASTNodeType t);
     static std::string getDesignType(ASTNodeType t);
+    static bool nodeIsStatement(ASTNodeType t);
 };

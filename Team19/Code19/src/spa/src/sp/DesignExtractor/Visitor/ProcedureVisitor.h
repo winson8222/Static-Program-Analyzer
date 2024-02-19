@@ -4,6 +4,7 @@
 #include "sp/AST/ASTNode.h"
 #include "pkb/PKBWriterManager.h"
 #include "sp/DesignExtractor/Extractor/ProcedureExtractor.h"
+#include "sp/DesignExtractor/Visitor/StatementListVisitor.h"
 
 class ProcedureVisitor : public IVisitor {
 public:
@@ -17,5 +18,5 @@ public:
 	// Purpose: From this node, extract information from the current node
 	// then recursively call other visitor to visit children nodes
 	void visit(std::shared_ptr<ASTNode> node) override;
-	void visit();
+	void visit() override;
 };

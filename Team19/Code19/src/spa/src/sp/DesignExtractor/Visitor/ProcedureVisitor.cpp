@@ -10,6 +10,13 @@ void ProcedureVisitor::visit() {
 	ProcedureExtractor extractor(this->root, this->pkbWriterManager);
 	extractor.extract();
 	// extract information of the procedure nodes: Done
-
+	if (this->root->children.size() == 0) {
+		return;
+	}
 	// TODO: Recursively visit the statement list node, then later recursively visit all statements
+	if (this->root->children[0]->type != ASTNodeType::STATEMENT_LIST) {
+		throw std::runtime_error("Procedure node does not have a statement list node");
+	}
+	StatementListVisitor statementListVisitor(this->root->children[0], this->pkbWriterManager);
+	statementListVisitor.visit();
 }
