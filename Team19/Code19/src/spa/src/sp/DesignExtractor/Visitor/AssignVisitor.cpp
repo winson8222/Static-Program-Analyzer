@@ -1,5 +1,5 @@
 #include "sp/DesignExtractor/Visitor/AssignVisitor.h"
 
-void AssignVisitor::visit(AssignNode& node) {
+void AssignVisitor::visit(std::shared_ptr<ASTNode> node) {
   // TODO: Implement this
 }

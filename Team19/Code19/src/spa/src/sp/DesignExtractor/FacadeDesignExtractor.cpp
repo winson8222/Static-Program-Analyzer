@@ -5,11 +5,13 @@ void FDesignExtractor::extractAll() {
 		throw std::runtime_error("Not start node!");
 	}
 
-	for (auto& child : root->children) {
+	auto program = root->children[0];
+
+	for (auto& child : program->children) {
 		if (child->type != ASTNodeType::PROCEDURE) {
-			throw std::runtime_error("Syntax error!");
-			ProcedureVisitor procedureVisitor(child, pkbWriterManager);
-			procedureVisitor.visit(*static_cast<ProcedureNode*>(child.get())); // Assuming dynamic polymorphism
+			throw std::runtime_error("Not procedure node!");
 		}
+		ProcedureVisitor procedureVisitor(child, pkbWriterManager);
+		procedureVisitor.visit();
 	}
 }
