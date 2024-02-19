@@ -5,11 +5,11 @@
 #include "sp/Utility.h"
 #include "DesignExtractor.h"
 #include <unordered_set>
+#include <iostream>
 
 DesignExtractor::DesignExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
     : root(std::move(root)), pkbWriterManager(std::move(pkbWriterManager)) {
     // No need to assign them in the constructor body
-    std::cout << "Initialized" << std::endl;
 }
 
 void DesignExtractor::populatePKB() {
@@ -65,7 +65,6 @@ void DesignExtractor::populatePKB() {
             }
         }
     }
-    std::cout << "PKB Populated\n" << std::endl;
 }
 
 
@@ -92,9 +91,6 @@ void DesignExtractor::extractAll() {
     this->stringInformation[Utility::getDesignType(ASTNodeType::CONSTANT)] = extractConstants();
     this->stringInformation[Utility::getDesignType(ASTNodeType::VARIABLE)] = extractVariables();
 
-    std::cout << "Information Extracted\n" << std::endl;
-
-    printContent();
 }
 
 
