@@ -8,4 +8,17 @@
  Select g
  z, y, x
  5000
+3 - comment
+ stmt s;
+ Select k
+ semantic error at: k
+ 5000
+4 - comment
+ variable g, g;
+ Select g
+ semantic error at: g
+ 5000
+
+
+
 
