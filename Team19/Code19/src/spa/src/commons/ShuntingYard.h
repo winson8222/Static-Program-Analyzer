@@ -2,6 +2,8 @@
 
 #include <string>
 
+// ai-gen start(copilot, 0, e)
+// prompt: used copilot
 class ShuntingYard {
 public:
   std::string convertToPostfix(const std::string& infixExpression);
@@ -13,3 +15,4 @@ private:
   static bool isRightParenthesis(char c);
   static std::string infixToPostfix(const std::string& infixExpression);
 };
+// ai-gen end

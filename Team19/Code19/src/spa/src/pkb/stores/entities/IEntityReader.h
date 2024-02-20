@@ -2,6 +2,8 @@
 
 #include <unordered_set>
 
+// ai-gen start(copilot, 1, e)
+// prompt: used copilot
 /**
  * @brief Interface for reading entities from a store.
  *
@@ -19,3 +21,4 @@ public:
     // Retrieves all entities from the store.
     virtual std::unordered_set<EntityType> getAllEntities() const = 0;
 };
+// ai-gen end

@@ -25,7 +25,11 @@
 #include "pkb/writers/relationships/ModifiesSWriter.h"
 
 #include "pkb/writers/patterns/AssignPatternWriter.h"
+#include "pkb/writers/patterns/IfPatternWriter.h"
+#include "pkb/writers/patterns/WhilePatternWriter.h"
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 class PKBWriterManager {
 private:
     std::shared_ptr<PKB> pkb;
@@ -51,6 +55,8 @@ private:
     std::shared_ptr<PrintWriter> printWriter;
 
     std::shared_ptr<AssignPatternWriter> assignPatternWriter;
+    std::shared_ptr<IfPatternWriter> ifPatternWriter;
+    std::shared_ptr<WhilePatternWriter> whilePatternWriter;
 
 public:
     explicit PKBWriterManager(const std::shared_ptr<PKB>& pkb): pkb(pkb) {
@@ -75,6 +81,8 @@ public:
       printWriter = std::make_shared<PrintWriter>(pkb->getPrintStore());
 
       assignPatternWriter = std::make_shared<AssignPatternWriter>(pkb->getAssignPatternStore());
+      ifPatternWriter = std::make_shared<IfPatternWriter>(pkb->getIfPatternStore());
+      whilePatternWriter = std::make_shared<WhilePatternWriter>(pkb->getWhilePatternStore());
     }
     // Relationships
     std::shared_ptr<FollowsWriter> getFollowsWriter() {
@@ -155,6 +163,12 @@ public:
       return assignPatternWriter;
     }
 
+    std::shared_ptr<IfPatternWriter> getIfPatternWriter() {
+      return ifPatternWriter;
+    }
+
+    std::shared_ptr<WhilePatternWriter> getWhilePatternWriter() {
+      return whilePatternWriter;
+    }
 };
-
-
+// ai-gen end

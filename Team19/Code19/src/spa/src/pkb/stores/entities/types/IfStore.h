@@ -2,6 +2,8 @@
 
 #include "pkb/stores/entities/EntityStore.h"
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 /**
  * @class IfStore
  * Specialization of EntityStore for 'If' entity.
@@ -15,3 +17,4 @@ class IfStore: public EntityStore<int> {
     // This class can be used to instantiate an EntityStore
     // specific for the 'If' Entity.
 };
+// ai-gen end

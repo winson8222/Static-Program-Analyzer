@@ -3,45 +3,14 @@
 #include "pkb/stores/relationships/IRelationshipReader.h"
 #include "pkb/stores/relationships/types/FollowsStore.h"
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 class FollowsReader: public IRelationshipReader<int, int> {
 private:
     std::shared_ptr<FollowsStore> followsStore;
 public:
     explicit FollowsReader(std::shared_ptr<FollowsStore> store) {
       followsStore = std::move(store);
-    }
-
-    // Inherited methods
-    bool isEmpty() override {
-      return followsStore->isEmpty();
-    }
-
-    std::unordered_map<int, std::unordered_set<int>> getKeyValueRelationships() override {
-      return followsStore->getKeyValueRelationships();
-    }
-
-    std::unordered_map<int, std::unordered_set<int>> getValueKeyRelationships() override {
-      return followsStore->getValueKeyRelationships();
-    }
-
-    std::unordered_set<int> getKeys() override {
-      return getAllPreFollows();
-    }
-
-    std::unordered_set<int> getValues() override {
-      return getAllPostFollows();
-    }
-
-    std::unordered_set<int> getRelationshipsByValue(int stmtNum) override {
-      return getPreFollows(stmtNum);
-    }
-
-    std::unordered_set<int> getRelationshipsByKey(int stmtNum) override {
-      return getPostFollows(stmtNum);
-    }
-
-    bool hasRelationship(int stmt1, int stmt2) override {
-      return hasFollows(stmt1, stmt2);
     }
 
     // Custom methods
@@ -88,5 +57,37 @@ public:
     bool hasFollows(int stmt1, int stmt2) {
       return followsStore->hasRelationship(stmt1, stmt2);
     }
+    // Inherited methods
+    bool isEmpty() override {
+      return followsStore->isEmpty();
+    }
 
+    std::unordered_map<int, std::unordered_set<int>> getKeyValueRelationships() override {
+      return followsStore->getKeyValueRelationships();
+    }
+
+    std::unordered_map<int, std::unordered_set<int>> getValueKeyRelationships() override {
+      return followsStore->getValueKeyRelationships();
+    }
+
+    std::unordered_set<int> getKeys() override {
+      return getAllPreFollows();
+    }
+
+    std::unordered_set<int> getValues() override {
+      return getAllPostFollows();
+    }
+
+    std::unordered_set<int> getRelationshipsByValue(int stmtNum) override {
+      return getPreFollows(stmtNum);
+    }
+
+    std::unordered_set<int> getRelationshipsByKey(int stmtNum) override {
+      return getPostFollows(stmtNum);
+    }
+
+    bool hasRelationship(int stmt1, int stmt2) override {
+      return hasFollows(stmt1, stmt2);
+    }
 };
+// ai-gen end

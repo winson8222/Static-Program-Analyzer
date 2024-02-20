@@ -5,12 +5,15 @@
 #include "pkb/stores/patterns/assign/IAssignPatternReader.h"
 #include "pkb/stores/patterns/assign/AssignPatternStore.h"
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 class AssignPatternReader : public IAssignPatternReader {
 private:
     std::shared_ptr<AssignPatternStore> assignPatternStore;
 public:
     explicit AssignPatternReader(std::shared_ptr<AssignPatternStore> store) : assignPatternStore(std::move(store)) {}
 
+    // Inherited methods
     bool isEmpty() override {
         return assignPatternStore->isEmpty();
     }
@@ -35,6 +38,10 @@ public:
         return assignPatternStore->contains(statementNumber);
     }
 
+    std::unordered_set<int> getAllStatementNumbers() override {
+        return assignPatternStore->getAllStatementNumbers();
+    }
+
     std::unordered_set<int> getStatementNumbersWithLHS(const std::string& LHS) override {
         return assignPatternStore->getStatementNumbersWithLHS(LHS);
     }
@@ -55,3 +62,4 @@ public:
         return assignPatternStore->getStatementNumbersWithLHSPartialRHS(LHS, partialRHS);
     }
 };
+// ai-gen end

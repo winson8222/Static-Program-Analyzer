@@ -3,6 +3,8 @@
 #include <string>
 #include "pkb/stores/relationships/RelationshipStore.h"
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 /**
  * @class ModifiesPStore
  * Manages "Modifies" relationships for procedures in a SIMPLE program.
@@ -15,3 +17,4 @@
 class ModifiesPStore : public RelationshipStore<std::string, std::string> {
     // Additional functionality specific to procedure-variable modifications can be added here
 };
+// ai-gen end

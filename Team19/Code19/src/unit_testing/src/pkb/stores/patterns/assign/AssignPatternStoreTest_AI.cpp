@@ -6,6 +6,14 @@ TEST_CASE("pkb/stores/patterns/assign/AssignPatternStore") {
     std::string x = "x";
     std::string y = "y";
     std::string one = "1";
+
+  SECTION("contains") {
+    AssignPatternStore assignPatternStore;
+    assignPatternStore.addAssignPattern(1, "x", "1");
+    REQUIRE(assignPatternStore.contains(1));
+    REQUIRE_FALSE(assignPatternStore.contains(2));
+  }
+
     SECTION("addAssignPattern") {
         AssignPatternStore assignPatternStore;
         assignPatternStore.addAssignPattern(1, "x", "1");
@@ -13,7 +21,7 @@ TEST_CASE("pkb/stores/patterns/assign/AssignPatternStore") {
         REQUIRE_FALSE(assignPatternStore.contains(2));
     }
 
-    SECTION("clear") {
+    SECTION("clear: Non-Empty Store") {
         AssignPatternStore assignPatternStore;
         assignPatternStore.addAssignPattern(1, "x", "1");
         assignPatternStore.addAssignPattern(2, "y", "2");
@@ -21,14 +29,21 @@ TEST_CASE("pkb/stores/patterns/assign/AssignPatternStore") {
         REQUIRE(assignPatternStore.getAllPatterns().empty());
     }
 
-    SECTION("Get Pattern") {
+    SECTION("getPattern: Pattern Exists") {
         AssignPatternStore assignPatternStore;
         assignPatternStore.addAssignPattern(1, "x", "1");
         REQUIRE(assignPatternStore.getPattern(1).first == "x");
         REQUIRE(assignPatternStore.getPattern(1).second == "1");
     }
 
-  SECTION("Get All Patterns") {
+    SECTION("getPattern: Pattern Does Not Exist") {
+        AssignPatternStore assignPatternStore;
+        std::pair<std::string, std::string> p = assignPatternStore.getPattern(1);
+        REQUIRE(p.first.empty());
+        REQUIRE(p.second.empty());
+    }
+
+  SECTION("getAllPatterns") {
         AssignPatternStore assignPatternStore;
         assignPatternStore.addAssignPattern(1, "x", "1");
         assignPatternStore.addAssignPattern(2, "y", "2");
@@ -36,19 +51,19 @@ TEST_CASE("pkb/stores/patterns/assign/AssignPatternStore") {
         REQUIRE(assignPatternStore.getAllPatterns() == expected);
     }
 
-    SECTION("Get LHS") {
+    SECTION("getLHS") {
         AssignPatternStore assignPatternStore;
         assignPatternStore.addAssignPattern(1, "x", "1");
         REQUIRE(assignPatternStore.getLHS(1) == "x");
     }
 
-    SECTION("Get RHS") {
+    SECTION("getRHS") {
         AssignPatternStore assignPatternStore;
         assignPatternStore.addAssignPattern(1, "x", "1");
         REQUIRE(assignPatternStore.getRHS(1) == "1");
     }
 
-    SECTION("Contains LHS") {
+    SECTION("getStatementNumbersWithLHS") {
         AssignPatternStore assignPatternStore;
         assignPatternStore.addAssignPattern(1, "x", "1");
         assignPatternStore.addAssignPattern(2, "x", "2");
@@ -58,7 +73,7 @@ TEST_CASE("pkb/stores/patterns/assign/AssignPatternStore") {
         REQUIRE(assignPatternStore.getStatementNumbersWithLHS("y") == expected);
     }
 
-    SECTION("Contains RHS") {
+    SECTION("getStatementNumbersWithRHS") {
         AssignPatternStore assignPatternStore;
         assignPatternStore.addAssignPattern(1, "x", "1");
         assignPatternStore.addAssignPattern(2, "x", "2");
@@ -68,7 +83,7 @@ TEST_CASE("pkb/stores/patterns/assign/AssignPatternStore") {
         REQUIRE(assignPatternStore.getStatementNumbersWithRHS("3") == expected);
     }
 
-    SECTION("Contains Partial RHS") {
+    SECTION("getStatementNumbersWithPartialRHS") {
         AssignPatternStore assignPatternStore;
         assignPatternStore.addAssignPattern(1, "x", "123+3");
         assignPatternStore.addAssignPattern(2, "x", "122+3");
@@ -77,7 +92,7 @@ TEST_CASE("pkb/stores/patterns/assign/AssignPatternStore") {
         REQUIRE(assignPatternStore.getStatementNumbersWithPartialRHS("3+3") == expected);
     }
 
-    SECTION("Contains LHS and RHS") {
+    SECTION("getStatementNumbersWithLHSRHS") {
         AssignPatternStore assignPatternStore;
         assignPatternStore.addAssignPattern(1, "x", "123+3");
         assignPatternStore.addAssignPattern(2, "x", "122+3");
@@ -89,7 +104,7 @@ TEST_CASE("pkb/stores/patterns/assign/AssignPatternStore") {
         REQUIRE(assignPatternStore.getStatementNumbersWithLHSRHS("x", "123+3") == expected);
     }
 
-  SECTION("Contains LHS and Partial RHS") {
+  SECTION("getStatementNumbersWithLHSPartialRHS") {
         AssignPatternStore assignPatternStore;
         assignPatternStore.addAssignPattern(1, "x", "123+3");
         assignPatternStore.addAssignPattern(2, "x", "122+3");
