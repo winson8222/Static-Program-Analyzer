@@ -4,6 +4,8 @@
 #include "pkb/stores/entities/types/ConstantStore.h"
 #include "pkb/stores/entities/IEntityWriter.h"
 
+// ai-gen start(copilot, 1, e)
+// prompt: used copilot
 class ConstantWriter: public IEntityWriter<int> {
 private:
     std::shared_ptr<ConstantStore> constantStore;
@@ -22,3 +24,4 @@ public:
         return constantStore->addEntity(constantValue);
     }
 };
+// ai-gen end

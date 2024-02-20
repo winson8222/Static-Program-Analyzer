@@ -4,6 +4,8 @@
 #include "pkb/stores/relationships/types/UsesPStore.h"
 #include <memory>
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 class UsesPWriter : public IRelationshipWriter<std::string , std::string> {
 private:
     std::shared_ptr<UsesPStore> usesPStore;
@@ -23,3 +25,4 @@ public:
       usesPStore->addRelationship(proc, var);
     }
 };
+// ai-gen end

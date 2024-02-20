@@ -3,6 +3,8 @@
 #include <unordered_set>
 #include <unordered_map>
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 /**
  * @brief Interface for reading key-value relationships.
  *
@@ -68,3 +70,4 @@ public:
      */
     virtual std::unordered_set<ValueType> getValues() = 0;
 };
+// ai-gen end

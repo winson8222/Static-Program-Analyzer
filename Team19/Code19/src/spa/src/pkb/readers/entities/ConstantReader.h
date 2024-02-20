@@ -3,6 +3,8 @@
 #include "pkb/stores/entities/IEntityReader.h"
 #include "pkb/stores/entities/types/ConstantStore.h"
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 class ConstantReader: public IEntityReader<int> {
 private:
     std::shared_ptr<ConstantStore> constantStore;
@@ -31,3 +33,4 @@ public:
       return constantStore->contains(constant);
     }
 };
+// ai-gen end

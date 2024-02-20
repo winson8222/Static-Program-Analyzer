@@ -5,6 +5,8 @@
 #include "pkb/stores/entities/types/ProcedureStore.h"
 #include "pkb/stores/entities/IEntityWriter.h"
 
+// ai-gen start(copilot, 1, e)
+// prompt: used copilot
 class ProcedureWriter: public IEntityWriter<std::string> {
 private:
     std::shared_ptr<ProcedureStore> procedureStore;
@@ -23,3 +25,4 @@ public:
         return procedureStore->addEntity(procedureName);
     }
 };
+// ai-gen end

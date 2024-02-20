@@ -4,6 +4,8 @@
 #include "pkb/stores/patterns/control/IControlPatternReader.h"
 #include "pkb/stores/patterns/control/IfPatternStore.h"
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 class IfPatternReader: public IControlPatternReader {
 private:
     std::shared_ptr<IfPatternStore> ifPatternStore;
@@ -46,3 +48,4 @@ public:
         return ifPatternStore->getAllIfPatterns();
     };
 };
+// ai-gen end

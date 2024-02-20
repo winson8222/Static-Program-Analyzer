@@ -2,6 +2,8 @@
 
 #include "ControlPatternStore.h"
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 class WhilePatternStore : public ControlPatternStore {
 public:
     void addWhilePattern(int statementNumber, const std::string& whilePattern) {
@@ -20,3 +22,4 @@ public:
       return getAllControlPatterns();
     }
 };
+// ai-gen end

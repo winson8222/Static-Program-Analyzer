@@ -3,6 +3,8 @@
 #include "pkb/stores/entities/IEntityReader.h"
 #include "pkb/stores/entities/types/PrintStore.h"
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 class PrintReader: public IEntityReader<int> {
 private:
     std::shared_ptr<PrintStore> printStore;
@@ -31,3 +33,4 @@ public:
       return printStore->contains(stmtNum);
     }
 };
+// ai-gen end

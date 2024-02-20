@@ -5,6 +5,8 @@
 #include "pkb/stores/patterns/assign/IAssignPatternWriter.h"
 #include "pkb/stores/patterns/assign/AssignPatternStore.h"
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 class AssignPatternWriter : public IAssignPatternWriter {
 private:
     std::shared_ptr<AssignPatternStore> assignPatternStore;
@@ -20,3 +22,4 @@ public:
       assignPatternStore->clear();
     }
 };
+// ai-gen end

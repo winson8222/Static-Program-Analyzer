@@ -5,6 +5,8 @@
 #include "pkb/stores/patterns/assign/IAssignPatternReader.h"
 #include "pkb/stores/patterns/assign/AssignPatternStore.h"
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 class AssignPatternReader : public IAssignPatternReader {
 private:
     std::shared_ptr<AssignPatternStore> assignPatternStore;
@@ -59,3 +61,4 @@ public:
         return assignPatternStore->getStatementNumbersWithLHSPartialRHS(LHS, partialRHS);
     }
 };
+// ai-gen end

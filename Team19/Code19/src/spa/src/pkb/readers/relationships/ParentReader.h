@@ -3,6 +3,8 @@
 #include "pkb/stores/relationships/IRelationshipReader.h"
 #include "pkb/stores/relationships/types/ParentStore.h"
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 class ParentReader: public IRelationshipReader<int, int> {
 private:
     std::shared_ptr<ParentStore> parentStore;
@@ -88,5 +90,5 @@ public:
     bool hasParent(int parent, int child) {
       return parentStore->hasRelationship(parent, child);
     }
-
 };
+// ai-gen end

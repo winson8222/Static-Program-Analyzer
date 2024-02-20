@@ -7,6 +7,9 @@
 #include "string"
 #include "IAssignPatternReader.h"
 #include "IAssignPatternWriter.h"
+
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 /**
  * @brief A store for managing assign patterns.
  */
@@ -125,3 +128,4 @@ public:
         return result;
     }
 };
+// ai-gen end

@@ -24,6 +24,8 @@
 #include "pkb/readers/patterns/IfPatternReader.h"
 #include "pkb/readers/patterns/WhilePatternReader.h"
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 class PKBReaderManager {
 private:
     std::shared_ptr<PKB> pkb;
@@ -143,5 +145,4 @@ public:
         return whilePatternReader;
     }
 };
-
-
+// ai-gen end

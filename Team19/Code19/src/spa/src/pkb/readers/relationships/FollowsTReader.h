@@ -3,6 +3,8 @@
 #include "pkb/stores/relationships/IRelationshipReader.h"
 #include "pkb/stores/relationships/types/FollowsTStore.h"
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 class FollowsTReader: public IRelationshipReader<int, int> {
 private:
     std::shared_ptr<FollowsTStore> followsTStore;
@@ -88,5 +90,5 @@ public:
     bool hasFollowsT(int stmt1, int stmt2) {
       return followsTStore->hasRelationship(stmt1, stmt2);
     }
-
 };
+// ai-gen end

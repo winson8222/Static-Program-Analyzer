@@ -3,6 +3,8 @@
 #include <string>
 #include <unordered_set>
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 class IControlPatternReader {
 public:
     virtual bool isEmpty() = 0;
@@ -16,5 +18,5 @@ public:
     virtual std::unordered_set<int> getAllStatementNumbers() = 0;
 
     virtual std::unordered_set<std::string> getAllControlPatterns() = 0;
-
 };
+// ai-gen end

@@ -4,6 +4,8 @@
 #include "pkb/stores/entities/types/WhileStore.h"
 #include "pkb/stores/entities/IEntityWriter.h"
 
+// ai-gen start(copilot, 1, e)
+// prompt: used copilot
 class WhileWriter: public IEntityWriter<int> {
 private:
     std::shared_ptr<WhileStore> whileStore;
@@ -22,3 +24,4 @@ public:
       return whileStore->addEntity(stmtNum);
     }
 };
+// ai-gen end

@@ -4,6 +4,8 @@
 #include "pkb/stores/entities/types/AssignStore.h"
 #include "pkb/stores/entities/IEntityWriter.h"
 
+// ai-gen start(copilot, 1, e)
+// prompt: used copilot
 class AssignWriter: public IEntityWriter<int> {
 private:
     std::shared_ptr<AssignStore> assignStore;
@@ -22,3 +24,4 @@ public:
         return assignStore->addEntity(stmtNum);
     }
 };
+// ai-gen end

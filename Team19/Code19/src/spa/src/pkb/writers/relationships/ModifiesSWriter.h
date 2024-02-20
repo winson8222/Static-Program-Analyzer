@@ -4,6 +4,8 @@
 #include "pkb/stores/relationships/types/ModifiesSStore.h"
 #include <memory>
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 class ModifiesSWriter : public IRelationshipWriter<int , std::string> {
 private:
     std::shared_ptr<ModifiesSStore> modifiesSStore;
@@ -23,3 +25,4 @@ public:
       modifiesSStore->addRelationship(stmtNum, var);
     }
 };
+// ai-gen end

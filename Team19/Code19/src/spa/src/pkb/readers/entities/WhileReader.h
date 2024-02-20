@@ -3,6 +3,8 @@
 #include "pkb/stores/entities/IEntityReader.h"
 #include "pkb/stores/entities/types/WhileStore.h"
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 class WhileReader: public IEntityReader<int> {
 private:
     std::shared_ptr<WhileStore> whileStore;
@@ -31,3 +33,4 @@ public:
       return whileStore->contains(stmtNum);
     }
 };
+// ai-gen end

@@ -28,6 +28,8 @@
 #include "pkb/writers/patterns/IfPatternWriter.h"
 #include "pkb/writers/patterns/WhilePatternWriter.h"
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 class PKBWriterManager {
 private:
     std::shared_ptr<PKB> pkb;
@@ -169,5 +171,4 @@ public:
       return whilePatternWriter;
     }
 };
-
-
+// ai-gen end

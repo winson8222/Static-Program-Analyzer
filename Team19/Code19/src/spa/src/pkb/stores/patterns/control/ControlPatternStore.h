@@ -6,6 +6,8 @@
 #include "IControlPatternReader.h"
 #include "IControlPatternWriter.h"
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 class ControlPatternStore: public IControlPatternReader, public IControlPatternWriter {
 private:
     std::unordered_map<int, std::string> controlPatterns;
@@ -56,3 +58,4 @@ public:
         controlPatterns.clear();
     }
 };
+// ai-gen end

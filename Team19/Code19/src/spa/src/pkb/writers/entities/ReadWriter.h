@@ -4,6 +4,8 @@
 #include "pkb/stores/entities/types/ReadStore.h"
 #include "pkb/stores/entities/IEntityWriter.h"
 
+// ai-gen start(copilot, 1, e)
+// prompt: used copilot
 class ReadWriter: public IEntityWriter<int> {
 private:
     std::shared_ptr<ReadStore> readStore;
@@ -22,3 +24,4 @@ public:
       return readStore->addEntity(stmtNum);
     }
 };
+// ai-gen end

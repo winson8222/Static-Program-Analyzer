@@ -4,6 +4,8 @@
 #include "pkb/stores/relationships/types/ParentTStore.h"
 #include <memory>
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 class ParentTWriter : public IRelationshipWriter<int, int> {
 private:
     std::shared_ptr<ParentTStore> parentTStore;
@@ -23,3 +25,4 @@ public:
         parentTStore->addRelationship(parent, child);
     }
 };
+// ai-gen end

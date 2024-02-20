@@ -2,6 +2,8 @@
 
 #include "pkb/stores/entities/EntityStore.h"
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 /**
  * @class StatementStore
  * Specialization of EntityStore for 'Statement' entity.
@@ -14,3 +16,4 @@ class StatementStore: public EntityStore<int> {
     // This class can be used to instantiate an EntityStore
     // specific for the 'Statement' Entity.
 };
+// ai-gen end

@@ -25,6 +25,8 @@
 #include "pkb/stores/patterns/control/WhilePatternStore.h"
 #include <memory>
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 class PKB {
 private:
     // Relationship stores
@@ -110,3 +112,4 @@ public:
     std::shared_ptr<IfPatternStore> getIfPatternStore() { return ifPatternStore; }
     std::shared_ptr<WhilePatternStore> getWhilePatternStore() { return whilePatternStore; }
 };
+// ai-gen end

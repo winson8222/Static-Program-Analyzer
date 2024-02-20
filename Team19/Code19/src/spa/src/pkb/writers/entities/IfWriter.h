@@ -4,6 +4,8 @@
 #include "pkb/stores/entities/types/IfStore.h"
 #include "pkb/stores/entities/IEntityWriter.h"
 
+// ai-gen start(copilot, 1, e)
+// prompt: used copilot
 class IfWriter: public IEntityWriter<int> {
 private:
     std::shared_ptr<IfStore> ifStore;
@@ -22,3 +24,4 @@ public:
       return ifStore->addEntity(stmtNum);
     }
 };
+// ai-gen end

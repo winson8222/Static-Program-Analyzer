@@ -3,6 +3,8 @@
 #include "pkb/stores/entities/IEntityReader.h"
 #include "pkb/stores/entities/types/ProcedureStore.h"
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 class ProcedureReader: public IEntityReader<std::string> {
 private:
     std::shared_ptr<ProcedureStore> procedureStore;
@@ -31,3 +33,4 @@ public:
       return procedureStore->contains(proc);
     }
 };
+// ai-gen end

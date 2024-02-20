@@ -4,6 +4,8 @@
 #include "pkb/stores/patterns/control/IControlPatternWriter.h"
 #include "pkb/stores/patterns/control/WhilePatternStore.h"
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 class WhilePatternWriter: public IControlPatternWriter {
 private:
     std::shared_ptr<WhilePatternStore> whilePatternStore;
@@ -23,3 +25,4 @@ public:
         addWhilePattern(statementNumber, controlPattern);
     }
 };
+// ai-gen end
