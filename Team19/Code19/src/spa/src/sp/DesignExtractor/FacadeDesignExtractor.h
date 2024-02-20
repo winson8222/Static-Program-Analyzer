@@ -29,6 +29,11 @@
 #include "sp/DesignExtractor/Extractor/ConstantExtractor.h"
 #include "sp/DesignExtractor/Extractor/VariableExtractor.h"
 
+/*
+Implementation notes:
+
+*/
+
 class FDesignExtractor {
 public:
     FDesignExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
