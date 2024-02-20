@@ -14,13 +14,18 @@ private:
     std::shared_ptr<StatementReader> statementReader;
 
 public:
-    unordered_set<string> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult) override;
+    std::shared_ptr<ResultTable> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult) override;
 
-        void processFirstParam(const Token& secondParam, const string& variant,
-        unordered_set<string>& result) override;
-        void processSecondParam(const Token& firstParam, const string& variant,
-        unordered_set<string>& result) override;
+        void processSynonyms(const Token& firstParam, const Token& secondParam, 
+        const string& variant, std::shared_ptr<ResultTable> resultTable);
+        
+        void processFirstParam(const Token& firstParam, const Token& secondParam, const string& variant,
+            std::shared_ptr<ResultTable> resultTable) override;
+        
+        void processSecondParam(const Token& firstParam, const Token& secondParam, const string& variant,
+            std::shared_ptr<ResultTable> resultTable) override;
+        
         void processIntegerParams(const Token& firstParam, const Token& secondParam,
-        unordered_set<string>& result) override;
+            std::shared_ptr<ResultTable> resultTable) override;
 };
 
