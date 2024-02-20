@@ -20,6 +20,11 @@ public:
         constantStore->clear();
     }
 
+    /**
+     * @brief Inserts a constant into the store.
+     * @param constantValue The value of the constant to be inserted.
+     * @return True if the constant is successfully inserted, false otherwise.
+     */
     bool insertConstant(int constantValue) {
         return constantStore->addEntity(constantValue);
     }

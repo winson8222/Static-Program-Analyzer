@@ -21,6 +21,12 @@ public:
         parentTStore->clear();
     }
 
+    // Custom methods
+    /**
+     * @brief Adds a "ParentT" relationship between a parent and a child.
+     * @param parent The parent statement number.
+     * @param child The child statement number.
+     */
     void addParentT(int parent, int child) {
         parentTStore->addRelationship(parent, child);
     }

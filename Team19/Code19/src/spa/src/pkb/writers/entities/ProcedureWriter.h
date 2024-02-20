@@ -21,6 +21,11 @@ public:
         procedureStore->clear();
     }
 
+    /**
+     * @brief Inserts a procedure into the store.
+     * @param procedureName The name of the procedure to be inserted.
+     * @return True if the procedure is successfully inserted, false otherwise.
+     */
     bool insertProcedure(const std::string& procedureName) {
         return procedureStore->addEntity(procedureName);
     }

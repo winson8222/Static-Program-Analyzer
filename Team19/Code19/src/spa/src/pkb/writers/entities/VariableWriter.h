@@ -23,6 +23,11 @@ public:
     variableStore->clear();
   }
 
+  /**
+   * @brief Inserts a variable into the store.
+   * @param variable The variable to be inserted.
+   * @return True if the variable is successfully inserted, false otherwise.
+   */
   bool insertVariable (std::string &variable) {
     return variableStore->addEntity(variable);
   }

@@ -21,7 +21,13 @@ public:
       usesSStore->clear();
     }
 
-    void addUsesS(int stmtNum, std::string var) {
+    // Custom methods
+    /**
+     * @brief Adds a "Uses" relationship between a statement and a variable.
+     * @param stmtNum The statement number of the statement that uses the variable.
+     * @param var The variable that is used by the statement.
+     */
+    void addUsesS(int stmtNum, const std::string& var) {
       usesSStore->addRelationship(stmtNum, var);
     }
 };

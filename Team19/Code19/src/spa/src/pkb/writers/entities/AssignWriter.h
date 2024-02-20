@@ -20,6 +20,11 @@ public:
         assignStore->clear();
     }
 
+    /**
+     * @brief Inserts an "Assign" statement into the store.
+     * @param stmtNum The statement number of the assign statement.
+     * @return True if the assign statement is successfully inserted, false otherwise.
+     */
     bool insertAssign(int stmtNum) {
         return assignStore->addEntity(stmtNum);
     }

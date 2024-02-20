@@ -20,6 +20,11 @@ public:
       statementStore->clear();
     }
 
+    /**
+     * @brief Inserts a statement into the store.
+     * @param stmtNum The statement number to be inserted.
+     * @return True if the statement is successfully inserted, false otherwise.
+     */
     bool insertStatement(int stmtNum) {
       return statementStore->addEntity(stmtNum);
     }

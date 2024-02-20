@@ -21,6 +21,12 @@ public:
       modifiesSStore->clear();
     }
 
+    // Custom methods
+    /**
+     * @brief Adds a "Modifies" relationship between a statement and a variable.
+     * @param stmtNum The statement number of the statement that modifies the variable.
+     * @param var The variable that is modified by the statement.
+     */
     void addModifiesP(int stmtNum, std::string var) {
       modifiesSStore->addRelationship(stmtNum, var);
     }

@@ -22,7 +22,7 @@ public:
     }
 
     bool contains(int stmtNum) const override {
-      return hasProcedure(stmtNum);
+      return hasStatement(stmtNum);
     }
 
     // Custom methods

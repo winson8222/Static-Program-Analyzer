@@ -21,6 +21,12 @@ public:
         followsStore->clear();
     }
 
+    // Custom methods
+    /**
+     * @brief Adds a "Follows" relationship between a preceding statement and a following statement.
+     * @param stmtNum The statement number of the preceding statement.
+     * @param followingStmt The statement number of the following statement.
+     */
     void addFollows(int stmtNum, int followingStmt) {
         followsStore->addRelationship(stmtNum, followingStmt);
     }

@@ -13,8 +13,13 @@ private:
 public:
     explicit IfPatternWriter(std::shared_ptr<IfPatternStore> store) : ifPatternStore(std::move(store)) {}
 
-    void addIfPattern(int statementNumber, const std::string& ifPattern) {
-        ifPatternStore->addIfPattern(statementNumber, ifPattern);
+    /**
+     * @brief Adds an "If" control variable to the store.
+     * @param statementNumber The statement number of the if statement.
+     * @param ifControlVariable The control variable of the if statement.
+     */
+    void addIfControlVariable(int statementNumber, const std::string& ifControlVariable) {
+        ifPatternStore->addIfPattern(statementNumber, ifControlVariable);
     }
 
     // Clears all if patterns from the store.
@@ -23,7 +28,7 @@ public:
     }
 
     void addControlPattern(int statementNumber, const std::string& controlPattern) override {
-        addIfPattern(statementNumber, controlPattern);
+      addIfControlVariable(statementNumber, controlPattern);
     }
 };
 // ai-gen end

@@ -20,6 +20,11 @@ public:
       ifStore->clear();
     }
 
+    /**
+     * @brief Inserts an "If" statement into the store.
+     * @param stmtNum The statement number of the if statement.
+     * @return True if the if statement is successfully inserted, false otherwise.
+     */
     bool insertIf(int stmtNum) {
       return ifStore->addEntity(stmtNum);
     }

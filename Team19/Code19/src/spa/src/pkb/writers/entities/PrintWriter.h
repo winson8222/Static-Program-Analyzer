@@ -20,6 +20,11 @@ public:
       printStore->clear();
     }
 
+    /**
+     * @brief Inserts a "Print" statement into the store.
+     * @param stmtNum The statement number of the print statement.
+     * @return True if the print statement is successfully inserted, false otherwise.
+     */
     bool insertPrint(int stmtNum) {
       return printStore->addEntity(stmtNum);
     }
