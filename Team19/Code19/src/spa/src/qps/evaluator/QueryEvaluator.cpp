@@ -4,6 +4,8 @@
 #include "qps/evaluator/suchThatStrategies/ModifiesStrategy.h" // Include ModifiesStrategy
 #include "qps/evaluator/suchThatStrategies/UsesStrategy.h" // Include UsesStrategy
 #include "PatternStrategy.h"
+#include "qps/evaluator/ResultTable.h"
+
 
 using namespace std;
 
@@ -22,8 +24,6 @@ std::vector<string> QueryEvaluator::evaluateQuery() {
         error.push_back(parsingResult.getErrorMessage());
         return error;
     }
-    std::string requiredSynonym = parsingResult.getRequiredSynonym();
-    std::string requiredType = parsingResult.getRequiredSynonymType();
 
     if (parsingResult.getSuchThatClauseRelationship().getValue() == "Follows" || parsingResult.getSuchThatClauseRelationship().getValue() == "Follows*") {
         addStrategy(std::make_unique<FollowsStrategy>());
@@ -42,10 +42,12 @@ std::vector<string> QueryEvaluator::evaluateQuery() {
     }
     else {
         // if there is no clause, return all statements
+        /*
         unordered_set<int> allStmts = pkbReaderManager->getStatementReader()->getAllStatements();
         for (int stmt : allStmts) {
             result.insert(to_string(stmt));
         }
+        */
     }
 
     bool isFirstStrategy = true;
@@ -55,31 +57,25 @@ std::vector<string> QueryEvaluator::evaluateQuery() {
             isFirstStrategy = false;
         }
         else {
-            combineResults(strategy->evaluateQuery(*pkbReaderManager, parsingResult));
+            result = result->joinOnColumns(strategy->evaluateQuery(*pkbReaderManager, parsingResult));
         }
-
     }
 
-    return std::vector<std::string>(result.begin(), result.end());
+    std::string requiredSynonym = parsingResult.getRequiredSynonym();
+    std::string requiredType = parsingResult.getRequiredSynonymType();
+
+    if (result->getColumnValues(requiredSynonym).empty()) {
+        //return all statement/variables/whatever
+        // return getAllEntities(requiredType);
+        return;
+    }
+    else {
+		return result->getColumnValues(requiredSynonym);
+	}
+ 
 
 }
 
-/**
-* Modifies the 'result' set to contain only elements that are also present in 'newResult'.
-* This function effectively computes the intersection of 'result' and 'newResult'.
-*
-* @param newResult The set with which the intersection is to be found.
-*/
-void QueryEvaluator::combineResults(const std::unordered_set<std::string>& newResult) {
-    for (auto it = result.begin(); it != result.end(); ) {
-        if (newResult.find(*it) == newResult.end()) {
-            it = result.erase(it);
-        }
-        else {
-            ++it;
-        }
-    }
-}
 
 
 
