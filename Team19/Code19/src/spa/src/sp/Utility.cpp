@@ -73,4 +73,27 @@ bool Utility::nodeIsStatement(ASTNodeType t) {
         || t == ASTNodeType::READ || t == ASTNodeType::WHILE;
 }
 
+bool Utility::nodeIsExpression(ASTNodeType t) {
+	return  t == ASTNodeType::GREATER || t == ASTNodeType::GREATER_OR_EQUAL 
+        || t == ASTNodeType::LESSER || t == ASTNodeType::LESSER_OR_EQUAL 
+        || t == ASTNodeType::EQUAL || t == ASTNodeType::NOT_EQUAL;
+}
+
+bool Utility::nodeIsConditionalOperator(ASTNodeType t) {
+	return t == ASTNodeType::AND || t == ASTNodeType::OR 
+		|| t == ASTNodeType::NOT;
+}
+
+
+/*
+static bool isCondExpr(ASTNodeType t);
+static bool isRelExpr(ASTNodeType t);
+static bool isRelFactor(ASTNodeType t);
+static bool isExpr(ASTNodeType t);
+static bool isTerm(ASTNodeType t);
+static bool isFactor(ASTNodeType t);
+static bool isVariable(ASTNodeType t);
+static bool isProcName(ASTNodeType t);
+static bool isConstant(ASTNodeType t);
+*/
 // ai-gen end

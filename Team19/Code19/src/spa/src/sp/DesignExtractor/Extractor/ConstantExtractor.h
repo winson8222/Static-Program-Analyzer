@@ -13,4 +13,7 @@ public:
 	}
 
 	void extract() override;
+
+private:
+	int stringToInt(const std::string& str);
 };
