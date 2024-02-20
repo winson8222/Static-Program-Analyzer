@@ -29,10 +29,6 @@
 #include "sp/DesignExtractor/Extractor/ConstantExtractor.h"
 #include "sp/DesignExtractor/Extractor/VariableExtractor.h"
 
-/*
-Implementation notes:
-
-*/
 
 class FDesignExtractor {
 public:
@@ -45,3 +41,19 @@ private:
     std::shared_ptr<ASTNode> root;
     std::shared_ptr<PKBWriterManager> pkbWriterManager;
 };
+
+/*
+Implementation notes:
+
+• procedure: extracts Procedure_name, StatementList, Uses, Modifies (to be put on contexts)
+• stmtLst: extracts Statement, Read, Assign, Print, Call (put on hold for now), While, If, Follows
+• stmt
+• read (statement): extracts Read, Variable, Modifies.
+• print (statement): extracts Print, Variable, Uses.
+• assign (statement): extracts Assign, Variable, Constant, Uses, Modifies, Patterns
+• call (statement)  // TODO later
+• while (statement): extracts While (line number), Variable, Constant, Uses, Modifies, Parent, Follows
+• if (statement): extracts If (line num), Variable, Constant, Uses, Modifies, Parent, Follows
+• variable: extracts Variable
+• constant: extracts Constant
+*/

@@ -10,9 +10,6 @@ PrintVisitor::PrintVisitor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWri
 	}
 }
 
-void PrintVisitor::visit(std::shared_ptr<ASTNode> node) {
-	// do nothing for now
-}
 
 void PrintVisitor::visit() {
 	// TODO

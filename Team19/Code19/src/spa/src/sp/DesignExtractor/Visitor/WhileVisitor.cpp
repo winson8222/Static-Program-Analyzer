@@ -11,10 +11,6 @@ WhileVisitor::WhileVisitor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWri
 	}
 }
 
-void WhileVisitor::visit(std::shared_ptr<ASTNode> node) {
-	// do nothing
-}
-
 void WhileVisitor::visit() {
 	// do nothing
 	std::shared_ptr<ASTNode> expression = root->children[0];

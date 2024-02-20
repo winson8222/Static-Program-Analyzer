@@ -4,6 +4,8 @@
 #include "sp/AST/ASTNode.h" // Assuming you have ASTNode defined in ASTNode.h
 #include "pkb/PKBWriterManager.h"
 
+// ai-gen start
+
 class AssignNode;
 class ReadNode;
 class PrintNode;
@@ -20,7 +22,6 @@ class StatementListNode;
 
 class IVisitor {
 public:
-    virtual void visit(std::shared_ptr<ASTNode> node) = 0;
     virtual void visit() = 0;
     // Add more visit methods for other specific node types
 
@@ -31,3 +32,14 @@ public:
     std::shared_ptr<ASTNode> root;
     std::shared_ptr<PKBWriterManager> pkbWriterManager;
 };
+
+class StatementVisitor : public IVisitor {
+public:
+    virtual void visit(std::shared_ptr<ASTNode> node) = 0;
+};
+
+class ExpressionVisitor : public IVisitor {
+
+};
+
+// ai-gen end

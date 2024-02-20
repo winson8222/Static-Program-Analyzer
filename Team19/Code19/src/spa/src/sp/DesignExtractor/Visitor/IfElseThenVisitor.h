@@ -9,6 +9,5 @@
 class IfElseThenVisitor : public IVisitor {
 public:
 	IfElseThenVisitor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager);
-	void visit(std::shared_ptr<ASTNode> node) override;
 	void visit() override;
 };

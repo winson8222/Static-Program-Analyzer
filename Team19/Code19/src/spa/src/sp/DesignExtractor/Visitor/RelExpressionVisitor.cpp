@@ -23,9 +23,6 @@ void RelExpressionVisitor::visit() {
 	*/
 }
 
-void RelExpressionVisitor::visit(std::shared_ptr<ASTNode> node) {
-	
-}
 
 void RelExpressionVisitor::depthFirstSearch(std::shared_ptr<ASTNode> node) {
 	std::cout << "DFS called for " << Utility::getASTNodeType(node->type) << std::endl;

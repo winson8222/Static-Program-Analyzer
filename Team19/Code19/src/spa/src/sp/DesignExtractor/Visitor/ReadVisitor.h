@@ -18,6 +18,5 @@ public:
 		}
 	}
 
-	void visit(std::shared_ptr<ASTNode> node) override;
 	void visit() override;
 };

@@ -11,11 +11,6 @@ IfElseThenVisitor::IfElseThenVisitor(std::shared_ptr<ASTNode> root, std::shared_
 	}
 }
 
-void IfElseThenVisitor::visit(std::shared_ptr<ASTNode> node) {
-
-	// do nothing for now
-}
-
 void IfElseThenVisitor::visit() {
 	// TODO
 	IfThenElseExtractor ifThenElseExtractor(root, pkbWriterManager);
