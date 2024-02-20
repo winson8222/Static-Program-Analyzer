@@ -7,7 +7,6 @@ void StatementListVisitor::visit(std::shared_ptr<ASTNode> node) {
 void StatementListVisitor::visit() {
 	auto statementLists = this->root->children;
 	for (auto statement : statementLists) {
-		std::cout << Utility::getASTNodeType(statement->type) << std::endl;
 		if (!Utility::nodeIsStatement(statement->type)) {
 			throw std::runtime_error("ERROR: Not a statement!");
 		}
