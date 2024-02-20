@@ -222,7 +222,7 @@ std::vector<std::string> ResultTable::getColumnValues(const std::string& columnN
     return columnValues;
 }
 
-bool ResultTable::getTruthTable()
+void ResultTable::setAsTruthTable()
 {
-    return isTruthTable;
+    isTruthTable = true;
 }

@@ -81,7 +81,7 @@ public:
     bool isTableIdentical(const std::shared_ptr<ResultTable>& table2);
 
     std::vector<std::string> getColumnValues(const std::string& columnName);
-    bool getTruthTable();
+    void setAsTruthTable();
 
 };
 
