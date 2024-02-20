@@ -11,15 +11,14 @@ Tokenizer::Tokenizer(const string& query) : query(query) {
 
 // This method tokenizes the stored query and returns a vector of Token objects.
 vector<Token> Tokenizer::tokenize() {
-    auto tokens = splitQuery();  // Call the splitQuery method to get tokens.
+    splitQuery();  // Call the splitQuery method to get tokens.
 
     return tokens;
 }
 
 // This method splits the query into tokens based on the regular expression.
 // It returns a vector of Token objects representing the individual tokens.
-vector<Token> Tokenizer::splitQuery() {
-    vector<Token> tokens;  // Vector to store tokens.
+void Tokenizer::splitQuery() {
     // Iterator to go through each token found by the regex.
     std::sregex_token_iterator iter(query.begin(), query.end(), tokenRegex);
     std::sregex_token_iterator end;  // End iterator.
@@ -29,7 +28,7 @@ vector<Token> Tokenizer::splitQuery() {
         tokens.emplace_back(tokenType, *iter);  // Add the token to the vector.
     }
 
-    return tokens; 
+     
 }
 
 // Determines the type of a token based on its string representation.
@@ -43,6 +42,11 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     }
     // ClauseKeyword: Specific clause keywords.
     else if (regex_match(tokenStr, regex("^(Select|pattern|such|that)$"))) {
+        // The first case check if there is unconventional naming 
+        // and avoids assigning wrong token type
+        if (!tokens.empty() && (tokens.back().getType() == TokenType::SelectKeyword || checkIfDeclaration())) {
+            return TokenType::IDENT;
+        }
         if (tokenStr == "Select") {
             return TokenType::SelectKeyword;
         }
@@ -86,11 +90,19 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     }
     // DesignEntity: Specific keywords.
     else if (regex_match(tokenStr, regex("^(stmt|read|print|while|if|assign|variable|constant|procedure)$"))) {
-        return TokenType::DesignEntity;
+        if (!tokens.empty() && (tokens.back().getType() == TokenType::SelectKeyword || checkIfDeclaration())) {
+            return TokenType::IDENT;
+        }
+        else {
+            return TokenType::DesignEntity;
+        }
     }
     // RelRef: Specific keywords.
     else if (regex_match(tokenStr, regex("^(Follows|Follows\\*|Parent|Parent\\*|Uses|Modifies)$"))) {
-        if (tokenStr == "Follows") {
+        if (!tokens.empty() && (tokens.back().getType() == TokenType::SelectKeyword || checkIfDeclaration())) {
+            return TokenType::IDENT;
+        }
+        else if (tokenStr == "Follows") {
             return TokenType::Follows;
         }
         else if (tokenStr == "Follows*") {
@@ -125,4 +137,20 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     // If no pattern matches, throw an error.
     throw std::invalid_argument("Unrecognized token: " + tokenStr);
 
+}
+
+
+// Check if the current token is a declaration token
+bool Tokenizer::checkIfDeclaration() {
+    int i = tokens.size() - 1;
+    while(i >= 0) {
+		if (tokens[i].getType() == TokenType::DesignEntity) {
+			return true;
+		}
+        if (tokens[i].getType() == TokenType::Semicolon) {
+			return false;
+		}
+		i--;
+	}
+    return false;
 }

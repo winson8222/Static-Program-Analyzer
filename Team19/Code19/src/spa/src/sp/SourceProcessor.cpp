@@ -1,9 +1,8 @@
 #include "sp/SourceProcessor.h"
 #include <iostream>
 
-SourceProcessor::SourceProcessor(std::string filename, std::shared_ptr<PKBManager> pkbManager) : parser(filename), pkbManager(pkbManager), root(std::make_shared<ASTNode>()) {
-	std::cout << "File created" << std::endl;
-}
+SourceProcessor::SourceProcessor(std::string filename, std::shared_ptr<PKBManager> pkbManager) 
+	: parser(filename), pkbManager(pkbManager), root(std::make_shared<ASTNode>()) {}
 
 void SourceProcessor::reset() {
 	this->root = std::make_shared<ASTNode>();

@@ -12,13 +12,21 @@ enum class LexicalTokenType {
     // Operator
     OPERATOR_ASSIGN,                            // =
     OPERATOR_NOT,                               // !
+
+    OPERATOR_CONDITIONAL,                       // Reserved for &&, ||
     OPERATOR_AND,                               // &&
     OPERATOR_OR,                                // ||
+
+    OPERATOR_RELATIONAL,                        // Reserved for >, >=, <, <=, ==, !=
     OPERATOR_GREATER, OPERATOR_GREATER_EQUAL,   // > and >=
     OPERATOR_LESS, OPERATOR_LESS_EQUAL,         // < and <=
     OPERATOR_IS_EQUAL,                          // ==
     OPERATOR_NOT_EQUAL,                         // !=
+
+    OPERATOR_EXPR,                              // Reserved for +, -
     OPERATOR_PLUS, OPERATOR_MINUS,              // + and -
+
+    OPERATOR_TERM,                              // Reserved for *, /, %
     OPERATOR_MULTIPLY, OPERATOR_DIVIDE,         // * and /
     OPERATOR_MODULO,                            // %
 
@@ -75,4 +83,9 @@ public:
     * @brief Check whether a token is a keyword
     */
     static const std::string printType(LexicalTokenType type);
+
+    /**
+    * @brief Check if type t1 can be considered to be type t2.
+    */
+    static const bool isType(LexicalTokenType t1, LexicalTokenType t2);
 };

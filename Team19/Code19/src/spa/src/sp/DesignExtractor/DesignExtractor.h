@@ -6,6 +6,7 @@
 #include <unordered_set>
 #include "pkb/PKBWriterManager.h"
 #include "sp/AST/ASTNode.h" // Assuming you have ASTNode defined in ASTNode.h
+#include "sp/DesignExtractor/FacadeDesignExtractor.h"
 
 class DesignExtractor {
 public:
