@@ -74,7 +74,7 @@ std::string ASTNode::getRPNForm() {
     if (children.size() == 0) {
         return value;
     }
-    std::string result = "";
+    std::string result;
     for (const auto& child : children) {
 		result += child->getRPNForm();
 	}
