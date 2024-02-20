@@ -22,7 +22,6 @@ void SourceProcessor::buildAST() {
 void SourceProcessor::extractAndPopulate() {
     // Use PKBWriter to insert entities and relationships into PKB
     std::shared_ptr<PKBWriterManager> pkbWriterManager = this->pkbManager->getPKBWriterManager();
-	DesignExtractor designExtractor(this->root, pkbWriterManager);
+	FDesignExtractor designExtractor(this->root, pkbWriterManager);
 	designExtractor.extractAll();
-	designExtractor.populatePKB();
 }
