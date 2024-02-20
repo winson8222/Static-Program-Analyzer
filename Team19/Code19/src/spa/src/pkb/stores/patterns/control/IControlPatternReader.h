@@ -9,11 +9,15 @@ class IControlPatternReader {
 public:
     virtual bool isEmpty() = 0;
 
-    virtual std::string getControlPattern(int statementNumber) = 0;
+    virtual std::unordered_set<std::string> getControlPatternsWithStatementNumber(int statementNumber) = 0;
 
     virtual std::unordered_set<int> getStatementNumbersWithControlPattern(const std::string& controlPattern) = 0;
 
-    virtual bool contains(int statementNumber) = 0;
+    virtual bool hasControlPatternAtStatement(int statementNumber, const std::string& controlPattern) = 0;
+
+    virtual bool hasStatementNumber(int statementNumber) = 0;
+
+    virtual bool hasControlPattern(const std::string& controlPattern) = 0;
 
     virtual std::unordered_set<int> getAllStatementNumbers() = 0;
 

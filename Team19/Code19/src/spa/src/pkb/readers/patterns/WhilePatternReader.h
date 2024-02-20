@@ -27,16 +27,16 @@ public:
      * @param statementNumber
      * @return std::string: The control variable of the "While" pattern of the given statement.
      */
-    std::string getControlVariableOfWhileStatement(int statementNumber) {
-      return whilePatternStore->getWhilePattern(statementNumber);
+    std::unordered_set<std::string> getControlVariablesOfWhileStatement(int statementNumber) {
+      return whilePatternStore->getWhilePatternsWithStatementNumber(statementNumber);
     };
 
     /**
-     * @brief Checks if a specific "While" pattern exists for the given statement.
-     * @return true if the "While" pattern exists, false otherwise.
+     * @brief Checks while a specwhileic "While" pattern exists for the given statement.
+     * @return true while the "While" pattern exists, false otherwise.
      */
-    bool hasWhilePattern(int statementNumber) {
-      return whilePatternStore->contains(statementNumber);
+    bool hasStatementNumberWithWhilePattern(int statementNumber) {
+      return whilePatternStore->hasStatementNumberWithWhilePattern(statementNumber);
     };
 
     /**
@@ -56,24 +56,37 @@ public:
     };
 
     // Inherited methods
+    /**
+     * Check while the store is empty
+     * @return true while the store is empty, false otherwise
+     */
     bool isEmpty() override {
       return whilePatternStore->isEmpty();
     };
 
-    std::string getControlPattern(int statementNumber) override {
-      return whilePatternStore->getWhilePattern(statementNumber);
+    std::unordered_set<int> getAllStatementNumbers() override {
+      return whilePatternStore->getAllStatementNumbers();
+    };
+
+    std::unordered_set<std::string> getControlPatternsWithStatementNumber(int statementNumber) override {
+      return whilePatternStore->getWhilePatternsWithStatementNumber(statementNumber);
     };
 
     std::unordered_set<int> getStatementNumbersWithControlPattern(const std::string& controlPattern) override {
       return whilePatternStore->getStatementNumbersWithWhilePattern(controlPattern);
     };
 
-    bool contains(int statementNumber) override {
-      return whilePatternStore->contains(statementNumber);
+    bool hasStatementNumber(int statementNumber) override {
+      return whilePatternStore->hasStatementNumberWithWhilePattern(statementNumber);
     };
 
-    std::unordered_set<int> getAllStatementNumbers() override {
-      return whilePatternStore->getAllStatementNumbers();
+    bool hasControlPattern(const std::string& controlPattern) override {
+      return whilePatternStore->hasWhilePattern(controlPattern);
+    };
+
+
+    bool hasControlPatternAtStatement(int statementNumber, const std::string& controlPattern) override {
+      return whilePatternStore->hasWhilePatternAtStatement(statementNumber, controlPattern);
     };
 
     std::unordered_set<std::string> getAllControlPatterns() override {

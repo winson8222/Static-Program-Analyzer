@@ -27,16 +27,16 @@ public:
      * @param statementNumber
      * @return std::string: The control variable of the "If" pattern of the given statement.
      */
-    std::string getControlVariableOfIfStatement(int statementNumber) {
-      return ifPatternStore->getIfPattern(statementNumber);
+    std::unordered_set<std::string> getControlVariablesOfIfStatement(int statementNumber) {
+      return ifPatternStore->getIfPatternsWithStatementNumber(statementNumber);
     };
 
     /**
      * @brief Checks if a specific "If" pattern exists for the given statement.
      * @return true if the "If" pattern exists, false otherwise.
      */
-    bool hasIfPattern(int statementNumber) {
-      return ifPatternStore->contains(statementNumber);
+    bool hasStatementNumberWithIfPattern(int statementNumber) {
+      return ifPatternStore->hasStatementNumberWithIfPattern(statementNumber);
     };
 
     /**
@@ -56,28 +56,41 @@ public:
     };
 
     // Inherited methods
+    /**
+     * Check if the store is empty
+     * @return true if the store is empty, false otherwise
+     */
     bool isEmpty() override {
-      return ifPatternStore->isEmpty();
-    };
-
-    std::string getControlPattern(int statementNumber) override {
-      return ifPatternStore->getIfPattern(statementNumber);
-    };
-
-    std::unordered_set<int> getStatementNumbersWithControlPattern(const std::string& controlPattern) override {
-      return ifPatternStore->getStatementNumbersWithIfPattern(controlPattern);
-    };
-
-    bool contains(int statementNumber) override {
-      return ifPatternStore->contains(statementNumber);
+        return ifPatternStore->isEmpty();
     };
 
     std::unordered_set<int> getAllStatementNumbers() override {
-      return ifPatternStore->getAllStatementNumbers();
+        return ifPatternStore->getAllStatementNumbers();
+    };
+
+    std::unordered_set<std::string> getControlPatternsWithStatementNumber(int statementNumber) override {
+      return ifPatternStore->getIfPatternsWithStatementNumber(statementNumber);
+    };
+
+    std::unordered_set<int> getStatementNumbersWithControlPattern(const std::string& controlPattern) override {
+        return ifPatternStore->getStatementNumbersWithIfPattern(controlPattern);
+    };
+
+    bool hasStatementNumber(int statementNumber) override {
+        return ifPatternStore->hasStatementNumberWithIfPattern(statementNumber);
+    };
+
+    bool hasControlPattern(const std::string& controlPattern) override {
+        return ifPatternStore->hasIfPattern(controlPattern);
+    };
+
+
+    bool hasControlPatternAtStatement(int statementNumber, const std::string& controlPattern) override {
+      return ifPatternStore->hasIfPatternAtStatement(statementNumber, controlPattern);
     };
 
     std::unordered_set<std::string> getAllControlPatterns() override {
-      return ifPatternStore->getAllIfPatterns();
+        return ifPatternStore->getAllIfPatterns();
     };
 };
 // ai-gen end
