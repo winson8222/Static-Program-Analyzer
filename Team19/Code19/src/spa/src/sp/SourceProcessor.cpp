@@ -11,7 +11,7 @@ void SourceProcessor::reset() {
 void SourceProcessor::parseSIMPLE() {
 	// Parse tokens into AST (not implemented)
 	this->root = parser.parse();
-	std::cout << this->root->toString() << std::endl;
+	// std::cout << this->root->toString() << std::endl;
 }
 
 void SourceProcessor::buildAST() {

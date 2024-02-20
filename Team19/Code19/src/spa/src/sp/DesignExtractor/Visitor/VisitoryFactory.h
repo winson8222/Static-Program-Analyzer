@@ -11,10 +11,11 @@
 #include "sp/DesignExtractor/Visitor/ReadVisitor.h"
 #include "sp/DesignExtractor/Visitor/WhileVisitor.h"
 
+typedef std::vector<std::shared_ptr<ASTNode>> listnode;
 
 class StatementFactory  {
 public:
-    std::shared_ptr<StatementVisitor> createVisitor(std::shared_ptr<ASTNode> node, std::shared_ptr<PKBWriterManager> pkbWriterManager);
+    std::shared_ptr<StatementVisitor> createVisitor(std::shared_ptr<ASTNode> node, listnode parent, std::shared_ptr<PKBWriterManager> pkbWriterManager);
 };
 
 class ExpressionFactory  {

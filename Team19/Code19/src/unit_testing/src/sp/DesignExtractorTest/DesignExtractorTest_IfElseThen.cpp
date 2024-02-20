@@ -70,14 +70,16 @@ TEST_CASE("Tests for INVALID if-then-else statements", "[DesignExtractor::extrac
 	std::shared_ptr<ASTNode> ifNodes = std::make_shared<ASTNode>(ASTNode(ASTNodeType::IF_ELSE_THEN, 2, "while"));
 	std::shared_ptr<ASTNode> var1 = std::make_shared<ASTNode>(ASTNode(ASTNodeType::VARIABLE, 2, "x"));
 
+	std::vector<std::shared_ptr<ASTNode>> children;
+
 	ifNodes->addChild(var1);
 	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
 
-	REQUIRE_THROWS_WITH(IfElseThenVisitor(ifNodes, pkbWriterManager),
+	REQUIRE_THROWS_WITH(IfElseThenVisitor(ifNodes, children, pkbWriterManager),
 		"ERROR: IfElseThenVisitor - input root does not have 3 children");
 
 	std::shared_ptr<ASTNode> relExprNode = std::make_shared<ASTNode>(ASTNode(ASTNodeType::LESSER, 2, "<"));
-	REQUIRE_THROWS_WITH(IfElseThenVisitor(relExprNode, pkbWriterManager),
+	REQUIRE_THROWS_WITH(IfElseThenVisitor(relExprNode, children, pkbWriterManager),
 		"ERROR: IfElseThenVisitor - input root is not of type ASTNodeType::IF_ELSE_THEN");
 }

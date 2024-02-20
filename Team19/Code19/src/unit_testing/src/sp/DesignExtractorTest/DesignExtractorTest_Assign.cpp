@@ -29,11 +29,6 @@ TEST_CASE("Tests for assign statements", "[DesignExtractor::extract]") {
 		std::unordered_set<int> expectedStmts = {2, 3};
 		REQUIRE(pkbReaderManager->getAssignReader()->getAllAssigns() == expectedAssigns);
 		REQUIRE(pkbReaderManager->getStatementReader()->getAllStatements() == expectedStmts);
-
-		for (auto v : pkbReaderManager->getAssignPatternReader()->getAllPatterns()) {
-			std::cout << v.first << " " << v.second.first << " " << v.second.second << std::endl;
-		}
-
 		std::unordered_set<std::string> expectedVars = {"x", "y", "z"};
 		REQUIRE(pkbReaderManager->getVariableReader()->getAllVariables() == expectedVars);
 	}

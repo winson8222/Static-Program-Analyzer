@@ -64,8 +64,6 @@ TEST_CASE("Test string representations of programs", "[parse][program]") {
 
 	REQUIRE_NOTHROW(content = tree_ptr->toString());
 
-	std::cout << content << std::endl;
-
 	std::string subcontent1 = "  Type: Procedure, Line Number: 1, Value: Procedure\n";
 	std::string subcontent2 = "  Type: Procedure, Line Number: 5, Value: Procedure\n";
 	std::string subcontent3 = "  Type: Procedure, Line Number: 9, Value: Procedure\n";

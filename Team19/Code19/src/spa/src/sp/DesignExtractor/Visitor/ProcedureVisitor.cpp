@@ -15,5 +15,7 @@ void ProcedureVisitor::visit() {
 		throw std::runtime_error("Procedure node has more than 1 child");
 	}
 	StatementListVisitor statementListVisitor(this->root->children[0], this->pkbWriterManager);
+	statementListVisitor.setContext(contexts, root);
+	
 	statementListVisitor.visit();
 }

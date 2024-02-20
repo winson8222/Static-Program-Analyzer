@@ -9,6 +9,8 @@
 
 // https://chat.openai.com/share/7d5c29d9-43f6-4c36-b04e-0fca3b0e96ff
 
+typedef std::vector<std::shared_ptr<ASTNode>> listnode;
+
 class IVisitor {
 public:
     virtual void visit() = 0;
@@ -22,13 +24,18 @@ public:
     std::shared_ptr<PKBWriterManager> pkbWriterManager;
 
     std::vector<std::shared_ptr<ASTNode>> contexts;
-    // virtual void addContext(std::shared_ptr<ASTNode> context) = 0;
 };
 
 class StatementVisitor : public IVisitor {
 public:
-    using IVisitor::IVisitor;
+    StatementVisitor(std::shared_ptr<ASTNode> root,
+        listnode contexts,
+        std::shared_ptr<PKBWriterManager> pkbWriterManager)
+		: IVisitor(root, pkbWriterManager) {
+    	this->contexts = listnode(contexts.begin(), contexts.end());
+    }
     virtual void visit() = 0;
+    virtual void addContext(std::shared_ptr<ASTNode> context) = 0;
 };
 
 // ai-gen end

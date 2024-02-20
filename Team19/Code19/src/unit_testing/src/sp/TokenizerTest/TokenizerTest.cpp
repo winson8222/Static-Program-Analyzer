@@ -30,7 +30,6 @@ TEST_CASE("Test reading from an empty file", "[readFileToString]") {
 }
 
 TEST_CASE("Tokenizer::splitLine", "[splitLine]") {
-    std::cout << "TEST CASE line split start\n\n" << std::endl;
     const std::string testFileName = "../../../../../tests/sp/TokenizerTest/sourcefile2.txt";
     REQUIRE(std::filesystem::exists(testFileName));
     const std::vector<std::string> expectedOutput = {
