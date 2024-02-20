@@ -6,3 +6,11 @@ void ParentExtractor::extract() {
 		this->ast1->lineNumber, this->ast2->lineNumber
 	);
 }
+
+
+void ParentTExtractor::extract() {
+	// Extract all the parent relationships
+	this->pkbWriterManager->getParentTWriter()->addParentT(
+		this->ast1->lineNumber, this->ast2->lineNumber
+	);
+}

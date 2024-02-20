@@ -3,6 +3,7 @@
 #include "sp/DesignExtractor/Visitor/IVisitor.h"
 #include "sp/DesignExtractor/Extractor/AssignExtractor.h"
 #include "sp/DesignExtractor/Extractor/VariableExtractor.h"
+#include "sp/DesignExtractor/Visitor/ExpressionVisitor.h"
 #include <stdexcept>
 
 // ai-gen start (gpt, 2, e)
