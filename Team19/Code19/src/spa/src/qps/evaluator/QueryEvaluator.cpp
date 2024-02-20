@@ -28,6 +28,7 @@ std::vector<string> QueryEvaluator::evaluateQuery() {
     if (parsingResult.getSuchThatClauseRelationship().getValue() == "Follows" || parsingResult.getSuchThatClauseRelationship().getValue() == "Follows*") {
         addStrategy(std::make_unique<FollowsStrategy>());
     }
+    /*
     else if (parsingResult.getSuchThatClauseRelationship().getValue() == "Parent" || parsingResult.getSuchThatClauseRelationship().getValue() == "ParentT") {
         addStrategy(std::make_unique<ParentStrategy>());
     }
@@ -42,13 +43,13 @@ std::vector<string> QueryEvaluator::evaluateQuery() {
     }
     else {
         // if there is no clause, return all statements
-        /*
+        
         unordered_set<int> allStmts = pkbReaderManager->getStatementReader()->getAllStatements();
         for (int stmt : allStmts) {
             result.insert(to_string(stmt));
         }
-        */
-    }
+        
+    }*/
 
     bool isFirstStrategy = true;
     for (auto& strategy : strategies) {
@@ -67,7 +68,7 @@ std::vector<string> QueryEvaluator::evaluateQuery() {
     if (result->getColumnValues(requiredSynonym).empty()) {
         //return all statement/variables/whatever
         // return getAllEntities(requiredType);
-        return;
+        return result->getColumnValues(requiredSynonym); // change this to return all entities
     }
     else {
 		return result->getColumnValues(requiredSynonym);
