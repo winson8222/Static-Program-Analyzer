@@ -2,10 +2,12 @@
 
 #include "sp/DesignExtractor/Extractor/IExtractor.h"
 
-class FollowsExtractor : public IExtractor {
+class FollowsExtractor : public IRelationshipExtractor {
 public:
-	explicit FollowsExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
-		: IExtractor(root, pkbWriterManager) {}
+	FollowsExtractor(std::shared_ptr<ASTNode> ast1, 
+		std::shared_ptr<ASTNode> ast2, 
+		std::shared_ptr<PKBWriterManager> pkbWriterManager)
+		: IRelationshipExtractor(ast1, ast2, pkbWriterManager) {}
 
 	void extract() override;
 };

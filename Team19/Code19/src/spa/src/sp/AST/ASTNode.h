@@ -79,6 +79,7 @@ public:
      * @return A string representation of the AST node.
      */
     std::string toString() const;
+    std::string getRPNForm();
 
     // To be set as private in future
     ASTNodeType type;

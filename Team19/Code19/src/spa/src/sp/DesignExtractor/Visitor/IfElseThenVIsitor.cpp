@@ -20,7 +20,7 @@ void IfElseThenVisitor::visit() {
 	std::shared_ptr<ASTNode> thenStatementList = root->children[1];
 	std::shared_ptr<ASTNode> elseStatementList = root->children[2];
 
-	RelExpressionVisitor expressionVisitor(condition, pkbWriterManager);
+	ExpressionVisitor expressionVisitor(condition, pkbWriterManager);
 	expressionVisitor.visit();
 
 	StatementListVisitor thenStatementListVisitor(thenStatementList, pkbWriterManager);

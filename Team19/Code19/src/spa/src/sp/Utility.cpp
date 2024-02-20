@@ -43,15 +43,15 @@ std::string Utility::getASTNodeType(ASTNodeType t) {
         case ASTNodeType::NOT_EQUAL:
             return "NotEqual";
         case ASTNodeType::ADD:
-            return "Add";
+            return "+";
         case ASTNodeType::SUBTRACT:
-            return "Subtract";
+            return "-";
         case ASTNodeType::MULTIPLY:
-            return "Multiply";
+            return "*";
         case ASTNodeType::DIVIDE:
-            return "Divide";
+            return "/";
         case ASTNodeType::MODULO:
-            return "Modulo";
+            return "%";
         case ASTNodeType::VARIABLE:
             return "Variable";
         case ASTNodeType::CONSTANT:
@@ -83,7 +83,12 @@ bool Utility::nodeIsConditionalOperator(ASTNodeType t) {
 	return t == ASTNodeType::AND || t == ASTNodeType::OR 
 		|| t == ASTNodeType::NOT;
 }
-
+bool Utility::nodeIsValidOperator(ASTNodeType t) {
+	return t == ASTNodeType::ADD || t == ASTNodeType::SUBTRACT 
+		|| t == ASTNodeType::MULTIPLY || t == ASTNodeType::DIVIDE 
+		|| t == ASTNodeType::MODULO
+        || t == ASTNodeType::VARIABLE || t == ASTNodeType::CONSTANT;
+}
 
 /*
 static bool isCondExpr(ASTNodeType t);

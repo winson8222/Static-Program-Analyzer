@@ -39,9 +39,4 @@ public:
     virtual void visit() = 0;
 };
 
-class ExpressionVisitor : public IVisitor {
-    using IVisitor::IVisitor;
-    virtual void visit() = 0;
-};
-
 // ai-gen end

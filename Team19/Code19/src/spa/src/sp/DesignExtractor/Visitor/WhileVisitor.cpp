@@ -19,7 +19,7 @@ void WhileVisitor::visit() {
 	WhileExtractor whileExtractor(root, pkbWriterManager);
 	whileExtractor.extract();
 
-	RelExpressionVisitor expressionVisitor(expression, pkbWriterManager);
+	ExpressionVisitor expressionVisitor(expression, pkbWriterManager);
 	expressionVisitor.visit();
 
 	StatementListVisitor statementListVisitor(statementList, pkbWriterManager);
