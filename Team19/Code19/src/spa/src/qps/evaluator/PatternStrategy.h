@@ -13,7 +13,7 @@ private:
 
 
 public:
-    unordered_set<string> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult) override;
+    std::shared_ptr<ResultTable> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult) override;
 
     void processLHS(const Token& firstParam, unordered_set<string>& result);
     void processRHS(const Token& secondParam, unordered_set<string>& result, bool partialMatch);

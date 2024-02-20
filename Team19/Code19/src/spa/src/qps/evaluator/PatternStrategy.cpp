@@ -10,7 +10,7 @@ using namespace std;
 // where ent can be a wildcard, a quoted IDENT, or a synonym,
 // and expressionSpec is a wildcard, or a quoted expression or quoted expression surrounded by wildcards.
 
-unordered_set<string> PatternStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult) {
+std::shared_ptr<ResultTable> PatternStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult) {
     string requiredSynonym = parsingResult.getRequiredSynonym();
 
     unordered_set<string> result;

@@ -11,7 +11,7 @@ private:
     std::shared_ptr<StatementReader> statementReader;
 
 public:
-    unordered_set<string> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult) override;
+    std::shared_ptr<ResultTable> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult) override;
 
         
 };
