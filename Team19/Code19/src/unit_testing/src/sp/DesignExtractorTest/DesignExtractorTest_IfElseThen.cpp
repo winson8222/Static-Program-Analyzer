@@ -15,15 +15,6 @@ TEST_CASE("Tests for if-then-else statements", "[DesignExtractor::extract]") {
 	std::shared_ptr<ASTNode> root = std::make_shared<ASTNode>(ASTNode());
 	std::shared_ptr<ASTNode> proc1 = std::make_shared<ASTNode>(ASTNode(ASTNodeType::PROCEDURE, 1, "proc1"));
 
-	/*
-	procedure proc1 {
-		if (x < 4) {
-			print y;
-		} else {
-			read z;
-		}
-	}
-	*/
 	std::shared_ptr<ASTNode> stmtLst = std::make_shared<ASTNode>(ASTNode(ASTNodeType::STATEMENT_LIST, 1, "stmtLst1"));
 	std::shared_ptr<ASTNode> ifNode = std::make_shared<ASTNode>(ASTNode(ASTNodeType::IF_ELSE_THEN, 2, "while"));
 

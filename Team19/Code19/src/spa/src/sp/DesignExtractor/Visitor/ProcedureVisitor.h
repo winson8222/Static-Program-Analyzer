@@ -15,8 +15,5 @@ public:
 		}
 	}
 
-	// Purpose: From this node, extract information from the current node
-	// then recursively call other visitor to visit children nodes
-	void visit(std::shared_ptr<ASTNode> node) override;
 	void visit() override;
 };

@@ -1,0 +1,4 @@
+procedure proc1 {
+	x = y + z;
+	y = 2;
+}

@@ -1,0 +1,11 @@
+procedure proc1 {
+	if (z < 0) then {
+		print x;
+	} else {
+		read y;
+	}
+	while (x < y) {
+		z = z + 1;
+	}
+	call p;
+}

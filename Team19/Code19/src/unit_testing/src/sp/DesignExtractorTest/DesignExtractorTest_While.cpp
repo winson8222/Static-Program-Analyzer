@@ -81,3 +81,12 @@ TEST_CASE("Tests invalid while statements", "[DesignExtractor::extract]") {
 	REQUIRE_THROWS_WITH(WhileVisitor(relExprNode, pkbWriterManager),
 		"ERROR: Cannot initialized a non-WHILE node");
 }
+
+TEST_CASE("Test whiles integrating with parsers", "[DesignExtractor::Whiles]") {
+	const std::string testFileName = "../../../../../tests/sp/DesignExtractorTest/integration1.txt";
+	REQUIRE(std::filesystem::exists(testFileName));
+	SimpleParserFacade parser(testFileName);
+	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
+
+	std::cout << tree_ptr->toString() << std::endl;
+}

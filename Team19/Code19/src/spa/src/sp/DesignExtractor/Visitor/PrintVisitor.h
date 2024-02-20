@@ -7,10 +7,9 @@
 #include <iostream>
 #include <stdexcept>
 
-class PrintVisitor : public IVisitor {
+class PrintVisitor : public StatementVisitor {
 public:
 	PrintVisitor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager);
 
-	void visit(std::shared_ptr<ASTNode> node) override;
 	void visit() override;
 };

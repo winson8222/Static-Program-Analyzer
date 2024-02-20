@@ -1,7 +1,7 @@
 #include "sp/DesignExtractor/Visitor/WhileVisitor.h"
 
 WhileVisitor::WhileVisitor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
-	: IVisitor(root, pkbWriterManager) {
+	: StatementVisitor(root, pkbWriterManager) {
 	if (root->type != ASTNodeType::WHILE) {
 		throw std::runtime_error("ERROR: Cannot initialized a non-WHILE node");
 	}
@@ -9,10 +9,6 @@ WhileVisitor::WhileVisitor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWri
 	if (root->children.size() != 2) {
 		throw std::runtime_error("ERROR: While node is not correct");
 	}
-}
-
-void WhileVisitor::visit(std::shared_ptr<ASTNode> node) {
-	// do nothing
 }
 
 void WhileVisitor::visit() {
@@ -23,7 +19,7 @@ void WhileVisitor::visit() {
 	WhileExtractor whileExtractor(root, pkbWriterManager);
 	whileExtractor.extract();
 
-	RelExpressionVisitor expressionVisitor(expression, pkbWriterManager);
+	ExpressionVisitor expressionVisitor(expression, pkbWriterManager);
 	expressionVisitor.visit();
 
 	StatementListVisitor statementListVisitor(statementList, pkbWriterManager);
