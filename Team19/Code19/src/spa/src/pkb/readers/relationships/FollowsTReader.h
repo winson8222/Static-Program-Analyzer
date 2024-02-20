@@ -13,39 +13,6 @@ public:
       followsTStore = std::move(store);
     }
 
-    // Inherited methods
-    bool isEmpty() override {
-      return followsTStore->isEmpty();
-    }
-
-    std::unordered_map<int, std::unordered_set<int>> getKeyValueRelationships() override {
-      return followsTStore->getKeyValueRelationships();
-    }
-
-    std::unordered_map<int, std::unordered_set<int>> getValueKeyRelationships() override {
-      return followsTStore->getValueKeyRelationships();
-    }
-
-    std::unordered_set<int> getKeys() override {
-      return getAllPreFollowsT();
-    }
-
-    std::unordered_set<int> getValues() override {
-      return getAllPostFollowsT();
-    }
-
-    std::unordered_set<int> getRelationshipsByValue(int stmtNum) override {
-      return getPreFollowsT(stmtNum);
-    }
-
-    std::unordered_set<int> getRelationshipsByKey(int stmtNum) override {
-      return getPostFollowsT(stmtNum);
-    }
-
-    bool hasRelationship(int stmt1, int stmt2) override {
-      return hasFollowsT(stmt1, stmt2);
-    }
-
     // Custom methods
     /**
      * @brief Gets the preceding statement numbers of all "FollowsT" relationships.
@@ -89,6 +56,38 @@ public:
      */
     bool hasFollowsT(int stmt1, int stmt2) {
       return followsTStore->hasRelationship(stmt1, stmt2);
+    }
+    // Inherited methods
+    bool isEmpty() override {
+      return followsTStore->isEmpty();
+    }
+
+    std::unordered_map<int, std::unordered_set<int>> getKeyValueRelationships() override {
+      return followsTStore->getKeyValueRelationships();
+    }
+
+    std::unordered_map<int, std::unordered_set<int>> getValueKeyRelationships() override {
+      return followsTStore->getValueKeyRelationships();
+    }
+
+    std::unordered_set<int> getKeys() override {
+      return getAllPreFollowsT();
+    }
+
+    std::unordered_set<int> getValues() override {
+      return getAllPostFollowsT();
+    }
+
+    std::unordered_set<int> getRelationshipsByValue(int stmtNum) override {
+      return getPreFollowsT(stmtNum);
+    }
+
+    std::unordered_set<int> getRelationshipsByKey(int stmtNum) override {
+      return getPostFollowsT(stmtNum);
+    }
+
+    bool hasRelationship(int stmt1, int stmt2) override {
+      return hasFollowsT(stmt1, stmt2);
     }
 };
 // ai-gen end

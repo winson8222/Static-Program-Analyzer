@@ -25,10 +25,20 @@ public:
       return hasProcedure(stmtNum);
     }
 
+    // Custom methods
+    /**
+     * @brief Gets all procedure names.
+     * @return unordered_set<string>: The set of all procedure names.
+     */
     std::unordered_set<std::string> getAllProcedures() const {
       return procedureStore->getAllEntities();
     }
 
+    /**
+     * @brief Checks if a specific procedure exists.
+     * @param proc The procedure name to check.
+     * @return true if the procedure exists, false otherwise.
+     */
     bool hasProcedure(std::string proc) const {
       return procedureStore->contains(proc);
     }

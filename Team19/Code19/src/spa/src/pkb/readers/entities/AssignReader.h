@@ -26,10 +26,20 @@ public:
       return hasAssign(stmtNum);
     }
 
+    // Custom methods
+    /**
+     * @brief Gets all statement numbers of "Assign" statements.
+     * @return unordered_set<int>: The set of statement numbers of all "Assign" statements.
+     */
     std::unordered_set<int> getAllAssigns() const {
       return assignStore->getAllEntities();
     }
 
+    /**
+     * @brief Checks if a specific "Assign" statement exists.
+     * @param stmtNum The statement number to check.
+     * @return true if the "Assign" statement exists, false otherwise.
+     */
     bool hasAssign(int stmtNum) const {
       return assignStore->contains(stmtNum);
     }

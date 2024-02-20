@@ -13,6 +13,7 @@ private:
 public:
     explicit AssignPatternReader(std::shared_ptr<AssignPatternStore> store) : assignPatternStore(std::move(store)) {}
 
+    // Inherited methods
     bool isEmpty() override {
         return assignPatternStore->isEmpty();
     }

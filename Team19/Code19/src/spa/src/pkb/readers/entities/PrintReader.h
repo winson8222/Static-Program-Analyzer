@@ -25,10 +25,20 @@ public:
       return hasPrint(stmtNum);
     }
 
+    // Custom methods
+    /**
+     * @brief Gets all statement numbers of "Print" statements.
+     * @return unordered_set<int>: The set of statement numbers of all "Print" statements.
+     */
     std::unordered_set<int> getAllPrints() const {
       return printStore->getAllEntities();
     }
 
+    /**
+     * @brief Checks if a specific "Print" statement exists.
+     * @param stmtNum The statement number to check.
+     * @return true if the "Print" statement exists, false otherwise.
+     */
     bool hasPrint(int stmtNum) const {
       return printStore->contains(stmtNum);
     }

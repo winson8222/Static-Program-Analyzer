@@ -25,10 +25,20 @@ public:
       return hasVariable(variable);
     }
 
+    // Custom methods
+    /**
+     * @brief Gets all variable names.
+     * @return unordered_set<string>: The set of all variable names.
+     */
     std::unordered_set<std::string> getAllVariables() const {
       return variableStore->getAllEntities();
     }
 
+    /**
+     * @brief Checks if a specific variable exists.
+     * @param variable The variable name to check.
+     * @return true if the variable exists, false otherwise.
+     */
     bool hasVariable(std::string variable) const {
       return variableStore->contains(std::move(variable));
     }

@@ -13,39 +13,6 @@ public:
       followsStore = std::move(store);
     }
 
-    // Inherited methods
-    bool isEmpty() override {
-      return followsStore->isEmpty();
-    }
-
-    std::unordered_map<int, std::unordered_set<int>> getKeyValueRelationships() override {
-      return followsStore->getKeyValueRelationships();
-    }
-
-    std::unordered_map<int, std::unordered_set<int>> getValueKeyRelationships() override {
-      return followsStore->getValueKeyRelationships();
-    }
-
-    std::unordered_set<int> getKeys() override {
-      return getAllPreFollows();
-    }
-
-    std::unordered_set<int> getValues() override {
-      return getAllPostFollows();
-    }
-
-    std::unordered_set<int> getRelationshipsByValue(int stmtNum) override {
-      return getPreFollows(stmtNum);
-    }
-
-    std::unordered_set<int> getRelationshipsByKey(int stmtNum) override {
-      return getPostFollows(stmtNum);
-    }
-
-    bool hasRelationship(int stmt1, int stmt2) override {
-      return hasFollows(stmt1, stmt2);
-    }
-
     // Custom methods
     /**
      * @brief Gets the preceding statement numbers of all "Follows" relationships.
@@ -89,6 +56,38 @@ public:
      */
     bool hasFollows(int stmt1, int stmt2) {
       return followsStore->hasRelationship(stmt1, stmt2);
+    }
+    // Inherited methods
+    bool isEmpty() override {
+      return followsStore->isEmpty();
+    }
+
+    std::unordered_map<int, std::unordered_set<int>> getKeyValueRelationships() override {
+      return followsStore->getKeyValueRelationships();
+    }
+
+    std::unordered_map<int, std::unordered_set<int>> getValueKeyRelationships() override {
+      return followsStore->getValueKeyRelationships();
+    }
+
+    std::unordered_set<int> getKeys() override {
+      return getAllPreFollows();
+    }
+
+    std::unordered_set<int> getValues() override {
+      return getAllPostFollows();
+    }
+
+    std::unordered_set<int> getRelationshipsByValue(int stmtNum) override {
+      return getPreFollows(stmtNum);
+    }
+
+    std::unordered_set<int> getRelationshipsByKey(int stmtNum) override {
+      return getPostFollows(stmtNum);
+    }
+
+    bool hasRelationship(int stmt1, int stmt2) override {
+      return hasFollows(stmt1, stmt2);
     }
 };
 // ai-gen end

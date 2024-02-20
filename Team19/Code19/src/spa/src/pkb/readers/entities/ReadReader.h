@@ -25,10 +25,20 @@ public:
       return hasRead(stmtNum);
     }
 
+    // Custom methods
+    /**
+     * @brief Gets all statement numbers of "Read" statements.
+     * @return unordered_set<int>: The set of statement numbers of all "Read" statements.
+     */
     std::unordered_set<int> getAllReads() const {
       return readStore->getAllEntities();
     }
 
+    /**
+     * @brief Checks if a specific "Read" statement exists.
+     * @param stmtNum The statement number to check.
+     * @return true if the "Read" statement exists, false otherwise.
+     */
     bool hasRead(int stmtNum) const {
       return readStore->contains(stmtNum);
     }

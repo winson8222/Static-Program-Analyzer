@@ -25,10 +25,20 @@ public:
       return hasConstant(stmtNum);
     }
 
+    // Custom methods
+    /**
+     * @brief Gets all constant values.
+     * @return unordered_set<int>: The set of all constant values.
+     */
     std::unordered_set<int> getAllConstants() const {
       return constantStore->getAllEntities();
     }
 
+    /**
+     * @brief Checks if a specific constant exists.
+     * @param constant The constant value to check.
+     * @return true if the constant exists, false otherwise.
+     */
     bool hasConstant(int constant) const {
       return constantStore->contains(constant);
     }
