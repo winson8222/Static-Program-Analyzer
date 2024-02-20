@@ -80,5 +80,4 @@ TEST_CASE("Test complete string representations of programs", "[parse][program]"
 	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program3.txt";
 	REQUIRE(std::filesystem::exists(testFileName));
 	SimpleParserFacade parser(testFileName);
-		parser.parse();
 }

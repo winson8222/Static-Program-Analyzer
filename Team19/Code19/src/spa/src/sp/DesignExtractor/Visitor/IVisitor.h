@@ -35,11 +35,13 @@ public:
 
 class StatementVisitor : public IVisitor {
 public:
-    virtual void visit(std::shared_ptr<ASTNode> node) = 0;
+    using IVisitor::IVisitor;
+    virtual void visit() = 0;
 };
 
 class ExpressionVisitor : public IVisitor {
-
+    using IVisitor::IVisitor;
+    virtual void visit() = 0;
 };
 
 // ai-gen end

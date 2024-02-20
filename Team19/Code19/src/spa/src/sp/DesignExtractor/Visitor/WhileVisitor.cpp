@@ -1,7 +1,7 @@
 #include "sp/DesignExtractor/Visitor/WhileVisitor.h"
 
 WhileVisitor::WhileVisitor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
-	: IVisitor(root, pkbWriterManager) {
+	: StatementVisitor(root, pkbWriterManager) {
 	if (root->type != ASTNodeType::WHILE) {
 		throw std::runtime_error("ERROR: Cannot initialized a non-WHILE node");
 	}

@@ -6,10 +6,10 @@
 #include <stdexcept>
 #include <iostream>
 
-class ReadVisitor : public IVisitor {
+class ReadVisitor : public StatementVisitor {
 public:
 	ReadVisitor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
-		: IVisitor(root, pkbWriterManager) {
+		: StatementVisitor(root, pkbWriterManager) {
 		if (root->type != ASTNodeType::READ) {
 			throw std::invalid_argument("ReadVisitor - root is not of type PRINT");
 		}

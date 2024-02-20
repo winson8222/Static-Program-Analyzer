@@ -6,7 +6,7 @@
 #include "sp/DesignExtractor/Visitor/StatementListVisitor.h"
 #include <stdexcept>
 
-class IfElseThenVisitor : public IVisitor {
+class IfElseThenVisitor : public StatementVisitor {
 public:
 	IfElseThenVisitor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager);
 	void visit() override;

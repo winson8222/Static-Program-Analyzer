@@ -7,5 +7,5 @@ procedure proc1 {
 	while (x < y) {
 		z = z + 1;
 	}
-
+	call p;
 }

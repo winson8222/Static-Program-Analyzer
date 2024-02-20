@@ -7,7 +7,7 @@
 #include <stdexcept>
 #include <memory>
 
-class WhileVisitor : public IVisitor {
+class WhileVisitor : public StatementVisitor {
 public:
 	WhileVisitor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager);
 

@@ -1,7 +1,7 @@
 #include "sp/DesignExtractor/Visitor/IfElseThenVisitor.h"
 
 IfElseThenVisitor::IfElseThenVisitor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
-	: IVisitor(root, pkbWriterManager) {
+	: StatementVisitor(root, pkbWriterManager) {
 	if (root->type != ASTNodeType::IF_ELSE_THEN) {
 		throw std::invalid_argument("ERROR: IfElseThenVisitor - input root is not of type ASTNodeType::IF_ELSE_THEN");
 	}
