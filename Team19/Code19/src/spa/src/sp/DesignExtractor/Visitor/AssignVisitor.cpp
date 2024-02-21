@@ -17,10 +17,12 @@ void AssignVisitor::visit() {
 	AssignExtractor assignExtractor(this->root, this->pkbWriterManager);
 	assignExtractor.extract();
 
-	VariableVisitor variableVisitor(this->root->children[0], this->contexts, this->pkbWriterManager);
+	VariableVisitor variableVisitor(this->root->children[0], this->pkbWriterManager);
+	// set modify
 	variableVisitor.visit();
 
 	ArithmeticExpressionVisitor expressionVisitor(this->root->children[1], this->pkbWriterManager);
+	expressionVisitor.setUsedContext(this->contexts, this->root);
 	expressionVisitor.visit();
 
 	int size = contexts.size();

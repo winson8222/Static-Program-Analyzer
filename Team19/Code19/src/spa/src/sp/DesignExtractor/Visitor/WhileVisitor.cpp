@@ -24,6 +24,7 @@ void WhileVisitor::visit() {
 	whileExtractor.extract();
 
 	ExpressionVisitor expressionVisitor(expression, pkbWriterManager);
+	expressionVisitor.setUsedContext(contexts, root);
 	expressionVisitor.visit();
 
 	StatementListVisitor statementListVisitor(statementList, pkbWriterManager);

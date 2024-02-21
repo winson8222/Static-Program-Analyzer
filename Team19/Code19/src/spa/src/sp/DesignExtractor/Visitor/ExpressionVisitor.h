@@ -17,6 +17,8 @@ public:
 	ExpressionVisitor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager);
 	void visit() override;
 	void depthFirstSearch(std::shared_ptr<ASTNode> node);
+	void setUsedContext(listnode contexts, std::shared_ptr<ASTNode> parent);
+	listnode usedContexts;
 };
 
 class ArithmeticExpressionVisitor : public ExpressionVisitor {

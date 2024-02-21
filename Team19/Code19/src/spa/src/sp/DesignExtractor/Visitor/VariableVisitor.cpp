@@ -4,16 +4,25 @@ void VariableVisitor::visit() {
 	VariableExtractor variableExtractor(root, this->pkbWriterManager);
 	variableExtractor.extract();
 
-	/*
-	UsesExtractor usesExtractor(this->root, this->contexts, this->pkbWriterManager);
-	usesExtractor.extract();
-
-	ModifiesExtractor modifiesExtractor(this->root, this->contexts, this->pkbWriterManager);
-	modifiesExtractor.extract();
-	*/
+	for (std::shared_ptr<ASTNode> context : usedContexts) {
+		UsesExtractor usesExtractor(context, root, this->pkbWriterManager);
+		usesExtractor.extract();
+	}
+	
+	for (std::shared_ptr<ASTNode> context : modifiedContexts) {
+		ModifiesExtractor modifiesExtractor(root, context, this->pkbWriterManager);
+		modifiesExtractor.extract();
+	}
 }
 
-void VariableVisitor::setContext(std::vector<std::shared_ptr<ASTNode>> contexts, std::shared_ptr<ASTNode> parent) {
-	this->contexts = std::vector<std::shared_ptr<ASTNode>>(contexts.begin(), contexts.end());
-	this->contexts.push_back(parent);
+void VariableVisitor::setUsedContext(listnode contexts, std::shared_ptr<ASTNode> parent) {
+	//this->contexts = contexts;
+	usedContexts = listnode(contexts.begin(), contexts.end());
+	usedContexts.push_back(parent);
+}
+
+void VariableVisitor::setModifiedContext(listnode contexts, std::shared_ptr<ASTNode> parent) {
+	//this->contexts = contexts;
+	modifiedContexts = listnode(contexts.begin(), contexts.end());
+	modifiedContexts.push_back(parent);
 }

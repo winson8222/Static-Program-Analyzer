@@ -11,6 +11,7 @@
 #include <vector>
 
 TEST_CASE("Test parser-extractor minor integration", "[DesignExtractor::Whiles]") {
+	std::cout << "\n\nINTEGRATION TEST STARTS\n";
 	const std::string testFileName = "../../../../../tests/sp/DesignExtractorTest/integration1.txt";
 	REQUIRE(std::filesystem::exists(testFileName));
 	SimpleParserFacade parser(testFileName);
@@ -78,4 +79,6 @@ TEST_CASE("Test parser-extractor minor integration", "[DesignExtractor::Whiles]"
 	std::unordered_set<int> n = pkbReader->getAssignReader()->getAllAssigns();
 	std::unordered_set<int> expectedAssigns = { 7, 11 };
 	REQUIRE(n == expectedAssigns);
+
+	std::cout << "INTEGRATION TEST ENDS\n\n\n";
 }

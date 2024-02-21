@@ -10,7 +10,6 @@
 class VariableVisitor : public IVisitor {
 public:
 	VariableVisitor(std::shared_ptr<ASTNode> root,
-		listnode context,
 		std::shared_ptr<PKBWriterManager> pkbWriterManager)
 		: IVisitor(root, pkbWriterManager) {
 		if (root->type != ASTNodeType::VARIABLE) {
@@ -19,10 +18,17 @@ public:
 		if (root->children.size() != 0) {
 			throw std::invalid_argument("ERROR: VARIABLE HAVE LEAFS");
 		}
-		this->contexts = listnode(context.begin(), context.end());
 	}
 
 	void visit() override;
-	void setContext(std::vector<std::shared_ptr<ASTNode>> contexts, std::shared_ptr<ASTNode> parent);
-	std::vector<std::shared_ptr<ASTNode>> contexts;
+
+	/*
+	* Set current Variable Visitor to contains context of which statement or procedure uses it
+	*/
+	void setUsedContext(listnode contexts, std::shared_ptr<ASTNode> parent);
+	void setModifiedContext(listnode contexts, std::shared_ptr<ASTNode> parent);
+	
+private:
+	std::vector<std::shared_ptr<ASTNode>> usedContexts;
+	std::vector<std::shared_ptr<ASTNode>> modifiedContexts;
 };

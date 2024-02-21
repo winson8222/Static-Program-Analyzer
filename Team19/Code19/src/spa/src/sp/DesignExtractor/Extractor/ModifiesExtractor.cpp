@@ -21,7 +21,8 @@ void ModifiesExtractor::extract() {
 			getCallModifies();
 			break;
 		default:
-			throw std::invalid_argument("UsesExtractor: Invalid ASTNode type");
+			break;
+			// throw std::invalid_argument("Modifies Extractor: Invalid ASTNode type");
 	}
 }
 

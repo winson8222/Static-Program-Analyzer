@@ -12,7 +12,9 @@ void ExpressionVisitor::visit() {
 
 void ExpressionVisitor::depthFirstSearch(std::shared_ptr<ASTNode> node) {
 	if (node->type == ASTNodeType::VARIABLE) {
-		VariableVisitor variableVisitor(node, this->contexts, this->pkbWriterManager);
+		VariableVisitor variableVisitor(node, this->pkbWriterManager);
+		variableVisitor.setUsedContext(usedContexts, node); 
+		// set the used context (parent and siblings of the variable node)
 		variableVisitor.visit();
 	}
 	else if (node->type == ASTNodeType::CONSTANT) {
@@ -22,6 +24,11 @@ void ExpressionVisitor::depthFirstSearch(std::shared_ptr<ASTNode> node) {
 	for (auto& child : node->children) {
 		depthFirstSearch(child);
 	}
+}
+
+void ExpressionVisitor::setUsedContext(listnode contexts, std::shared_ptr<ASTNode> parent) {
+	usedContexts = listnode(contexts.begin(), contexts.end());
+	usedContexts.push_back(parent);
 }
 
 void ArithmeticExpressionVisitor::depthFirstSearch(std::shared_ptr<ASTNode> node) {

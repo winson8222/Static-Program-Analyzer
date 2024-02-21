@@ -1,6 +1,7 @@
 #include "sp/DesignExtractor/Extractor/UsesExtractor.h"
 
 void UsesExtractor::extract() {
+	bool added = true;
 	switch (ast1->type) {
 		case ASTNodeType::ASSIGN:
 			getAssignUses();
@@ -21,7 +22,8 @@ void UsesExtractor::extract() {
 			getCallUses();
 			break;
 		default:
-			throw std::invalid_argument("UsesExtractor: Invalid ASTNode type");
+			added = false;
+			break;
 	}
 }
 

@@ -8,7 +8,7 @@ void ReadVisitor::visit() {
 	// VariableExtractor variableExtractor(this->root->children[0], this->pkbWriterManager);
 	// variableExtractor.extract();
 
-	VariableVisitor variableVisitor(this->root->children[0], this->contexts, this->pkbWriterManager);
+	VariableVisitor variableVisitor(this->root->children[0], this->pkbWriterManager);
 	variableVisitor.visit();
 
 	int size = contexts.size();
