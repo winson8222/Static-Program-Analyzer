@@ -79,4 +79,21 @@ TEST_CASE("ModifiesStrategy Evaluation for ModifiesP and ModifiesS", "[Modifies]
         REQUIRE_FALSE(resultTable->getRows().empty());
     }
 
+
+    // Test for modification in nested statements
+    SECTION("ModifiesS in nested statements") {
+        // Assuming statement 4 is a container statement that contains statement 2
+        pkb->getModifiesSStore()->addRelationship(4, "x");
+        auto parsingResult = createParsingResultForModifies("4", "x", false);
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        REQUIRE_FALSE(resultTable->getRows().empty()); // Expecting the result to indicate modification
+    }
+
+    // Test for wildcard entity with specific variable
+    SECTION("ModifiesS with wildcard entity and specific variable") {
+        auto parsingResult = createParsingResultForModifies("_", "x", false); // Using wildcard for statement
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        REQUIRE_FALSE(resultTable->getRows().empty()); // Expecting at least one statement modifies 'x'
+    }
+
 }
