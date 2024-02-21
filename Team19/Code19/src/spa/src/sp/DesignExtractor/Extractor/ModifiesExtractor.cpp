@@ -28,19 +28,19 @@ void ModifiesExtractor::extract() {
 }
 
 void ModifiesExtractor::getAssignModifies() {
-	this->pkbWriterManager->getModifiesSWriter()->addModifiesP(ast1->lineNumber, ast2->value);
+  this->pkbWriterManager->getModifiesSWriter()->addModifiesS(ast1->lineNumber, ast2->value);
 }
 
 void ModifiesExtractor::getReadModifies() {
-	this->pkbWriterManager->getModifiesSWriter()->addModifiesP(ast1->lineNumber, ast2->value);
+  this->pkbWriterManager->getModifiesSWriter()->addModifiesS(ast1->lineNumber, ast2->value);
 }
 
 void ModifiesExtractor::getIfModifies() {
-	this->pkbWriterManager->getModifiesSWriter()->addModifiesP(ast1->lineNumber, ast2->value);
+  this->pkbWriterManager->getModifiesSWriter()->addModifiesS(ast1->lineNumber, ast2->value);
 }
 
 void ModifiesExtractor::getWhileModifies() {
-	this->pkbWriterManager->getModifiesSWriter()->addModifiesP(ast1->lineNumber, ast2->value);
+  this->pkbWriterManager->getModifiesSWriter()->addModifiesS(ast1->lineNumber, ast2->value);
 }
 
 void ModifiesExtractor::getProcedureModifies() {

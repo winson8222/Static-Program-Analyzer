@@ -12,14 +12,14 @@ public:
     explicit ModifiesSWriter(std::shared_ptr<ModifiesSStore> store) : modifiesSStore(std::move(store)) {}
 
     void addRelationship(int stmtNum, std::string var) override {
-        addModifiesP(stmtNum, var);
+      addModifiesS(stmtNum, var);
     }
 
     void clear() override {
       modifiesSStore->clear();
     }
 
-    void addModifiesP(int stmtNum, std::string var) {
+    void addModifiesS(int stmtNum, std::string var) {
       modifiesSStore->addRelationship(stmtNum, var);
     }
 };
