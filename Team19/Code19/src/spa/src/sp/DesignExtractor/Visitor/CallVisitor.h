@@ -2,7 +2,7 @@
 
 #include "sp/DesignExtractor/Visitor/IVisitor.h"
 #include "sp/DesignExtractor/Extractor/CallExtractor.h"
-#include "sp/DesignExtractor/Extractor/VariableExtractor.h"
+#include "sp/DesignExtractor/Extractor/ProcedureExtractor.h"
 #include "sp/DesignExtractor/Extractor/ParentExtractor.h"
 
 // ai-gen starts

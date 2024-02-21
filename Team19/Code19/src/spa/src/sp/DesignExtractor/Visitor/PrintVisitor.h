@@ -1,8 +1,9 @@
 #pragma once
 
 #include "sp/DesignExtractor/Visitor/IVisitor.h"
+#include "sp/DesignExtractor/Visitor/VariableVisitor.h"
+
 #include "sp/DesignExtractor/Extractor/PrintExtractor.h"
-#include "sp/DesignExtractor/Extractor/VariableExtractor.h"
 #include "sp/DesignExtractor/Extractor/ParentExtractor.h"
 #include <iostream>
 #include <stdexcept>

@@ -5,8 +5,8 @@ void CallVisitor::visit() {
 	CallExtractor callExtractor(this->root, this->pkbWriterManager);
 	callExtractor.extract();
 
-	VariableExtractor variableExtractor(this->root->children[0], this->pkbWriterManager);
-	variableExtractor.extract();
+	ProcedureExtractor procExt(this->root->children[0], this->pkbWriterManager);
+	procExt.extract();
 
 	int size = contexts.size();
 	for (int i = 0; i < size; i++) {

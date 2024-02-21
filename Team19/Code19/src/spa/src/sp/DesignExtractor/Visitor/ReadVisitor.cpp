@@ -5,8 +5,11 @@ void ReadVisitor::visit() {
 	ReadExtractor readExtractor(this->root, this->pkbWriterManager);
 	readExtractor.extract();
 
-	VariableExtractor variableExtractor(this->root->children[0], this->pkbWriterManager);
-	variableExtractor.extract();
+	// VariableExtractor variableExtractor(this->root->children[0], this->pkbWriterManager);
+	// variableExtractor.extract();
+
+	VariableVisitor variableVisitor(this->root->children[0], this->contexts, this->pkbWriterManager);
+	variableVisitor.visit();
 
 	int size = contexts.size();
 	for (int i = 0; i < size; i++) {

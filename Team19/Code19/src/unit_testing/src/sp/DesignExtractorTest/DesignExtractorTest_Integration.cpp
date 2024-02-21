@@ -40,7 +40,7 @@ TEST_CASE("Test parser-extractor minor integration", "[DesignExtractor::Whiles]"
 	REQUIRE(d == expectedFollowsT);
 
 	std::unordered_set<std::string> e = pkbReader->getVariableReader()->getAllVariables();
-	std::unordered_set<std::string> expectedVariables = { "p", "x", "y", "z" };
+	std::unordered_set<std::string> expectedVariables = { "x", "y", "z" };
 	REQUIRE(e == expectedVariables);
 
 	std::unordered_set<int> f = pkbReader->getConstantReader()->getAllConstants();
@@ -48,7 +48,7 @@ TEST_CASE("Test parser-extractor minor integration", "[DesignExtractor::Whiles]"
 	REQUIRE(f == expectedConstants);
 	
 	std::unordered_set<std::string> g = pkbReader->getProcedureReader()->getAllProcedures();
-	std::unordered_set<std::string> expectedProcedures = { "proc1" };
+	std::unordered_set<std::string> expectedProcedures = { "proc1", "p"};
 	REQUIRE(g == expectedProcedures);
 
 	std::unordered_set<int> h = pkbReader->getStatementReader()->getAllStatements();

@@ -17,8 +17,8 @@ void AssignVisitor::visit() {
 	AssignExtractor assignExtractor(this->root, this->pkbWriterManager);
 	assignExtractor.extract();
 
-	VariableExtractor variableExtractor(this->root->children[0], this->pkbWriterManager);
-	variableExtractor.extract();
+	VariableVisitor variableVisitor(this->root->children[0], this->contexts, this->pkbWriterManager);
+	variableVisitor.visit();
 
 	ArithmeticExpressionVisitor expressionVisitor(this->root->children[1], this->pkbWriterManager);
 	expressionVisitor.visit();

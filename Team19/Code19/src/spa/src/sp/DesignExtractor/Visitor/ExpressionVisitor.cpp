@@ -7,14 +7,13 @@ ExpressionVisitor::ExpressionVisitor(std::shared_ptr<ASTNode> root, std::shared_
 
 void ExpressionVisitor::visit() {
 	depthFirstSearch(root);
-	// To handle additional cases later
 }
 
 
 void ExpressionVisitor::depthFirstSearch(std::shared_ptr<ASTNode> node) {
 	if (node->type == ASTNodeType::VARIABLE) {
-		VariableExtractor variableExtractor(node, pkbWriterManager);
-		variableExtractor.extract();
+		VariableVisitor variableVisitor(node, this->contexts, this->pkbWriterManager);
+		variableVisitor.visit();
 	}
 	else if (node->type == ASTNodeType::CONSTANT) {
 		ConstantExtractor constantExtractor(node, pkbWriterManager);
