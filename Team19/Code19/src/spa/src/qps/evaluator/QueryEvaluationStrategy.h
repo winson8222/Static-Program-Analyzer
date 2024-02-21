@@ -13,6 +13,10 @@ class QueryEvaluationStrategy {
 public:
     virtual std::shared_ptr<ResultTable> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult) = 0;
     virtual ~QueryEvaluationStrategy() = default;
+
+protected:
+    static void convertIntSetToStringSet(const std::unordered_set<int>& intSet, std::unordered_set<std::string>& stringSet);
+    static string extractQuotedExpression(const Token& token);
 };
 
 #endif //QUERYEVALUATIONSTRATEGY_H

@@ -24,4 +24,5 @@ public:
         std::shared_ptr<ResultTable> resultTable) override;
     void processIntegerParams(const Token& firstParam, const Token& secondParam,
         std::shared_ptr<ResultTable> resultTable) override;
+
 };
