@@ -4,6 +4,8 @@
 
 #include "pkb/stores/entities/EntityStore.h"
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 /**
  * @class ProcedureStore
  * Specialization of EntityStore for 'Procedure' entity.
@@ -16,3 +18,4 @@ class ProcedureStore: public EntityStore<std::string> {
     // This class can be used to instantiate an EntityStore
     // specific for the 'Procedure' Entity.
 };
+// ai-gen end

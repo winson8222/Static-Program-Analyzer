@@ -23,6 +23,52 @@ public:
         return store->isEmpty();
     }
 
+    // Custom methods
+    /**
+     * @brief Gets all the variables modified by a given statement.
+     * @param stmtNum The statement number to query.
+     * @return unordered_set<string>: The set of variables modified by the given statement.
+     */
+    std::unordered_set<std::string> getAllVariablesModifiedByStmt(int stmtNum) {
+        return store->getRelationshipsByKey(stmtNum);
+    }
+
+    /**
+     * @brief Gets all the statements that modify a given variable.
+     * @param varName The variable name to query.
+     * @return unordered_set<int>: The set of statement numbers that modify the given variable.
+     */
+    std::unordered_set<int> getAllStmtsThatModifyVariable(const std::string& varName) {
+        return store->getRelationshipsByValue(varName);
+    }
+
+    /**
+     * @brief Checks if a given statement modifies a given variable.
+     * @param stmtNum The statement number to query.
+     * @param varName The variable name to query.
+     * @return bool: True if the statement modifies the variable, false otherwise.
+     */
+    bool doesStmtModifyVariable(int stmtNum, const std::string& varName) {
+        return store->hasRelationship(stmtNum, varName);
+    }
+
+    /**
+     * @brief Gets all the statements that modify any variable.
+     * @return unordered_set<int>: The set of all statement numbers that modify any variable.
+     */
+    std::unordered_set<int> getAllStmtsThatModifyAnyVariable() {
+        return store->getKeys();
+    }
+
+    /**
+     * @brief Gets all the variables modified by any statement.
+     * @return unordered_set<string>: The set of all variables modified by any statement.
+     */
+    std::unordered_set<std::string> getAllVariablesModifiedByAnyStmt() {
+        return store->getValues();
+    }
+
+    // Inherited methods
     std::unordered_map<int, std::unordered_set<std::string>> getKeyValueRelationships() override {
         return store->getKeyValueRelationships();
     }

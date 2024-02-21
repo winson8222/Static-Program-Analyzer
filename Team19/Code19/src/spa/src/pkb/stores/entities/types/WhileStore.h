@@ -2,6 +2,8 @@
 
 #include "pkb/stores/entities/EntityStore.h"
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 /**
  * @class WhileStore
  * Specialization of EntityStore for 'While' entity.
@@ -15,3 +17,4 @@ class WhileStore: public EntityStore<int> {
     // This class can be used to instantiate an EntityStore
     // specific for the 'While' Entity.
 };
+// ai-gen end

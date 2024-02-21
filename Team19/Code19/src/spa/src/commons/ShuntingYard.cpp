@@ -2,6 +2,8 @@
 
 #include <stack>
 
+// ai-gen start(copilot, 1, e)
+// prompt: used copilot
 std::string ShuntingYard::convertToPostfix(const std::string& infixExpression) {
   return infixToPostfix(infixExpression);
 }
@@ -65,5 +67,4 @@ std::string ShuntingYard::infixToPostfix(const std::string& infixExpression) {
     }
     return postfixExpression;
 }
-
-// ai-generated code, slightly modifies to fit the project
+// ai-gen end

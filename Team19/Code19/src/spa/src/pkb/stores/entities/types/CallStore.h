@@ -2,6 +2,8 @@
 
 #include "pkb/stores/entities/EntityStore.h"
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 /**
  * @class CallStore
  * Specialization of EntityStore for 'Call' entity.
@@ -15,3 +17,4 @@ class CallStore: public EntityStore<int> {
     // This class can be used to instantiate an EntityStore
     // specific for the 'Call' Entity.
 };
+// ai-gen end

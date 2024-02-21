@@ -3,6 +3,8 @@
 #include "pkb/stores/relationships/IRelationshipReader.h"
 #include "pkb/stores/relationships/types/ParentTStore.h"
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 class ParentTReader: public IRelationshipReader<int, int> {
 private:
     std::shared_ptr<ParentTStore> parentTStore;
@@ -10,40 +12,6 @@ public:
     explicit ParentTReader(std::shared_ptr<ParentTStore> store) {
       parentTStore = std::move(store);
     }
-
-    // Inherited methods
-    bool isEmpty() override {
-      return parentTStore->isEmpty();
-    }
-
-    std::unordered_map<int, std::unordered_set<int>> getKeyValueRelationships() override {
-      return parentTStore->getKeyValueRelationships();
-    }
-
-    std::unordered_map<int, std::unordered_set<int>> getValueKeyRelationships() override {
-      return parentTStore->getValueKeyRelationships();
-    }
-
-    std::unordered_set<int> getKeys() override {
-      return getAllParentTs();
-    }
-
-    std::unordered_set<int> getValues() override {
-      return getAllChildrenT();
-    }
-
-    std::unordered_set<int> getRelationshipsByValue(int stmtNum) override {
-      return getParentT(stmtNum);
-    }
-
-    std::unordered_set<int> getRelationshipsByKey(int stmtNum) override {
-      return getChildT(stmtNum);
-    }
-
-    bool hasRelationship(int stmt1, int stmt2) override {
-      return hasParentT(stmt1, stmt2);
-    }
-
     // Custom methods
     /**
      * @brief Gets the parentT statement numbers of all "ParentT" relationships.
@@ -89,4 +57,38 @@ public:
       return parentTStore->hasRelationship(parentT, childT);
     }
 
+    // Inherited methods
+    bool isEmpty() override {
+      return parentTStore->isEmpty();
+    }
+
+    std::unordered_map<int, std::unordered_set<int>> getKeyValueRelationships() override {
+      return parentTStore->getKeyValueRelationships();
+    }
+
+    std::unordered_map<int, std::unordered_set<int>> getValueKeyRelationships() override {
+      return parentTStore->getValueKeyRelationships();
+    }
+
+    std::unordered_set<int> getKeys() override {
+      return getAllParentTs();
+    }
+
+    std::unordered_set<int> getValues() override {
+      return getAllChildrenT();
+    }
+
+    std::unordered_set<int> getRelationshipsByValue(int stmtNum) override {
+      return getParentT(stmtNum);
+    }
+
+    std::unordered_set<int> getRelationshipsByKey(int stmtNum) override {
+      return getChildT(stmtNum);
+    }
+
+    bool hasRelationship(int stmt1, int stmt2) override {
+      return hasParentT(stmt1, stmt2);
+    }
+
 };
+// ai-gen end

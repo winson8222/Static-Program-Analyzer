@@ -73,7 +73,7 @@ TEST_CASE("Test string representations of programs", "[parse][program]") {
 	REQUIRE(content.find(subcontent3) != std::string::npos);
 }
 
-TEST_CASE("Test complete string representations of programs", "[parse][program]") {
+TEST_CASE("sp/ParserTest/ParseProgram.cpp", "Test 1") {
 	// Generate test file
 	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program3.txt";
 	REQUIRE(std::filesystem::exists(testFileName));
