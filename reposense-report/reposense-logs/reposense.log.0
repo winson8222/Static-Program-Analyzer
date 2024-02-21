@@ -1,0 +1,34 @@
+Feb 20, 2024 1:11:51 PM reposense.system.LogsManager addFileHandler
+INFO: Log temp folder has been successfully created
+Feb 20, 2024 1:11:51 PM reposense.report.RepoCloner spawnCloneProcess
+INFO: Cloning in parallel from https://github.com/nus-cs3203/23s2-cp-spa-team-19.git...
+Feb 20, 2024 1:11:51 PM reposense.report.RepoCloner waitForCloneProcess
+INFO: Waiting for cloning of https://github.com/nus-cs3203/23s2-cp-spa-team-19.git to complete...
+Feb 20, 2024 1:11:53 PM reposense.report.RepoCloner waitForCloneProcess
+INFO: Cloning of https://github.com/nus-cs3203/23s2-cp-spa-team-19.git completed!
+Feb 20, 2024 1:11:53 PM reposense.report.ReportGenerator analyzeRepos
+INFO: [1/1] Analyzing https://github.com/nus-cs3203/23s2-cp-spa-team-19.git (master)...
+Feb 20, 2024 1:11:53 PM reposense.report.ReportGenerator updateRepoConfig
+INFO: https://github.com/nus-cs3203/23s2-cp-spa-team-19.git (master) does not contain a standalone config file.
+Feb 20, 2024 1:11:53 PM reposense.report.ReportGenerator updateAuthorList
+INFO: https://github.com/nus-cs3203/23s2-cp-spa-team-19.git (master) has no authors specified, using all authors by default.
+Feb 20, 2024 1:11:53 PM reposense.authorship.FileInfoExtractor extractTextFileInfos
+INFO: Extracting relevant file info from https://github.com/nus-cs3203/23s2-cp-spa-team-19.git (master)...
+Feb 20, 2024 1:11:53 PM reposense.authorship.FileInfoExtractor generateFileInfo
+WARNING: File "Team19/Code19/lib/catch.hpp" has 657174B size. The file size limit is set at 500000B. Exact line diffs will be excluded from report...
+Feb 20, 2024 1:11:56 PM reposense.commits.CommitInfoExtractor extractCommitInfos
+INFO: Extracting commits info for https://github.com/nus-cs3203/23s2-cp-spa-team-19.git (master)...
+Feb 20, 2024 1:11:57 PM reposense.commits.CommitInfoAnalyzer analyzeCommits
+INFO: Analyzing commits info for https://github.com/nus-cs3203/23s2-cp-spa-team-19.git (master)...
+Feb 20, 2024 1:11:57 PM reposense.report.ReportGenerator analyzeRepo
+INFO: Analysis of https://github.com/nus-cs3203/23s2-cp-spa-team-19.git (master) completed!
+Feb 20, 2024 1:11:57 PM reposense.report.ReportGenerator generateReposReport
+INFO: The report is generated at /Users/winsonzheng/CLionProjects/23s2-cp-spa-team-19/reposense-report
+Feb 20, 2024 1:11:57 PM reposense.RepoSense main
+INFO: Elapsed processing time: 6.20 second(s)
+Feb 20, 2024 1:11:57 PM reposense.system.ReportServer startServer
+INFO: Starting a server at port 9000...
+Feb 20, 2024 1:11:57 PM reposense.system.ReportServer launchBrowser
+INFO: Loading http://localhost:9000/ on the default browser...
+Feb 20, 2024 1:11:57 PM reposense.system.ReportServer startServer
+INFO: Press Ctrl + C or equivalent to stop the server
