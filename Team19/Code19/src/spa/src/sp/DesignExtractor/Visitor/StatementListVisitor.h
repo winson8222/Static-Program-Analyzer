@@ -15,6 +15,6 @@ public:
 		: IVisitor(root, pkbWriterManager) {}
 
 	void visit() override;
-	void StatementListVisitor::setContext(std::vector<std::shared_ptr<ASTNode>> contexts, std::shared_ptr<ASTNode> parent);
+	void setContext(std::vector<std::shared_ptr<ASTNode>> contexts, std::shared_ptr<ASTNode> parent);
 	std::vector<std::shared_ptr<ASTNode>> contexts;
 };
