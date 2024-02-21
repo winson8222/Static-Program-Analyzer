@@ -19,6 +19,11 @@
 #include "pkb/readers/relationships/FollowsTReader.h"
 #include "pkb/readers/relationships/ParentReader.h"
 #include "pkb/readers/relationships/ParentTReader.h"
+#include "pkb/readers/relationships/ModifiesPReader.h"
+#include "pkb/readers/relationships/ModifiesSReader.h"
+#include "pkb/readers/relationships/UsesPReader.h"
+#include "pkb/readers/relationships/UsesSReader.h"
+
 
 #include "pkb/readers/patterns/AssignPatternReader.h"
 #include "pkb/readers/patterns/IfPatternReader.h"
@@ -45,6 +50,10 @@ private:
     std::shared_ptr<FollowsTReader> followsTReader;
     std::shared_ptr<ParentReader> parentReader;
     std::shared_ptr<ParentTReader> parentTReader;
+    std::shared_ptr<ModifiesPReader> modifiesPReader;
+    std::shared_ptr<ModifiesSReader> modifiesSReader;
+    std::shared_ptr<UsesPReader> usesPReader;
+    std::shared_ptr<UsesSReader> usesSReader;
 
     std::shared_ptr<AssignPatternReader> assignPatternReader;
     std::shared_ptr<IfPatternReader> ifPatternReader;
@@ -67,10 +76,15 @@ public:
       followsTReader = std::make_shared<FollowsTReader>(pkb->getFollowsTStore());
       parentReader = std::make_shared<ParentReader>(pkb->getParentStore());
       parentTReader = std::make_shared<ParentTReader>(pkb->getParentTStore());
+      modifiesPReader = std::make_shared<ModifiesPReader>(pkb->getModifiesPStore());
+      modifiesSReader = std::make_shared<ModifiesSReader>(pkb->getModifiesSStore());
+      usesPReader = std::make_shared<UsesPReader>(pkb->getUsesPStore());
+      usesSReader = std::make_shared<UsesSReader>(pkb->getUsesSStore());
+
 
       assignPatternReader = std::make_shared<AssignPatternReader>(pkb->getAssignPatternStore());
       ifPatternReader = std::make_shared<IfPatternReader>(pkb->getIfPatternStore());
-        whilePatternReader = std::make_shared<WhilePatternReader>(pkb->getWhilePatternStore());
+      whilePatternReader = std::make_shared<WhilePatternReader>(pkb->getWhilePatternStore());
     }
 
     // Entity Readers
@@ -130,6 +144,22 @@ public:
 
     std::shared_ptr<ParentTReader> getParentTReader() {
         return parentTReader;
+    }
+
+    std::shared_ptr<ModifiesPReader> getModifiesPReader() {
+        return modifiesPReader;
+    }
+
+    std::shared_ptr<ModifiesSReader> getModifiesSReader() {
+        return modifiesSReader;
+    }
+
+    std::shared_ptr<UsesPReader> getUsesPReader() {
+        return usesPReader;
+    }
+
+    std::shared_ptr<UsesSReader> getUsesSReader() {
+        return usesSReader;
     }
 
     // Pattern Readers
