@@ -1,4 +1,4 @@
-#include "sp/DesignExtractor/FacadeDesignExtractor.h"
+#include "sp/DesignExtractor/DesignExtractorFacade.h"
 #include "sp/AST/ASTNode.h"
 #include "pkb/PKBManager.h"
 #include "sp/Utility.h"
@@ -19,7 +19,7 @@ TEST_CASE("Tests for DesignExtractors for Statement Lists", "[DesignExtractor::e
 	root->addChild(proc1);
 	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
-	FDesignExtractor fde(root, pkbWriterManager);
+	DesignExtractorFacade fde(root, pkbWriterManager);
 	REQUIRE_NOTHROW(fde.extractAll());
 }
 
@@ -49,7 +49,7 @@ TEST_CASE("Tests for statement extractors", "[DesignExtractor::extract]") {
 	
 	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
-	FDesignExtractor fde(root, pkbWriterManager);
+	DesignExtractorFacade fde(root, pkbWriterManager);
 
 	REQUIRE_NOTHROW(fde.extractAll());
 
@@ -71,6 +71,6 @@ TEST_CASE("Tests invalid DesignExtractors for Statement Lists", "[DesignExtracto
 	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
 
-	FDesignExtractor fde(root, pkbWriterManager);
+	DesignExtractorFacade fde(root, pkbWriterManager);
 	REQUIRE_THROWS_WITH(fde.extractAll(), "ERROR: Not a statement!");
 }

@@ -28,8 +28,6 @@ void StatementListVisitor::visit() {
 			followsExtractor.extract();
 		}
 	}
-
-	// extract parent and parent* relationship
 }
 
 void StatementListVisitor::setContext(std::vector<std::shared_ptr<ASTNode>> contexts, std::shared_ptr<ASTNode> parent) {

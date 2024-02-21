@@ -1,4 +1,4 @@
-#include "sp/DesignExtractor/FacadeDesignExtractor.h"
+#include "sp/DesignExtractor/DesignExtractorFacade.h"
 #include "sp/AST/ASTNode.h"
 #include "sp/Parser/SimpleParserFacade.h"
 #include "pkb/PKBManager.h"
@@ -19,7 +19,7 @@ TEST_CASE("Tests for assign statements", "[DesignExtractor::extract]") {
 	
 	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
-	FDesignExtractor fde(root, pkbWriterManager);
+	DesignExtractorFacade fde(root, pkbWriterManager);
 
 	SECTION("Test for assign statement") {
 		fde.extractAll();

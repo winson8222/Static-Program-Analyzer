@@ -1,4 +1,4 @@
-#include "sp/DesignExtractor/FacadeDesignExtractor.h"
+#include "sp/DesignExtractor/DesignExtractorFacade.h"
 #include "sp/AST/ASTNode.h"
 #include "sp/Parser/SimpleParserFacade.h"
 #include "pkb/PKBManager.h"
@@ -11,15 +11,14 @@
 #include <vector>
 
 TEST_CASE("Test parser-extractor minor integration", "[DesignExtractor::Whiles]") {
-	std::cout << "\n\nINTEGRATION TEST STARTS\n";
-	const std::string testFileName = "../../../../../tests/sp/DesignExtractorTest/integration1.txt";
+	const std::string testFileName = "../../../../../tests/sp/DesignExtractorTest/Integration.txt";
 	REQUIRE(std::filesystem::exists(testFileName));
 	SimpleParserFacade parser(testFileName);
 	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
 
 	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
-	FDesignExtractor fde(tree_ptr, pkbWriterManager);
+	DesignExtractorFacade fde(tree_ptr, pkbWriterManager);
 	REQUIRE_NOTHROW(fde.extractAll());
 
 	auto pkbReader = pkb->getPKBReaderManager();
@@ -79,6 +78,4 @@ TEST_CASE("Test parser-extractor minor integration", "[DesignExtractor::Whiles]"
 	std::unordered_set<int> n = pkbReader->getAssignReader()->getAllAssigns();
 	std::unordered_set<int> expectedAssigns = { 7, 11 };
 	REQUIRE(n == expectedAssigns);
-
-	std::cout << "INTEGRATION TEST ENDS\n\n\n";
 }

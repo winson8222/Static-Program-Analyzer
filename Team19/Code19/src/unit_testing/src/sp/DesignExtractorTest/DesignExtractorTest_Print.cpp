@@ -1,4 +1,4 @@
-#include "sp/DesignExtractor/FacadeDesignExtractor.h"
+#include "sp/DesignExtractor/DesignExtractorFacade.h"
 #include "sp/AST/ASTNode.h"
 #include "pkb/PKBManager.h"
 #include "sp/Utility.h"
@@ -34,7 +34,7 @@ TEST_CASE("Tests for DesignExtractors for Print", "[DesignExtractor::extract]") 
 	root->addChild(proc1);
 	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
-	FDesignExtractor fde(root, pkbWriterManager);
+	DesignExtractorFacade fde(root, pkbWriterManager);
 	REQUIRE_NOTHROW(fde.extractAll());
 
 	std::shared_ptr<PKBReaderManager> pkbReaderManager = pkb->getPKBReaderManager();

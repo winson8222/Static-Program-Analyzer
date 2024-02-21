@@ -1,7 +1,6 @@
 #include "sp/DesignExtractor/Extractor/UsesExtractor.h"
 
 void UsesExtractor::extract() {
-	bool added = true;
 	switch (ast1->type) {
 		case ASTNodeType::ASSIGN:
 			getAssignUses();
@@ -22,7 +21,7 @@ void UsesExtractor::extract() {
 			getCallUses();
 			break;
 		default:
-			added = false;
+			// to do: throwexception
 			break;
 	}
 }

@@ -1,6 +1,6 @@
 #include "sp/SPTokenizer/SPTokenizer.h"
 #include "sp/SPTokenizer/LexicalToken.h"
-#include "sp/DesignExtractor/FacadeDesignExtractor.h"
+#include "sp/DesignExtractor/DesignExtractorFacade.h"
 #include "sp/Parser/SimpleParserFacade.h"
 #include "sp/AST/ASTNode.h"
 #include "pkb/PKBManager.h"
