@@ -2,7 +2,7 @@
 
 #include "pkb/stores/relationships/IRelationshipReader.h"
 #include "pkb/stores/relationships/types/FollowsStore.h"
-
+#include <memory>
 class FollowsReader: public IRelationshipReader<int, int> {
 private:
     std::shared_ptr<FollowsStore> followsStore;

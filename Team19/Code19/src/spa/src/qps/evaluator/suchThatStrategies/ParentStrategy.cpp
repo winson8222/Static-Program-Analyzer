@@ -7,7 +7,7 @@ using namespace std;
 // A parents relationship is defined between two statements (stmtRef, stmtRef),
 // where a stmtRef can be a wildcard, an integer, or a synonym.
 
-unordered_set<string> ParentStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult) {
+std::shared_ptr<ResultTable> ParentStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult) {
     string requiredSynonym = parsingResult.getRequiredSynonym();
     string variant = parsingResult.getSuchThatClauseRelationship().getValue();
     unordered_set<string> result;
