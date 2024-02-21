@@ -15,11 +15,12 @@ private:
 public:
     std::shared_ptr<ResultTable> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult) override;
 
-    void processLHS(const Token& firstParam, unordered_set<string>& result);
-    void processRHS(const Token& secondParam, unordered_set<string>& result, bool partialMatch);
-    void combineResults(const unordered_set<int>& newResult, unordered_set<string>& result);
-
-    void fillResult(const unordered_set<int>& follows, unordered_set<std::string>& result);
+    void getMatchedStmtsWithVariable(const Token& firstParam, string secondParamValue, string assignSynonym, std::shared_ptr<ResultTable> result, bool partialMatch);
+    static unordered_set<int> combineFoundStatements(const unordered_set<int>& newResult, const unordered_set<int>& result);
+    void getStatementsByIdent(const string& colName, const Token& firstParam,
+                               string expressionValue, std::shared_ptr<ResultTable> result, bool partialMatch);
+    void fillSingleColumnResult(const string& colName, const unordered_set<string>& follows, std::shared_ptr<ResultTable> result);
+    void fillAssignAndSynonymPairResult(const unordered_set<int>& patternNumbers, const string& assignSynonym, const Token& firstParam, const std::shared_ptr<ResultTable>& result);
 
 };
 

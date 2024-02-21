@@ -54,6 +54,9 @@ public:
     // this is the function to insert a column
     void insertColumn(const std::string& colName);
 
+    // this is the function to insert values By Column
+    void insertNewColumn(const std::string& colName, const std::vector<std::string>& values);
+
 
     //reset the columns and add new set of columns
     void insertAllColumns(const std::vector<std::string>& colNames);
@@ -82,6 +85,7 @@ public:
 
     std::vector<std::string> getColumnValues(const std::string& columnName);
     void setAsTruthTable();
+
 
 };
 

@@ -17,9 +17,9 @@ public:
     std::shared_ptr<ResultTable> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult) override;
 
     void processFirstParam(const Token& secondParam, const string& variant,
-                           unordered_set<string>& result) override;
+                           unordered_set<string>& result);
     void processSecondParam(const Token& firstParam, const string& variant,
-                            unordered_set<string>& result) override;
+                            unordered_set<string>& result);
     void processIntegerParams(const Token& firstParam, const Token& secondParam,
-                              unordered_set<string>& result) override;
+                              unordered_set<string>& result);
 };

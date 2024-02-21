@@ -195,6 +195,17 @@ void ResultTable::addColumnsSet(const std::vector<std::string>& colNames) {
     }
 }
 
+void ResultTable::insertNewColumn(const std::string &colName, const std::vector<std::string> &values) {
+    if (values.size() != rows.size()) {
+        throw std::exception();
+    }
+    insertColumn(colName);
+
+    for (int i = 0; i < values.size(); i++) {
+        insertValue(colName, values[i], i);
+    }
+}
+
 void ResultTable::insertAllColumns(const std::vector<std::string>& colNames) {
     colSet = colNames;
 }
@@ -226,3 +237,7 @@ void ResultTable::setAsTruthTable()
 {
     isTruthTable = true;
 }
+
+
+
+
