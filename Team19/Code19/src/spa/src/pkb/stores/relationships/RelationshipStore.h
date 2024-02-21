@@ -4,6 +4,8 @@
 #include "IRelationshipReader.h"
 #include "IRelationshipWriter.h"
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 template <typename KeyType, typename ValueType>
 class RelationshipStore: public IRelationshipReader<KeyType, ValueType> , public IRelationshipWriter<KeyType, ValueType> {
 private:
@@ -92,4 +94,4 @@ public:
         valueToKeyMap.clear();
     }
 };
-
+// ai-gen end

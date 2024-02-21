@@ -3,6 +3,8 @@
 #include <unordered_map>
 #include <unordered_set>
 
+// ai-gen start(copilot, 1, e)
+// prompt: used copilot
 /**
  * @brief Template class for key-set of values store.
  *
@@ -153,3 +155,4 @@ template <typename KeyType, typename ValueType>
 void TemplateMapSet<KeyType, ValueType>::clear() {
     this->map.clear();
 }
+// ai-gen end

@@ -4,6 +4,8 @@
 #include "pkb/stores/relationships/types/UsesPStore.h"
 #include <memory>
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 class UsesPWriter : public IRelationshipWriter<std::string , std::string> {
 private:
     std::shared_ptr<UsesPStore> usesPStore;
@@ -19,7 +21,14 @@ public:
       usesPStore->clear();
     }
 
-    void addUsesP(std::string proc, std::string var) {
+    // Custom methods
+    /**
+     * @brief Adds a "Uses" relationship between a procedure and a variable.
+     * @param proc The procedure that uses the variable.
+     * @param var The variable that is used by the procedure.
+     */
+    void addUsesP(const std::string& proc, const std::string& var) {
       usesPStore->addRelationship(proc, var);
     }
 };
+// ai-gen end

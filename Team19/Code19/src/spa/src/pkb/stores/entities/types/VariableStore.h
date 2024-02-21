@@ -3,6 +3,8 @@
 #include <string>
 #include "pkb/stores/entities/EntityStore.h"
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 /**
  * @class VariableStore
  * Specialization of EntityStore for 'Variable' entity.
@@ -15,3 +17,4 @@ class VariableStore: public EntityStore<std::string> {
     // This class can be used to instantiate an EntityStore
     // specific for the 'Variable' Entity.
 };
+// ai-gen end

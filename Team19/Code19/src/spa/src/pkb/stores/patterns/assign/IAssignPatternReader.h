@@ -4,6 +4,8 @@
 #include <unordered_set>
 #include <string>
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 class IAssignPatternReader {
 public:
     virtual bool isEmpty() = 0;
@@ -13,6 +15,8 @@ public:
     virtual std::string getRHS(int statementNumber) = 0;
 
     virtual std::unordered_map<int, std::pair<std::string, std::string>> getAllPatterns() = 0;
+
+    virtual std::unordered_set<int> getAllStatementNumbers() = 0;
 
     virtual std::pair<std::string, std::string> getPattern(int statementNumber) = 0;
 
@@ -28,3 +32,4 @@ public:
 
     virtual std::unordered_set<int> getStatementNumbersWithLHSPartialRHS (const std::string& LHS, const std::string& partialRHS) = 0;
 };
+// ai-gen end

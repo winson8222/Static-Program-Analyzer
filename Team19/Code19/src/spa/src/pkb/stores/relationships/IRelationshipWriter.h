@@ -1,5 +1,7 @@
 #pragma once
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 /**
  * @brief Interface for writing key-value relationships.
  *
@@ -25,3 +27,4 @@ public:
     // Clears all entities from the store.
     virtual void clear() = 0;
 };
+// ai-gen end

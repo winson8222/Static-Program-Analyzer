@@ -25,23 +25,23 @@ std::string Utility::getASTNodeType(ASTNodeType t) {
         case ASTNodeType::WHILE:
             return "While";
         case ASTNodeType::NOT:
-            return "Not";
+            return "!";
         case ASTNodeType::AND:
-            return "And";
+            return "&&";
         case ASTNodeType::OR:
-            return "Or";
+            return "||";
         case ASTNodeType::GREATER:
-            return "Greater";
+            return ">";
         case ASTNodeType::GREATER_OR_EQUAL:
-            return "GreaterOrEqual";
+            return ">=";
         case ASTNodeType::LESSER:
-            return "Lesser";
+            return "<";
         case ASTNodeType::LESSER_OR_EQUAL:
-            return "LesserOrEqual";
+            return "<=";
         case ASTNodeType::EQUAL:
-            return "EqualEqual";
+            return "==";
         case ASTNodeType::NOT_EQUAL:
-            return "NotEqual";
+            return "!=";
         case ASTNodeType::ADD:
             return "+";
         case ASTNodeType::SUBTRACT:

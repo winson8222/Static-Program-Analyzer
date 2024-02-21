@@ -18,6 +18,52 @@ private:
 public:
     explicit UsesPReader(std::shared_ptr<UsesPStore> store) : store(std::move(store)) {}
 
+    // Custom methods
+    /**
+     * @brief Gets all the variables used by a given procedure.
+     * @param procName The procedure name to query.
+     * @return unordered_set<string>: The set of variables used by the given procedure.
+     */
+    std::unordered_set<std::string> getAllVariablesUsedByProc(const std::string& procName) {
+      return store->getRelationshipsByKey(procName);
+    }
+
+    /**
+     * @brief Gets all the procedures that use a given variable.
+     * @param varName The variable name to query.
+     * @return unordered_set<string>: The set of procedure names that use the given variable.
+     */
+    std::unordered_set<std::string> getAllProcsThatUseVariable(const std::string& varName) {
+      return store->getRelationshipsByValue(varName);
+    }
+
+    /**
+     * @brief Checks if a given procedure uses a given variable.
+     * @param procName The procedure name to query.
+     * @param varName The variable name to query.
+     * @return bool: True if the procedure uses the variable, false otherwise.
+     */
+    bool doesProcUseVariable(const std::string& procName, const std::string& varName) {
+      return store->hasRelationship(procName, varName);
+    }
+
+    /**
+     * @brief Gets all the procedures that use any variable.
+     * @return unordered_set<string>: The set of all procedure names that use any variable.
+     */
+    std::unordered_set<std::string> getAllProcsThatUseAnyVariable() {
+      return store->getKeys();
+    }
+
+    /**
+     * @brief Gets all the variables used by any procedure.
+     * @return unordered_set<string>: The set of all variables used by any procedure.
+     */
+    std::unordered_set<std::string> getAllVariablesUsedByAnyProc() {
+      return store->getValues();
+    }
+
+    // Inherited methods
     bool isEmpty() override {
         return store->isEmpty();
     }

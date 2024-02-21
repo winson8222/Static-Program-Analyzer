@@ -3,6 +3,8 @@
 #include "pkb/stores/entities/IEntityReader.h"
 #include "pkb/stores/entities/types/ProcedureStore.h"
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 class ProcedureReader: public IEntityReader<std::string> {
 private:
     std::shared_ptr<ProcedureStore> procedureStore;
@@ -23,11 +25,22 @@ public:
       return hasProcedure(stmtNum);
     }
 
+    // Custom methods
+    /**
+     * @brief Gets all procedure names.
+     * @return unordered_set<string>: The set of all procedure names.
+     */
     std::unordered_set<std::string> getAllProcedures() const {
       return procedureStore->getAllEntities();
     }
 
+    /**
+     * @brief Checks if a specific procedure exists.
+     * @param proc The procedure name to check.
+     * @return true if the procedure exists, false otherwise.
+     */
     bool hasProcedure(std::string proc) const {
       return procedureStore->contains(proc);
     }
 };
+// ai-gen end
