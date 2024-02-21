@@ -74,7 +74,7 @@ void ModifiesStrategy::processBothSynonyms(const Token& firstParam, const Token&
 void ModifiesStrategy::processFirstParam(const Token& firstParam, const Token& secondParam, const ParsingResult& parsingResult
                                          ,std::shared_ptr<ResultTable> resultTable) {
     // get all statements that modifies a variable
-    std::unordered_set<int> allModifiesStmts = ModifiesSReader->getAllStmtsThatModifyAnyVariable();
+    std::unordered_set<int> allModifiesStmts = ModifiesSReader->getAllStmtsThatModifyVariable(secondParam.getValue());
     // check what type of statement is the firstParam
     string statementType = parsingResult.getDeclaredSynonym(firstParam.getValue());
     // filter the statements that modifies the variable based on the stmt type
@@ -116,3 +116,35 @@ void ModifiesStrategy::processFirstParam(const Token& firstParam, const Token& s
 }
 
 
+void ModifiesStrategy::processSecondParam(const Token &firstParam, const Token &secondParam,
+                                          const ParsingResult &parsingResult,
+                                          std::shared_ptr<ResultTable> resultTable) {
+    // get all variables that are modified by a statement
+    std::unordered_set<std::string> allModifiedVars = ModifiesSReader->getAllVariablesModifiedByStmt(
+            stoi(firstParam.getValue()));
+    // add to result
+    resultTable->insertColumn(secondParam.getValue());
+    for (const std::string &var: allModifiedVars) {
+        std::unordered_map<std::string, std::string> newRow;
+        newRow[secondParam.getValue()] = var;
+        resultTable->insertNewRow(newRow);
+    }
+}
+
+void ModifiesStrategy::processBothConstants(const Token &firstParam, const Token &secondParam,
+                                            const ParsingResult &parsingResult,
+                                            std::shared_ptr<ResultTable> resultTable) {
+    // check if the statement modifies the variable
+    bool modifies = ModifiesSReader->doesStmtModifyVariable(stoi(firstParam.getValue()), secondParam.getValue());
+    if (modifies) {
+        resultTable->setAsTruthTable();
+    }
+}
+
+void ModifiesStrategy::processBothWildCards(std::shared_ptr<ResultTable> resultTable) {
+    // check if there is any statement that modifies a variable
+    std::unordered_set<int> allModifiesStmts = ModifiesSReader->getAllStmtsThatModifyAnyVariable();
+    if (!allModifiesStmts.empty()) {
+        resultTable->setAsTruthTable();
+    }
+}
