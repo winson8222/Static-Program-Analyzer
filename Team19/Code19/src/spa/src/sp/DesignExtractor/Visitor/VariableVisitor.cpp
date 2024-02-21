@@ -10,7 +10,7 @@ void VariableVisitor::visit() {
 	}
 	
 	for (std::shared_ptr<ASTNode> context : modifiedContexts) {
-		ModifiesExtractor modifiesExtractor(root, context, this->pkbWriterManager);
+		ModifiesExtractor modifiesExtractor(context, root, this->pkbWriterManager);
 		modifiesExtractor.extract();
 	}
 }

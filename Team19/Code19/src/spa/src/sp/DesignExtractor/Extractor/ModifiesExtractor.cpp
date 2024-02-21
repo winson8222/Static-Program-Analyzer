@@ -1,6 +1,7 @@
 #include "sp/DesignExtractor/Extractor/ModifiesExtractor.h"
 
 void ModifiesExtractor::extract() {
+	bool added = true;
 	switch (ast1->type) {
 		case ASTNodeType::ASSIGN:
 			getAssignModifies();
@@ -21,8 +22,8 @@ void ModifiesExtractor::extract() {
 			getCallModifies();
 			break;
 		default:
+			added = false;
 			break;
-			// throw std::invalid_argument("Modifies Extractor: Invalid ASTNode type");
 	}
 }
 

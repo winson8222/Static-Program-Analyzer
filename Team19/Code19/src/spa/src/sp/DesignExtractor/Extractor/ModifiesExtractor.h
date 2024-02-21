@@ -2,6 +2,7 @@
 
 #include "sp/DesignExtractor/Extractor/IExtractor.h"
 #include <stdexcept>
+#include <iostream>
 
 class ModifiesExtractor : public IRelationshipExtractor {
 public:
