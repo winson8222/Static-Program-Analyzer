@@ -16,7 +16,6 @@ std::shared_ptr<ResultTable> FollowsStrategy::evaluateQuery(PKBReaderManager& pk
     // Obtain readers from PKBReaderManager
     this->followsReader = pkbReaderManager.getFollowsReader();
     this->followsTReader = pkbReaderManager.getFollowsTReader();
-    this->statementReader = pkbReaderManager.getStatementReader();
 
     const Token& suchThatFirstParam = parsingResult.getSuchThatClauseFirstParam();
     const Token& suchThatSecondParam = parsingResult.getSuchThatClauseSecondParam();

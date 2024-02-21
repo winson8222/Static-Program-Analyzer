@@ -17,3 +17,9 @@ string QueryEvaluationStrategy::extractQuotedExpression(const Token& token) {   
     std::regex_search(tokenValue, matches, pattern);
     return matches[1].str();
 }
+
+
+bool QueryEvaluationStrategy::isBothParamsWildcard(const Token& firstParam, const Token& secondParam) {
+    // Implementation to check if both parameters are wildcards
+    return firstParam.getType() == TokenType::Wildcard && secondParam.getType() == TokenType::Wildcard;
+}

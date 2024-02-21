@@ -25,7 +25,6 @@ public:
     virtual void processSecondParam(const Token& firstParam, const Token& secondParam, const string& variant,
         std::shared_ptr<ResultTable> resultTable) = 0;
 protected:
-    static bool isBothParamsWildcard(const Token& firstParam, const Token& secondParam);
     static bool isBothParamsInteger(const Token& firstParam, const Token& secondParam);
     static void fillResult(const unordered_set<int>& follows, unordered_set<string>& result);
 
