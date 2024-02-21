@@ -48,19 +48,7 @@ std::shared_ptr<ResultTable> PatternStrategy::evaluateQuery(PKBReaderManager& pk
 
 
 
-/**
- * Combines the results of right-hand side (RHS) processing with the left-hand side (LHS) results.
- * @param newResult - The new statements to be combined.
- * @param result - The existing set of statements numbers to be updated.
- * @return The updated set of statements numbers.
- */
-unordered_set<int> PatternStrategy::combineFoundStatements(const unordered_set<int>& newResult, const unordered_set<int>& result) {
-    // get the intersection of the two sets
-    unordered_set<int> combinedResult;
-    set_intersection(newResult.begin(), newResult.end(), result.begin(),
-                     result.end(), inserter(combinedResult, combinedResult.begin()));
-    return combinedResult;
-}
+
 
 
 // create a unordered map with the column name and the value and add to the table as a row

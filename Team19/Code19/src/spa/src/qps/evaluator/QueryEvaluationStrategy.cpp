@@ -23,3 +23,17 @@ bool QueryEvaluationStrategy::isBothParamsWildcard(const Token& firstParam, cons
     // Implementation to check if both parameters are wildcards
     return firstParam.getType() == TokenType::Wildcard && secondParam.getType() == TokenType::Wildcard;
 }
+
+/**
+ * Combines the results of right-hand side (RHS) processing with the left-hand side (LHS) results.
+ * @param newResult - The new statements to be combined.
+ * @param result - The existing set of statements numbers to be updated.
+ * @return The updated set of statements numbers.
+ */
+unordered_set<int> QueryEvaluationStrategy::combineFoundStatements(const unordered_set<int>& newResult, const unordered_set<int>& result) {
+    // get the intersection of the two sets
+    unordered_set<int> combinedResult;
+    set_intersection(newResult.begin(), newResult.end(), result.begin(),
+                     result.end(), inserter(combinedResult, combinedResult.begin()));
+    return combinedResult;
+}

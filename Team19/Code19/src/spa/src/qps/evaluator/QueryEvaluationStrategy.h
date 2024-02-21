@@ -18,6 +18,7 @@ protected:
     static void convertIntSetToStringSet(const std::unordered_set<int>& intSet, std::unordered_set<std::string>& stringSet);
     static string extractQuotedExpression(const Token& token);
     static bool isBothParamsWildcard(const Token& firstParam, const Token& secondParam);
+    static unordered_set<int> combineFoundStatements(const unordered_set<int>& newResult, const unordered_set<int>& result);
 };
 
 #endif //QUERYEVALUATIONSTRATEGY_H
