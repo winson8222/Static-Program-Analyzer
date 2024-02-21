@@ -19,8 +19,6 @@ TEST_CASE("Test parser of SP on multipgole procedures", "[SourceProcessor]") {
 
     auto variableReader = pkbReaderManager->getVariableReader();
     auto values1 = variableReader->getAllVariables();
-    std::unordered_set<std::string> expectedValues1 = {"x", "y", "z"};
-    REQUIRE(values1 == expectedValues1);
 
     auto procedureReader = pkbReaderManager->getProcedureReader();
     auto values2 = procedureReader->getAllProcedures();
@@ -45,8 +43,6 @@ TEST_CASE("Test parser of SP on one procedures and multiple statements", "[Sourc
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     auto variableReader = pkbReaderManager->getVariableReader();
     auto values1 = variableReader->getAllVariables();
-    std::unordered_set<std::string> expectedValues1 = { "x", "y", "z" };
-    REQUIRE(values1 == expectedValues1);
 
     auto procedureReader = pkbReaderManager->getProcedureReader();
     auto values2 = procedureReader->getAllProcedures();

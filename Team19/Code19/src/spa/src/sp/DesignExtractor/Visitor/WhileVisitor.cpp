@@ -1,7 +1,9 @@
 #include "sp/DesignExtractor/Visitor/WhileVisitor.h"
 
-WhileVisitor::WhileVisitor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
-	: StatementVisitor(root, pkbWriterManager) {
+WhileVisitor::WhileVisitor(std::shared_ptr<ASTNode> root, 
+	listnode context,
+	std::shared_ptr<PKBWriterManager> pkbWriterManager)
+	: StatementVisitor(root, context, pkbWriterManager) {
 	if (root->type != ASTNodeType::WHILE) {
 		throw std::runtime_error("ERROR: Cannot initialized a non-WHILE node");
 	}
@@ -9,6 +11,8 @@ WhileVisitor::WhileVisitor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWri
 	if (root->children.size() != 2) {
 		throw std::runtime_error("ERROR: While node is not correct");
 	}
+
+	this->contexts = listnode(context.begin(), context.end());
 }
 
 void WhileVisitor::visit() {
@@ -20,8 +24,28 @@ void WhileVisitor::visit() {
 	whileExtractor.extract();
 
 	ExpressionVisitor expressionVisitor(expression, pkbWriterManager);
+	expressionVisitor.setUsedContext(contexts, root);
 	expressionVisitor.visit();
 
 	StatementListVisitor statementListVisitor(statementList, pkbWriterManager);
+	statementListVisitor.setContext(contexts, root);
 	statementListVisitor.visit();
+
+	// setParentalContext for statementList
+	// map all nodes in the contexts to the current node
+	int size = contexts.size();
+	for (int i = 0; i < size; i++) {
+		std::shared_ptr<ASTNode> context = contexts[i];
+		if (context->type == ASTNodeType::PROCEDURE) continue;
+		ParentTExtractor parentExtractor(context, root, pkbWriterManager);
+		parentExtractor.extract();
+	}
+	if (size > 0) {
+		ParentExtractor parentExtractor(contexts[size - 1], root, pkbWriterManager);
+		parentExtractor.extract();
+	}
+}
+
+void WhileVisitor::addContext(std::shared_ptr<ASTNode> context) {
+	
 }

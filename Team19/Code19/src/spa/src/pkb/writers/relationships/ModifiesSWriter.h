@@ -14,7 +14,7 @@ public:
     explicit ModifiesSWriter(std::shared_ptr<ModifiesSStore> store) : modifiesSStore(std::move(store)) {}
 
     void addRelationship(int stmtNum, std::string var) override {
-        addModifiesP(stmtNum, var);
+      addModifiesS(stmtNum, var);
     }
 
     void clear() override {
@@ -27,7 +27,8 @@ public:
      * @param stmtNum The statement number of the statement that modifies the variable.
      * @param var The variable that is modified by the statement.
      */
-    void addModifiesP(int stmtNum, std::string var) {
+    void addModifiesS(int stmtNum, std::string var) {
+
       modifiesSStore->addRelationship(stmtNum, var);
     }
 };

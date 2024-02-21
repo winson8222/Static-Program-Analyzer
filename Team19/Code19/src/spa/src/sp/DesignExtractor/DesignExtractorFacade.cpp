@@ -1,6 +1,6 @@
-#include "FacadeDesignExtractor.h"
+#include "DesignExtractorFacade.h"
 
-void FDesignExtractor::extractAll() {
+void DesignExtractorFacade::extractAll() {
 	if (root->type != ASTNodeType::PROGRAMS) {
 		throw std::runtime_error("ERROR: This is not the start node!");
 	}

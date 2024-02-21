@@ -13,6 +13,7 @@ public:
 		if (node->type != ASTNodeType::PROCEDURE) {
 			throw std::invalid_argument("ProcedureVisitor - input node type must be of type PROCEDURE");
 		}
+		this->contexts = std::vector<std::shared_ptr<ASTNode>>();
 	}
 
 	void visit() override;

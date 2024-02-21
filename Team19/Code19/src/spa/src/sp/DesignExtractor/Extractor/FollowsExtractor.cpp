@@ -6,3 +6,10 @@ void FollowsExtractor::extract() {
 		this->ast1->lineNumber, this->ast2->lineNumber
 	);
 }
+
+void FollowsTExtractor::extract() {
+	// Extract all the follows relationships
+	this->pkbWriterManager->getFollowsTWriter()->addFollowsT(
+		this->ast1->lineNumber, this->ast2->lineNumber
+	);
+}

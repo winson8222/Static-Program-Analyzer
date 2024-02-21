@@ -30,9 +30,9 @@
 #include "sp/DesignExtractor/Extractor/VariableExtractor.h"
 
 
-class FDesignExtractor {
+class DesignExtractorFacade {
 public:
-    FDesignExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
+    DesignExtractorFacade(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
         : root(root), pkbWriterManager(pkbWriterManager) {}
 
     void extractAll();

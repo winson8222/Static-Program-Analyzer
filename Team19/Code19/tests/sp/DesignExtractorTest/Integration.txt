@@ -3,9 +3,15 @@ procedure proc1 {
 		print x;
 	} else {
 		read y;
+		while (x < y) {
+			z = z + 1;
+		}
 	}
 	while (x < y) {
 		z = z + 1;
 	}
 	call p;
+}
+
+procedure p{
 }
