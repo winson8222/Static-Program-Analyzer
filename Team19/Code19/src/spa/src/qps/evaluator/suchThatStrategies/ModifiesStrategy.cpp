@@ -11,11 +11,11 @@ std::shared_ptr<ResultTable> ModifiesStrategy::evaluateQuery(PKBReaderManager& p
     const Token& suchThatSecondParam = parsingResult.getSuchThatClauseSecondParam();
 
     if (suchThatFirstParam.getType() == TokenType::IDENT && suchThatSecondParam.getType() == TokenType::IDENT) {
-        processBothSynonyms(suchThatFirstParam, suchThatSecondParam, resultTable);
+        processBothSynonyms(suchThatFirstParam, suchThatSecondParam, parsingResult, resultTable);
     } else if (suchThatFirstParam.getType() == TokenType::IDENT) {
-        processFirstParam(suchThatFirstParam, suchThatSecondParam, resultTable);
+        processFirstParam(suchThatFirstParam, suchThatSecondParam, parsingResult, resultTable);
     } else if (suchThatSecondParam.getType() == TokenType::IDENT) {
-        processFirstParam(suchThatFirstParam, suchThatSecondParam, resultTable);
+        processFirstParam(suchThatSecondParam, suchThatFirstParam, parsingResult, resultTable);
     } else if (isBothParamsWildcard(suchThatFirstParam, suchThatSecondParam)) {
         processBothWildCards(resultTable);
     } else {
@@ -74,7 +74,8 @@ void ModifiesStrategy::processBothSynonyms(const Token& firstParam, const Token&
 void ModifiesStrategy::processFirstParam(const Token& firstParam, const Token& secondParam, const ParsingResult& parsingResult
                                          ,std::shared_ptr<ResultTable> resultTable) {
     // get all statements that modifies a variable
-    std::unordered_set<int> allModifiesStmts = ModifiesSReader->getAllStmtsThatModifyVariable(secondParam.getValue());
+    string unquotedValue = extractQuotedExpression(secondParam);
+    std::unordered_set<int> allModifiesStmts = ModifiesSReader->getAllStmtsThatModifyVariable(unquotedValue);
     // check what type of statement is the firstParam
     string statementType = parsingResult.getDeclaredSynonym(firstParam.getValue());
     // filter the statements that modifies the variable based on the stmt type
