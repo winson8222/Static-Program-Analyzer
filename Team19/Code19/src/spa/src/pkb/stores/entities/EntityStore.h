@@ -4,6 +4,8 @@
 #include "IEntityReader.h"
 #include "IEntityWriter.h"
 
+// ai-gen start(copilot, 1, e)
+// prompt: used copilot
 /**
  * @brief A store that manages a collection of entities of a certain type.
  *
@@ -37,3 +39,4 @@ public:
         return entities;
     }
 };
+// ai-gen end

@@ -61,3 +61,23 @@ bool ASTNode::operator==(const ASTNode& other) const {
         lineNumber == other.lineNumber &&
         value == other.value;
 }
+
+std::string ASTNode::getRPNForm() {
+    if (Utility::nodeIsValidOperator(type) == false) {
+        throw std::runtime_error("ERROR: ASTNode is not an operator");
+    }
+    if (children.size() > 2) {
+		throw std::runtime_error("ERROR: ASTNode is not valid expression");
+    }
+
+
+    if (children.size() == 0) {
+        return value;
+    }
+    std::string result;
+    for (const auto& child : children) {
+		result += child->getRPNForm();
+	}
+    result = result + value;
+    return result;
+}

@@ -28,7 +28,7 @@ TEST_CASE("Calling parseProgram for multiple procedures", "[parse][program]") {
 	REQUIRE(procedures.size() == 3);
 
 	REQUIRE(procedures[1]->type == ASTNodeType::PROCEDURE);
-	REQUIRE(procedures[1]->value == Utility::getASTNodeType(ASTNodeType::PROCEDURE));
+	REQUIRE(procedures[1]->value == "proc2");
 }
 
 TEST_CASE("Calling parseProgram for if-else-then procedures", "[parse][program]") {
@@ -64,13 +64,18 @@ TEST_CASE("Test string representations of programs", "[parse][program]") {
 
 	REQUIRE_NOTHROW(content = tree_ptr->toString());
 
-	std::cout << content << std::endl;
-
-	std::string subcontent1 = "  Type: Procedure, Line Number: 1, Value: Procedure\n";
-	std::string subcontent2 = "  Type: Procedure, Line Number: 5, Value: Procedure\n";
-	std::string subcontent3 = "  Type: Procedure, Line Number: 9, Value: Procedure\n";
+	std::string subcontent1 = "  Type: Procedure, Line Number: 1, Value: proc1\n";
+	std::string subcontent2 = "  Type: Procedure, Line Number: 5, Value: proc2\n";
+	std::string subcontent3 = "  Type: Procedure, Line Number: 9, Value: proc3\n";
 
 	REQUIRE(content.find(subcontent1) != std::string::npos);
 	REQUIRE(content.find(subcontent2) != std::string::npos);
 	REQUIRE(content.find(subcontent3) != std::string::npos);
+}
+
+TEST_CASE("sp/ParserTest/ParseProgram.cpp", "Test 1") {
+	// Generate test file
+	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program3.txt";
+	REQUIRE(std::filesystem::exists(testFileName));
+	SimpleParserFacade parser(testFileName);
 }

@@ -1,4 +1,4 @@
-#include "sp/DesignExtractor/FacadeDesignExtractor.h"
+#include "sp/DesignExtractor/DesignExtractorFacade.h"
 #include "sp/AST/ASTNode.h"
 #include "sp/Parser/SimpleParserFacade.h"
 #include "pkb/PKBManager.h"
@@ -49,7 +49,7 @@ TEST_CASE("Tests for while statements", "[DesignExtractor::extract]") {
 
 	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
-	FDesignExtractor fde(root, pkbWriterManager);
+	DesignExtractorFacade fde(root, pkbWriterManager);
 	REQUIRE_NOTHROW(fde.extractAll());
 
 	std::shared_ptr<PKBReaderManager> pkbReaderManager = pkb->getPKBReaderManager();
@@ -69,15 +69,17 @@ TEST_CASE("Tests for while statements", "[DesignExtractor::extract]") {
 TEST_CASE("Tests invalid while statements", "[DesignExtractor::extract]") {
 	std::shared_ptr<ASTNode> whileNode = std::make_shared<ASTNode>(ASTNode(ASTNodeType::WHILE, 2, "while"));
 	std::shared_ptr<ASTNode> var1 = std::make_shared<ASTNode>(ASTNode(ASTNodeType::VARIABLE, 2, "x"));
+	
+	std::vector<std::shared_ptr<ASTNode>> children;
 
 	whileNode->addChild(var1);
 	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
 
-	REQUIRE_THROWS_WITH(WhileVisitor(whileNode, pkbWriterManager),
+	REQUIRE_THROWS_WITH(WhileVisitor(whileNode, children, pkbWriterManager),
 		"ERROR: While node is not correct");
 
 	std::shared_ptr<ASTNode> relExprNode = std::make_shared<ASTNode>(ASTNode(ASTNodeType::LESSER, 2, "<"));
-	REQUIRE_THROWS_WITH(WhileVisitor(relExprNode, pkbWriterManager),
+	REQUIRE_THROWS_WITH(WhileVisitor(relExprNode, children, pkbWriterManager),
 		"ERROR: Cannot initialized a non-WHILE node");
 }

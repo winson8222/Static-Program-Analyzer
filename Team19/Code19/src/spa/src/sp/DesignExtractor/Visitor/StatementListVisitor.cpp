@@ -1,42 +1,36 @@
 #include "sp/DesignExtractor/Visitor/StatementListVisitor.h"
 
-void StatementListVisitor::visit(std::shared_ptr<ASTNode> node) {
-	// do nothing
-}
 
 void StatementListVisitor::visit() {
 	auto statementLists = this->root->children;
-	for (auto statement : statementLists) {
-		if (!Utility::nodeIsStatement(statement->type)) {
-			throw std::runtime_error("ERROR: Not a statement!");
-		}
+	StatementFactory statementFactory;
 
-		if (statement->type == ASTNodeType::ASSIGN) {
-			AssignVisitor assignVisitor(statement, this->pkbWriterManager);
-			assignVisitor.visit();
-		}
-		else if (statement->type == ASTNodeType::PRINT) {
-			PrintVisitor printVisitor(statement, this->pkbWriterManager);
-			printVisitor.visit();
-		}
-		else if (statement->type == ASTNodeType::READ) {
-			ReadVisitor readVisitor(statement, this->pkbWriterManager);
-			readVisitor.visit();
-		}
-		else if (statement->type == ASTNodeType::CALL) {
-			CallVisitor callVisitor(statement, this->pkbWriterManager);
-			callVisitor.visit();
-		}
-		else if (statement->type == ASTNodeType::IF_ELSE_THEN) {
-			IfElseThenVisitor ifElseThenVisitor(statement, this->pkbWriterManager);
-			ifElseThenVisitor.visit();
-		}
-		else if (statement->type == ASTNodeType::WHILE) {
-			WhileVisitor whileVisitor(statement, this->pkbWriterManager);
-			whileVisitor.visit();
-		}
-		else {
-			throw std::runtime_error("ERROR: Not a statement!");
+	// Logic: for each statement, create the visitor and set context to the parent nodes
+	// end goal: the statement visitor should contain the previous contexts - does not need the stmtLst
+	for (auto statement : statementLists) {
+		std::shared_ptr<StatementVisitor> statementVisitor = 
+			statementFactory.createVisitor(statement, this->contexts, this->pkbWriterManager);
+		statementVisitor->visit();
+	}
+
+	// extract follows and follows* relationship
+	int size = statementLists.size();
+	for (int i = 0; i < size - 1; i++) {
+		std::shared_ptr<ASTNode> ast1 = statementLists[i];
+		std::shared_ptr<ASTNode> ast2 = statementLists[i + 1];
+
+		FollowsExtractor followsExtractor(ast1, ast2, this->pkbWriterManager);
+		followsExtractor.extract();
+
+		for (int j = i + 1; j < size; j++) {
+			std::shared_ptr<ASTNode> ast3 = statementLists[j];
+			FollowsTExtractor followsExtractor(ast1, ast3, this->pkbWriterManager);
+			followsExtractor.extract();
 		}
 	}
+}
+
+void StatementListVisitor::setContext(std::vector<std::shared_ptr<ASTNode>> contexts, std::shared_ptr<ASTNode> parent) {
+	this->contexts = std::vector<std::shared_ptr<ASTNode>>(contexts.begin(), contexts.end());
+	this->contexts.push_back(parent);
 }

@@ -9,9 +9,7 @@ void SourceProcessor::reset() {
 }
 
 void SourceProcessor::parseSIMPLE() {
-	// Parse tokens into AST (not implemented)
 	this->root = parser.parse();
-	std::cout << this->root->toString() << std::endl;
 }
 
 void SourceProcessor::buildAST() {
@@ -22,7 +20,6 @@ void SourceProcessor::buildAST() {
 void SourceProcessor::extractAndPopulate() {
     // Use PKBWriter to insert entities and relationships into PKB
     std::shared_ptr<PKBWriterManager> pkbWriterManager = this->pkbManager->getPKBWriterManager();
-	DesignExtractor designExtractor(this->root, pkbWriterManager);
+	DesignExtractorFacade designExtractor(this->root, pkbWriterManager);
 	designExtractor.extractAll();
-	designExtractor.populatePKB();
 }

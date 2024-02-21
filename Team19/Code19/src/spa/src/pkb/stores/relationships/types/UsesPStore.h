@@ -3,6 +3,8 @@
 #include <string>
 #include "pkb/stores/relationships/RelationshipStore.h"
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 /**
  * @class UsesPStore
  * Manages "Uses" relationships for procedures in a SIMPLE program.
@@ -15,3 +17,4 @@
 class UsesPStore : public RelationshipStore<std::string, std::string> {
 
 };
+// ai-gen end

@@ -14,6 +14,52 @@ private:
 public:
     explicit UsesSReader(std::shared_ptr<UsesSStore> store) : store(std::move(store)) {}
 
+    // Custom methods
+    /**
+     * @brief Gets all the variables used by a given statement.
+     * @param stmtNum The statement number to query.
+     * @return unordered_set<string>: The set of variables used by the given statement.
+     */
+    std::unordered_set<std::string> getAllVariablesUsedByStmt(int stmtNum) {
+      return store->getRelationshipsByKey(stmtNum);
+    }
+
+    /**
+     * @brief Gets all the statements that use a given variable.
+     * @param varName The variable name to query.
+     * @return unordered_set<int>: The set of statement numbers that use the given variable.
+     */
+    std::unordered_set<int> getAllStmtsThatUseVariable(const std::string& varName) {
+      return store->getRelationshipsByValue(varName);
+    }
+
+    /**
+     * @brief Checks if a given statement uses a given variable.
+     * @param stmtNum The statement number to query.
+     * @param varName The variable name to query.
+     * @return bool: True if the statement uses the variable, false otherwise.
+     */
+    bool doesStmtUseVariable(int stmtNum, const std::string& varName) {
+      return store->hasRelationship(stmtNum, varName);
+    }
+
+    /**
+     * @brief Gets all the statements that use any variable.
+     * @return unordered_set<int>: The set of all statement numbers that use any variable.
+     */
+    std::unordered_set<int> getAllStmtsThatUseAnyVariable() {
+      return store->getKeys();
+    }
+
+    /**
+     * @brief Gets all the variables used by any statement.
+     * @return unordered_set<string>: The set of all variables used by any statement.
+     */
+    std::unordered_set<std::string> getAllVariablesUsedByAnyStmt() {
+      return store->getValues();
+    }
+
+    // Inherited methods
     bool isEmpty() override {
         return store->isEmpty();
     }

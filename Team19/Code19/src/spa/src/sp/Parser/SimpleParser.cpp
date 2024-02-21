@@ -108,7 +108,8 @@ std::shared_ptr<ASTNode> SimpleParser::parseProcedure() {
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_BRACE);
 
 	std::shared_ptr<ASTNode> procedureTree = std::make_shared<ASTNode>(
-		ASTNodeType::PROCEDURE, procedureKeyword.getLine(), Utility::getASTNodeType(ASTNodeType::PROCEDURE)
+		ASTNodeType::PROCEDURE, procedureKeyword.getLine(), 
+		procedureName->value
 	);
 
 	procedureTree->addChild(statementList);

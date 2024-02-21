@@ -13,10 +13,8 @@ public:
 		if (node->type != ASTNodeType::PROCEDURE) {
 			throw std::invalid_argument("ProcedureVisitor - input node type must be of type PROCEDURE");
 		}
+		this->contexts = std::vector<std::shared_ptr<ASTNode>>();
 	}
 
-	// Purpose: From this node, extract information from the current node
-	// then recursively call other visitor to visit children nodes
-	void visit(std::shared_ptr<ASTNode> node) override;
 	void visit() override;
 };

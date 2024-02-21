@@ -4,6 +4,8 @@
 #include "PKBReaderManager.h"
 #include "PKBWriterManager.h"
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 class PKBManager {
 private:
     std::shared_ptr<PKB> pkb;
@@ -25,3 +27,4 @@ public:
         return pkbWriterManager;
     }
 };
+// ai-gen end
