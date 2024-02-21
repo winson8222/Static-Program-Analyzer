@@ -10,7 +10,7 @@ class ModifiesStrategy : public StmtEntStrategy {
 private:
     std::shared_ptr<ModifiesSReader> ModifiesSReader;
     PKBReaderManager& pkbReaderManager;
-    std::shared_ptr<ResultTable> resultTable;
+
 
 public:
     std::shared_ptr<ResultTable> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult) override;

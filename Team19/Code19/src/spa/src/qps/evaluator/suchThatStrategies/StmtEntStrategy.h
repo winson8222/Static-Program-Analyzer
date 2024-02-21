@@ -16,12 +16,12 @@ public:
 
     virtual void processBothSynonyms(const Token& firstParam, const Token& secondParam, const ParsingResult& parsingResult
             ,std::shared_ptr<ResultTable> resultTable);
-    virtual void processFirstParam(const Token& firstParam, const Token& secondParam,
-                                std::shared_ptr<ResultTable> resultTable);
-    virtual void processSecondParam(const Token& firstParam, const Token& secondParam,
-                                std::shared_ptr<ResultTable> resultTable);
-    virtual void processBothConstants(const Token& firstParam, const Token& secondParam,
-                                std::shared_ptr<ResultTable> resultTable);
+    virtual void processFirstParam(const Token& firstParam, const Token& secondParam, const ParsingResult& parsingResult
+            ,std::shared_ptr<ResultTable> resultTable);
+    virtual void processSecondParam(const Token& firstParam, const Token& secondParam, const ParsingResult& parsingResult
+            ,std::shared_ptr<ResultTable> resultTable);
+    virtual void processBothConstants(const Token& firstParam, const Token& secondParam, const ParsingResult& parsingResult
+            ,std::shared_ptr<ResultTable> resultTable);
     virtual void processBothWildCards(std::shared_ptr<ResultTable> resultTable);
 };
 
