@@ -22,13 +22,15 @@ public:
     void fillSingleColumnResult(const string& colName, const unordered_set<string>& follows, std::shared_ptr<ResultTable> result);
     void fillAssignAndSynonymPairResult(const unordered_set<int>& patternNumbers, const string& assignSynonym, const Token& firstParam, const std::shared_ptr<ResultTable>& result);
     void getAllStatementsByRHS(string patternSynonym , string expressionValue, std::shared_ptr<ResultTable> result);
+
     // Method to handle 'if' patterns
     void handleIfPatterns(const ParsingResult& parsingResult, std::shared_ptr<ResultTable> result);
 
     // Method to handle 'while' patterns
     void handleWhilePatterns(const ParsingResult& parsingResult, std::shared_ptr<ResultTable> result);
 
-    // Determines the pattern type and delegates processing
-    void processPatternType(const ParsingResult& parsingResult, std::shared_ptr<ResultTable> result);
+    // Method to handle 'assign' patterns
+    void handleAssignPatterns(const ParsingResult& parsingResult, std::shared_ptr<ResultTable> result, bool partialMatch);
+
 };
 
