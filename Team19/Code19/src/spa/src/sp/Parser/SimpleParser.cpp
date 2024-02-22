@@ -11,13 +11,14 @@ SimpleParser::SimpleParser(std::string filename) {
 
 std::shared_ptr<ASTNode> SimpleParser::parseProgram() {
 	std::vector<std::shared_ptr<ASTNode>> procedures;
+	const int START_OF_PROGRAM = 1;
 
 	while (this->hasTokensLeft()) {
 		procedures.push_back(this->parseProcedure());
 	}
 
 	std::shared_ptr<ASTNode> root = std::make_shared<ASTNode>(
-		ASTNodeType::PROGRAMS, 1, Utility::getASTNodeType(ASTNodeType::PROGRAMS)
+		ASTNodeType::PROGRAMS, START_OF_PROGRAM, Utility::getASTNodeType(ASTNodeType::PROGRAMS)
 	);
 
 	for (auto& procedure : procedures) {
@@ -230,7 +231,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseCall() {
 	return callTree;
 }
 
-// ‘while’ ‘(’ cond_expr ‘)’  ‘{‘ stmtLst ‘}’
+// ‘while’ '(' cond_expr ')'  ‘{‘ stmtLst ‘}’
 std::shared_ptr<ASTNode> SimpleParser::parseWhile() {
 	LexicalToken keyword = this->getNextToken();
 	this->assertToken(keyword, LexicalTokenType::KEYWORD_WHILE);
@@ -253,7 +254,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseWhile() {
 	return whileTree;
 }
 
-// ‘if’ ‘(’ cond_expr‘)’ ‘then’ ‘{‘ stmtLst ‘}’ ‘else’ ‘{ ‘ stmtLst ‘ }’
+// 'if' '(' cond_expr ')' 'then' '{' stmtLst '}' 'else' '{' stmtLst '}'
 std::shared_ptr<ASTNode> SimpleParser::parseIf() {
 	LexicalToken keyword = this->getNextToken();
 	this->assertToken(keyword, LexicalTokenType::KEYWORD_IF);
@@ -305,9 +306,9 @@ std::shared_ptr<ASTNode> SimpleParser::parseAssign() {
 }
 
 // cond_expr: rel_expr
-//          | ‘!’ ‘(’ cond_expr ‘)’
-//          | ‘(’ cond_expr ‘)’ ‘&&’ ‘(’ cond_expr ‘)’
-//          | ‘(’ cond_expr ‘)’ ‘||’ ‘(’ cond_expr ‘)’
+//          | '!' '(' cond_expr ')'
+//          | '(' cond_expr ')' '&&' '(' cond_expr ')'
+//          | '(' cond_expr ')' '||' '(' cond_expr ')'
 std::shared_ptr<ASTNode> SimpleParser::parseCondExpr() {
 	LexicalToken firstToken = this->peekNextToken();
 
@@ -316,7 +317,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseCondExpr() {
 	}
 
 	std::shared_ptr<ASTNode> operationNode;
-	// If of form ‘!’ ‘(’ cond_expr ‘)’.
+	// If of form '!' '(' cond_expr ')'.
 	if (firstToken.isType(LexicalTokenType::OPERATOR_NOT)) {
 		this->assertToken(this->getNextToken(), LexicalTokenType::OPERATOR_NOT);
 		this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_OPEN_PAREN);
@@ -331,7 +332,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseCondExpr() {
 		return operationNode;
 	}
 
-	// If of form  ‘(’ cond_expr ‘)’ ‘&&’ ‘(’ cond_expr ‘)’ OR ‘(’ cond_expr ‘)’ ‘||’ ‘(’ cond_expr ‘)’
+	// If of form  '(' cond_expr ')' '&&' '(' cond_expr ')' OR '(' cond_expr ')' '||' '(' cond_expr ')'
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_OPEN_PAREN);
 	std::shared_ptr<ASTNode> left = this->parseCondExpr();
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_PAREN);
@@ -437,7 +438,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseTerm() {
 	while (operation.isType(LexicalTokenType::OPERATOR_TERM)) {
 		this->getNextToken(); //consume operation token
 
-//		return std::make_shared<ASTNode>(ASTNodeType::CONSTANT, operation.getLine(), Utility::getASTNodeType(ASTNodeType::CONSTANT));
+		//		return std::make_shared<ASTNode>(ASTNodeType::CONSTANT, operation.getLine(), Utility::getASTNodeType(ASTNodeType::CONSTANT));
 		std::shared_ptr<ASTNode> operationNode;
 		if (operation.isType(LexicalTokenType::OPERATOR_MULTIPLY)) {
 			operationNode = std::make_shared<ASTNode>(ASTNodeType::MULTIPLY, operation.getLine(), Utility::getASTNodeType(ASTNodeType::MULTIPLY));
@@ -504,5 +505,4 @@ std::shared_ptr<ASTNode> SimpleParser::parseConstValue() {
 	this->assertToken(constant, LexicalTokenType::INTEGER);
 	return std::make_shared<ASTNode>(ASTNodeType::CONSTANT, constant.getLine(), constant.getValue());
 }
-
 // ai-gen end
