@@ -210,7 +210,6 @@ std::shared_ptr<ASTNode> SimpleParser::parseStmt() {
 	LexicalToken firstToken = this->peekNextToken();
 
 
-	// Then, Check keywords read/print/call.
 	if (firstToken.isType(LexicalTokenType::KEYWORD_CALL)) {
 		return this->parseCall();
 	}
@@ -223,7 +222,6 @@ std::shared_ptr<ASTNode> SimpleParser::parseStmt() {
 		return this->parseRead();
 	}
 
-	// Then, check keywords while/if.
 	if (firstToken.isType(LexicalTokenType::KEYWORD_IF)) {
 		return this->parseIf();
 	}
@@ -234,7 +232,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseStmt() {
 
 
 	// If dont have keyword, this is an invalid statement.
-	throw std::runtime_error("Error: Invalid Statement.");
+	throw std::runtime_error("Error: Tried to parse statement, but input statement is not Assign, Call ,Print, Read, If or While statement.");
 }
 
 /**
@@ -307,7 +305,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseCall() {
 /**
  * @brief Parse a while statement in the program.
  *
- * @details While statement can only take this form: 'while' '(' cond_expr ')'  '{' stmtLst '}'
+ * @details While statement can only take this form: 'while' '(' cond_expr ')' '{' stmtLst '}'
  * 
  * @return std::shared_ptr<ASTNode> A smart pointer pointing to the root of the parsed while node tree.
  */
@@ -453,7 +451,6 @@ std::shared_ptr<ASTNode> SimpleParser::parseCondExpr() {
 	return operationNode;
 }
 
-//  rel_factor : var_name | const_value | expr
 /**
  * @brief Parse a relational expression in the program.
  *
@@ -496,7 +493,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseRelExpr() {
 
 /**
  * @brief Parse a relational factor in the program.
- *
+ * @details A rel_factor can be of form : var_name | const_value | expr, note that parsing a rel_factor is the same as parsing an expr.
  * @return std::shared_ptr<ASTNode> A smart pointer pointing to the root of the parsed relational factor node tree.
  */
 std::shared_ptr<ASTNode> SimpleParser::parseRelFactor() {
@@ -597,14 +594,15 @@ std::shared_ptr<ASTNode> SimpleParser::parseFactor() {
 		this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_PAREN);
 		return expr;
 	}
-	else if (nextToken.isType(LexicalTokenType::NAME)) {
+	
+	if (nextToken.isType(LexicalTokenType::NAME)) {
 		return this->parseVarName();
 	}
-	else if (nextToken.isType(LexicalTokenType::INTEGER)) {
+	
+	if (nextToken.isType(LexicalTokenType::INTEGER)) {
 		return this->parseConstValue();
 	}
 
-	// Should not come to this code.
 	throw std::runtime_error("Error: SimpleParser tries to parse factor, but does not see parenthesis, name nor integer");
 }
 
