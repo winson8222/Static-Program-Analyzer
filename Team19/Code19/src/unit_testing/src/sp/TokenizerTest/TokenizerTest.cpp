@@ -57,6 +57,21 @@ TEST_CASE("Tokenize simple file without keywords", "[tokenize]") {
     REQUIRE(actualOutput[3].getTokenType() == LexicalTokenType::SYMBOL_SEMICOLON);
 }
 
+
+TEST_CASE("Check operator tokenizations", "[tokenize]") {
+    std::string actualContent = "==!=<><=>=";
+
+    auto actualOutput = SPTokenizer::tokenize(actualContent);
+    REQUIRE(actualOutput.size() == 6);
+    REQUIRE(actualOutput[0].getTokenType() == LexicalTokenType::OPERATOR_IS_EQUAL);
+    REQUIRE(actualOutput[1].getTokenType() == LexicalTokenType::OPERATOR_NOT_EQUAL);
+    REQUIRE(actualOutput[2].getTokenType() == LexicalTokenType::OPERATOR_LESS);
+    REQUIRE(actualOutput[3].getTokenType() == LexicalTokenType::OPERATOR_GREATER);
+    REQUIRE(actualOutput[4].getTokenType() == LexicalTokenType::OPERATOR_LESS_EQUAL);
+    REQUIRE(actualOutput[5].getTokenType() == LexicalTokenType::OPERATOR_GREATER_EQUAL);
+}
+
+
 // IMPORTANT: When Tokenizer is able to check syntax, e.g. assigning the 2nd 'procedure' to NAME in procedure procedure, this will not work.
 /*
 TEST_CASE("Tokenize file with keywords", "[tokenize]") {
