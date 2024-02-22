@@ -211,24 +211,26 @@ void ResultTable::insertAllColumns(const std::vector<std::string>& colNames) {
 }
 
 std::vector<std::string> ResultTable::getColumnValues(const std::string& columnName) {
-    std::vector<std::string> columnValues;
+    std::unordered_set<std::string> uniqueColumnValues;
 
     // Check if the column name exists in the column set
     if (std::find(colSet.begin(), colSet.end(), columnName) == colSet.end()) {
-        return columnValues;
+        return {}; // Return an empty vector directly
     }
 
     // Iterate through each row and extract the value for the given column
     for (const auto& row : rows) {
         auto it = row.find(columnName);
         if (it != row.end()) {
-            columnValues.push_back(it->second);
+            uniqueColumnValues.insert(it->second);
         }
-        else {
-            // If the column is not present in a row, push an empty string or handle as needed
-            columnValues.push_back("");
-        }
+        // If you still want to consider rows where the column name is not found,
+        // you can insert an empty string into uniqueColumnValues here, but typically,
+        // you might just skip it.
     }
+
+    // Convert the unordered_set back to a vector to return
+    std::vector<std::string> columnValues(uniqueColumnValues.begin(), uniqueColumnValues.end());
 
     return columnValues;
 }

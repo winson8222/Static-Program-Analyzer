@@ -86,7 +86,7 @@ public:
     std::vector<std::string> getColumnValues(const std::string& columnName);
     void setAsTruthTable();
 
-    bool ResultTable::hasColumn(const std::string& columnName) const;
+    bool hasColumn(const std::string& columnName) const;
 };
 
 

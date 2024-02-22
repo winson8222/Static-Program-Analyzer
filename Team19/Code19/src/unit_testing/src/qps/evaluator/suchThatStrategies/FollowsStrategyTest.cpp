@@ -1,4 +1,4 @@
-#define CATCH_CONFIG_MAIN
+
 #include "catch.hpp"
 #include "qps/evaluator/suchThatStrategies/FollowsStrategy.h"
 #include "pkb/PKBReaderManager.h"
