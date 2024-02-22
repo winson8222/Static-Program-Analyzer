@@ -13,7 +13,7 @@ using namespace std;
 
 std::shared_ptr<ResultTable> PatternStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult) {
 
-    std::shared_ptr<ResultTable> result;
+    std::shared_ptr<ResultTable> result = std::make_shared<ResultTable>();
 
     // Obtain readers from PKBReaderManager
     this->patternReader = pkbReaderManager.getAssignPatternReader();//dummy function
@@ -23,13 +23,20 @@ std::shared_ptr<ResultTable> PatternStrategy::evaluateQuery(PKBReaderManager& pk
     const Token& patternSecondParam = parsingResult.getPatternClauseSecondParam();
     const Token& patternAssignParam = parsingResult.getPatternClauseRelationship();
     const string assignParamValue = patternAssignParam.getValue();
-    bool partialMatch = patternSecondParam.getValue()[0] == '_';
+    bool partialMatch = patternSecondParam.getValue()[0] == '_' && patternSecondParam.getValue().length() > 1;
     string secondParamValue;
+
+
+
 
     // if the second param is an expressionSpec or a quoted IDENT, we need to retrieve the expression/identity within the quotes
     if (patternSecondParam.getType() == TokenType::ExpressionSpec || patternSecondParam.getType() == TokenType::QuoutIDENT){
-        secondParamValue = extractQuotedExpression(patternSecondParam);
-    } else if (patternSecondParam.getType() == TokenType::Wildcard) {
+        if (patternSecondParam.getValue() == "_") {
+            secondParamValue = patternSecondParam.getValue();
+        } else {
+            secondParamValue = extractQuotedExpression(patternSecondParam);
+        }
+    } else {
         secondParamValue = patternSecondParam.getValue();
     }
 
@@ -39,7 +46,8 @@ std::shared_ptr<ResultTable> PatternStrategy::evaluateQuery(PKBReaderManager& pk
     } else if (patternFirstParam.getType() == TokenType::QuoutIDENT) {
         getStatementsByIdent(assignParamValue, patternFirstParam, secondParamValue , result, partialMatch);
     } else {
-        return result;
+        // if the first param is a wildcard, we need to retrieve all stmts that match the right hand side
+        getAllStatementsByRHS(assignParamValue, secondParamValue, result);
     }
 
 
@@ -141,4 +149,20 @@ void PatternStrategy::getStatementsByIdent(const string& colName, const Token& f
 
     // fill the result table with the statement numbers that match the pattern
     fillSingleColumnResult(colName, combinedStatementsInString, result);
+}
+
+void PatternStrategy::getAllStatementsByRHS(string patternSynonym , string expressionValue, std::shared_ptr<ResultTable> result) {
+    result -> insertAllColumns({ patternSynonym });
+    unordered_set<int> rightMatchedAssignments;
+    if (expressionValue == "_") {
+        rightMatchedAssignments = assignReader->getAllAssigns();
+        // convert the result into a set of strings
+    } else {
+        rightMatchedAssignments = patternReader->getStatementNumbersWithRHS(expressionValue);
+        // combine with all the assignment statements
+        rightMatchedAssignments = combineFoundStatements(assignReader->getAllAssigns(), rightMatchedAssignments);
+    }
+    unordered_set<string> combinedStatementsInString;
+    convertIntSetToStringSet(rightMatchedAssignments, combinedStatementsInString);
+    fillSingleColumnResult(patternSynonym, combinedStatementsInString, result);
 }

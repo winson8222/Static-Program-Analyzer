@@ -30,10 +30,13 @@ bool QueryEvaluationStrategy::isBothParamsWildcard(const Token& firstParam, cons
  * @param result - The existing set of statements numbers to be updated.
  * @return The updated set of statements numbers.
  */
-unordered_set<int> QueryEvaluationStrategy::combineFoundStatements(const unordered_set<int>& newResult, const unordered_set<int>& result) {
-    // get the intersection of the two sets
-    unordered_set<int> combinedResult;
-    set_intersection(newResult.begin(), newResult.end(), result.begin(),
-                     result.end(), inserter(combinedResult, combinedResult.begin()));
+std::unordered_set<int> QueryEvaluationStrategy::combineFoundStatements(const unordered_set<int> &newResult,
+                                                                        const unordered_set<int> &result) {
+    std::unordered_set<int> combinedResult;
+    for (const auto& elem : newResult) {
+        if (std::find(result.begin(), result.end(), elem) != result.end()) {
+            combinedResult.insert(elem);
+        }
+    }
     return combinedResult;
 }

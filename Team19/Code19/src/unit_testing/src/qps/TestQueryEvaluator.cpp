@@ -450,13 +450,17 @@ TEST_CASE("Check Evaluation result of a select pattern query with variable") {
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
-    std::shared_ptr<AssignPatternWriter> assignWriter = pkbWriterManager->getAssignPatternWriter();
+    std::shared_ptr<AssignPatternWriter> assignPatternWriter = pkbWriterManager->getAssignPatternWriter();
+    std::shared_ptr<AssignWriter> assignWriter = pkbWriterManager->getAssignWriter();
     statementWriter->insertStatement(1);
     statementWriter->insertStatement(2);
     statementWriter->insertStatement(3);
-    assignWriter->addAssignPattern(1, "y", "1");
-    assignWriter->addAssignPattern(2, "x", "y");
-    assignWriter->addAssignPattern(3, "x", "3");
+    assignPatternWriter->addAssignPattern(1, "y", "1");
+    assignPatternWriter->addAssignPattern(2, "x", "y");
+    assignPatternWriter->addAssignPattern(3, "x", "3");
+    assignWriter->insertAssign(1);
+    assignWriter->insertAssign(2);
+    assignWriter->insertAssign(3);
 
     std::vector<Token> tokens = {
             Token(TokenType::DesignEntity, "assign"),
@@ -488,9 +492,7 @@ TEST_CASE("Check Evaluation result of a select pattern query with wildcard on RH
 
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
     std::shared_ptr<AssignPatternWriter> assignPatternWriter = pkbWriterManager->getAssignPatternWriter();
-    std:shared_ptr<AssignPatternReader> assignPatternReader = pkbReaderManager->getAssignPatternReader();
     std::shared_ptr<AssignWriter> assignWriter = pkbWriterManager->getAssignWriter();
-
     statementWriter->insertStatement(1);
     statementWriter->insertStatement(2);
     statementWriter->insertStatement(3);
@@ -521,6 +523,7 @@ TEST_CASE("Check Evaluation result of a select pattern query with wildcard on RH
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
     std::vector<string> res = evaluator.evaluateQuery();
+
     REQUIRE((res == std::vector<string>{ "3", "2" } || res == std::vector<string>{"2", "3"}));
 
 }
@@ -532,9 +535,7 @@ TEST_CASE("Check Evaluation result of a select pattern query with wildcard on RH
 
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
     std::shared_ptr<AssignPatternWriter> assignPatternWriter = pkbWriterManager->getAssignPatternWriter();
-    std:shared_ptr<AssignPatternReader> assignPatternReader = pkbReaderManager->getAssignPatternReader();
     std::shared_ptr<AssignWriter> assignWriter = pkbWriterManager->getAssignWriter();
-
     statementWriter->insertStatement(1);
     statementWriter->insertStatement(2);
     statementWriter->insertStatement(3);
@@ -609,5 +610,97 @@ TEST_CASE("Check Evaluation result of a select pattern query with wildcard on LH
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
     std::vector<string> res = evaluator.evaluateQuery();
     REQUIRE(res == std::vector<string>{ "2" });
+
+}
+
+TEST_CASE("Check Evaluation result of a select variable query with assign pattern query with synonym on LHS") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<AssignPatternWriter> assignPatternWriter = pkbWriterManager->getAssignPatternWriter();
+    std:shared_ptr<AssignPatternReader> assignPatternReader = pkbReaderManager->getAssignPatternReader();
+    std::shared_ptr<AssignWriter> assignWriter = pkbWriterManager->getAssignWriter();
+
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    assignPatternWriter->addAssignPattern(1, "y", "1");
+    assignPatternWriter->addAssignPattern(2, "x", "y");
+    assignPatternWriter->addAssignPattern(3, "x", "3");
+    assignWriter->insertAssign(1);
+    assignWriter->insertAssign(2);
+    assignWriter->insertAssign(3);
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "assign"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::DesignEntity, "variable"),
+            Token(TokenType::IDENT, "v"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "v"),
+            Token(TokenType::PatternKeyword, "pattern"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::IDENT, "v"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::QuoutIDENT, "\"y\""),
+            Token(TokenType::Rparenthesis, ")")
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::vector<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::vector<string>{ "x" });
+
+}
+
+TEST_CASE("Check Evaluation result of a select variable query with assign pattern query with synonym on LHS and wild card on RHS") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<AssignPatternWriter> assignPatternWriter = pkbWriterManager->getAssignPatternWriter();
+    std:shared_ptr<AssignPatternReader> assignPatternReader = pkbReaderManager->getAssignPatternReader();
+    std::shared_ptr<AssignWriter> assignWriter = pkbWriterManager->getAssignWriter();
+
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    assignPatternWriter->addAssignPattern(1, "y", "1");
+    assignPatternWriter->addAssignPattern(2, "x", "y");
+    assignPatternWriter->addAssignPattern(3, "x", "3");
+    assignWriter->insertAssign(1);
+    assignWriter->insertAssign(2);
+    assignWriter->insertAssign(3);
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "assign"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::DesignEntity, "variable"),
+            Token(TokenType::IDENT, "v"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "v"),
+            Token(TokenType::PatternKeyword, "pattern"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::IDENT, "v"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Rparenthesis, ")")
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::vector<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::vector<string>{ "x", "y" });
 
 }

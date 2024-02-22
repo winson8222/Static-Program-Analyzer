@@ -17,6 +17,8 @@ void QueryEvaluator::addStrategy(std::unique_ptr<QueryEvaluationStrategy> strate
 }
 
 std::vector<string> QueryEvaluator::evaluateQuery() {
+    // create result table
+    result = std::make_shared<ResultTable>();
     // if query is not valid, return error message and stop evaluation
     if (!parsingResult.isQueryValid()) {
         // convert error message to vector<string>
@@ -51,7 +53,7 @@ std::vector<string> QueryEvaluator::evaluateQuery() {
         
     }*/
 
-    if (parsingResult.getPatternClauseRelationshipType() == "assign") {
+    if (!parsingResult.getPatternClauseRelationship().getValue().empty()) {
         addStrategy(std::make_unique<PatternStrategy>());
     }
 
