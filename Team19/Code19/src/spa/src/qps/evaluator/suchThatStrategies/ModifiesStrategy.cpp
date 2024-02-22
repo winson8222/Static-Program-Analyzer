@@ -14,7 +14,7 @@ std::shared_ptr<ResultTable> ModifiesStrategy::evaluateQuery(PKBReaderManager& p
     } else if (suchThatFirstParam.getType() == TokenType::IDENT) {
         processFirstParam(suchThatFirstParam, suchThatSecondParam, parsingResult, resultTable, pkbReaderManager);
     } else if (suchThatSecondParam.getType() == TokenType::IDENT) {
-        processFirstParam(suchThatSecondParam, suchThatFirstParam, parsingResult, resultTable, pkbReaderManager);
+        processSecondParam(suchThatFirstParam, suchThatSecondParam, parsingResult, resultTable, pkbReaderManager);
     } else if (suchThatFirstParam.getType() == TokenType::INTEGER  && suchThatSecondParam.getType() == TokenType::QuoutIDENT) {
         processBothConstants(suchThatFirstParam, suchThatSecondParam, parsingResult, resultTable);
     } else if (suchThatFirstParam.getType() == TokenType::Wildcard || suchThatSecondParam.getType() == TokenType::Wildcard) {
