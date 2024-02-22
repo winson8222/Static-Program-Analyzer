@@ -74,8 +74,6 @@ TEST_CASE("Test string representations of programs", "[parse][program]") {
 }
 
 TEST_CASE("sp/ParserTest/ParseProgram.cpp", "Test 1") {
-	// Generate test file
-	std::cout << "START" << std::endl;
 	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program3.txt";
 	REQUIRE(std::filesystem::exists(testFileName));
 	SimpleParserFacade parser(testFileName);
