@@ -34,6 +34,7 @@ public:
 
 
     // Getters
+    const string getPatternClauseRelationshipType() const;
     const unordered_map<string, string>& getDeclaredSynonyms() const;
     const string& getDeclaredSynonym(const string& key) const;
     const string& getRequiredSynonym() const;

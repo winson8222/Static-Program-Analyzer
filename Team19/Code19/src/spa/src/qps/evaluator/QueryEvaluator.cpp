@@ -51,6 +51,70 @@ std::vector<string> QueryEvaluator::evaluateQuery() {
         
     }*/
 
+    if (parsingResult.getPatternClauseRelationshipType() == "assign") {
+        addStrategy(std::make_unique<PatternStrategy>());
+    }
+
+    // if there is no pattern clause or such that clause, return all statements
+    if (parsingResult.getPatternClauseRelationship().getValue().empty() && parsingResult.getSuchThatClauseRelationship().getValue().empty()) {
+        // if there is no clause, return all statements
+        std::vector<std::string> result;
+        if (parsingResult.getRequiredSynonym() == "stmt") {
+            unordered_set<int> allStmts = pkbReaderManager->getStatementReader()->getAllStatements();
+            for (int stmt : allStmts) {
+                result.push_back(to_string(stmt));
+            }
+        }
+        else if (parsingResult.getRequiredSynonym() == "read") {
+            unordered_set<int> allReads = pkbReaderManager->getReadReader()->getAllReads();
+            for (int read : allReads) {
+                result.push_back(to_string(read));
+            }
+        }
+        else if (parsingResult.getRequiredSynonym() == "print") {
+            unordered_set<int> allPrints = pkbReaderManager->getPrintReader()->getAllPrints();
+            for (int print : allPrints) {
+                result.push_back(to_string(print));
+            }
+        }
+        else if (parsingResult.getRequiredSynonym() == "call") {
+            unordered_set<int> allCalls = pkbReaderManager->getCallReader()->getAllCalls();
+            for (int call : allCalls) {
+                result.push_back(to_string(call));
+            }
+        }
+        else if (parsingResult.getRequiredSynonym() == "while") {
+            unordered_set<int> allWhiles = pkbReaderManager->getWhileReader()->getAllWhiles();
+            for (int whileStmt : allWhiles) {
+                result.push_back(to_string(whileStmt));
+            }
+        }
+        else if (parsingResult.getRequiredSynonym() == "if") {
+            unordered_set<int> allIfs = pkbReaderManager->getIfReader()->getAllIfs();
+            for (int ifStmt : allIfs) {
+                result.push_back(to_string(ifStmt));
+            }
+        }
+        else if (parsingResult.getRequiredSynonym() == "assign") {
+            unordered_set<int> allAssigns = pkbReaderManager->getAssignReader()->getAllAssigns();
+            for (int assign : allAssigns) {
+                result.push_back(to_string(assign));
+            }
+        }
+        else if (parsingResult.getRequiredSynonym() == "variable") {
+            unordered_set<string> allVariables = pkbReaderManager->getVariableReader()->getAllVariables();
+            for (string variable : allVariables) {
+                result.push_back(variable);
+            }
+        } else {
+            //return all statement/variables/whatever
+            // return getAllEntities(requiredType);
+            return result; // change this to return all entities
+        }
+
+
+    }
+
     bool isFirstStrategy = true;
     for (auto& strategy : strategies) {
         if (isFirstStrategy) {

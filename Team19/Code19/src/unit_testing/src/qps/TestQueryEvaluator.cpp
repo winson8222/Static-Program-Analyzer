@@ -402,19 +402,24 @@ TEST_CASE("Check Evaluation result of a simple select Parent query (opposite)") 
 
 }
 
-TEST_CASE("Check Evaluation result of a simple select pattern query") {
+TEST_CASE("Check Evaluation result of a simple select pattern assign query") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
-    std::shared_ptr<AssignPatternWriter> assignWriter = pkbWriterManager->getAssignPatternWriter();
+    std::shared_ptr<AssignPatternWriter> assignPatternWriter = pkbWriterManager->getAssignPatternWriter();
+    std::shared_ptr<AssignWriter> assignWriter = pkbWriterManager->getAssignWriter();
     statementWriter->insertStatement(1);
     statementWriter->insertStatement(2);
     statementWriter->insertStatement(3);
-    assignWriter->addAssignPattern(1, "x", "1");
-    assignWriter->addAssignPattern(2, "x", "2");
-    assignWriter->addAssignPattern(3, "x", "3");
+    assignPatternWriter->addAssignPattern(1, "x", "1");
+    assignPatternWriter->addAssignPattern(2, "x", "2");
+    assignPatternWriter->addAssignPattern(3, "x", "3");
+    assignWriter->insertAssign(1);
+    assignWriter->insertAssign(2);
+    assignWriter->insertAssign(3);
+
 
     std::vector<Token> tokens = {
             Token(TokenType::DesignEntity, "assign"),

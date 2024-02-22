@@ -82,6 +82,10 @@ const Token& ParsingResult::getPatternClauseRelationship() const {
     return patternRelationship;
 }
 
+const string ParsingResult::getPatternClauseRelationshipType() const {
+    return getDeclaredSynonym(patternRelationship.getValue());
+}
+
 const Token& ParsingResult::getPatternClauseFirstParam() const {
     return patternFirstParam;
 }
