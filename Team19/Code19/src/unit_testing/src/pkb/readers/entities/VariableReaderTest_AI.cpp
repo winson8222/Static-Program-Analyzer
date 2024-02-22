@@ -1,7 +1,7 @@
 #include "catch.hpp"
 #include "pkb/PKBManager.h"
 
-TEST_CASE("pkb/readers/VariableReader") {
+TEST_CASE("pkb/readers/entities/VariableReader") {
   std::string x = "x";
   std::string y = "y";
   auto pkbManager = std::make_shared<PKBManager>();

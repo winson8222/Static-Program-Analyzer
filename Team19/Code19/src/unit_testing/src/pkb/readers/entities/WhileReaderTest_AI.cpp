@@ -1,7 +1,7 @@
 #include "catch.hpp"
 #include "pkb/PKBManager.h"
 
-TEST_CASE("WhileReader: Basic Functionality") {
+TEST_CASE("pkb/readers/entities/WhileReader") {
     auto pkbManager = std::make_shared<PKBManager>();
     auto whileReader = pkbManager->getPKBReaderManager()->getWhileReader();
     auto whileWriter = pkbManager->getPKBWriterManager()->getWhileWriter();

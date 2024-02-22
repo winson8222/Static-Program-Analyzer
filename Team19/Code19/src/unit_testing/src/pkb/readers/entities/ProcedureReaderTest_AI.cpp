@@ -1,7 +1,7 @@
 #include "catch.hpp"
 #include "pkb/PKBManager.h"
 
-TEST_CASE("ProcedureReader: Basic Functionality") {
+TEST_CASE("pkb/readers/entities/ProcedureReader") {
     auto pkbManager = std::make_shared<PKBManager>();
     auto procedureReader = pkbManager->getPKBReaderManager()->getProcedureReader();
     auto procedureWriter = pkbManager->getPKBWriterManager()->getProcedureWriter();

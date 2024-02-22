@@ -1,7 +1,7 @@
 #include "catch.hpp"
 #include "pkb/PKBManager.h"
 
-TEST_CASE("StatementReader: Basic Functionality") {
+TEST_CASE("pkb/readers/entities/StatementReader") {
     auto pkbManager = std::make_shared<PKBManager>();
     auto statementReader = pkbManager->getPKBReaderManager()->getStatementReader();
     auto statementWriter = pkbManager->getPKBWriterManager()->getStatementWriter();
