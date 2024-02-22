@@ -34,8 +34,10 @@ std::vector<string> QueryEvaluator::evaluateQuery() {
     else if (parsingResult.getSuchThatClauseRelationship().getValue() == "Parent" || parsingResult.getSuchThatClauseRelationship().getValue() == "Parent*") {
         addStrategy(std::make_unique<ParentStrategy>());
     }
-    else if (parsingResult.getSuchThatClauseRelationship().getValue() == "Modifies") {
-        addStrategy(std::make_unique<PatternStrategy>());
+    else if (parsingResult.getSuchThatClauseRelationship().getType() == TokenType::UsesS) {
+        addStrategy(std::make_unique<UsesStrategy>());
+    } else if (parsingResult.getSuchThatClauseRelationship().getType() == TokenType::ModifiesS) {
+        addStrategy(std::make_unique<ModifiesStrategy>());
     }
     /*
     else if (parsingResult.getSuchThatClauseRelationship().getValue() == "Modifies") {
@@ -182,7 +184,7 @@ std::vector<std::string> QueryEvaluator::getAllEntities(const std::string& requi
             entities.push_back(std::to_string(stmtNum));
         }
     }
-    else if (requiredType == "statement") {
+    else if (requiredType == "stmt") {
         auto statementEntities = pkbReaderManager->getStatementReader()->getAllEntities();
         for (int stmtNum : statementEntities) {
             entities.push_back(std::to_string(stmtNum));

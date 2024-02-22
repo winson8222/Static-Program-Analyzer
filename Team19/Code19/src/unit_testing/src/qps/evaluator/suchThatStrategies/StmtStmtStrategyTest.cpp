@@ -8,7 +8,7 @@
 // Derive a class from StmtStmtStrategy for testing
 class TestableStmtStmtStrategy : public StmtStmtStrategy {
 public:
-    using StmtStmtStrategy::fillResult; // Expose protected method as public for testing
+
     using StmtStmtStrategy::isBothParamsInteger; // Expose protected method
     using StmtStmtStrategy::isBothParamsWildcard; // Expose protected method
 
