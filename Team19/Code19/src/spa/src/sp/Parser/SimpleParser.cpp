@@ -303,10 +303,12 @@ std::shared_ptr<ASTNode> SimpleParser::parseCall() {
 	return callTree;
 }
 
-// ‘while’ '(' cond_expr ')'  ‘{‘ stmtLst ‘}’
+
 /**
  * @brief Parse a while statement in the program.
  *
+ * @details While statement can only take this form: 'while' '(' cond_expr ')'  '{' stmtLst '}'
+ * 
  * @return std::shared_ptr<ASTNode> A smart pointer pointing to the root of the parsed while node tree.
  */
 std::shared_ptr<ASTNode> SimpleParser::parseWhile() {
@@ -331,9 +333,11 @@ std::shared_ptr<ASTNode> SimpleParser::parseWhile() {
 	return whileTree;
 }
 
-// 'if' '(' cond_expr ')' 'then' '{' stmtLst '}' 'else' '{' stmtLst '}'
+
 /**
  * @brief Parse a if statement in the program.
+ * 
+ * @details If statement can only take this form: 'if' '(' cond_expr ')' 'then' '{' stmtLst '}' 'else' '{' stmtLst '}'
  *
  * @return std::shared_ptr<ASTNode> A smart pointer pointing to the root of the parsed if node tree.
  */
@@ -392,13 +396,12 @@ std::shared_ptr<ASTNode> SimpleParser::parseAssign() {
 	return assignNode;
 }
 
-// cond_expr: rel_expr
-//          | '!' '(' cond_expr ')'
-//          | '(' cond_expr ')' '&&' '(' cond_expr ')'
-//          | '(' cond_expr ')' '||' '(' cond_expr ')'
+
 /**
  * @brief Parse a conditional expression in the program.
- *
+ * 
+ * @details CondExpr can only take these forms: rel_expr | '!' '(' cond_expr ')' | '(' cond_expr ')' '&&' '(' cond_expr ')' | '(' cond_expr ')' '||' '(' cond_expr ')'
+ * 
  * @return std::shared_ptr<ASTNode> A smart pointer pointing to the root of the parsed conditional expression node tree.
  */
 std::shared_ptr<ASTNode> SimpleParser::parseCondExpr() {
