@@ -58,6 +58,30 @@ TEST_CASE("Calling parseProgram for complex procedure", "[parse][program]") {
 	REQUIRE(std::filesystem::exists(testFileName));
 	SimpleParserFacade parser(testFileName);
 	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
+
+	REQUIRE(tree_ptr->type == ASTNodeType::PROGRAMS);
+	auto& procedure = (tree_ptr->children)[0];
+
+	// Checking procedure node
+	REQUIRE(procedure->type == ASTNodeType::PROCEDURE);
+	REQUIRE(procedure->value == "computeCentroid");
+
+	auto statements = (procedure->children)[0]->children;
+
+	// Check the statements of the parsed code
+	REQUIRE(statements.size() == 6);
+
+	auto firstStmt = statements[0];
+
+	// Check the first statement
+	REQUIRE(firstStmt->type == ASTNodeType::ASSIGN);
+	auto firstStmtChildren = firstStmt->children;
+	REQUIRE(firstStmtChildren.size() == 2);
+	REQUIRE(firstStmtChildren[0]->type == ASTNodeType::VARIABLE);
+	REQUIRE(firstStmtChildren[0]->value == "count");
+	REQUIRE(firstStmtChildren[1]->type == ASTNodeType::CONSTANT);
+	REQUIRE(firstStmtChildren[1]->value == "0");
+
 }
 
 TEST_CASE("Calling parseProgram for while procedures", "[parse][program]") {
