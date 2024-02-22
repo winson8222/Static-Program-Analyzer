@@ -82,6 +82,34 @@ TEST_CASE("Calling parseProgram for complex procedure", "[parse][program]") {
 	REQUIRE(firstStmtChildren[1]->type == ASTNodeType::CONSTANT);
 	REQUIRE(firstStmtChildren[1]->value == "0");
 
+	auto lastStmt = statements[5];
+
+	// Check the last statement
+	REQUIRE(lastStmt->type == ASTNodeType::ASSIGN);
+	auto& lastStmtChildren = lastStmt->children;
+	REQUIRE(lastStmtChildren.size() == 2);
+	REQUIRE(lastStmtChildren[0]->type == ASTNodeType::VARIABLE);
+	REQUIRE(lastStmtChildren[0]->value == "normSq");
+	REQUIRE(lastStmtChildren[1]->type == ASTNodeType::ADD);
+
+	auto& additionValues = lastStmtChildren[1]->children;
+	REQUIRE(additionValues.size() == 2);
+	REQUIRE(additionValues[0]->type == ASTNodeType::MULTIPLY);
+	REQUIRE(additionValues[1]->type == ASTNodeType::MULTIPLY);
+
+	auto& firstExpr = additionValues[0]->children;
+	REQUIRE(firstExpr.size() == 2);
+	REQUIRE(firstExpr[0]->type == ASTNodeType::VARIABLE);
+	REQUIRE(firstExpr[0]->value == "cenX");
+	REQUIRE(firstExpr[1]->type == ASTNodeType::VARIABLE);
+	REQUIRE(firstExpr[1]->value == "cenX");
+
+	auto& lastExpr = additionValues[1]->children;
+	REQUIRE(lastExpr.size() == 2);
+	REQUIRE(lastExpr[0]->type == ASTNodeType::VARIABLE);
+	REQUIRE(lastExpr[0]->value == "cenY");
+	REQUIRE(lastExpr[1]->type == ASTNodeType::VARIABLE);
+	REQUIRE(lastExpr[1]->value == "cenY");
 }
 
 TEST_CASE("Calling parseProgram for while procedures", "[parse][program]") {
