@@ -26,15 +26,15 @@ std::vector<string> QueryEvaluator::evaluateQuery() {
         error.push_back(parsingResult.getErrorMessage());
         return error;
     }
-
+    // we should convert this to check token types
     if (parsingResult.getSuchThatClauseRelationship().getValue() == "Follows" || parsingResult.getSuchThatClauseRelationship().getValue() == "Follows*") {
         addStrategy(std::make_unique<FollowsStrategy>());
     }
     
-    else if (parsingResult.getSuchThatClauseRelationship().getValue() == "Parent" || parsingResult.getSuchThatClauseRelationship().getValue() == "ParentT") {
+    else if (parsingResult.getSuchThatClauseRelationship().getValue() == "Parent" || parsingResult.getSuchThatClauseRelationship().getValue() == "Parent*") {
         addStrategy(std::make_unique<ParentStrategy>());
     }
-    else if (parsingResult.getPatternClauseRelationship().getValue() != "") {
+    else if (parsingResult.getSuchThatClauseRelationship().getValue() == "Modifies") {
         addStrategy(std::make_unique<PatternStrategy>());
     }
     /*

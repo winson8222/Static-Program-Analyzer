@@ -3,6 +3,7 @@
 #include "QueryEvaluationStrategy.h" // Include the strategy interface
 #include <memory>
 #include "qps/evaluator/ResultTable.h"
+#include "qps/parser/Token.h"
 
 class QueryEvaluator {
 private:
