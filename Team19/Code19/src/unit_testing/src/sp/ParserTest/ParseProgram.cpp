@@ -53,12 +53,12 @@ TEST_CASE("Calling parseProgram for if-else-then procedures", "[parse][program]"
 	REQUIRE(ifChildren[2]->type == ASTNodeType::STATEMENT_LIST);
 }
 
-//TEST_CASE("Calling parseProgram for complex procedure", "[parse][program]") {
-//	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program3.txt";
-//	REQUIRE(std::filesystem::exists(testFileName));
-//	SimpleParserFacade parser(testFileName);
-//	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
-//}
+TEST_CASE("Calling parseProgram for complex procedure", "[parse][program]") {
+	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program3.txt";
+	REQUIRE(std::filesystem::exists(testFileName));
+	SimpleParserFacade parser(testFileName);
+	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
+}
 
 TEST_CASE("Calling parseProgram for while procedures", "[parse][program]") {
 	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program4.txt";
@@ -100,13 +100,4 @@ TEST_CASE("Test string representations of programs", "[parse][program]") {
 	REQUIRE(content.find(subcontent1) != std::string::npos);
 	REQUIRE(content.find(subcontent2) != std::string::npos);
 	REQUIRE(content.find(subcontent3) != std::string::npos);
-}
-
-TEST_CASE("sp/ParserTest/ParseProgram.cpp", "Test 1") {
-	// Generate test file
-	std::cout << "START" << std::endl;
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program3.txt";
-	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParserFacade parser(testFileName);
-	parser.parse();
 }

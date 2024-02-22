@@ -29,7 +29,8 @@ std::shared_ptr<ASTNode> SimpleParser::parseProgram() {
 
 void SimpleParser::assertToken(LexicalToken token, LexicalTokenType type) const {
 	if (!token.isType(type)) {
-		throw std::runtime_error("Error: Expected " + LexicalTokenTypeMapper::printType(type) + " but got " + LexicalTokenTypeMapper::printType(token.getTokenType()));
+		throw std::runtime_error("Error: Expected " + LexicalTokenTypeMapper::printType(type) + " but got " + LexicalTokenTypeMapper::printType(token.getTokenType()) +
+			" At Line " + std::to_string(token.getLine()) + " Position " + std::to_string(token.getLinePosition()));
 	}
 }
 
@@ -108,7 +109,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseProcedure() {
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_BRACE);
 
 	std::shared_ptr<ASTNode> procedureTree = std::make_shared<ASTNode>(
-		ASTNodeType::PROCEDURE, procedureKeyword.getLine(), 
+		ASTNodeType::PROCEDURE, procedureKeyword.getLine(),
 		procedureName->value
 	);
 
@@ -436,7 +437,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseTerm() {
 	while (operation.isType(LexicalTokenType::OPERATOR_TERM)) {
 		this->getNextToken(); //consume operation token
 
-		return std::make_shared<ASTNode>(ASTNodeType::CONSTANT, operation.getLine(), Utility::getASTNodeType(ASTNodeType::CONSTANT));
+//		return std::make_shared<ASTNode>(ASTNodeType::CONSTANT, operation.getLine(), Utility::getASTNodeType(ASTNodeType::CONSTANT));
 		std::shared_ptr<ASTNode> operationNode;
 		if (operation.isType(LexicalTokenType::OPERATOR_MULTIPLY)) {
 			operationNode = std::make_shared<ASTNode>(ASTNodeType::MULTIPLY, operation.getLine(), Utility::getASTNodeType(ASTNodeType::MULTIPLY));

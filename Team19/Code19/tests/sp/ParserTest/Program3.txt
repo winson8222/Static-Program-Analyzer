@@ -11,8 +11,8 @@ procedure computeCentroid {
 	if (count == 0) then {
 		flag = 1;
 	} else {
-		cenX = cenX / count;
-		cenY = cenY / count;
+		cenX = cenX / count ;
+		cenY = cenY / count ;
 	}
 	normSq = cenX * cenX + cenY * cenY;
 }
