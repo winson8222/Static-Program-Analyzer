@@ -7,7 +7,8 @@ add_library(spa ${srcs} ${headers} ${sp_files} ${qps_files}
         src/qps/evaluator/suchThatStrategies/EntEntStrategy.cpp
         src/qps/evaluator/suchThatStrategies/EntEntStrategy.h
         src/qps/evaluator/suchThatStrategies/ModifiesPStrategy.cpp
-        src/qps/evaluator/suchThatStrategies/ModifiesPStrategy.h)
+        src/qps/evaluator/suchThatStrategies/ModifiesPStrategy.h
+)
 
 # this makes the headers accessible for other projects which uses spa lib
 target_include_directories(spa PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

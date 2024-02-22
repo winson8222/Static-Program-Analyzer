@@ -16,8 +16,12 @@ std::shared_ptr<ResultTable> PatternStrategy::evaluateQuery(PKBReaderManager& pk
     std::shared_ptr<ResultTable> result = std::make_shared<ResultTable>();
 
     // Obtain readers from PKBReaderManager
-    this->patternReader = pkbReaderManager.getAssignPatternReader();//dummy function
+    this->assignPatternReader = pkbReaderManager.getAssignPatternReader();//dummy function
+    // initialize the assign reader needed to retrieve all the different pattern statements
     this->assignReader = pkbReaderManager.getAssignReader();
+
+
+
 
     const Token& patternFirstParam = parsingResult.getPatternClauseFirstParam();
     const Token& patternSecondParam = parsingResult.getPatternClauseSecondParam();
@@ -25,8 +29,6 @@ std::shared_ptr<ResultTable> PatternStrategy::evaluateQuery(PKBReaderManager& pk
     const string assignParamValue = patternAssignParam.getValue();
     bool partialMatch = patternSecondParam.getValue()[0] == '_' && patternSecondParam.getValue().length() > 1;
     string secondParamValue;
-
-
 
 
     // if the second param is an expressionSpec or a quoted IDENT, we need to retrieve the expression/identity within the quotes
@@ -83,25 +85,25 @@ void PatternStrategy::getMatchedStmtsWithVariable(const Token& firstParam, strin
         if (secondParamValue == "_") {
             patternNumbers = assignReader->getAllAssigns();
         } else {
-            patternNumbers = patternReader->getStatementNumbersWithPartialRHS(secondParamValue);
+            patternNumbers = assignPatternReader->getStatementNumbersWithPartialRHS(secondParamValue);
         }
     }
     else {
         if (secondParamValue == "_") {
             patternNumbers = assignReader->getAllAssigns();
         } else {
-            patternNumbers = patternReader->getStatementNumbersWithRHS(secondParamValue);
+            patternNumbers = assignPatternReader->getStatementNumbersWithRHS(secondParamValue);
         }
     }
-    fillAssignAndSynonymPairResult(patternNumbers, assignSynonym, firstParam, result);
+    fillStmtSynonymPairResult(patternNumbers, assignSynonym, firstParam, result);
 
 }
 
 // fill the result table with the left hand side variables and the corresponding statement numbers
-void PatternStrategy::fillAssignAndSynonymPairResult(const unordered_set<int>& patternNumbers, const string& assignSynonym, const Token& firstParam, const std::shared_ptr<ResultTable>& result) {
+void PatternStrategy::fillStmtSynonymPairResult(const unordered_set<int>& patternNumbers, const string& assignSynonym, const Token& firstParam, const std::shared_ptr<ResultTable>& result) {
     result->insertAllColumns({ firstParam.getValue(), assignSynonym });
     for (const int stmtNumber: patternNumbers) {
-        const string variable = patternReader->getLHS(stmtNumber);
+        const string variable = assignPatternReader->getLHS(stmtNumber);
         // need to refactor this
         const unordered_map<string, string> newRow = { { firstParam.getValue(), variable }, { assignSynonym, to_string(stmtNumber) } };
         result->insertNewRow(newRow);
@@ -115,20 +117,20 @@ void PatternStrategy::getStatementsByIdent(const string& colName, const Token& f
     string identityName = extractQuotedExpression(firstParam);
 
     // get All the statements that match the pattern based on the left hand side
-    const unordered_set<int>& leftMatchedAssignments = patternReader->getStatementNumbersWithLHS(identityName);
+    const unordered_set<int>& leftMatchedAssignments = assignPatternReader->getStatementNumbersWithLHS(identityName);
     unordered_set<int> rightMatchedAssignments;
     if (partialMatch) {
         // get All the statements that match the pattern based on the right hand side
         if (expressionValue == "_") {
             rightMatchedAssignments = assignReader->getAllAssigns();
         } else {
-            rightMatchedAssignments = patternReader->getStatementNumbersWithPartialRHS(expressionValue);
+            rightMatchedAssignments = assignPatternReader->getStatementNumbersWithPartialRHS(expressionValue);
         }
     } else {
         if (expressionValue == "_") {
             rightMatchedAssignments = assignReader->getAllAssigns();
         } else {
-            rightMatchedAssignments = patternReader->getStatementNumbersWithRHS(expressionValue);
+            rightMatchedAssignments = assignPatternReader->getStatementNumbersWithRHS(expressionValue);
         }
     }
 
@@ -158,7 +160,7 @@ void PatternStrategy::getAllStatementsByRHS(string patternSynonym , string expre
         rightMatchedAssignments = assignReader->getAllAssigns();
         // convert the result into a set of strings
     } else {
-        rightMatchedAssignments = patternReader->getStatementNumbersWithRHS(expressionValue);
+        rightMatchedAssignments = assignPatternReader->getStatementNumbersWithRHS(expressionValue);
         // combine with all the assignment statements
         rightMatchedAssignments = combineFoundStatements(assignReader->getAllAssigns(), rightMatchedAssignments);
     }

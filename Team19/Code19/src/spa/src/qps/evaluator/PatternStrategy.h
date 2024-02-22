@@ -8,8 +8,10 @@ using namespace std;
 
 class PatternStrategy : public QueryEvaluationStrategy {
 private:
-    std::shared_ptr<AssignPatternReader> patternReader;
+    std::shared_ptr<AssignPatternReader> assignPatternReader;
     std::shared_ptr<AssignReader> assignReader;
+
+
 
 
 public:
@@ -19,7 +21,7 @@ public:
     void getStatementsByIdent(const string& colName, const Token& firstParam,
                                string expressionValue, std::shared_ptr<ResultTable> result, bool partialMatch);
     void fillSingleColumnResult(const string& colName, const unordered_set<string>& follows, std::shared_ptr<ResultTable> result);
-    void fillAssignAndSynonymPairResult(const unordered_set<int>& patternNumbers, const string& assignSynonym, const Token& firstParam, const std::shared_ptr<ResultTable>& result);
+    void fillStmtSynonymPairResult(const unordered_set<int>& patternNumbers, const string& assignSynonym, const Token& firstParam, const std::shared_ptr<ResultTable>& result);
     void getAllStatementsByRHS(string patternSynonym , string expressionValue, std::shared_ptr<ResultTable> result);
 };
 
