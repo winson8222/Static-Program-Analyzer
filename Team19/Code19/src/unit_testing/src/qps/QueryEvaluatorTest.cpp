@@ -276,7 +276,7 @@ TEST_CASE("Check Evaluation result of a simple select s1 follows query synonyms"
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
     std::vector<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::vector<string>{ "1", "2" });
+    REQUIRE(res == std::vector<string>{ "2", "1" });
 
 }
 
@@ -318,7 +318,7 @@ TEST_CASE("Check Evaluation result of a simple select s2 follows query synonyms"
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
     std::vector<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::vector<string>{ "2", "3" });
+    REQUIRE(res == std::vector<string>{ "3", "2" });
 
 }
 
