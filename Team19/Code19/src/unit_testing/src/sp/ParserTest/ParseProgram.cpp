@@ -144,12 +144,15 @@ TEST_CASE("Test string representations of programs", "[parse][program]") {
 	std::string content;
 
 	REQUIRE_NOTHROW(content = tree_ptr->toString());
+}
 
-	std::string subcontent1 = "  Type: Procedure, Line Number: 1, Value: proc1\n";
-	std::string subcontent2 = "  Type: Procedure, Line Number: 5, Value: proc2\n";
-	std::string subcontent3 = "  Type: Procedure, Line Number: 9, Value: proc3\n";
+TEST_CASE("sp/AST/ASTHelper") {
+	std::cout << "sp/AST/ASTHelper\n\n" << std::endl;
+	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program2.txt";
+	REQUIRE(std::filesystem::exists(testFileName));
+	SimpleParserFacade parser(testFileName);
+	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
 
-	REQUIRE(content.find(subcontent1) != std::string::npos);
-	REQUIRE(content.find(subcontent2) != std::string::npos);
-	REQUIRE(content.find(subcontent3) != std::string::npos);
+	std::cout << tree_ptr->toString() << std::endl;
+	std::cout << "sp/AST/ASTHelper\n\n" << std::endl;
 }

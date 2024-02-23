@@ -5,6 +5,6 @@
 SimpleParserFacade::SimpleParserFacade(const std::string& filename) : parser(filename) {}
 
 std::shared_ptr<ASTNode> SimpleParserFacade::parse() {
-    return parser.parseProgram();
+    std::shared_ptr<ASTNode> tree_ptr = parser.parseProgram();
+    return tree_ptr;
 }
-// ai-gen end
