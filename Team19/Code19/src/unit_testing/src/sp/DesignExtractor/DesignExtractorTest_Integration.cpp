@@ -10,7 +10,7 @@
 #include <unordered_set>
 #include <vector>
 
-TEST_CASE("Test parser-extractor minor integration", "[DesignExtractor::Whiles]") {
+TEST_CASE("Test Parser-Visitor-Extractor-PKB integration") {
     const std::string testFileName = "../../../../../tests/sp/DesignExtractorTest/Integration.txt";
     REQUIRE(std::filesystem::exists(testFileName));
     SimpleParserFacade parser(testFileName);
