@@ -9,6 +9,9 @@
 #include "sp/Utility.h"
 #include "sp/AST/ASTHelper.h"
 
+
+static int PROGRAM_LINE_NUMBER = -1;
+
 // ai-gen start(gpt,2,e)
 // Prompt: https://platform.openai.com/playground/p/cJLjmmneCEs4z6ms7ZkBSxJB?model=gpt-4&mode=chat
 class SimpleParser {

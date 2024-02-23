@@ -3,6 +3,9 @@
 #include "ASTNode.h"
 #include "sp/Utility.h"
 
+/*
+* Note: to be set as default lines later for refactored implementations (M2)
+*/
 static int DEFAULT_LINE_NUMBER = 0;
 
 class ASTHelper {

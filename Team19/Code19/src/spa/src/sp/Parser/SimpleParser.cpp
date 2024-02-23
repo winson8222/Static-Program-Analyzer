@@ -34,7 +34,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseProgram() {
 		ASTNodeType::PROGRAMS, START_OF_PROGRAM, Utility::getASTNodeType(ASTNodeType::PROGRAMS)
 	);
 
-	root->lineNumber = -1;
+	root->lineNumber = PROGRAM_LINE_NUMBER;
 	int maxLineNumber = 0;
 	for (auto& procedure : procedures) {
 		int temp = ASTHelper::setLineNumbers(procedure, maxLineNumber);
