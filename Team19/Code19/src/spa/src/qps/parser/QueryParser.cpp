@@ -202,10 +202,6 @@ bool QueryParser::parseRelRef() {
         }
         return true;
     } else if (isUsesOrModifies()) {
-        parsingResult.setSuchThatClauseRelationship(currentToken());
-        if (!advanceToken()) {
-            return false;
-        }
         if(!parseUsesOrModifies()) {
             return false;
         }
@@ -237,7 +233,15 @@ bool QueryParser::isUsesOrModifies() {
 
 // Parses a 'Uses' or 'Modifies' relation in the query.
 // Ensures correct syntax and processes statement and entity references.
+// set the Token type for the such that clause relationship more specifically
 bool QueryParser::parseUsesOrModifies() {
+    // need to differentiate between usesS/UsesP and modifiesS/ModifiesP
+    Token suchThatToken = currentToken();
+
+
+    if (!advanceToken()) {
+        return false;
+    }
     if (match(TokenType::Lparenthesis)) {
         if (!advanceToken()) {
             return false;
@@ -250,12 +254,26 @@ bool QueryParser::parseUsesOrModifies() {
 
 
     if (parseStmtRef()) {
+        if (suchThatToken.getType() == TokenType::Uses) {
+            suchThatToken.setType(TokenType::UsesS);
+            parsingResult.setSuchThatClauseRelationship(suchThatToken);
+        } else {
+            suchThatToken.setType(TokenType::ModifiesS);
+            parsingResult.setSuchThatClauseRelationship(suchThatToken);
+        }
         parsingResult.setSuchThatClauseFirstParam(currentToken());
         if (!advanceToken()) {
             return false;
         }
 
     } else if (parseEntRef()) {
+        if (suchThatToken.getType() == TokenType::Uses) {
+            suchThatToken.setType(TokenType::UsesP);
+            parsingResult.setSuchThatClauseRelationship(suchThatToken);
+        } else {
+            suchThatToken.setType(TokenType::ModifiesP);
+            parsingResult.setSuchThatClauseRelationship(suchThatToken);
+        }
         parsingResult.setSuchThatClauseFirstParam(currentToken());
         if (!advanceToken()) {
             return false;

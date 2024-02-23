@@ -23,3 +23,8 @@ string Token::getValue() const {
 }
 
 // Implementations for subclasses would go here...
+
+
+void Token::setType(TokenType type) {
+    this->type = type;
+}

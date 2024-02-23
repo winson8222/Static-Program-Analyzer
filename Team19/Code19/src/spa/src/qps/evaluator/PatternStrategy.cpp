@@ -2,6 +2,7 @@
 #include "qps/parser/Token.h" // Include the Token header
 #include <regex>
 #include <iostream>
+#include <utility>
 
 using namespace std;
 
@@ -10,131 +11,160 @@ using namespace std;
 // where ent can be a wildcard, a quoted IDENT, or a synonym,
 // and expressionSpec is a wildcard, or a quoted expression or quoted expression surrounded by wildcards.
 
-unordered_set<string> PatternStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult) {
-    string requiredSynonym = parsingResult.getRequiredSynonym();
+std::shared_ptr<ResultTable> PatternStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult) {
 
-    unordered_set<string> result;
+    std::shared_ptr<ResultTable> result = std::make_shared<ResultTable>();
 
     // Obtain readers from PKBReaderManager
-    this->patternReader = pkbReaderManager.getAssignPatternReader();//dummy function
+    this->assignPatternReader = pkbReaderManager.getAssignPatternReader();//dummy function
+    // initialize the assign reader needed to retrieve all the different pattern statements
     this->assignReader = pkbReaderManager.getAssignReader();
+
+
+
 
     const Token& patternFirstParam = parsingResult.getPatternClauseFirstParam();
     const Token& patternSecondParam = parsingResult.getPatternClauseSecondParam();
-    bool partialMatch = patternSecondParam.getValue()[0] == '_';
+    const Token& patternAssignParam = parsingResult.getPatternClauseRelationship();
+    const string assignParamValue = patternAssignParam.getValue();
+    bool partialMatch = patternSecondParam.getValue()[0] == '_' && patternSecondParam.getValue().length() > 1;
+    string secondParamValue;
 
-    processLHS(patternFirstParam, result);
-    processRHS(patternSecondParam, result, partialMatch);
+
+    // if the second param is an expressionSpec or a quoted IDENT, we need to retrieve the expression/identity within the quotes
+    if (patternSecondParam.getType() == TokenType::ExpressionSpec || patternSecondParam.getType() == TokenType::QuoutIDENT){
+        if (patternSecondParam.getValue() == "_") {
+            secondParamValue = patternSecondParam.getValue();
+        } else {
+            secondParamValue = extractQuotedExpression(patternSecondParam);
+        }
+    } else {
+        secondParamValue = patternSecondParam.getValue();
+    }
+
+    // if the first param is a synonym, we need to retrieve all variables and its corresponding statement number based on the right hand side
+    if (patternFirstParam.getType() == TokenType::IDENT) {
+        getMatchedStmtsWithVariable(patternFirstParam,secondParamValue, assignParamValue, result, partialMatch);
+    } else if (patternFirstParam.getType() == TokenType::QuoutIDENT) {
+        getStatementsByIdent(assignParamValue, patternFirstParam, secondParamValue , result, partialMatch);
+    } else {
+        // if the first param is a wildcard, we need to retrieve all stmts that match the right hand side
+        getAllStatementsByRHS(assignParamValue, secondParamValue, result);
+    }
 
 
     return result;
 }
 
-/**
- * Processes the left-hand side (LHS) of the pattern.
- * @param firstParam - The first parameter of the pattern (LHS).
- * @param result - A set to store the processing results.
- */
-void PatternStrategy::processLHS(const Token& firstParam,  unordered_set<string>& result)
-{
-    // now there are 3 cases, either wildcard where we retrieve all assignments
-    // or quoted variable where we retrieve all assignment with this variable
-    // or synonym - not sure how to handle this yet
 
-    if (firstParam.getType() == TokenType::QuoutIDENT) {
 
-        //extract the Identifier from the token
-        regex pattern(R"(["](.*?)["])");
-        smatch matches;
-        string firstParamValue = firstParam.getValue();
-        std::regex_search(firstParamValue, matches, pattern);
-        string variable = matches[1].str();
 
-		const unordered_set<int>& assignments = patternReader->getStatementNumbersWithLHS(variable); //dummy function
-		fillResult(assignments, result);
-	}
-    else if (firstParam.getType() == TokenType::Wildcard) {
-		const unordered_set<int>& assignments = assignReader->getAllAssigns();
-        fillResult(assignments, result);
-		// can skip filling the result as all that matters is the RHS now
-	}
-    else if (firstParam.getType() == TokenType::IDENT) {
-		// not sure how to handle this yet
-	}
-}
 
-/**
- * Processes the right-hand side (RHS) of the pattern.
- * @param secondParam - The second parameter of the pattern (RHS).
- * @param result - A set to store the processing results.
- * @param partialMatch - Boolean flag indicating if partial matches should be considered.
- */
-void PatternStrategy::processRHS(const Token& secondParam, unordered_set<string>& result, bool partialMatch)
-{
-    // First extract the quoted expression from the token using regex.
-    // Now there are 3 cases, either wildcard where we retrieve all assignments
-    // Or quoted expression where we retrieve all RHS assignment 
-    // With this expression exactly or partially
 
-    if (secondParam.getType() == TokenType::ExpressionSpec) {
-
-        // if the second param is a wildcard, we need to combine the results with the LHS
-        if (secondParam.getValue() == "_") {
-            if (result.empty()) {
-                const unordered_set<int>& assignments = assignReader->getAllAssigns();
-                combineResults(assignments, result);
-                return;
-            }
-            return;
-            // no need to do anything if the set is not empty as the intersection will be LHS only
-        }
-
-        //extract the quoted expression from the token
-        regex pattern(R"(["](.*?)["])");
-        smatch matches;
-        string secondParamValue = secondParam.getValue();
-        std::regex_search(secondParamValue, matches, pattern);
-        string expressionValue = matches[1].str();
-
-        if (partialMatch) {
-			const unordered_set<int>& assignments = patternReader->getStatementNumbersWithPartialRHS(expressionValue); //dummy function
-
-            combineResults(assignments, result);
-        }
-        else {
-            const unordered_set<int>& assignments = patternReader->getStatementNumbersWithRHS(expressionValue); //dummy function
-
-            combineResults(assignments, result);
-        }
-        
-    }
-
-    
-    
-
-}
-
-/**
- * Combines the results of LHS and RHS processing.
- * @param newResult - The new results to be combined.
- * @param result - The existing set of results to be updated.
- */
-void PatternStrategy::combineResults(const unordered_set<int>& newResult, unordered_set<string>& result) {
-    for (auto it = result.begin(); it != result.end(); ) {
-        if (newResult.find(stoi(*it)) == newResult.end()) {
-            it = result.erase(it);
-        }
-        else {
-            ++it;
-        }
-    }
-}
-
-void PatternStrategy::fillResult(const unordered_set<int>& follows, unordered_set<std::string>& result) {
-    for (int statement : follows) {
-        result.insert(to_string(statement));
+// create a unordered map with the column name and the value and add to the table as a row
+void PatternStrategy::fillSingleColumnResult(const string& colName, const unordered_set<string>& valuesSet, std::shared_ptr<ResultTable> result) {
+    // if the column exists, throw an error
+    for (const string& value: valuesSet) {
+        // create an unordered map with the column name and the value and add to the table
+        std::unordered_map<std::string, std::string> row;
+        row[colName] = value;
+        result->insertNewRow(row);
     }
 }
 
 
 
+// get all the variables that match the pattern together with the corresponding statement numbers
+void PatternStrategy::getMatchedStmtsWithVariable(const Token& firstParam, string secondParamValue,string assignSynonym, std::shared_ptr<ResultTable> result, bool partialMatch) {
+    // if left side is a synonym, we need to retrieve all assignments stmt numbers based on the right hand side
+    // using those numbers we can retrieve the left hand side variables, create a column for the assignment synonym too
+    // then we can fill the result table with the left hand side
+    unordered_set<int> patternNumbers;
+    if(partialMatch) {
+        // fill the table with the statement numbers that match the right hand side pattern
+        if (secondParamValue == "_") {
+            patternNumbers = assignReader->getAllAssigns();
+        } else {
+            patternNumbers = assignPatternReader->getStatementNumbersWithPartialRHS(secondParamValue);
+        }
+    }
+    else {
+        if (secondParamValue == "_") {
+            patternNumbers = assignReader->getAllAssigns();
+        } else {
+            patternNumbers = assignPatternReader->getStatementNumbersWithRHS(secondParamValue);
+        }
+    }
+    fillStmtSynonymPairResult(patternNumbers, assignSynonym, firstParam, result);
+
+}
+
+// fill the result table with the left hand side variables and the corresponding statement numbers
+void PatternStrategy::fillStmtSynonymPairResult(const unordered_set<int>& patternNumbers, const string& assignSynonym, const Token& firstParam, const std::shared_ptr<ResultTable>& result) {
+    result->insertAllColumns({ firstParam.getValue(), assignSynonym });
+    for (const int stmtNumber: patternNumbers) {
+        const string variable = assignPatternReader->getLHS(stmtNumber);
+        // need to refactor this
+        const unordered_map<string, string> newRow = { { firstParam.getValue(), variable }, { assignSynonym, to_string(stmtNumber) } };
+        result->insertNewRow(newRow);
+    }
+}
+
+// fill the result table with the statement numbers that match the pattern
+void PatternStrategy::getStatementsByIdent(const string& colName, const Token& firstParam,
+                                              string expressionValue, std::shared_ptr<ResultTable> result, bool partialMatch) {
+    result -> insertAllColumns({ colName });
+    string identityName = extractQuotedExpression(firstParam);
+
+    // get All the statements that match the pattern based on the left hand side
+    const unordered_set<int>& leftMatchedAssignments = assignPatternReader->getStatementNumbersWithLHS(identityName);
+    unordered_set<int> rightMatchedAssignments;
+    if (partialMatch) {
+        // get All the statements that match the pattern based on the right hand side
+        if (expressionValue == "_") {
+            rightMatchedAssignments = assignReader->getAllAssigns();
+        } else {
+            rightMatchedAssignments = assignPatternReader->getStatementNumbersWithPartialRHS(expressionValue);
+        }
+    } else {
+        if (expressionValue == "_") {
+            rightMatchedAssignments = assignReader->getAllAssigns();
+        } else {
+            rightMatchedAssignments = assignPatternReader->getStatementNumbersWithRHS(expressionValue);
+        }
+    }
+
+    // PLEASE REPLACE THE FOLLOWING CODE WITH A FUNCTION CALL IN THE FUTURE
+    // combine the results of the left and right hand side
+    unordered_set<int> combinedStatements = combineFoundStatements(rightMatchedAssignments, leftMatchedAssignments);
+    // combine the results with All assignment statements
+    combinedStatements = combineFoundStatements(assignReader->getAllAssigns(), combinedStatements);
+    if (!combinedStatements.empty()) {
+        // if there are matches then set the result as a truth table because it is true
+        result->setAsTruthTable();
+    }
+    // convert combinedStatements into a set of strings
+    unordered_set<string> combinedStatementsInString;
+
+    // convert the result into a set of strings
+    convertIntSetToStringSet(combinedStatements, combinedStatementsInString);
+
+    // fill the result table with the statement numbers that match the pattern
+    fillSingleColumnResult(colName, combinedStatementsInString, result);
+}
+
+void PatternStrategy::getAllStatementsByRHS(string patternSynonym , string expressionValue, std::shared_ptr<ResultTable> result) {
+    result -> insertAllColumns({ patternSynonym });
+    unordered_set<int> rightMatchedAssignments;
+    if (expressionValue == "_") {
+        rightMatchedAssignments = assignReader->getAllAssigns();
+        // convert the result into a set of strings
+    } else {
+        rightMatchedAssignments = assignPatternReader->getStatementNumbersWithRHS(expressionValue);
+        // combine with all the assignment statements
+        rightMatchedAssignments = combineFoundStatements(assignReader->getAllAssigns(), rightMatchedAssignments);
+    }
+    unordered_set<string> combinedStatementsInString;
+    convertIntSetToStringSet(rightMatchedAssignments, combinedStatementsInString);
+    fillSingleColumnResult(patternSynonym, combinedStatementsInString, result);
+}

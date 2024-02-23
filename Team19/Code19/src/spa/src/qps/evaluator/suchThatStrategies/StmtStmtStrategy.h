@@ -17,17 +17,16 @@ public:
 
 
     virtual void processIntegerParams(const Token& firstParam, const Token& secondParam,
-                              unordered_set<string>& result) = 0;
+        std::shared_ptr<ResultTable> resultTable) = 0;
 
-    virtual void processFirstParam(const Token& secondParam, const string& variant,
-                                   unordered_set<string>& result) = 0;
+    virtual void processFirstParam(const Token& firstParam, const Token& secondParam, const string& variant,
+        std::shared_ptr<ResultTable> resultTable) = 0;
 
-    virtual void processSecondParam(const Token& firstParam, const string& variant,
-                            unordered_set<string>& result) = 0;
+    virtual void processSecondParam(const Token& firstParam, const Token& secondParam, const string& variant,
+        std::shared_ptr<ResultTable> resultTable) = 0;
 protected:
-    static bool isBothParamsWildcard(const Token& firstParam, const Token& secondParam);
     static bool isBothParamsInteger(const Token& firstParam, const Token& secondParam);
-    static void fillResult(const unordered_set<int>& follows, unordered_set<string>& result);
+
 
 
 };
