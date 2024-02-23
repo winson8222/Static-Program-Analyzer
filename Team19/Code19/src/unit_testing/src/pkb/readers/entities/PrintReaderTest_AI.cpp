@@ -1,7 +1,7 @@
 #include "catch.hpp"
 #include "pkb/PKBManager.h"
 
-TEST_CASE("PrintReader: Basic Functionality") {
+TEST_CASE("pkb/readers/entities/PrintReader") {
     auto pkbManager = std::make_shared<PKBManager>();
     auto printReader = pkbManager->getPKBReaderManager()->getPrintReader();
     auto printWriter = pkbManager->getPKBWriterManager()->getPrintWriter();

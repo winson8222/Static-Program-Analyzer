@@ -62,7 +62,7 @@ TEST_CASE("pkb/stores/FollowsStore") {
         REQUIRE(followsStore.getRelationshipsByValue(1).empty());
     }
 
-        // Test case for retrieving the successors in Follows relationships
+      // Test case for retrieving the successors in Follows relationships
     SECTION("getPostFollows") {
         // Initialize FollowsStore and add relationships
         FollowsStore followsStore;
