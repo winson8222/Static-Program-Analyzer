@@ -3,44 +3,35 @@
 
 int ASTHelper::setLineNumbers(std::shared_ptr<ASTNode> node, int lineNumber) {
 	auto currentType = node->type;
-
 	int currentLineNumber = lineNumber;
+	node->lineNumber = currentLineNumber;
+
+	// main case: statement list
 	if (currentType == ASTNodeType::STATEMENT_LIST) {
-		int size = node->children.size();
-		node->lineNumber = currentLineNumber;
-		for (int i = 0; i < size; i++) {
-			auto& child = node->children[i];
-			currentLineNumber++;
-			currentLineNumber = setLineNumbers(child, currentLineNumber);
-		}
-	} 
+		currentLineNumber = processStatementList(node, currentLineNumber);
+	} // edge case: IF is handled separately as it has 2 statementlist child
 	else if (currentType == ASTNodeType::IF_ELSE_THEN) {
 		currentLineNumber = lineNumber;
-		node->lineNumber = currentLineNumber;
 		setLineNumbers(node->children[0], currentLineNumber);
-		// process as with other cases
-
-		auto thenStatements = node->children[1];
-		thenStatements->lineNumber = lineNumber ;
-		for (int i = 0; i < thenStatements->children.size(); i++) {
-			auto& child = thenStatements->children[i];
-			currentLineNumber++;
-			currentLineNumber = setLineNumbers(child, currentLineNumber);
-		}
-
-		auto elseStatements = node->children[2];
-		elseStatements->lineNumber = lineNumber;
-		for (int i = 0; i < elseStatements->children.size(); i++) {
-			auto& child = elseStatements->children[i];
-			currentLineNumber++;
-			currentLineNumber = setLineNumbers(child, currentLineNumber);
-		}
-	}
+		currentLineNumber = processStatementList(node->children[1], currentLineNumber);
+		currentLineNumber = processStatementList(node->children[2], currentLineNumber);
+	} // WHILE case are assumed to be handled same way as others
 	else {
-		node->lineNumber = currentLineNumber;
 		for (auto& child : node->children) {
 			currentLineNumber = setLineNumbers(child, lineNumber);
 		}
 	}
 	return currentLineNumber;
 }
+
+
+int ASTHelper::processStatementList(std::shared_ptr<ASTNode> node, int currentLineNumber) {
+	int newLineNumber = currentLineNumber;
+	for (int i = 0; i < node->children.size(); i++) {
+		auto& child = node->children[i];
+		newLineNumber++;
+		newLineNumber = setLineNumbers(child, newLineNumber);
+	}
+	return newLineNumber;
+}
+

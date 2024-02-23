@@ -15,4 +15,6 @@ class ASTHelper {
 public:
 	static int setLineNumbers(
 		std::shared_ptr<ASTNode> node, int lineNumber);
+private:
+	static int processStatementList(std::shared_ptr<ASTNode> node, int currentLineNumber);
 };
