@@ -1,0 +1,9 @@
+procedure procedure {
+	while (read > 2) {
+		if = 3 + 1;
+	} 
+
+	while (write < 2) {
+		else = 2;
+	}
+}

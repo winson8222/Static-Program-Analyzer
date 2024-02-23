@@ -1,4 +1,4 @@
 procedure Example {
-   read x;
+   x = 1;
    read y;
    read z;}

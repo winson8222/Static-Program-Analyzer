@@ -7,12 +7,12 @@ TEST_CASE("pkb/stores/patterns/assign/AssignPatternStore") {
     std::string y = "y";
     std::string one = "1";
 
-  SECTION("contains") {
-    AssignPatternStore assignPatternStore;
-    assignPatternStore.addAssignPattern(1, "x", "1");
-    REQUIRE(assignPatternStore.contains(1));
-    REQUIRE_FALSE(assignPatternStore.contains(2));
-  }
+    SECTION("contains") {
+      AssignPatternStore assignPatternStore;
+      assignPatternStore.addAssignPattern(1, "x", "1");
+      REQUIRE(assignPatternStore.contains(1));
+      REQUIRE_FALSE(assignPatternStore.contains(2));
+    }
 
     SECTION("addAssignPattern") {
         AssignPatternStore assignPatternStore;
@@ -43,7 +43,7 @@ TEST_CASE("pkb/stores/patterns/assign/AssignPatternStore") {
         REQUIRE(p.second.empty());
     }
 
-  SECTION("getAllPatterns") {
+    SECTION("getAllPatterns") {
         AssignPatternStore assignPatternStore;
         assignPatternStore.addAssignPattern(1, "x", "1");
         assignPatternStore.addAssignPattern(2, "y", "2");
@@ -104,7 +104,7 @@ TEST_CASE("pkb/stores/patterns/assign/AssignPatternStore") {
         REQUIRE(assignPatternStore.getStatementNumbersWithLHSRHS("x", "123+3") == expected);
     }
 
-  SECTION("getStatementNumbersWithLHSPartialRHS") {
+    SECTION("getStatementNumbersWithLHSPartialRHS") {
         AssignPatternStore assignPatternStore;
         assignPatternStore.addAssignPattern(1, "x", "123+3");
         assignPatternStore.addAssignPattern(2, "x", "122+3");
