@@ -1,5 +1,5 @@
+#pragma once
 #include "SuchThatStrategy.h"
-using namespace std;
 
 class EntEntStrategy : public SuchThatStrategy {
 

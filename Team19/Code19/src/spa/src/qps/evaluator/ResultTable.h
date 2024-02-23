@@ -1,4 +1,4 @@
-#pragma
+#pragma once
 //
 // Created by Winson Zheng on 19/2/24.
 //

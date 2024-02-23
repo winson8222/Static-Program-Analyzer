@@ -39,22 +39,7 @@ std::vector<string> QueryEvaluator::evaluateQuery() {
     } else if (parsingResult.getSuchThatClauseRelationship().getType() == TokenType::ModifiesS) {
         addStrategy(std::make_unique<ModifiesStrategy>());
     }
-    /*
-    else if (parsingResult.getSuchThatClauseRelationship().getValue() == "Modifies") {
-		addStrategy(std::make_unique<ModifiesStrategy>());
-	}
-    else if (parsingResult.getSuchThatClauseRelationship().getValue() == "Uses") {
-        addStrategy(std::make_unique<UsesStrategy>());
-    }
-    else {
-        // if there is no clause, return all statements
-        
-        unordered_set<int> allStmts = pkbReaderManager->getStatementReader()->getAllStatements();
-        for (int stmt : allStmts) {
-            result.insert(to_string(stmt));
-        }
-        
-    }*/
+
 
     if (!parsingResult.getPatternClauseRelationship().getValue().empty()) {
         addStrategy(std::make_unique<PatternStrategy>());
@@ -203,15 +188,9 @@ std::vector<std::string> QueryEvaluator::getAllEntities(const std::string& requi
         }
     }
     else {
-        // Handle unknown type or throw an exception
+        //  throw an exception
+        throw "Unknown type of entity required";
     }
 
     return entities;
 }
-
-
-
-
-
-
-
