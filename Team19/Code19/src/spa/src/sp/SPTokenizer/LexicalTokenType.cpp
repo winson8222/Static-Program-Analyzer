@@ -84,6 +84,8 @@ const std::unordered_map<LexicalTokenType, std::string> LexicalTokenTypeMapper::
 
 const std::vector<std::pair<LexicalTokenType, std::string>> LexicalTokenTypeMapper::tokenToRegexPairs = {
 	// Keywords
+	{LexicalTokenType::SYMBOL_SEMICOLON, "^(;)"},
+
 	{LexicalTokenType::KEYWORD_IF, "^(if\\b)"},
 	{LexicalTokenType::KEYWORD_THEN, "^(then\\b)"},
 	{LexicalTokenType::KEYWORD_ELSE, "^(else\\b)"},
@@ -98,17 +100,18 @@ const std::vector<std::pair<LexicalTokenType, std::string>> LexicalTokenTypeMapp
 	{LexicalTokenType::SYMBOL_CLOSE_BRACE, "^(\\})"},
 	{LexicalTokenType::SYMBOL_OPEN_PAREN, "^(\\()"},
 	{LexicalTokenType::SYMBOL_CLOSE_PAREN, "^(\\))"},
-	{LexicalTokenType::SYMBOL_SEMICOLON, "^(;)"},
+	{LexicalTokenType::OPERATOR_IS_EQUAL, "^(==)"},
+	{LexicalTokenType::OPERATOR_LESS_EQUAL, "^(<=)"},
+	{LexicalTokenType::OPERATOR_GREATER_EQUAL, "^(>=)"},
+	{LexicalTokenType::OPERATOR_NOT_EQUAL, "^(!=)"},
+
 	{LexicalTokenType::OPERATOR_ASSIGN, "^(=)"},
 	{LexicalTokenType::OPERATOR_NOT, "^(!)"},
 	{LexicalTokenType::OPERATOR_AND, "^(&&)"},
 	{LexicalTokenType::OPERATOR_OR, "^(\\|\\|)"},
 	{LexicalTokenType::OPERATOR_GREATER, "^(>)"},
-	{LexicalTokenType::OPERATOR_GREATER_EQUAL, "^(>=)"},
 	{LexicalTokenType::OPERATOR_LESS, "^(<)"},
-	{LexicalTokenType::OPERATOR_LESS_EQUAL, "^(<=)"},
-	{LexicalTokenType::OPERATOR_IS_EQUAL, "^(==)"},
-	{LexicalTokenType::OPERATOR_NOT_EQUAL, "^(!=)"},
+	
 	{LexicalTokenType::OPERATOR_PLUS, "^(\\+)"},
 	{LexicalTokenType::OPERATOR_MINUS, "^(-)"},
 	{LexicalTokenType::OPERATOR_MULTIPLY, "^(\\*)"},
