@@ -28,9 +28,9 @@ TEST_CASE("commons/ShuntingYard") {
         REQUIRE(postfixExpression == "yz+t+");
     }
 
-  SECTION("convertToPostFix: v + x * y") {
-    std::string infixExpression = "v + x * y";
-    std::string postfixExpression = shuntingYard.convertToPostfix(infixExpression);
-    REQUIRE(postfixExpression == "vxy*+");
-  }
+    SECTION("convertToPostFix: v + x * y") {
+      std::string infixExpression = "v + x * y";
+      std::string postfixExpression = shuntingYard.convertToPostfix(infixExpression);
+      REQUIRE(postfixExpression == "vxy*+");
+    }
 }
