@@ -15,14 +15,14 @@ TEST_CASE("Testing PrintStmt::buildTree()", "[parse][print]") {
 
 
 	REQUIRE(printStatement->type == ASTNodeType::PRINT);
-	REQUIRE(printStatement->lineNumber == 2);
+	REQUIRE(printStatement->lineNumber == 1);
 	REQUIRE(printStatement->value == Utility::getASTNodeType(ASTNodeType::PRINT));
 
 	SECTION("Testing tree child node") {
 		const auto& children = printStatement->children;
 		REQUIRE(children.size() == 1);
 		REQUIRE(children[0]->type == ASTNodeType::VARIABLE);
-		REQUIRE(children[0]->lineNumber == 2);
+		REQUIRE(children[0]->lineNumber == 1);
 		REQUIRE(children[0]->value == "read");
 	}
 }

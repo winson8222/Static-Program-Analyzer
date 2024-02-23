@@ -44,9 +44,8 @@ TEST_CASE("sp/DesignExtractor/Extractor/AssignExtractor") {
 	SECTION("Test assign extractor methods") {
 		fde.extractAll();
 		std::shared_ptr<PKBReaderManager> pkbReaderManager = pkb->getPKBReaderManager();
-
-		std::unordered_set<int> expectedAssigns = { 2, 3, 4 };
-		std::unordered_set<int> expectedStmts = { 2, 3, 4 };
+		std::unordered_set<int> expectedAssigns = { 1, 2, 3 };
+		std::unordered_set<int> expectedStmts = { 1, 2, 3 };
 		REQUIRE(pkbReaderManager->getAssignReader()->getAllAssigns() == expectedAssigns);
 		REQUIRE(pkbReaderManager->getStatementReader()->getAllStatements() == expectedStmts);
 		std::unordered_set<std::string> expectedVars = { "x", "y", "z" };
