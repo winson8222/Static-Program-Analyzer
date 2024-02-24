@@ -461,7 +461,7 @@ bool QueryParser::parsePatternClause() {
 // Handles different forms of expressions like quoted constants, wildcards, or quoted expressions.
 bool QueryParser::parseExpressionSpec() {
 
-    if (match(TokenType::QuoutConst) || match(TokenType::QuoutIDENT)) {
+    if (match(TokenType::QuoutConst) || match(TokenType::QuoutIDENT) || match(TokenType::ExpressionSpec)) {
         return true;
     } else if (match(TokenType::Wildcard)) {
         if (peekNextToken(TokenType::Rparenthesis)) {
@@ -470,7 +470,11 @@ bool QueryParser::parseExpressionSpec() {
         if (!advanceToken()) {
             return false;
         }
-        if (!match(TokenType::QuoutIDENT) && !match(TokenType::QuoutConst)) {
+
+
+
+
+        if (!match(TokenType::QuoutIDENT) && !match(TokenType::QuoutConst) && !match(TokenType::ExpressionSpec)) {
             parsingResult.setErrorMessage(getGrammarError());
             return false;
         }
