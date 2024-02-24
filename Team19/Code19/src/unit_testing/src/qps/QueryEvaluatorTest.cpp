@@ -5,33 +5,97 @@
 
 using namespace std;
 // Test for Parsing Result assuming that the query is valid
-//TEST_CASE("Check Evaluation result of a simple select all query") {
-//    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-//    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
-//    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
-//
-//    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
-//    statementWriter->insertStatement(1);
-//    statementWriter->insertStatement(2);
-//    statementWriter->insertStatement(3);
-//
-//
-//    std::vector<Token> tokens = {
-//            Token(TokenType::DesignEntity, "stmt"),
-//            Token(TokenType::IDENT, "s"),
-//            Token(TokenType::Semicolon, ";"),
-//            Token(TokenType::SelectKeyword, "Select"),
-//            Token(TokenType::IDENT, "s"),
-//
-//    };
-//
-//    QueryParser parser(tokens);
-//    auto parsingResult = parser.parse();
-//    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-//    std::vector<string> res = evaluator.evaluateQuery();
-//    REQUIRE((res == std::vector<string>{ "3", "2", "1" } || res == std::vector<string>{"1", "2", "3"}));
-//
-//}
+TEST_CASE("Check Evaluation result of a simple select all statements query") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "stmt"),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "s"),
+
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ "3", "2", "1" });
+
+}
+
+TEST_CASE("Check Evaluation result of a simple select all variables query") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<VariableWriter> variableWriter = pkbWriterManager->getVariableWriter();
+    string x = "x";
+    string y = "y";
+    string z = "z";
+    variableWriter->insertVariable(x);
+    variableWriter->insertVariable(y);
+    variableWriter->insertVariable(z);
+
+
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "variable"),
+            Token(TokenType::IDENT, "v"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "v"),
+
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ "x", "y", "z" });
+
+}
+
+TEST_CASE("Check Evaluation result of a simple select all whiles query") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<WhileWriter> whileWriter = pkbWriterManager->getWhileWriter();
+    string x = "x";
+    string y = "y";
+    string z = "z";
+    whileWriter->insertWhile(1);
+    whileWriter->insertWhile(2);
+    whileWriter->insertWhile(3);
+
+
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "while"),
+            Token(TokenType::IDENT, "w"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "w"),
+
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ "3", "2", "1" });
+
+}
 
 
 
