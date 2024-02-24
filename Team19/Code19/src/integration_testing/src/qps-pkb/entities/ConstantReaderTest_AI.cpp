@@ -26,7 +26,7 @@ TEST_CASE("qps/QueryProcessingSubsystem: ConstantReader Integration Test") {
 
 
     SECTION("Test for constants in expressions via QPS") {
-        std::string queryForConstInExpressions = R"(assign a; pattern a(_, _"1 + 2"_))";
+        std::string queryForConstInExpressions = R"(assign a; pattern a(_, _"1"_))";
         auto resultsForConstInExpressions = Utils::getResultsFromQuery(queryForConstInExpressions, pkbReaderManager);
         std::unordered_set<std::string> expectedResultsForConstInExpressions;
         REQUIRE(resultsForConstInExpressions == expectedResultsForConstInExpressions);

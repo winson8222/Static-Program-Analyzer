@@ -1,5 +1,0 @@
-1 - comment
-variable v;
-Select v
-constant
-5000
