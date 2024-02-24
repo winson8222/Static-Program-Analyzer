@@ -1,13 +1,14 @@
 #include "QueryEvaluator.h"
 #include "PatternStrategy.h"
 #include "qps/evaluator/ResultTable.h"
-
+#include <variant>
 
 using namespace std;
 
 QueryEvaluator::QueryEvaluator(std::shared_ptr<PKBReaderManager> pkbReaderManager, ParsingResult& parsingResult)
     : pkbReaderManager(pkbReaderManager), parsingResult(parsingResult) {
     initializeStrategyFactory();
+    initializeEntityFactory();
 }
 
 void QueryEvaluator::addStrategy(std::unique_ptr<QueryEvaluationStrategy> strategy) {
@@ -67,67 +68,27 @@ std::vector<string> QueryEvaluator::evaluateQuery() {
 std::vector<std::string> QueryEvaluator::getAllEntities(const std::string& requiredType) {
     std::vector<std::string> entities;
 
-    if (requiredType == "assign") {
-        auto assignEntities = pkbReaderManager->getAssignReader()->getAllEntities();
-        for (int stmtNum : assignEntities) {
-            entities.push_back(std::to_string(stmtNum));
+    auto it = entityFactory.find(requiredType);
+    if (it != entityFactory.end()) {
+        auto variantEntities = it->second();
+        if (std::holds_alternative<std::unordered_set<int>>(variantEntities)) {
+            for (int entity : std::get<std::unordered_set<int>>(variantEntities)) {
+                entities.push_back(std::to_string(entity));
+            }
         }
-    }
-    else if (requiredType == "call") {
-        auto callEntities = pkbReaderManager->getCallReader()->getAllEntities();
-        for (int stmtNum : callEntities) {
-            entities.push_back(std::to_string(stmtNum));
-        }
-    }
-    else if (requiredType == "constant") {
-        auto constantEntities = pkbReaderManager->getConstantReader()->getAllEntities();
-        for (int constant : constantEntities) {
-            entities.push_back(std::to_string(constant));
-        }
-    }
-    else if (requiredType == "if") {
-        auto ifEntities = pkbReaderManager->getIfReader()->getAllEntities();
-        for (int stmtNum : ifEntities) {
-            entities.push_back(std::to_string(stmtNum));
-        }
-    }
-    else if (requiredType == "print") {
-        auto printEntities = pkbReaderManager->getPrintReader()->getAllEntities();
-        for (int stmtNum : printEntities) {
-            entities.push_back(std::to_string(stmtNum));
-        }
-    }
-    else if (requiredType == "read") {
-        auto readEntities = pkbReaderManager->getReadReader()->getAllEntities();
-        for (int stmtNum : readEntities) {
-            entities.push_back(std::to_string(stmtNum));
-        }
-    }
-    else if (requiredType == "stmt") {
-        auto statementEntities = pkbReaderManager->getStatementReader()->getAllEntities();
-        for (int stmtNum : statementEntities) {
-            entities.push_back(std::to_string(stmtNum));
-        }
-    }
-    else if (requiredType == "variable") {
-        auto variableEntities = pkbReaderManager->getVariableReader()->getAllEntities();
-        for (const std::string& variable : variableEntities) {
-            entities.push_back(variable);
-        }
-    }
-    else if (requiredType == "while") {
-        auto whileEntities = pkbReaderManager->getWhileReader()->getAllEntities();
-        for (int stmtNum : whileEntities) {
-            entities.push_back(std::to_string(stmtNum));
+        else {
+            for (string entity : std::get<std::unordered_set<string>>(variantEntities)) {
+                entities.push_back(entity);
+            }
         }
     }
     else {
-        //  throw an exception
         throw "Unknown type of entity required";
     }
 
     return entities;
 }
+
 
 
 // Initialize the strategy factory map
@@ -142,3 +103,40 @@ void QueryEvaluator::initializeStrategyFactory() {
         // Add additional strategies here as needed
     };
 }
+
+void QueryEvaluator::initializeEntityFactory() {
+    entityFactory = {
+        // Entities returning std::vector<int>
+        {"assign", [&]() {
+            return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getAssignReader()->getAllEntities());
+        }},
+        {"call", [&]() {
+            return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getCallReader()->getAllEntities());
+        }},
+        {"constant", [&]() {
+            return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getConstantReader()->getAllEntities());
+        }},
+        {"if", [&]() {
+            return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getIfReader()->getAllEntities());
+        }},
+        {"print", [&]() {
+            return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getPrintReader()->getAllEntities());
+        }},
+        {"read", [&]() {
+            return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getReadReader()->getAllEntities());
+        }},
+        {"stmt", [&]() {
+            return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getStatementReader()->getAllEntities());
+        }},
+        {"while", [&]() {
+            return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getWhileReader()->getAllEntities());
+        }},
+
+        // Entities returning unordered_set<string>
+        {"variable", [&]() {
+            return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getVariableReader()->getAllEntities());
+        }}
+        // Add additional entity types here as needed
+    };
+}
+
