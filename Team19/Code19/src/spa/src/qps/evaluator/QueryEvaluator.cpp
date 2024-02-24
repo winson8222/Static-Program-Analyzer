@@ -1,8 +1,4 @@
 #include "QueryEvaluator.h"
-#include "qps/evaluator/suchThatStrategies/FollowsStrategy.h" // Include FollowsStrategy
-#include "qps/evaluator/suchThatStrategies/ParentStrategy.h" // Include ParentStrategy
-#include "qps/evaluator/suchThatStrategies/ModifiesStrategy.h" // Include ModifiesStrategy
-#include "qps/evaluator/suchThatStrategies/UsesStrategy.h" // Include UsesStrategy
 #include "PatternStrategy.h"
 #include "qps/evaluator/ResultTable.h"
 
@@ -10,15 +6,19 @@
 using namespace std;
 
 QueryEvaluator::QueryEvaluator(std::shared_ptr<PKBReaderManager> pkbReaderManager, ParsingResult& parsingResult)
-    : pkbReaderManager(pkbReaderManager), parsingResult(parsingResult) {}
+    : pkbReaderManager(pkbReaderManager), parsingResult(parsingResult) {
+    initializeStrategyFactory();
+}
 
 void QueryEvaluator::addStrategy(std::unique_ptr<QueryEvaluationStrategy> strategy) {
     strategies.push_back(std::move(strategy));
 }
 
 std::vector<string> QueryEvaluator::evaluateQuery() {
+
     // create result table
     result = std::make_shared<ResultTable>();
+
     // if query is not valid, return error message and stop evaluation
     if (!parsingResult.isQueryValid()) {
         // convert error message to vector<string>
@@ -26,21 +26,15 @@ std::vector<string> QueryEvaluator::evaluateQuery() {
         error.push_back(parsingResult.getErrorMessage());
         return error;
     }
-    // we should convert this to check token types
-    if (parsingResult.getSuchThatClauseRelationship().getValue() == "Follows" || parsingResult.getSuchThatClauseRelationship().getValue() == "Follows*") {
-        addStrategy(std::make_unique<FollowsStrategy>());
-    }
     
-    else if (parsingResult.getSuchThatClauseRelationship().getValue() == "Parent" || parsingResult.getSuchThatClauseRelationship().getValue() == "Parent*") {
-        addStrategy(std::make_unique<ParentStrategy>());
-    }
-    else if (parsingResult.getSuchThatClauseRelationship().getType() == TokenType::UsesS) {
-        addStrategy(std::make_unique<UsesStrategy>());
-    } else if (parsingResult.getSuchThatClauseRelationship().getType() == TokenType::ModifiesS) {
-        addStrategy(std::make_unique<ModifiesStrategy>());
+    // Handle SuchThatClause relationships
+    std::string suchThatRelationship = parsingResult.getSuchThatClauseRelationship().getValue();
+    auto it = strategyFactory.find(suchThatRelationship);
+    if (it != strategyFactory.end()) {
+        addStrategy(it->second());
     }
 
-
+    // Handle PatternClause
     if (!parsingResult.getPatternClauseRelationship().getValue().empty()) {
         addStrategy(std::make_unique<PatternStrategy>());
     }
@@ -134,3 +128,5 @@ std::vector<std::string> QueryEvaluator::getAllEntities(const std::string& requi
 
     return entities;
 }
+
+
