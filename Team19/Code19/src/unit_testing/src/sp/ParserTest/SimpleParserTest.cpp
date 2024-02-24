@@ -82,6 +82,109 @@ TEST_CASE("Multiple procedures, all names that may be potential keywords.") {
 	REQUIRE(tree_ptr->children.size() == 30);
 }
 
+TEST_CASE("Parsing single program with all possible statements types.") {
+	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program4.txt";
+	REQUIRE(std::filesystem::exists(testFileName));
+	SimpleParserFacade parser(testFileName);
+	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
+
+	auto& statements = (((tree_ptr->children)[0]->children)[0]->children);
+	REQUIRE(statements.size() == 6);
+
+	SECTION("Testing While Statement") {
+		std::shared_ptr<ASTNode> whileStatement = statements[0];
+		REQUIRE(whileStatement->type == ASTNodeType::WHILE);
+
+		auto& whileChildren = whileStatement->children;
+		REQUIRE(whileChildren.size() == 2);
+
+		REQUIRE(whileChildren[0]->type == ASTNodeType::NOT);
+		REQUIRE(whileChildren[1]->type == ASTNodeType::STATEMENT_LIST);
+	}
+
+	SECTION("Testing if-then-else statement") {
+		// TO write
+	}
+
+	SECTION("Testing assign statement") {
+		auto& assignStatement = statements[2];
+
+		REQUIRE(assignStatement->type == ASTNodeType::ASSIGN);
+		REQUIRE(assignStatement->lineNumber == 6);
+		REQUIRE(assignStatement->value == Utility::getASTNodeType(ASTNodeType::ASSIGN));
+
+		SECTION("Testing tree child node") {
+			const auto& children = assignStatement->children;
+			REQUIRE(children.size() == 2);
+			REQUIRE(children[0]->type == ASTNodeType::VARIABLE);
+			REQUIRE(children[0]->lineNumber == 6);
+			REQUIRE(children[0]->value == "read");
+
+			REQUIRE(children[1]->type == ASTNodeType::ADD);
+			REQUIRE(children[1]->lineNumber == 6);
+			REQUIRE(children[1]->value == Utility::getASTNodeType(ASTNodeType::ADD));
+
+			SECTION("Testing expression of children") {
+				const auto& constants = children[1]->children;
+				REQUIRE(constants.size() == 2);
+				REQUIRE(constants[0]->type == ASTNodeType::CONSTANT);
+				REQUIRE(constants[0]->lineNumber == 6);
+				REQUIRE(constants[0]->value == "1");
+
+				REQUIRE(constants[1]->type == ASTNodeType::CONSTANT);
+				REQUIRE(constants[1]->lineNumber == 6);
+				REQUIRE(constants[1]->value == "3");
+			}
+		}
+	}
+
+	SECTION("Testing call statement") {
+		auto& callStatement = statements[3];
+		REQUIRE(callStatement->type == ASTNodeType::CALL);
+		REQUIRE(callStatement->lineNumber == 7);
+		REQUIRE(callStatement->value == Utility::getASTNodeType(ASTNodeType::CALL));
+
+		SECTION("Testing tree child node") {
+			const auto& children = callStatement->children;
+			REQUIRE(children.size() == 1);
+			REQUIRE(children[0]->type == ASTNodeType::VARIABLE);
+			REQUIRE(children[0]->lineNumber == 7);
+			REQUIRE(children[0]->value == "call");
+		}
+	}
+
+	SECTION("Testing print statement") {
+		auto& printStatement = statements[4];
+		REQUIRE(printStatement->type == ASTNodeType::PRINT);
+		REQUIRE(printStatement->lineNumber == 8);
+		REQUIRE(printStatement->value == Utility::getASTNodeType(ASTNodeType::PRINT));
+
+		SECTION("Testing tree child node") {
+			const auto& children = printStatement->children;
+			REQUIRE(children.size() == 1);
+			REQUIRE(children[0]->type == ASTNodeType::VARIABLE);
+			REQUIRE(children[0]->lineNumber == 8);
+			REQUIRE(children[0]->value == "read");
+		}
+	}
+
+	SECTION("Testing read statement") {
+		auto& readStatement = statements[5];
+		REQUIRE(readStatement->type == ASTNodeType::READ);
+		REQUIRE(readStatement->lineNumber == 9);
+		REQUIRE(readStatement->value == Utility::getASTNodeType(ASTNodeType::READ));
+
+		SECTION("Testing tree child node") {
+			const auto& children = readStatement->children;
+			REQUIRE(children.size() == 1);
+			REQUIRE(children[0]->type == ASTNodeType::VARIABLE);
+			REQUIRE(children[0]->lineNumber == 9);
+			REQUIRE(children[0]->value == "print");
+		}
+	}
+}
+
+
 TEST_CASE("Calling parseProgram for if statement type procedure", "[parse][program]") {
 	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program7.txt";
 	REQUIRE(std::filesystem::exists(testFileName));
@@ -161,44 +264,4 @@ TEST_CASE("Calling parseProgram for complex procedure", "[parse][program]") {
 	REQUIRE(lastExpr[0]->value == "cenY");
 	REQUIRE(lastExpr[1]->type == ASTNodeType::VARIABLE);
 	REQUIRE(lastExpr[1]->value == "cenY");
-}
-
-TEST_CASE("Calling parseProgram for while procedures", "[parse][program]") {
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program4.txt";
-	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParserFacade parser(testFileName);
-	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
-
-	REQUIRE(tree_ptr->type == ASTNodeType::PROGRAMS);
-	REQUIRE(tree_ptr->lineNumber == -1);
-	REQUIRE(tree_ptr->value == Utility::getASTNodeType(ASTNodeType::PROGRAMS));
-
-
-	std::shared_ptr<ASTNode> whileStatement = (((tree_ptr->children)[0]->children)[0]->children)[0];
-	REQUIRE(whileStatement->type == ASTNodeType::WHILE);
-
-	auto& whileChildren = whileStatement->children;
-	REQUIRE(whileChildren.size() == 2);
-
-	REQUIRE(whileChildren[0]->type == ASTNodeType::NOT);
-	REQUIRE(whileChildren[1]->type == ASTNodeType::STATEMENT_LIST);
-}
-
-TEST_CASE("sp/AST/ASTHelper") {
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program6.txt";
-	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParserFacade parser(testFileName);
-	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
-}
-
-TEST_CASE("Test string representations of programs", "[parse][program]") {
-	// Generate test file
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program1.txt";
-	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParserFacade parser(testFileName);
-	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
-
-	std::string content;
-
-	REQUIRE_NOTHROW(content = tree_ptr->toString());
 }

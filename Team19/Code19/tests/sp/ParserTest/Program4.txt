@@ -3,7 +3,15 @@ procedure procedure {
 		if = 3 + 1;
 	} 
 
-	while (write < 2) {
+	if (then < 2) then {
 		else = 2;
+	} else {
+		while = 3;
 	}
+
+	read = 1 + 3;
+
+	call call;
+	print read;
+	read print;
 }

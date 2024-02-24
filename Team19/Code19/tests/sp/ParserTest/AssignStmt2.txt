@@ -1,3 +1,0 @@
-procedure assignmentWithExpressions {
-	read = 1 + 3;
-}
