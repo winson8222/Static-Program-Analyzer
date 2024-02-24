@@ -8,7 +8,11 @@
 #include <utility>
 #include <vector>
 
-
+/*
+* Plan for later implementation:
+* This is a wrapper for an AST node. It is used to store the root of the AST,
+* and to provide a way to access the root.
+*/
 class AST {
 public:
     AST(std::shared_ptr<ASTNode> root);

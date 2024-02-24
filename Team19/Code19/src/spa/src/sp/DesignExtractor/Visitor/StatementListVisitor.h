@@ -3,7 +3,7 @@
 #include "sp/DesignExtractor/Visitor/IVisitor.h"
 #include "sp/DesignExtractor/Visitor/VisitoryFactory.h"
 #include "sp/DesignExtractor/Extractor/FollowsExtractor.h"
-#include "sp/Utility.h"
+#include "sp/AST/ASTUtility.h"
 #include <stdexcept>
 #include <iostream>
 #include <vector>

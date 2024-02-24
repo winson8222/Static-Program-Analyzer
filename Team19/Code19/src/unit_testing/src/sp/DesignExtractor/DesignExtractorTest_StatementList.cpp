@@ -1,7 +1,7 @@
 #include "sp/DesignExtractor/DesignExtractorFacade.h"
 #include "sp/AST/ASTNode.h"
 #include "pkb/PKBManager.h"
-#include "sp/Utility.h"
+#include "sp/AST/ASTUtility.h"
 #include "catch.hpp"
 #include <fstream>
 #include <iostream>
