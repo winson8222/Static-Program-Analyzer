@@ -1,5 +1,0 @@
-procedure procedure {
-	while ((!(read != 11)) && (!(read == while))) {
-		print = 0;
-	}
-}
