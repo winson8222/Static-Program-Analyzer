@@ -4,7 +4,7 @@
 
 #include <unordered_set>
 #include <string>
-#include "../Parser/ParsingResult.h" // Include your ParsingResult header
+#include "../parser/ParsingResult.h" // Include your ParsingResult header
 #include "../../pkb/PKBReaderManager.h" // Include your PKBReader header
 #include "qps/evaluator/ResultTable.h"
 
