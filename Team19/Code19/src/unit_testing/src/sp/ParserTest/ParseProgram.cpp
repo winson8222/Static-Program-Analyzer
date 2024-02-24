@@ -68,6 +68,20 @@ TEST_CASE("Single procedure, all possible conditional expressions in while state
 	}
 }
 
+TEST_CASE("Multiple procedures, all names that may be potential keywords.") {
+	// Generate test file
+	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program3.txt";
+	REQUIRE(std::filesystem::exists(testFileName));
+	SimpleParserFacade parser(testFileName);
+	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
+
+	REQUIRE(tree_ptr->type == ASTNodeType::PROGRAMS);
+	REQUIRE(tree_ptr->lineNumber == -1);
+	REQUIRE(tree_ptr->value == Utility::getASTNodeType(ASTNodeType::PROGRAMS));
+
+	REQUIRE(tree_ptr->children.size() == 30);
+}
+
 TEST_CASE("Calling parseProgram for if statement type procedure", "[parse][program]") {
 	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program7.txt";
 	REQUIRE(std::filesystem::exists(testFileName));
@@ -91,7 +105,7 @@ TEST_CASE("Calling parseProgram for if statement type procedure", "[parse][progr
 }
 
 TEST_CASE("Calling parseProgram for complex procedure", "[parse][program]") {
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program3.txt";
+	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program5.txt";
 	REQUIRE(std::filesystem::exists(testFileName));
 	SimpleParserFacade parser(testFileName);
 	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
@@ -168,20 +182,6 @@ TEST_CASE("Calling parseProgram for while procedures", "[parse][program]") {
 
 	REQUIRE(whileChildren[0]->type == ASTNodeType::NOT);
 	REQUIRE(whileChildren[1]->type == ASTNodeType::STATEMENT_LIST);
-}
-
-TEST_CASE("Test special procedure names", "[parse][program]") {
-	// Generate test file
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program5.txt";
-	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParserFacade parser(testFileName);
-	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
-
-	REQUIRE(tree_ptr->type == ASTNodeType::PROGRAMS);
-	REQUIRE(tree_ptr->lineNumber == -1);
-	REQUIRE(tree_ptr->value == Utility::getASTNodeType(ASTNodeType::PROGRAMS));
-
-	REQUIRE(tree_ptr->children.size() == 28);
 }
 
 TEST_CASE("sp/AST/ASTHelper") {
