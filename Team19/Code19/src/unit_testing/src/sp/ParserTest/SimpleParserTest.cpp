@@ -3,7 +3,7 @@
 #include <iostream>
 #include <filesystem>
 
-TEST_CASE("Program parsing throws an error for missing curly brace", "[parse][program]") {
+TEST_CASE("Program parsing throws an error for missing curly brace after procedure end.") {
 	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program_Invalid1.txt";
 	REQUIRE(std::filesystem::exists(testFileName));
 	SimpleParserFacade parser(testFileName);
@@ -12,7 +12,7 @@ TEST_CASE("Program parsing throws an error for missing curly brace", "[parse][pr
 	CHECK_THROWS_AS(parser.parse(), std::runtime_error);
 }
 
-TEST_CASE("Program parsing throws an error for missing parenthesis around !(cond_expr) with following && operator.", "[parse][program]") {
+TEST_CASE("Program parsing throws an error for missing closing curly brace.") {
 	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program_Invalid2.txt";
 	REQUIRE(std::filesystem::exists(testFileName));
 	SimpleParserFacade parser(testFileName);
@@ -20,6 +20,34 @@ TEST_CASE("Program parsing throws an error for missing parenthesis around !(cond
 	// For this test, we expect parsing to terminate due to erroneous input.
 	CHECK_THROWS_AS(parser.parse(), std::runtime_error);
 }
+
+TEST_CASE("Program parsing throws an error for missing curly braces.") {
+	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program_Invalid3.txt";
+	REQUIRE(std::filesystem::exists(testFileName));
+	SimpleParserFacade parser(testFileName);
+
+	// For this test, we expect parsing to terminate due to erroneous input.
+	CHECK_THROWS_AS(parser.parse(), std::runtime_error);
+}
+
+TEST_CASE("Program parsing throws an error for extra variable in print statement") {
+	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program_Invalid4.txt";
+	REQUIRE(std::filesystem::exists(testFileName));
+	SimpleParserFacade parser(testFileName);
+
+	// For this test, we expect parsing to terminate due to erroneous input.
+	CHECK_THROWS_AS(parser.parse(), std::runtime_error);
+}
+
+TEST_CASE("Program parsing throws an error for missing parenthesis around !(cond_expr) with following && operator.") {
+	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program_Invalid5.txt";
+	REQUIRE(std::filesystem::exists(testFileName));
+	SimpleParserFacade parser(testFileName);
+
+	// For this test, we expect parsing to terminate due to erroneous input.
+	CHECK_THROWS_AS(parser.parse(), std::runtime_error);
+}
+
 
 TEST_CASE("Single procedure, with read statement") {
 	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program1.txt";
