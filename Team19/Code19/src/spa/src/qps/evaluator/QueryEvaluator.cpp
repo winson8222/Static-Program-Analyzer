@@ -1,110 +1,50 @@
 #include "QueryEvaluator.h"
-#include "qps/evaluator/suchThatStrategies/FollowsStrategy.h" // Include FollowsStrategy
-#include "qps/evaluator/suchThatStrategies/ParentStrategy.h" // Include ParentStrategy
-#include "qps/evaluator/suchThatStrategies/ModifiesStrategy.h" // Include ModifiesStrategy
-#include "qps/evaluator/suchThatStrategies/UsesStrategy.h" // Include UsesStrategy
 #include "PatternStrategy.h"
 #include "qps/evaluator/ResultTable.h"
-
+#include <variant>
 
 using namespace std;
 
+// Constructor for QueryEvaluator class.
+// Initializes the strategy and entity factories and sets up the PKB reader manager and parsing result.
 QueryEvaluator::QueryEvaluator(std::shared_ptr<PKBReaderManager> pkbReaderManager, ParsingResult& parsingResult)
-    : pkbReaderManager(pkbReaderManager), parsingResult(parsingResult) {}
+    : pkbReaderManager(pkbReaderManager), parsingResult(parsingResult) {
+    initializeStrategyFactory();
+    initializeEntityFactory();
+}
 
+// Adds a new query evaluation strategy to the list of strategies.
 void QueryEvaluator::addStrategy(std::unique_ptr<QueryEvaluationStrategy> strategy) {
     strategies.push_back(std::move(strategy));
 }
 
+// Evaluates a query based on the strategies added.
+// It returns a vector of strings representing the query results.
 std::vector<string> QueryEvaluator::evaluateQuery() {
-    // create result table
+
+    // Create a new result table for storing query results.
     result = std::make_shared<ResultTable>();
-    // if query is not valid, return error message and stop evaluation
+
+    // Check if the query is valid. If not, return an error message.
     if (!parsingResult.isQueryValid()) {
-        // convert error message to vector<string>
         vector<string> error;
         error.push_back(parsingResult.getErrorMessage());
         return error;
     }
-    // we should convert this to check token types
-    if (parsingResult.getSuchThatClauseRelationship().getValue() == "Follows" || parsingResult.getSuchThatClauseRelationship().getValue() == "Follows*") {
-        addStrategy(std::make_unique<FollowsStrategy>());
-    }
     
-    else if (parsingResult.getSuchThatClauseRelationship().getValue() == "Parent" || parsingResult.getSuchThatClauseRelationship().getValue() == "Parent*") {
-        addStrategy(std::make_unique<ParentStrategy>());
-    }
-    else if (parsingResult.getSuchThatClauseRelationship().getType() == TokenType::UsesS) {
-        addStrategy(std::make_unique<UsesStrategy>());
-    } else if (parsingResult.getSuchThatClauseRelationship().getType() == TokenType::ModifiesS) {
-        addStrategy(std::make_unique<ModifiesStrategy>());
+    // Add such-that-strategies based on the relationship specified in the query.
+    std::string suchThatRelationship = parsingResult.getSuchThatClauseRelationship().getValue();
+    auto it = strategyFactory.find(suchThatRelationship);
+    if (it != strategyFactory.end()) {
+        addStrategy(it->second());
     }
 
-
+    // Add PatternStrategy if pattern clause exists in the query.
     if (!parsingResult.getPatternClauseRelationship().getValue().empty()) {
         addStrategy(std::make_unique<PatternStrategy>());
     }
 
-    // if there is no pattern clause or such that clause, return all statements
-    if (parsingResult.getPatternClauseRelationship().getValue().empty() && parsingResult.getSuchThatClauseRelationship().getValue().empty()) {
-        // if there is no clause, return all statements
-        std::vector<std::string> result;
-        if (parsingResult.getRequiredSynonym() == "stmt") {
-            unordered_set<int> allStmts = pkbReaderManager->getStatementReader()->getAllStatements();
-            for (int stmt : allStmts) {
-                result.push_back(to_string(stmt));
-            }
-        }
-        else if (parsingResult.getRequiredSynonym() == "read") {
-            unordered_set<int> allReads = pkbReaderManager->getReadReader()->getAllReads();
-            for (int read : allReads) {
-                result.push_back(to_string(read));
-            }
-        }
-        else if (parsingResult.getRequiredSynonym() == "print") {
-            unordered_set<int> allPrints = pkbReaderManager->getPrintReader()->getAllPrints();
-            for (int print : allPrints) {
-                result.push_back(to_string(print));
-            }
-        }
-        else if (parsingResult.getRequiredSynonym() == "call") {
-            unordered_set<int> allCalls = pkbReaderManager->getCallReader()->getAllCalls();
-            for (int call : allCalls) {
-                result.push_back(to_string(call));
-            }
-        }
-        else if (parsingResult.getRequiredSynonym() == "while") {
-            unordered_set<int> allWhiles = pkbReaderManager->getWhileReader()->getAllWhiles();
-            for (int whileStmt : allWhiles) {
-                result.push_back(to_string(whileStmt));
-            }
-        }
-        else if (parsingResult.getRequiredSynonym() == "if") {
-            unordered_set<int> allIfs = pkbReaderManager->getIfReader()->getAllIfs();
-            for (int ifStmt : allIfs) {
-                result.push_back(to_string(ifStmt));
-            }
-        }
-        else if (parsingResult.getRequiredSynonym() == "assign") {
-            unordered_set<int> allAssigns = pkbReaderManager->getAssignReader()->getAllAssigns();
-            for (int assign : allAssigns) {
-                result.push_back(to_string(assign));
-            }
-        }
-        else if (parsingResult.getRequiredSynonym() == "variable") {
-            unordered_set<string> allVariables = pkbReaderManager->getVariableReader()->getAllVariables();
-            for (string variable : allVariables) {
-                result.push_back(variable);
-            }
-        } else {
-            //return all statement/variables/whatever
-            // return getAllEntities(requiredType);
-            return result; // change this to return all entities
-        }
-
-
-    }
-
+    // Evaluate the query using the strategies and compile the results.
     bool isFirstStrategy = true;
     for (auto& strategy : strategies) {
         if (isFirstStrategy) {
@@ -116,6 +56,7 @@ std::vector<string> QueryEvaluator::evaluateQuery() {
         }
     }
 
+    // Retrieve and return the results based on the required synonym.
     std::string requiredSynonym = parsingResult.getRequiredSynonym();
     std::string requiredType = parsingResult.getRequiredSynonymType();
 
@@ -127,70 +68,87 @@ std::vector<string> QueryEvaluator::evaluateQuery() {
         return getAllEntities(requiredType);
 	}
  
-
 }
 
+// Retrieves all entities of a specified type.
+// Returns a vector of strings representing these entities.
 std::vector<std::string> QueryEvaluator::getAllEntities(const std::string& requiredType) {
     std::vector<std::string> entities;
 
-    if (requiredType == "assign") {
-        auto assignEntities = pkbReaderManager->getAssignReader()->getAllEntities();
-        for (int stmtNum : assignEntities) {
-            entities.push_back(std::to_string(stmtNum));
+    // Find the entity retriever for the required type and get the entities.
+    auto it = entityFactory.find(requiredType);
+    if (it != entityFactory.end()) {
+        auto variantEntities = it->second();
+        if (std::holds_alternative<std::unordered_set<int>>(variantEntities)) {
+            for (int entity : std::get<std::unordered_set<int>>(variantEntities)) {
+                entities.push_back(std::to_string(entity));
+            }
         }
-    }
-    else if (requiredType == "call") {
-        auto callEntities = pkbReaderManager->getCallReader()->getAllEntities();
-        for (int stmtNum : callEntities) {
-            entities.push_back(std::to_string(stmtNum));
-        }
-    }
-    else if (requiredType == "constant") {
-        auto constantEntities = pkbReaderManager->getConstantReader()->getAllEntities();
-        for (int constant : constantEntities) {
-            entities.push_back(std::to_string(constant));
-        }
-    }
-    else if (requiredType == "if") {
-        auto ifEntities = pkbReaderManager->getIfReader()->getAllEntities();
-        for (int stmtNum : ifEntities) {
-            entities.push_back(std::to_string(stmtNum));
-        }
-    }
-    else if (requiredType == "print") {
-        auto printEntities = pkbReaderManager->getPrintReader()->getAllEntities();
-        for (int stmtNum : printEntities) {
-            entities.push_back(std::to_string(stmtNum));
-        }
-    }
-    else if (requiredType == "read") {
-        auto readEntities = pkbReaderManager->getReadReader()->getAllEntities();
-        for (int stmtNum : readEntities) {
-            entities.push_back(std::to_string(stmtNum));
-        }
-    }
-    else if (requiredType == "stmt") {
-        auto statementEntities = pkbReaderManager->getStatementReader()->getAllEntities();
-        for (int stmtNum : statementEntities) {
-            entities.push_back(std::to_string(stmtNum));
-        }
-    }
-    else if (requiredType == "variable") {
-        auto variableEntities = pkbReaderManager->getVariableReader()->getAllEntities();
-        for (const std::string& variable : variableEntities) {
-            entities.push_back(variable);
-        }
-    }
-    else if (requiredType == "while") {
-        auto whileEntities = pkbReaderManager->getWhileReader()->getAllEntities();
-        for (int stmtNum : whileEntities) {
-            entities.push_back(std::to_string(stmtNum));
+        else {
+            for (string entity : std::get<std::unordered_set<string>>(variantEntities)) {
+                entities.push_back(entity);
+            }
         }
     }
     else {
-        //  throw an exception
         throw "Unknown type of entity required";
     }
 
     return entities;
 }
+
+
+
+// Initializes the strategy factory with various query evaluation strategies.
+void QueryEvaluator::initializeStrategyFactory() {
+
+    // Mapping of query types to their corresponding strategies.
+    QueryEvaluator::strategyFactory = {
+        {"Follows", []() { return std::make_unique<FollowsStrategy>(); }},
+        {"Follows*", []() { return std::make_unique<FollowsStrategy>(); }},
+        {"Parent", []() { return std::make_unique<ParentStrategy>(); }},
+        {"Parent*", []() { return std::make_unique<ParentStrategy>(); }},
+        {"Uses", []() { return std::make_unique<UsesStrategy>(); }},
+        {"Modifies", []() { return std::make_unique<ModifiesStrategy>(); }}
+        // Additional strategies can be added here as needed.
+    };
+}
+
+// Initializes the entity factory for retrieving different types of entities.
+void QueryEvaluator::initializeEntityFactory() {
+    entityFactory = {
+        // Mapping of entity types to functions that retrieve these entities.
+        {"assign", [&]() {
+            return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getAssignReader()->getAllEntities());
+        }},
+        {"call", [&]() {
+            return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getCallReader()->getAllEntities());
+        }},
+        {"constant", [&]() {
+            return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getConstantReader()->getAllEntities());
+        }},
+        {"if", [&]() {
+            return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getIfReader()->getAllEntities());
+        }},
+        {"print", [&]() {
+            return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getPrintReader()->getAllEntities());
+        }},
+        {"read", [&]() {
+            return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getReadReader()->getAllEntities());
+        }},
+        {"stmt", [&]() {
+            return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getStatementReader()->getAllEntities());
+        }},
+        {"while", [&]() {
+            return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getWhileReader()->getAllEntities());
+        }},
+
+        // Entities returning unordered_set<string>
+        {"variable", [&]() {
+            return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getVariableReader()->getAllEntities());
+        }}
+        // Additional entity types can be added here as needed.
+
+    };
+}
+
