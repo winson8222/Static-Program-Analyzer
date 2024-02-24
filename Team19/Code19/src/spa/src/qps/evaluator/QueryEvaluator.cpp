@@ -130,3 +130,15 @@ std::vector<std::string> QueryEvaluator::getAllEntities(const std::string& requi
 }
 
 
+// Initialize the strategy factory map
+void QueryEvaluator::initializeStrategyFactory() {
+    QueryEvaluator::strategyFactory = {
+        {"Follows", []() { return std::make_unique<FollowsStrategy>(); }},
+        {"Follows*", []() { return std::make_unique<FollowsStrategy>(); }},
+        {"Parent", []() { return std::make_unique<ParentStrategy>(); }},
+        {"Parent*", []() { return std::make_unique<ParentStrategy>(); }},
+        {"Uses", []() { return std::make_unique<UsesStrategy>(); }},
+        {"Modifies", []() { return std::make_unique<ModifiesStrategy>(); }}
+        // Add additional strategies here as needed
+    };
+}
