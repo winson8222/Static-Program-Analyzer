@@ -17,6 +17,7 @@ TEST_CASE("sp/SourceProcessor: Assigns") {
                                     "}"
                                     "procedure proc2 {"
                                     "   z = 1;"
+                                    "   print z;"
                                     "   y = 6 * z;"
                                     "}";
         std::ofstream file;
@@ -29,7 +30,7 @@ TEST_CASE("sp/SourceProcessor: Assigns") {
         sp.extractAndPopulate();
         std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
         std::shared_ptr<AssignReader> assignReader = pkbReaderManager->getAssignReader();
-        std::unordered_set<int> expectedAssigns = { 2, 3, 6, 7 };
+        std::unordered_set<int> expectedAssigns = { 1, 2, 3, 5};
         REQUIRE(assignReader->getAllAssigns() == expectedAssigns);
 
         std::filesystem::remove(filename);

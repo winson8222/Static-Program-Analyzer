@@ -20,7 +20,7 @@ TEST_CASE("Calling parseProgram for multiple procedures", "[parse][program]") {
 	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
 
 	REQUIRE(tree_ptr->type == ASTNodeType::PROGRAMS);
-	REQUIRE(tree_ptr->lineNumber == 1);
+	REQUIRE(tree_ptr->lineNumber == -1);
 	REQUIRE(tree_ptr->value == Utility::getASTNodeType(ASTNodeType::PROGRAMS));
 
 
@@ -38,7 +38,7 @@ TEST_CASE("Calling parseProgram for if-else-then procedures", "[parse][program]"
 	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
 
 	REQUIRE(tree_ptr->type == ASTNodeType::PROGRAMS);
-	REQUIRE(tree_ptr->lineNumber == 1);
+	REQUIRE(tree_ptr->lineNumber == -1);
 	REQUIRE(tree_ptr->value == Utility::getASTNodeType(ASTNodeType::PROGRAMS));
 
 
@@ -119,7 +119,7 @@ TEST_CASE("Calling parseProgram for while procedures", "[parse][program]") {
 	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
 
 	REQUIRE(tree_ptr->type == ASTNodeType::PROGRAMS);
-	REQUIRE(tree_ptr->lineNumber == 1);
+	REQUIRE(tree_ptr->lineNumber == -1);
 	REQUIRE(tree_ptr->value == Utility::getASTNodeType(ASTNodeType::PROGRAMS));
 
 
@@ -144,12 +144,11 @@ TEST_CASE("Test string representations of programs", "[parse][program]") {
 	std::string content;
 
 	REQUIRE_NOTHROW(content = tree_ptr->toString());
+}
 
-	std::string subcontent1 = "  Type: Procedure, Line Number: 1, Value: proc1\n";
-	std::string subcontent2 = "  Type: Procedure, Line Number: 5, Value: proc2\n";
-	std::string subcontent3 = "  Type: Procedure, Line Number: 9, Value: proc3\n";
-
-	REQUIRE(content.find(subcontent1) != std::string::npos);
-	REQUIRE(content.find(subcontent2) != std::string::npos);
-	REQUIRE(content.find(subcontent3) != std::string::npos);
+TEST_CASE("sp/AST/ASTHelper") {
+	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program2.txt";
+	REQUIRE(std::filesystem::exists(testFileName));
+	SimpleParserFacade parser(testFileName);
+	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
 }

@@ -15,14 +15,14 @@ TEST_CASE("Testing ReadStmt::buildTree()", "[parse][read]") {
 		std::shared_ptr<ASTNode> readStatement = (((tree_ptr->children)[0]->children)[0]->children)[0];
 
 		REQUIRE(readStatement->type == ASTNodeType::READ);
-		REQUIRE(readStatement->lineNumber == 2);
+		REQUIRE(readStatement->lineNumber == 1);
 		REQUIRE(readStatement->value == Utility::getASTNodeType(ASTNodeType::READ));
 
 		SECTION("Testing tree child node") {
 			const auto& children = readStatement->children;
 			REQUIRE(children.size() == 1);
 			REQUIRE(children[0]->type == ASTNodeType::VARIABLE);
-			REQUIRE(children[0]->lineNumber == 2);
+			REQUIRE(children[0]->lineNumber == 1);
 			REQUIRE(children[0]->value == "readableVariable");
 		}
 	}
@@ -39,14 +39,14 @@ TEST_CASE("Testing ReadStmt::buildTree() with read as variable", "[parse][read]"
 		std::shared_ptr<ASTNode> readStatement = (((tree_ptr->children)[0]->children)[0]->children)[0];
 
 		REQUIRE(readStatement->type == ASTNodeType::READ);
-		REQUIRE(readStatement->lineNumber == 2);
+		REQUIRE(readStatement->lineNumber == 1);
 		REQUIRE(readStatement->value == Utility::getASTNodeType(ASTNodeType::READ));
 
 		SECTION("Testing tree child node") {
 			const auto& children = readStatement->children;
 			REQUIRE(children.size() == 1);
 			REQUIRE(children[0]->type == ASTNodeType::VARIABLE);
-			REQUIRE(children[0]->lineNumber == 2);
+			REQUIRE(children[0]->lineNumber == 1);
 			REQUIRE(children[0]->value == "read");
 		}
 	}

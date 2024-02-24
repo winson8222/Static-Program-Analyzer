@@ -32,7 +32,11 @@ enum class TokenType {
     Parent,
     ParentT,
     Uses,
+    UsesS,
+    UsesP,
     Modifies,
+    ModifiesS,
+    ModifiesP,
     ExpressionSpec,
 
 
@@ -56,7 +60,9 @@ public:
 
     // getValue: returns the string value of the token.
     string getValue() const;
-    
+
+    void setType(TokenType type);
+
 private:
     TokenType type;    // Stores the type of the token
     string value; // Stores the string value of the token

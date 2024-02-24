@@ -65,7 +65,7 @@ TEST_CASE("sp/SourceProcessor: Constants") {
         std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
         std::string filename = "sample.txt";
         std::string sampleProgram = "procedure proc1 {"
-                                    "   x = 1010010101;"
+                                    "   x = 2147483647;"
                                     "   y = 1010010102;"
                                     "   z = 1010010103;"
                                     "}";
@@ -79,7 +79,7 @@ TEST_CASE("sp/SourceProcessor: Constants") {
         sp.extractAndPopulate();
         std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
         std::shared_ptr<ConstantReader> constantReader = pkbReaderManager->getConstantReader();
-        std::unordered_set<int> expectedConstants = { 1010010101, 1010010102, 1010010103 };
+        std::unordered_set<int> expectedConstants = { 2147483647, 1010010102, 1010010103 };
         REQUIRE(constantReader->getAllConstants() == expectedConstants);
 
         std::filesystem::remove(filename);

@@ -1,91 +1,153 @@
 #include "FollowsStrategy.h"
-#include "qps/parser/Token.h" // Include the Token header
+#include "qps/parser/Token.h" // Include for Token definition
 
-using namespace std;
+// Standard library dependencies
+#include <string>
+#include <unordered_set>
 
-// The FollowsStrategy class evaluates queries to find follows relationships in a program.
-// A follows relationship is defined between two statements (stmtRef, stmtRef), 
-// where a stmtRef can be a wildcard, an integer, or a synonym.
+/**
+ * Evaluates Follows or Follows* queries between two statements.
+ * Determines the relationship based on the parsing result and updates the result table accordingly.
+ *
+ * @param pkbReaderManager Provides access to the program knowledge base.
+ * @param parsingResult Contains the parsed query details.
+ * @return A shared pointer to the populated result table.
+ */
+std::shared_ptr<ResultTable> FollowsStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult) {
+    auto resultTable = std::make_shared<ResultTable>();
 
-unordered_set<string> FollowsStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult) {
-    string requiredSynonym = parsingResult.getRequiredSynonym();
-    string variant = parsingResult.getSuchThatClauseRelationship().getValue();
-    unordered_set<string> result;
+    // Initializing PKB readers for Follows relationships
+    followsReader = pkbReaderManager.getFollowsReader();
+    followsTReader = pkbReaderManager.getFollowsTReader();
 
-    // Obtain readers from PKBReaderManager
-    this->followsReader = pkbReaderManager.getFollowsReader();
-    this->followsTReader = pkbReaderManager.getFollowsTReader();
-    this->statementReader = pkbReaderManager.getStatementReader();
+    const Token& firstParam = parsingResult.getSuchThatClauseFirstParam();
+    const Token& secondParam = parsingResult.getSuchThatClauseSecondParam();
+    std::string variant = parsingResult.getSuchThatClauseRelationship().getValue();
 
-    const Token& suchThatFirstParam = parsingResult.getSuchThatClauseFirstParam();
-    const Token& suchThatSecondParam = parsingResult.getSuchThatClauseSecondParam();
-
-    if (suchThatFirstParam.getValue() == requiredSynonym) {
-        processFirstParam(suchThatSecondParam, variant, result);
+    // Handling different parameter types for the Follows relationship
+    if (firstParam.getType() == TokenType::IDENT && secondParam.getType() == TokenType::IDENT) {
+        processSynonyms(firstParam, secondParam, variant, resultTable);
+    } else if (firstParam.getType() == TokenType::IDENT) {
+        processFirstParam(firstParam, secondParam, variant, resultTable);
+    } else if (secondParam.getType() == TokenType::IDENT) {
+        processSecondParam(firstParam, secondParam, variant, resultTable);
+    } else if (isBothParamsWildcard(firstParam, secondParam)) {
+        resultTable->setAsTruthTable(); // Handling wildcard cases
+    } else if (isBothParamsInteger(firstParam, secondParam)) {
+        processIntegerParams(firstParam, secondParam, resultTable); // Handling integer cases
     }
-    else if (suchThatSecondParam.getValue() == requiredSynonym) {
-        processSecondParam(suchThatFirstParam, variant, result);
-    }
-    else if (isBothParamsWildcard(suchThatFirstParam, suchThatSecondParam)) {
-        const unordered_set<int>& follows = statementReader->getAllStatements();
-        fillResult(follows, result);
-    }
-    else if (isBothParamsInteger(suchThatFirstParam, suchThatSecondParam)) {
-        processIntegerParams(suchThatFirstParam, suchThatSecondParam, result);
-    }
 
-    return result;
+    return resultTable;
 }
 
+/**
+ * Processes cases where both parameters in the query are synonyms.
+ * Populates the result table with pairs of statements that satisfy the Follows relationship.
+ *
+ * @param firstParam The first parameter of the query, a synonym.
+ * @param secondParam The second parameter of the query, another synonym.
+ * @param variant Specifies whether it's a direct Follows or transitive Follows* relationship.
+ * @param resultTable The table to be populated with query results.
+ */
+void FollowsStrategy::processSynonyms(const Token& firstParam, const Token& secondParam, const std::string& variant, std::shared_ptr<ResultTable> resultTable) {
+    std::string col1 = firstParam.getValue();
+    std::string col2 = secondParam.getValue();
+    resultTable->insertAllColumns({col1, col2});
 
+    // Retrieve all precedents for Follows or Follows* relationships
+    const auto& preFollows = variant == "Follows" ? followsReader->getAllPreFollows() : followsTReader->getAllPreFollowsT();
 
-// Additional helper methods for readability
-void FollowsStrategy::processFirstParam(const Token& secondParam, const string& variant,
-    unordered_set<string>& result) {
-    // Implementation of processing when the first parameter matches the required synonym
+    for (int stmt1 : preFollows) {
+        auto postFollows = variant == "Follows" ? followsReader->getPostFollows(stmt1) : followsTReader->getPostFollowsT(stmt1);
+
+        for (int stmt2 : postFollows) {
+            resultTable->insertNewRow({{col1, std::to_string(stmt1)}, {col2, std::to_string(stmt2)}});
+        }
+    }
+}
+
+/**
+ * Processes queries where the first parameter is a synonym and the second parameter is specific.
+ * This includes handling both integer and wildcard second parameters.
+ *
+ * @param firstParam The first parameter token of the query, expected to be a synonym.
+ * @param secondParam The second parameter token of the query, can be an integer or a wildcard.
+ * @param variant Specifies whether it's a direct Follows or transitive Follows* relationship.
+ * @param resultTable The table to be populated with query results.
+ */
+void FollowsStrategy::processFirstParam(const Token& firstParam, const Token& secondParam, const string& variant,
+                                        std::shared_ptr<ResultTable> resultTable) {
+    string col1 = firstParam.getValue();
+    resultTable->insertAllColumns({col1});
+
     if (secondParam.getType() == TokenType::INTEGER) {
-        int stmtNum = stoi(secondParam.getValue());
-        const unordered_set<int>& follows = (variant == "Follows") ?
-            followsReader->getPreFollows(stmtNum) :
-            followsTReader->getPreFollowsT(stmtNum);
-        fillResult(follows, result);
-    }
-    else if (secondParam.getType() == TokenType::Wildcard) {
-        const unordered_set<int>& follows = (variant == "Follows") ?
-            followsReader->getAllPreFollows() :
-            followsTReader->getAllPreFollowsT();
-        fillResult(follows, result);
+        int stmtNum = std::stoi(secondParam.getValue());
+        const auto& follows = (variant == "Follows") ?
+                              followsReader->getPreFollows(stmtNum) :
+                              followsTReader->getPreFollowsT(stmtNum);
+
+        for (int stmt : follows) {
+            resultTable->insertNewRow({{col1, std::to_string(stmt)}});
+        }
+    } else if (secondParam.getType() == TokenType::Wildcard) {
+        const auto& follows = (variant == "Follows") ?
+                              followsReader->getAllPreFollows() :
+                              followsTReader->getAllPreFollowsT();
+
+        for (int stmt : follows) {
+            resultTable->insertNewRow({{col1, std::to_string(stmt)}});
+        }
     }
 }
 
-void FollowsStrategy::processSecondParam(const Token& firstParam, const string& variant,
-    unordered_set<string>& result) {
-    // Implementation of processing when the second parameter matches the required synonym
+/**
+ * Processes queries where the second parameter is a synonym and the first parameter is specific.
+ * Handles both integer and wildcard first parameters.
+ *
+ * @param firstParam The first parameter token of the query, can be an integer or a wildcard.
+ * @param secondParam The second parameter token of the query, expected to be a synonym.
+ * @param variant Specifies whether it's a direct Follows or transitive Follows* relationship.
+ * @param resultTable The table to be populated with query results.
+ */
+void FollowsStrategy::processSecondParam(const Token& firstParam, const Token& secondParam, const string& variant,
+                                         std::shared_ptr<ResultTable> resultTable) {
+    string col2 = secondParam.getValue();
+    resultTable->insertAllColumns({col2});
+
     if (firstParam.getType() == TokenType::INTEGER) {
-        int stmtNum = stoi(firstParam.getValue());
-        const unordered_set<int>& follows = (variant == "Follows") ?
-            followsReader->getPostFollows(stmtNum) :
-            followsTReader->getPostFollowsT(stmtNum);
-        fillResult(follows, result);
-    }
-    else if (firstParam.getType() == TokenType::Wildcard) {
-        const unordered_set<int>& follows = (variant == "Follows") ?
-            followsReader->getAllPostFollows() :
-            followsTReader->getAllPostFollowsT();
-        fillResult(follows, result);
+        int stmtNum = std::stoi(firstParam.getValue());
+        const auto& follows = (variant == "Follows") ?
+                              followsReader->getPostFollows(stmtNum) :
+                              followsTReader->getPostFollowsT(stmtNum);
+
+        for (int stmt : follows) {
+            resultTable->insertNewRow({{col2, std::to_string(stmt)}});
+        }
+    } else if (firstParam.getType() == TokenType::Wildcard) {
+        const auto& follows = (variant == "Follows") ?
+                              followsReader->getAllPostFollows() :
+                              followsTReader->getAllPostFollowsT();
+
+        for (int stmt : follows) {
+            resultTable->insertNewRow({{col2, std::to_string(stmt)}});
+        }
     }
 }
 
-
-
+/**
+ * Processes queries where both parameters are integers, determining if a direct Follows relationship exists.
+ * Sets the result table as a truth table if the relationship is found.
+ *
+ * @param firstParam The first parameter token of the query, an integer representing a statement number.
+ * @param secondParam The second parameter token of the query, another integer representing a statement number.
+ * @param resultTable The table to be set as a truth table if the Follows relationship exists.
+ */
 void FollowsStrategy::processIntegerParams(const Token& firstParam, const Token& secondParam,
-    unordered_set<string>& result) {
-    // Implementation for processing when both parameters are integers
-    int firstStmtNum = stoi(firstParam.getValue());
-    int secondStmtNum = stoi(secondParam.getValue());
+                                           std::shared_ptr<ResultTable> resultTable) {
+    int firstStmtNum = std::stoi(firstParam.getValue());
+    int secondStmtNum = std::stoi(secondParam.getValue());
 
     if (followsReader->hasFollows(firstStmtNum, secondStmtNum)) {
-        const unordered_set<int>& follows = statementReader->getAllStatements();
-        fillResult(follows, result);
+        resultTable->setAsTruthTable();
     }
 }

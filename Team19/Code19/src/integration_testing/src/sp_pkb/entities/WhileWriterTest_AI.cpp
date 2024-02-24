@@ -14,13 +14,12 @@ TEST_CASE("sp/SourceProcessor: Whiles") {
         std::string sampleProgram = "procedure proc1 {"
                                     "   read x;"
                                     "   while (y > 1) {"
-                                    "       y = y + 1;"
-                                    "   }"
+                                    "       y = y + 1; }"
                                     "   read x;"
                                     "   while (y > 5) {"
                                     "       z = z + 1;"
-                                    "   }"
-                                    "}";
+                                    "       while (z > 1) {"
+                                    "           z = z + 1; }}}";
         std::ofstream file;
         file.open(filename);
         file << sampleProgram;
@@ -31,7 +30,7 @@ TEST_CASE("sp/SourceProcessor: Whiles") {
         sp.extractAndPopulate();
         std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
         std::shared_ptr<WhileReader> whileReader = pkbReaderManager->getWhileReader();
-        std::unordered_set<int> expectedWhiles = { 3, 7 };
+        std::unordered_set<int> expectedWhiles = { 2, 5, 7 };
         REQUIRE(whileReader->getAllWhiles() == expectedWhiles);
 
         std::filesystem::remove(filename);
