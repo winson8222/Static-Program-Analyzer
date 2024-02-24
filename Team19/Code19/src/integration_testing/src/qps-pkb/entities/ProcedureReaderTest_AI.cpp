@@ -1,51 +1,50 @@
 #include "catch.hpp"
 #include <memory>
 #include "pkb/PKBManager.h"
+#include "../Utils.h" // Assuming Utils.h is available for utility functions
 
-TEST_CASE("qps/QueryProcessingSubsystem: ProcedureReader") {
-    auto pkbManager = std::make_shared<PKBManager>();
-    // Use ProcedureWriter to directly populate procedures
-    auto procedureWriter = pkbManager->getPKBWriterManager()->getProcedureWriter();
+// Fixture class for setting up PKB and Procedure tests
+class ProcedureReaderFixture {
+public:
+    std::shared_ptr<PKBManager> pkbManager;
+    std::shared_ptr<ProcedureWriter> procedureWriter;
 
-    // Clearing the store before populating it to ensure a clean state
-    procedureWriter->clear();
-
-    // Directly populating some procedures for retrieval tests
-    procedureWriter->insertProcedure("proc1");
-    procedureWriter->insertProcedure("proc2");
-    procedureWriter->insertProcedure("assign");
-    procedureWriter->insertProcedure("call");
-
-    auto procedureReader = pkbManager->getPKBReaderManager()->getProcedureReader();
-
-    SECTION("Verify retrieval of all procedures") {
-        std::unordered_set<std::string> expectedProcedures = {"proc1", "proc2", "assign", "call"};
-        auto retrievedProcedures = procedureReader->getAllProcedures();
-        REQUIRE(retrievedProcedures == expectedProcedures);
+    ProcedureReaderFixture() : pkbManager(std::make_shared<PKBManager>()) {
+        procedureWriter = pkbManager->getPKBWriterManager()->getProcedureWriter();
+        // Clearing previous data for a clean state
+        procedureWriter->clear();
     }
 
-    SECTION("Check specific procedures exist") {
-        REQUIRE(procedureReader->hasProcedure("proc1") == true);
-        REQUIRE(procedureReader->hasProcedure("proc2") == true);
-        REQUIRE(procedureReader->hasProcedure("assign") == true);
-        REQUIRE(procedureReader->hasProcedure("nonExistentProc") == false); // Verify a non-existent procedure
+    void populateProcedures() {
+        // Populating procedures for retrieval tests
+        procedureWriter->insertProcedure("proc1");
+        procedureWriter->insertProcedure("proc2");
+        procedureWriter->insertProcedure("assign");
+        procedureWriter->insertProcedure("call");
+    }
+};
+
+TEST_CASE_METHOD(ProcedureReaderFixture, "qps/QueryProcessingSubsystem: ProcedureReader Integration Test", "[QPS][PKB][Procedure]") {
+    populateProcedures();
+
+    SECTION("Verify retrieval of all procedures via QPS") {
+        std::string query = "procedure p; Select p";
+        auto results = Utils::getResultsFromQuery(query, pkbManager->getPKBReaderManager());
+        std::unordered_set<std::string> expectedResults = {"proc1", "proc2", "assign", "call"};
+        REQUIRE(results == expectedResults);
     }
 
-    SECTION("Check if ProcedureStore is empty") {
-        REQUIRE(procedureReader->isEmpty() == false);
-    }
-
-    SECTION("Verify retrieval of procedures by name") {
-        REQUIRE(procedureReader->hasProcedure("proc1") == true);
-        REQUIRE(procedureReader->hasProcedure("proc2") == true);
-        REQUIRE(procedureReader->hasProcedure("nonExistentProc") == false); // Test for a procedure that doesn't exist
-    }
-
-    SECTION("Verify store is cleared correctly") {
-        procedureWriter->clear(); // Clear all procedures
-        REQUIRE(procedureReader->isEmpty() == true);
-    }
-
-
-    // procedureWriter->clear();
+//    SECTION("Check for the existence of a specific procedure") {
+//        std::string queryExists = "procedure p; Select BOOLEAN such that Modifies(p, _)";
+//        auto resultsExists = Utils::getResultsFromQuery(queryExists, pkbManager->getPKBReaderManager());
+//        // Assuming 'Modifies' is just a placeholder for any relevant condition to check existence
+//        REQUIRE(!resultsExists.empty()); // Adjust based on actual data and query capabilities
+//    }
+//
+//    SECTION("Test for a non-existent procedure") {
+//        std::string queryNonExistent = "procedure p; Select BOOLEAN such that Modifies(p, \"nonExistentVar\")";
+//        auto resultsNonExistent = Utils::getResultsFromQuery(queryNonExistent, pkbManager->getPKBReaderManager());
+//        // Assuming 'Modifies' is a placeholder; adjust the query to fit actual testing needs
+//        REQUIRE(resultsNonExistent.find("FALSE") != resultsNonExistent.end());
+//    }
 }

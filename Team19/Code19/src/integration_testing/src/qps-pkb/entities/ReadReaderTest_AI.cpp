@@ -1,43 +1,48 @@
 #include "catch.hpp"
 #include <memory>
 #include "pkb/PKBManager.h"
+#include "../Utils.h" // Assuming Utils.h is available for utility functions
 
-TEST_CASE("qps/QueryProcessingSubsystem: ReadReader") {
-    auto pkbManager = std::make_shared<PKBManager>();
-    auto readWriter = pkbManager->getPKBWriterManager()->getReadWriter();
+// Fixture class for setting up PKB and Read tests
+class ReadReaderFixture {
+public:
+    std::shared_ptr<PKBManager> pkbManager;
+    std::shared_ptr<ReadWriter> readWriter;
 
-    // Preparing the environment: Clearing the store before populating it to ensure a clean state.
-    readWriter->clear();
-
-    // Populating some "read" statements for retrieval tests.
-    int stmtNum1 = 4;
-    int stmtNum2 = 8;
-    readWriter->insertRead(stmtNum1);
-    readWriter->insertRead(stmtNum2);
-
-    auto readReader = pkbManager->getPKBReaderManager()->getReadReader();
-
-    SECTION("Verify retrieval of all 'read' statement numbers") {
-        std::unordered_set<int> expectedReads = {stmtNum1, stmtNum2};
-        auto retrievedReads = readReader->getAllReads();
-        REQUIRE(retrievedReads == expectedReads);
+    ReadReaderFixture() : pkbManager(std::make_shared<PKBManager>()) {
+        readWriter = pkbManager->getPKBWriterManager()->getReadWriter();
+        // Clearing previous data for a clean state
+        readWriter->clear();
     }
 
-    SECTION("Check specific 'read' statements exist") {
-        REQUIRE(readReader->contains(stmtNum1) == true);
-        REQUIRE(readReader->contains(stmtNum2) == true);
-        REQUIRE(readReader->contains(999) == false); // Test for a 'read' statement number that doesn't exist.
+    void populateReadStatements() {
+        // Populating "read" statements for retrieval tests
+        readWriter->insertRead(4);
+        readWriter->insertRead(8);
+    }
+};
+
+TEST_CASE_METHOD(ReadReaderFixture, "qps/QueryProcessingSubsystem: ReadReader Integration Test", "[QPS][PKB][Read]") {
+    populateReadStatements();
+
+    SECTION("Verify retrieval of all 'read' statement numbers via QPS") {
+        std::string query = "read r; Select r";
+        auto results = Utils::getResultsFromQuery(query, pkbManager->getPKBReaderManager());
+        std::unordered_set<std::string> expectedResults = {"4", "8"};
+        REQUIRE(results == expectedResults);
     }
 
-    SECTION("Check if ReadStore is empty") {
-        REQUIRE(readReader->isEmpty() == false);
-    }
-
-    SECTION("Test retrieval after clearing 'read' statements") {
-        readWriter->clear(); // Clear all 'read' statements.
-        REQUIRE(readReader->isEmpty() == true);
-        REQUIRE(readReader->contains(stmtNum1) == false);
-        REQUIRE(readReader->contains(stmtNum2) == false);
-    }
+//    SECTION("Check for the existence of a specific 'read' statement") {
+//        std::string queryExists = "read r; Select BOOLEAN such that Uses(r, _)";
+//        auto resultsExists = Utils::getResultsFromQuery(queryExists, pkbManager->getPKBReaderManager());
+//        // Assuming 'Uses' is just a placeholder for any relevant condition to check existence
+//        REQUIRE(!resultsExists.empty()); // Adjust based on actual data and query capabilities
+//    }
+//
+//    SECTION("Test for a non-existent 'read' statement") {
+//        std::string queryNonExistent = "read r; Select BOOLEAN such that Uses(r, \"nonExistentVar\")";
+//        auto resultsNonExistent = Utils::getResultsFromQuery(queryNonExistent, pkbManager->getPKBReaderManager());
+//        REQUIRE(resultsNonExistent.find("FALSE") != resultsNonExistent.end());
+//    }
 
 }

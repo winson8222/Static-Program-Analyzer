@@ -1,89 +1,51 @@
 #include "catch.hpp"
 #include <memory>
 #include "pkb/PKBManager.h"
+#include "../Utils.h" // Assuming Utils.h is available for utility functions
 
-TEST_CASE("qps/QueryProcessingSubsystem: WhileReader") {
-    auto pkbManager = std::make_shared<PKBManager>();
-    auto whileWriter = pkbManager->getPKBWriterManager()->getWhileWriter();
+// Fixture class for setting up PKB and While tests
+class WhileReaderFixture {
+public:
+    std::shared_ptr<PKBManager> pkbManager;
+    std::shared_ptr<WhileWriter> whileWriter;
 
-    // Preparing the environment: Clearing the store before populating it to ensure a clean state.
-    whileWriter->clear();
-
-    // Populating some "while" statements for retrieval tests.
-    // Assume statement numbers are assigned sequentially and uniquely.
-    int stmtNum1 = 1;
-    int stmtNum2 = 5;
-    whileWriter->insertWhile(stmtNum1);
-    whileWriter->insertWhile(stmtNum2);
-
-    auto whileReader = pkbManager->getPKBReaderManager()->getWhileReader();
-
-    SECTION("Verify retrieval of all 'while' statement numbers") {
-        std::unordered_set<int> expectedWhiles = {stmtNum1, stmtNum2};
-        auto retrievedWhiles = whileReader->getAllWhiles();
-        REQUIRE(retrievedWhiles == expectedWhiles);
+    WhileReaderFixture() : pkbManager(std::make_shared<PKBManager>()) {
+        whileWriter = pkbManager->getPKBWriterManager()->getWhileWriter();
+        // Clearing previous data for a clean state
+        whileWriter->clear();
     }
 
-    SECTION("Check specific 'while' statements exist") {
-        REQUIRE(whileReader->contains(stmtNum1) == true);
-        REQUIRE(whileReader->contains(stmtNum2) == true);
-        REQUIRE(whileReader->contains(999) == false); // Test for a 'while' statement number that doesn't exist.
+    void populateWhileStatements() {
+        // Populating "while" statements for retrieval tests
+        whileWriter->insertWhile(1);
+        whileWriter->insertWhile(5);
+    }
+};
+
+TEST_CASE_METHOD(WhileReaderFixture, "qps/QueryProcessingSubsystem: WhileReader Integration Test", "[QPS][PKB][While]") {
+    populateWhileStatements();
+
+    SECTION("Verify retrieval of all 'while' statement numbers via QPS") {
+        std::string query = "while w; Select w";
+        auto results = Utils::getResultsFromQuery(query, pkbManager->getPKBReaderManager());
+        std::unordered_set<std::string> expectedResults = {"1", "5"};
+        REQUIRE(results == expectedResults);
     }
 
-    SECTION("Check if WhileStore is empty") {
-        REQUIRE(whileReader->isEmpty() == false);
+    SECTION("Check specific 'while' statements exist via QPS") {
+        std::string queryWhile1 = "while w; Select w such that Follows(_, w)";
+        auto resultWhile1 = Utils::getResultsFromQuery(queryWhile1, pkbManager->getPKBReaderManager());
+        REQUIRE(resultWhile1.find("1") != resultWhile1.end());
+
+        std::string queryNonExistentWhile = "while w; Select w such that Follows(1, w)";
+        auto resultNonExistentWhile = Utils::getResultsFromQuery(queryNonExistentWhile, pkbManager->getPKBReaderManager());
+        REQUIRE(resultNonExistentWhile.empty());
     }
 
-    SECTION("Test retrieval after clearing 'while' statements") {
-        whileWriter->clear(); // Clear all 'while' statements.
-        REQUIRE(whileReader->isEmpty() == true);
-        REQUIRE(whileReader->contains(stmtNum1) == false);
-        REQUIRE(whileReader->contains(stmtNum2) == false);
+    SECTION("Verify store is cleared correctly via QPS") {
+        whileWriter->clear(); // Clear all 'while' statements
+        std::string query = "while w; Select w";
+        auto resultsAfterClear = Utils::getResultsFromQuery(query, pkbManager->getPKBReaderManager());
+        REQUIRE(resultsAfterClear.empty());
     }
-
-    SECTION("Test for nested 'while' statements") {
-        int outerWhile = 10;
-        int innerWhile = 11;
-        whileWriter->insertWhile(outerWhile);
-        whileWriter->insertWhile(innerWhile); // Assuming innerWhile is nested within outerWhile
-
-        REQUIRE(whileReader->contains(outerWhile) == true);
-        REQUIRE(whileReader->contains(innerWhile) == true);
-        // Optionally, verify the nesting relationship if your system supports it
-    }
-
-    SECTION("Test for 'while' statements with various control constructs") {
-        int whileWithIf = 12; // While statement that contains an if-statement
-        int whileWithNestedLoop = 13; // While statement that contains another while loop
-
-        whileWriter->insertWhile(whileWithIf);
-        whileWriter->insertWhile(whileWithNestedLoop);
-
-        REQUIRE(whileReader->contains(whileWithIf) == true);
-        REQUIRE(whileReader->contains(whileWithNestedLoop) == true);
-    }
-
-    SECTION("Test for retrieval of variables used in 'while' statements") {
-        int whileStmtNum = 14;
-        std::string usedVar = "counter";
-        // Assuming functionality to link variables with while statements
-        whileWriter->insertWhile(whileStmtNum);
-        // variableWriter->associateVariableWithWhile(usedVar, whileStmtNum); // Hypothetical method
-
-        REQUIRE(whileReader->contains(whileStmtNum) == true);
-        // REQUIRE(variableReader->hasVariable(usedVar) == true); // Verify if the used variable is recognized
-    }
-
-    SECTION("Test for 'while' statements across multiple procedures") {
-        int whileInProc1 = 15;
-        int whileInProc2 = 16;
-        // Assuming functionality to associate while statements with procedures
-        whileWriter->insertWhile(whileInProc1);
-        whileWriter->insertWhile(whileInProc2);
-
-        REQUIRE(whileReader->contains(whileInProc1) == true);
-        REQUIRE(whileReader->contains(whileInProc2) == true);
-        // Further checks can be made to ensure the while statements are correctly associated with their respective procedures
-    }
-    
 }

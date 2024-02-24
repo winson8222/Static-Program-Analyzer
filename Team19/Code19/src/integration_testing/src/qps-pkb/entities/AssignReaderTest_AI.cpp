@@ -49,15 +49,14 @@ TEST_CASE_METHOD(AssignPatternMatchingFixture, "qps/QueryProcessingSubsystem: As
         REQUIRE(result == expectedLhs);
     }
 
-//    SECTION("Pattern Matching with Specific RHS") {
-//        std::string query1 = "assign a; Select a pattern a(_, \"y + 1\")";
-//        auto results1 = Utils::getResultsFromQuery(query1, pkbManager->getPKBReaderManager());
-//        REQUIRE(results1 == std::unordered_set<std::string>{"1"});
-//
-//        std::string query2 = "assign a; Select a pattern a(_, \"x * 2\")";
-//        auto results2 = Utils::getResultsFromQuery(query2, pkbManager->getPKBReaderManager());
-//        REQUIRE(results2 == std::unordered_set<std::string>{"2"});
-//    }
+    SECTION("Pattern Matching with Specific RHS") {
+        std::string query1 = "assign a; Select a pattern a(_, \"y + 1\")";
+        auto results1 = Utils::getResultsFromQuery(query1, pkbManager->getPKBReaderManager());
+        REQUIRE(results1 == std::unordered_set<std::string>{"1"});
 
-    // Additional test cases focusing on complex expressions, variable usage in expressions, etc., can be added here
+        std::string query2 = "assign a; Select a pattern a(_, \"x * 2\")";
+        auto results2 = Utils::getResultsFromQuery(query2, pkbManager->getPKBReaderManager());
+        REQUIRE(results2 == std::unordered_set<std::string>{"2"});
+    }
+
 }

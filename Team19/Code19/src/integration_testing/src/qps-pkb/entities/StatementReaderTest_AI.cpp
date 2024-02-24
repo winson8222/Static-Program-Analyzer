@@ -1,47 +1,53 @@
 #include "catch.hpp"
 #include <memory>
 #include "pkb/PKBManager.h"
+#include "../Utils.h" // Assuming Utils.h is available for utility functions
 
-TEST_CASE("qps/QueryProcessingSubsystem: StatementReader") {
-    auto pkbManager = std::make_shared<PKBManager>();
-    auto statementWriter = pkbManager->getPKBWriterManager()->getStatementWriter();
+// Fixture class for setting up PKB and Statement tests
+class StatementReaderFixture {
+public:
+    std::shared_ptr<PKBManager> pkbManager;
+    std::shared_ptr<StatementWriter> statementWriter;
 
-    // Clearing the store before populating it to ensure a clean state.
-    statementWriter->clear();
-
-    // Populating some statements for retrieval tests.
-    int stmtNum1 = 1;
-    int stmtNum2 = 2;
-    int stmtNum3 = 3;
-    statementWriter->insertStatement(stmtNum1);
-    statementWriter->insertStatement(stmtNum2);
-    statementWriter->insertStatement(stmtNum3);
-
-    auto statementReader = pkbManager->getPKBReaderManager()->getStatementReader();
-
-    SECTION("Verify retrieval of all statements") {
-        std::unordered_set<int> expectedStatements = {stmtNum1, stmtNum2, stmtNum3};
-        auto retrievedStatements = statementReader->getAllStatements();
-        REQUIRE(retrievedStatements == expectedStatements);
+    StatementReaderFixture() : pkbManager(std::make_shared<PKBManager>()) {
+        statementWriter = pkbManager->getPKBWriterManager()->getStatementWriter();
+        // Clearing previous data for a clean state
+        statementWriter->clear();
     }
 
-    SECTION("Check specific statements exist") {
-        REQUIRE(statementReader->contains(stmtNum1) == true);
-        REQUIRE(statementReader->contains(stmtNum2) == true);
-        REQUIRE(statementReader->contains(stmtNum3) == true);
-        REQUIRE(statementReader->contains(999) == false); // Test for a statement number that doesn't exist.
+    void populateStatements() {
+        // Populating statements for retrieval tests
+        statementWriter->insertStatement(1);
+        statementWriter->insertStatement(2);
+        statementWriter->insertStatement(3);
+    }
+};
+
+TEST_CASE_METHOD(StatementReaderFixture, "qps/QueryProcessingSubsystem: StatementReader Integration Test", "[QPS][PKB][Statement]") {
+    populateStatements();
+
+    SECTION("Verify retrieval of all statements via QPS") {
+        std::string query = "stmt s; Select s";
+        auto results = Utils::getResultsFromQuery(query, pkbManager->getPKBReaderManager());
+        std::unordered_set<std::string> expectedResults = {"1", "2", "3"};
+        REQUIRE(results == expectedResults);
     }
 
-    SECTION("Check if StatementStore is empty") {
-        REQUIRE(statementReader->isEmpty() == false);
+    SECTION("Check specific statements exist via QPS") {
+        std::string queryStmt1 = "stmt s; Select s such that Modifies(_, s)";
+        auto resultStmt1 = Utils::getResultsFromQuery(queryStmt1, pkbManager->getPKBReaderManager());
+        REQUIRE(resultStmt1.find("1") != resultStmt1.end());
+
+        std::string queryNonExistentStmt = "stmt s; Select s such that Follows(1, s)";
+        auto resultNonExistentStmt = Utils::getResultsFromQuery(queryNonExistentStmt, pkbManager->getPKBReaderManager());
+        REQUIRE(resultNonExistentStmt.empty());
     }
 
-    SECTION("Test retrieval after clearing statements") {
-        statementWriter->clear(); // Clear all statements.
-        REQUIRE(statementReader->isEmpty() == true);
-        REQUIRE(statementReader->contains(stmtNum1) == false);
-        REQUIRE(statementReader->contains(stmtNum2) == false);
-        REQUIRE(statementReader->contains(stmtNum3) == false);
+    SECTION("Verify store is cleared correctly via QPS") {
+        statementWriter->clear(); // Clear all statements
+        std::string query = "stmt s; Select s";
+        auto resultsAfterClear = Utils::getResultsFromQuery(query, pkbManager->getPKBReaderManager());
+        REQUIRE(resultsAfterClear.empty());
     }
 
 }
