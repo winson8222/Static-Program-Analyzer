@@ -23,8 +23,8 @@ private:
 
 public:
     QueryEvaluator(std::shared_ptr<PKBReaderManager> pkbReaderManager, ParsingResult& parsingResult);
-    std::vector<string> evaluateQuery();
-    std::vector<std::string> getAllEntities(const std::string& requiredType);
+    std::unordered_set<string> evaluateQuery();
+    std::unordered_set<std::string> getAllEntities(const std::string& requiredType);
     
     void addStrategy(std::unique_ptr<QueryEvaluationStrategy> strategy); // Method to add strategies
 

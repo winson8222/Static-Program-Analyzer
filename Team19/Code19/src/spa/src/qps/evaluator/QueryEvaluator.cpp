@@ -20,15 +20,15 @@ void QueryEvaluator::addStrategy(std::unique_ptr<QueryEvaluationStrategy> strate
 
 // Evaluates a query based on the strategies added.
 // It returns a vector of strings representing the query results.
-std::vector<string> QueryEvaluator::evaluateQuery() {
+std::unordered_set<string> QueryEvaluator::evaluateQuery() {
 
     // Create a new result table for storing query results.
     result = std::make_shared<ResultTable>();
 
     // Check if the query is valid. If not, return an error message.
     if (!parsingResult.isQueryValid()) {
-        vector<string> error;
-        error.push_back(parsingResult.getErrorMessage());
+        unordered_set<string> error;
+        error.insert(parsingResult.getErrorMessage());
         return error;
     }
     
@@ -72,8 +72,8 @@ std::vector<string> QueryEvaluator::evaluateQuery() {
 
 // Retrieves all entities of a specified type.
 // Returns a vector of strings representing these entities.
-std::vector<std::string> QueryEvaluator::getAllEntities(const std::string& requiredType) {
-    std::vector<std::string> entities;
+std::unordered_set<std::string> QueryEvaluator::getAllEntities(const std::string& requiredType) {
+    std::unordered_set<string> entities;
 
     // Find the entity retriever for the required type and get the entities.
     auto it = entityFactory.find(requiredType);
@@ -81,12 +81,12 @@ std::vector<std::string> QueryEvaluator::getAllEntities(const std::string& requi
         auto variantEntities = it->second();
         if (std::holds_alternative<std::unordered_set<int>>(variantEntities)) {
             for (int entity : std::get<std::unordered_set<int>>(variantEntities)) {
-                entities.push_back(std::to_string(entity));
+                entities.insert(std::to_string(entity));
             }
         }
         else {
             for (string entity : std::get<std::unordered_set<string>>(variantEntities)) {
-                entities.push_back(entity);
+                entities.insert(entity);
             }
         }
     }

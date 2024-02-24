@@ -210,7 +210,7 @@ void ResultTable::insertAllColumns(const std::vector<std::string>& colNames) {
     colSet = colNames;
 }
 
-std::vector<std::string> ResultTable::getColumnValues(const std::string& columnName) {
+std::unordered_set<std::string> ResultTable::getColumnValues(const std::string& columnName) {
     std::unordered_set<std::string> uniqueColumnValues;
 
     // Check if the column name exists in the column set
@@ -230,9 +230,9 @@ std::vector<std::string> ResultTable::getColumnValues(const std::string& columnN
     }
 
     // Convert the unordered_set back to a vector to return
-    std::vector<std::string> columnValues(uniqueColumnValues.begin(), uniqueColumnValues.end());
+    //std::vector<std::string> columnValues(uniqueColumnValues.begin(), uniqueColumnValues.end());
 
-    return columnValues;
+    return uniqueColumnValues;
 }
 
 void ResultTable::setAsTruthTable()

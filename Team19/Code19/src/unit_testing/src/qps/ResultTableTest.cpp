@@ -38,7 +38,7 @@ TEST_CASE("Check join result of two tables with no common column") {
     REQUIRE(result->getRows()[0].at("b") == "2");
     REQUIRE(result->getRows()[0].at("c") == "5");
     REQUIRE(result->getRows()[0].at("d") == "6");
-    REQUIRE(result->getColumnValues("a") == std::vector<std::string>({"1"}));
+    REQUIRE(result->getColumnValues("a") == std::unordered_set<std::string>({"1"}));
 
 }
 
