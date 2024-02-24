@@ -1412,3 +1412,100 @@ TEST_CASE("Check Evaluation result of synonym for Modifies and select ifs") {
     std::unordered_set<string> res = evaluator.evaluateQuery();
     REQUIRE(res == std::unordered_set<string>{"2"});
 }
+
+
+TEST_CASE("Check Evaluation result of synonym for Follows and select ifs") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<ParentWriter> parentWriter = pkbWriterManager->getParentWriter();
+    std::shared_ptr<IfWriter> ifWriter = pkbWriterManager->getIfWriter();
+    std::shared_ptr<WhileWriter> whileWriter = pkbWriterManager->getWhileWriter();
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    parentWriter->addParent(1, 2);
+    parentWriter->addParent(3,4);
+    ifWriter->insertIf(2);
+    whileWriter->insertWhile(3);
+
+
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "if"),
+            Token(TokenType::IDENT, "ifs"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "ifs"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Parent, "Parent"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::IDENT, "ifs"),
+            Token(TokenType::Rparenthesis, ")")
+
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{"2"});
+}
+
+
+TEST_CASE("Check Evaluation result of synonym for Follows and select ifs with while as parent") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<ParentWriter> parentWriter = pkbWriterManager->getParentWriter();
+    std::shared_ptr<IfWriter> ifWriter = pkbWriterManager->getIfWriter();
+    std::shared_ptr<WhileWriter> whileWriter = pkbWriterManager->getWhileWriter();
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    parentWriter->addParent(1, 2);
+    parentWriter->addParent(2,3);
+    parentWriter->addParent(3,4);
+    ifWriter->insertIf(2);
+    whileWriter->insertWhile(3);
+    ifWriter->insertIf(4);
+
+
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "if"),
+            Token(TokenType::IDENT, "ifs"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::DesignEntity, "while"),
+            Token(TokenType::IDENT, "w"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "ifs"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Parent, "Parent"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::IDENT, "ifs"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::IDENT, "w"),
+            Token(TokenType::Rparenthesis, ")")
+
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{"2"});
+}
