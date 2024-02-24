@@ -3,7 +3,7 @@
 #include "qps/evaluator/suchThatStrategies/SuchThatStrategy.h"
 #include "pkb/PKBReaderManager.h"
 #include "pkb/PKB.h"
-#include "qps/ParsingResult.h"
+#include "../../spa/src/qps/parser/ParsingResult.h"
 
 // Derive a class from SuchThatStrategy for testing purposes
 class TestableSuchThatStrategy : public SuchThatStrategy {

@@ -3,7 +3,7 @@
 #include "qps/evaluator/suchThatStrategies/UsesStrategy.h"
 #include "pkb/PKBReaderManager.h"
 #include "pkb/PKB.h"
-#include "qps/ParsingResult.h"
+#include "../../spa/src/qps/parser/ParsingResult.h"
 
 // Helper function for creating a ParsingResult tailored for Uses tests
 ParsingResult createParsingResultForUses(const std::string& entity, const std::string& variable, bool isProcedure) {
