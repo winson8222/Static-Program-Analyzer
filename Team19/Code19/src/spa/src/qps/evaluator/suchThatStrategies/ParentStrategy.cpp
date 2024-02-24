@@ -46,20 +46,26 @@ void ParentStrategy::processSynonyms(const Token& firstParam, const Token& secon
     // Implementation for processing when both parameters are synonyms
     string col1 = firstParam.getValue();
     string col2 = secondParam.getValue();
+    string firstStatementType = parsingResult.getDeclaredSynonyms().at(col1);
+    string secondStatementType = parsingResult.getDeclaredSynonyms().at(col2);
     resultTable->insertAllColumns({ col1, col2 }); // Assuming results are pairs of statements
     // Retrieve the relationships
+    unordered_set<int> filteredParents;
     const unordered_set<int>& parents = (variant == "Parent") ?
                                         parentReader->getAllParents() :
                                         parentTTReader->getAllParentTs();
 
+    filteredParents = getFilteredStmtsNumByType(parents, firstStatementType, pkbReaderManager);
     // Iterate through the preFollows set and find corresponding postFollows
     for (int stmt1 : parents) {
+        unordered_set<int> filteredChildren;
         unordered_set<int> children = (variant == "Parent") ?
             parentReader->getChild(stmt1) :
             parentTTReader->getChildT(stmt1);
 
+        filteredChildren = getFilteredStmtsNumByType(children, secondStatementType, pkbReaderManager);
         // For each stmt1, iterate through all its postFollows
-        for (int stmt2 : children) {
+        for (int stmt2 : filteredChildren) {
             unordered_map<string, string> row;
             row[col1] = to_string(stmt1);
             row[col2] = to_string(stmt2);
@@ -73,13 +79,17 @@ void ParentStrategy::processFirstParam(const Token& firstParam, const Token& sec
             std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
     // Implementation of processing when the first parameter matches the required synonym
     string col1 = firstParam.getValue();
+    string firstStatementType = parsingResult.getDeclaredSynonyms().at(col1);
     resultTable->insertAllColumns({ col1 });
+
+    unordered_set<int> filteredParents;
     if (secondParam.getType() == TokenType::INTEGER) {
         int stmtNum = stoi(secondParam.getValue());
         const unordered_set<int>& parents = (variant == "Parent") ?
                                             parentReader->getParent(stmtNum) :
                                             parentTTReader->getParentT(stmtNum);
-        for (int stmt : parents) {
+        filteredParents = getFilteredStmtsNumByType(parents, firstStatementType, pkbReaderManager);
+        for (int stmt : filteredParents) {
             unordered_map<string, string> row;
             row[col1] = to_string(stmt);
             resultTable->insertNewRow(row);
@@ -89,7 +99,8 @@ void ParentStrategy::processFirstParam(const Token& firstParam, const Token& sec
         const unordered_set<int>& parents = (variant == "Parent") ?
                                             parentReader->getAllParents() :
                                             parentTTReader->getAllParentTs();
-        for (int stmt : parents) {
+        filteredParents = getFilteredStmtsNumByType(parents, firstStatementType, pkbReaderManager);
+        for (int stmt : filteredParents) {
             unordered_map<string, string> row;
             row[col1] = to_string(stmt);
             resultTable->insertNewRow(row);
@@ -101,13 +112,17 @@ void ParentStrategy::processSecondParam(const Token& firstParam, const Token& se
             std::shared_ptr<ResultTable> resultTable,const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
     // Implementation of processing when the second parameter matches the required synonym
     string col2 = secondParam.getValue();
+    string secondStatementType = parsingResult.getDeclaredSynonyms().at(col2);
     resultTable->insertAllColumns({ col2 });
+    unordered_set<int> filteredParents;
     if (firstParam.getType() == TokenType::INTEGER) {
         int stmtNum = stoi(firstParam.getValue());
         const unordered_set<int>& parents = (variant == "Parent") ?
                                             parentReader->getChild(stmtNum) :
                                             parentTTReader->getChildT(stmtNum);
-        for (int stmt : parents) {
+        filteredParents = getFilteredStmtsNumByType(parents, secondStatementType, pkbReaderManager);
+
+        for (int stmt : filteredParents) {
             unordered_map<string, string> row;
             row[col2] = to_string(stmt);
             resultTable->insertNewRow(row);
@@ -117,7 +132,8 @@ void ParentStrategy::processSecondParam(const Token& firstParam, const Token& se
         const unordered_set<int>& parents = (variant == "Parent") ?
                                             parentReader->getAllChildren() :
                                             parentTTReader->getAllChildrenT();
-        for (int stmt : parents) {
+        filteredParents = getFilteredStmtsNumByType(parents, secondStatementType, pkbReaderManager);
+        for (int stmt : filteredParents) {
             unordered_map<string, string> row;
             row[col2] = to_string(stmt);
             resultTable->insertNewRow(row);
