@@ -769,6 +769,52 @@ TEST_CASE("Check Evaluation result of a select variable query with assign patter
 
 }
 
+TEST_CASE("Check Evaluation result of a select pattern assign query with partial pattern on RHS and LHS with Wildcard") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<AssignPatternWriter> assignPatternWriter = pkbWriterManager->getAssignPatternWriter();
+    std::shared_ptr<AssignWriter> assignWriter = pkbWriterManager->getAssignWriter();
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    assignPatternWriter->addAssignPattern(1, "y", "x + 1");
+    assignPatternWriter->addAssignPattern(2, "z", "2 + y");
+    assignPatternWriter->addAssignPattern(3, "x", "3 + x");
+    assignPatternWriter->addAssignPattern(4, "w", "x");
+    assignWriter->insertAssign(1);
+    assignWriter->insertAssign(2);
+    assignWriter->insertAssign(3);
+    assignWriter->insertAssign(4);
+
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "assign"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::PatternKeyword, "pattern"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::QuoutConst, "\"x\""),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Rparenthesis, ")")
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ "1", "3", "4" });
+
+}
 
 TEST_CASE("Check Evaluation result of a simple select v for ModifiesS") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
