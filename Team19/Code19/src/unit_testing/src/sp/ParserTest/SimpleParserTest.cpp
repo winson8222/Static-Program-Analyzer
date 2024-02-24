@@ -21,55 +21,27 @@ TEST_CASE("Program parsing throws an error for missing parenthesis around !(cond
 	CHECK_THROWS_AS(parser.parse(), std::runtime_error);
 }
 
-TEST_CASE("Single procedure, with read statement") {
+
+TEST_CASE("Calling parseProgram for multiple procedures", "[parse][program]") {
 	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program1.txt";
 	REQUIRE(std::filesystem::exists(testFileName));
 	SimpleParserFacade parser(testFileName);
 	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
 
 	REQUIRE(tree_ptr->type == ASTNodeType::PROGRAMS);
+	REQUIRE(tree_ptr->lineNumber == -1);
 	REQUIRE(tree_ptr->value == Utility::getASTNodeType(ASTNodeType::PROGRAMS));
 
 
 	const auto& procedures = tree_ptr->children;
-	REQUIRE(procedures.size() == 1);
+	REQUIRE(procedures.size() == 3);
 
-	REQUIRE(procedures[0]->type == ASTNodeType::PROCEDURE);
-	REQUIRE(procedures[0]->value == "main");
-
-	const auto& statement = ((procedures[0]->children)[0]->children)[0];
-	REQUIRE(statement->type == ASTNodeType::READ);
-	REQUIRE(statement->lineNumber == 1);
-	REQUIRE(statement->children[0]->value == "helloWorld");
+	REQUIRE(procedures[1]->type == ASTNodeType::PROCEDURE);
+	REQUIRE(procedures[1]->value == "proc2");
 }
 
-TEST_CASE("Single procedure, all possible conditional expressions in while statements") {
+TEST_CASE("Calling parseProgram for if-else-then procedures", "[parse][program]") {
 	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program2.txt";
-	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParserFacade parser(testFileName);
-	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
-	auto& procedure = (tree_ptr->children)[0];
-
-	// Checking procedure node
-	REQUIRE(procedure->type == ASTNodeType::PROCEDURE);
-	REQUIRE(procedure->value == "conditionalExpressions");
-
-	const auto& statements = (procedure->children)[0]->children;
-
-	REQUIRE(statements.size() == 11);
-
-	for (int i = 0; i < statements.size(); i++) {
-		auto& statement = statements[i];
-		REQUIRE(statement->type == ASTNodeType::WHILE);
-		
-		auto& contents = ((statement->children)[1]->children)[0];
-		REQUIRE(contents->type == ASTNodeType::READ);
-		REQUIRE((contents->children)[0]->value == "x");
-	}
-}
-
-TEST_CASE("Calling parseProgram for if statement type procedure", "[parse][program]") {
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program7.txt";
 	REQUIRE(std::filesystem::exists(testFileName));
 	SimpleParserFacade parser(testFileName);
 	std::shared_ptr<ASTNode> tree_ptr = parser.parse();

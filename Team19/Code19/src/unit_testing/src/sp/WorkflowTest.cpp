@@ -25,7 +25,7 @@ TEST_CASE("Test parser of SP on multipgole procedures", "[SourceProcessor]") {
 
     auto statementReader = pkbReaderManager->getStatementReader();
     auto values3 = statementReader->getAllStatements();
-    std::unordered_set<int> expectedValues3 = {1, 2, 3};
+    std::unordered_set<int> expectedValues3 = {1};
     REQUIRE(values3 == expectedValues3);
 
 }

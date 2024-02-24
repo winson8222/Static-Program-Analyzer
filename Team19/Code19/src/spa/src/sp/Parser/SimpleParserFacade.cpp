@@ -8,5 +8,4 @@ std::shared_ptr<ASTNode> SimpleParserFacade::parse() {
     std::shared_ptr<ASTNode> tree_ptr = parser.parseProgram();
     return tree_ptr;
 }
-
 // ai-gen end

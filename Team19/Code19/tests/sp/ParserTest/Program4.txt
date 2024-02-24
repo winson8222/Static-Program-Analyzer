@@ -1,5 +1,5 @@
 procedure procedure {
-	while (read > 2) {
+	while (!(read > 2)) {
 		if = 3 + 1;
 	} 
 
