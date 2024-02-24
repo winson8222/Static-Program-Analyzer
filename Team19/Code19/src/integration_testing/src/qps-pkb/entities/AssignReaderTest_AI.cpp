@@ -39,7 +39,7 @@ public:
 
 };
 
-TEST_CASE_METHOD(AssignPatternMatchingFixture, "qps/QueryProcessingSubsystem: AssignPatternReader Integration Test", "[QPS][PKB][AssignPattern]") {
+TEST_CASE_METHOD(AssignPatternMatchingFixture, "qps/QueryProcessingSubsystem: AssignReader Integration Test", "[QPS][PKB][AssignReader]") {
     populatePatterns();
 
     SECTION("Retrieve All RHS") {

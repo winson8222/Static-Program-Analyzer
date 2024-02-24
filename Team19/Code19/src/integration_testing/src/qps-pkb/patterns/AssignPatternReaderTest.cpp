@@ -4,7 +4,7 @@
 #include "commons/ShuntingYard.h"
 #include "../Utils.h"
 
-TEST_CASE("qps/QueryProcessingSubsystem: AssignPatternReader Updated Integration Test") {
+TEST_CASE("qps/QueryProcessingSubsystem: AssignPatternReader Integration Test") {
     auto pkbManager = std::make_shared<PKBManager>();
     auto assignPatternWriter = pkbManager->getPKBWriterManager()->getAssignPatternWriter();
     auto pkbReaderManager = pkbManager->getPKBReaderManager();
@@ -29,7 +29,6 @@ TEST_CASE("qps/QueryProcessingSubsystem: AssignPatternReader Updated Integration
     }
 
     SECTION("Partial Matching with Variable in RHS Pattern") {
-        // Tests based on rules: pattern a(_, _"x"_) should be valid.
         std::string queryPartialMatchVariable = R"(assign a; Select a pattern a(_, _"x"_))";
         auto resultPartialMatchVariable = Utils::getResultsFromQuery(queryPartialMatchVariable, pkbReaderManager);
         std::unordered_set<std::string> expectedResultsPartialMatchVariable = {"1"};
@@ -37,11 +36,25 @@ TEST_CASE("qps/QueryProcessingSubsystem: AssignPatternReader Updated Integration
     }
 
     SECTION("Partial Matching with Constant in RHS Pattern") {
-        // Tests based on rules: pattern a(_, _"1"_) should be valid.
         std::string queryPartialMatchConstant = R"(assign a; Select a pattern a(_, _"1"_))";
         auto resultPartialMatchConstant = Utils::getResultsFromQuery(queryPartialMatchConstant, pkbReaderManager);
         std::unordered_set<std::string> expectedResultsPartialMatchConstant = {"1"};
         REQUIRE(resultPartialMatchConstant == expectedResultsPartialMatchConstant);
     }
-    
+
+        // Negative Test Cases
+    SECTION("Invalid Partial Match RHS with Operators") {
+        // This query attempts a partial match with an expression containing operators, which should not yield results.
+        std::string queryInvalidPartial = R"(assign a; Select a pattern a(_, _"x + 1"_))";
+        auto resultsInvalidPartial = Utils::getResultsFromQuery(queryInvalidPartial, pkbReaderManager);
+        REQUIRE(resultsInvalidPartial.empty());
+    }
+
+
+    SECTION("Non-Existent Variable in RHS Pattern") {
+        // This query attempts to match a pattern with a non-existent variable in the RHS, which should yield no results.
+        std::string queryNonExistentVariable = R"(assign a; Select a pattern a(_, _"nonExistentVar"_))";
+        auto resultsNonExistentVariable = Utils::getResultsFromQuery(queryNonExistentVariable, pkbReaderManager);
+        REQUIRE(resultsNonExistentVariable.empty());
+    }
 }
