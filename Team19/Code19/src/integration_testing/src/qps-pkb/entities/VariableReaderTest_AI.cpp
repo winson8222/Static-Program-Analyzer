@@ -2,7 +2,7 @@
 #include <memory>
 #include "pkb/PKBManager.h"
 
-TEST_CASE("PKB-QPS Integration: VariableReader") {
+TEST_CASE("qps/QueryProcessingSubsystem: VariableReader") {
     auto pkbManager = std::make_shared<PKBManager>();
     auto variableWriter = pkbManager->getPKBWriterManager()->getVariableWriter();
 

@@ -2,7 +2,7 @@
 #include <memory>
 #include "pkb/PKBManager.h"
 
-TEST_CASE("PKB-QPS Integration: ConstantReader") {
+TEST_CASE("qps/QueryProcessingSubsystem: ConstantReader") {
     auto pkbManager = std::make_shared<PKBManager>();
     // Use ConstantWriter to directly populate constants
     auto constantWriter = pkbManager->getPKBWriterManager()->getConstantWriter();
@@ -69,7 +69,6 @@ TEST_CASE("PKB-QPS Integration: ConstantReader") {
     }
 
 
-    // The clear method at the end is optional and depends on whether you want to clean the state after tests
-    // This might be necessary if your test suite continues with other tests that expect an empty store
+    // The clear method at the end is optional and depends on whether we want to clean the state after tests
     // constantWriter->clear();
 }

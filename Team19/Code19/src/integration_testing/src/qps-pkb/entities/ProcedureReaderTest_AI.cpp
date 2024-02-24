@@ -2,7 +2,7 @@
 #include <memory>
 #include "pkb/PKBManager.h"
 
-TEST_CASE("PKB-QPS Integration: ProcedureReader") {
+TEST_CASE("qps/QueryProcessingSubsystem: ProcedureReader") {
     auto pkbManager = std::make_shared<PKBManager>();
     // Use ProcedureWriter to directly populate procedures
     auto procedureWriter = pkbManager->getPKBWriterManager()->getProcedureWriter();
@@ -47,6 +47,5 @@ TEST_CASE("PKB-QPS Integration: ProcedureReader") {
     }
 
 
-    // Optionally, clear the populated procedures if necessary to ensure clean state for other tests
-    // procedureWriter->clear(); // Uncomment if such functionality exists
+    // procedureWriter->clear();
 }
