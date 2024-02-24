@@ -90,6 +90,17 @@ bool Utility::nodeIsValidOperator(ASTNodeType t) {
         || t == ASTNodeType::VARIABLE || t == ASTNodeType::CONSTANT;
 }
 
+bool Utility::nodeCanFormValidExpression(ASTNodeType t) {
+	return nodeIsExpression(t) 
+        || nodeIsValidOperator(t)
+        || nodeIsValidOperator(t);
+}
+
+bool Utility::nodeIsNonEntity(ASTNodeType t) {
+	return t == ASTNodeType::PROGRAMS || t == ASTNodeType::PROCEDURE 
+		|| t == ASTNodeType::STATEMENT_LIST;
+}
+
 /*
 static bool isCondExpr(ASTNodeType t);
 static bool isRelExpr(ASTNodeType t);

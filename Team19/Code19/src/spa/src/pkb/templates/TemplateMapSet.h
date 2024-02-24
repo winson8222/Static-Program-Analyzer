@@ -128,6 +128,9 @@ std::unordered_set<ValueType> TemplateMapSet<KeyType, ValueType>::getValues() {
 
 template <typename KeyType, typename ValueType>
 std::unordered_set<ValueType> TemplateMapSet<KeyType, ValueType>::getValuesByKey(KeyType key) {
+    if (this->map.find(key) == this->map.end()) {
+        return std::unordered_set<ValueType>();
+    }
     return this->map[key];
 }
 
@@ -138,6 +141,9 @@ bool TemplateMapSet<KeyType, ValueType>::hasKey(KeyType key) {
 
 template <typename KeyType, typename ValueType>
 bool TemplateMapSet<KeyType, ValueType>::hasKeyValue(KeyType key, ValueType value) {
+    if (this->map.find(key) == this->map.end()) {
+        return false;
+    }
     return this->map[key].find(value) != this->map[key].end();
 }
 

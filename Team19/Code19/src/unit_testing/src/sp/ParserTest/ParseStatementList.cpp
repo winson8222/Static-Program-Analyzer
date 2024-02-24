@@ -20,7 +20,7 @@ TEST_CASE("Calling multiple statements", "[parse][statementList]") {
 	std::shared_ptr<ASTNode> statementList = ((tree_ptr->children)[0]->children)[0];
 
 	REQUIRE(statementList->type == ASTNodeType::STATEMENT_LIST);
-	REQUIRE(statementList->lineNumber == 2);
+	REQUIRE(statementList->lineNumber == 0);
 	REQUIRE(statementList->value == Utility::getASTNodeType(ASTNodeType::STATEMENT_LIST));
 
 	SECTION("Testing Print child node") {
@@ -29,17 +29,17 @@ TEST_CASE("Calling multiple statements", "[parse][statementList]") {
 
 		auto callStatement = statements[0];
 		REQUIRE(callStatement->type == ASTNodeType::CALL);
-		REQUIRE(callStatement->lineNumber == 2);
+		REQUIRE(callStatement->lineNumber == 1);
 		REQUIRE(callStatement->value == Utility::getASTNodeType(ASTNodeType::CALL));
 
 		auto printStatement = statements[1];
 		REQUIRE(printStatement->type == ASTNodeType::PRINT);
-		REQUIRE(printStatement->lineNumber == 3);
+		REQUIRE(printStatement->lineNumber == 2);
 		REQUIRE(printStatement->value == Utility::getASTNodeType(ASTNodeType::PRINT));
 
 		auto readStatement = statements[2];
 		REQUIRE(readStatement->type == ASTNodeType::READ);
-		REQUIRE(readStatement->lineNumber == 4);
+		REQUIRE(readStatement->lineNumber == 3);
 		REQUIRE(readStatement->value == Utility::getASTNodeType(ASTNodeType::READ));
 	}
 }
