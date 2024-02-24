@@ -16,7 +16,7 @@ void ReadVisitor::visit() {
 		ParentTExtractor parentExtractor(context, root, pkbWriterManager);
 		parentExtractor.extract();
 	}
-	if (size > 0) {
+    if (size > 0 && contexts[size - 1]->type != ASTNodeType::PROCEDURE) {
 		ParentExtractor parentExtractor(contexts[size - 1], root, pkbWriterManager);
 		parentExtractor.extract();
 	}
