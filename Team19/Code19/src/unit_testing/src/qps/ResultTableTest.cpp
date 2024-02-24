@@ -1,5 +1,5 @@
 #include "catch.hpp"
-#include "../../spa/src/qps/evaluator/ResultTable.h"
+#include "qps/evaluator/ResultTable.h"
 
 
 using namespace std;

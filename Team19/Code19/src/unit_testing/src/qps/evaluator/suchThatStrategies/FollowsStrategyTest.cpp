@@ -3,7 +3,7 @@
 #include "qps/evaluator/suchThatStrategies/FollowsStrategy.h"
 #include "pkb/PKBReaderManager.h"
 #include "pkb/PKB.h"
-#include "../../spa/src/qps/parser/ParsingResult.h"
+#include "qps/parser/ParsingResult.h"
 
 ParsingResult createParsingResultForFollows(int stmt1, int stmt2, bool isTransitive = false) {
     ParsingResult parsingResult;

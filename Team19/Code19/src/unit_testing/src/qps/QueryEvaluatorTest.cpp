@@ -1,6 +1,6 @@
-#include "../../spa/src/qps/parser/QueryParser.h"
-#include "../../spa/src/pkb/PKBManager.h"
-#include "../../spa/src/qps/evaluator/QueryEvaluator.h"
+#include "qps/parser/QueryParser.h"
+#include "pkb/PKBManager.h"
+#include "qps/evaluator/QueryEvaluator.h"
 #include "catch.hpp"
 
 using namespace std;

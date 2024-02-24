@@ -3,7 +3,7 @@
 #include "qps/evaluator/suchThatStrategies/ModifiesStrategy.h"
 #include "pkb/PKBReaderManager.h"
 #include "pkb/PKB.h"
-#include "../../spa/src/qps/parser/ParsingResult.h"
+#include "qps/parser/ParsingResult.h"
 
 // Helper function for creating a ParsingResult tailored for Modifies tests
 ParsingResult createParsingResultForModifies(const std::string& entity, const std::string& variable, bool isProcedure) {
