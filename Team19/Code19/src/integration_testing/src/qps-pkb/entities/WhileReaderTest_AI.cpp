@@ -13,12 +13,14 @@ public:
         whileWriter = pkbManager->getPKBWriterManager()->getWhileWriter();
         // Clearing previous data for a clean state
         whileWriter->clear();
+
     }
 
     void populateWhileStatements() {
         // Populating "while" statements for retrieval tests
         whileWriter->insertWhile(1);
         whileWriter->insertWhile(5);
+
     }
 };
 

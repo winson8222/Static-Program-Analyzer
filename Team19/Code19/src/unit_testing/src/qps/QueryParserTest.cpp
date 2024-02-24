@@ -381,3 +381,50 @@ TEST_CASE("Check Semantic error repeated token declarations") {
     REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "semantic error at: s");
 
 }
+
+TEST_CASE("Check Semantic error repeated token QuoutConst") {
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "assign"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::PatternKeyword, "pattern"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::QuoutConst, "\10\""),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Rparenthesis, ")")
+
+    };
+
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "");
+
+}
+
+
+TEST_CASE("Check Semantic error repeated token QuoutCons with different quouConst") {
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "assign"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::PatternKeyword, "pattern"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::QuoutConst, "\1\""),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Rparenthesis, ")")
+
+    };
+
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "");
+
+}

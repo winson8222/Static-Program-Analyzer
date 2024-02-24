@@ -35,6 +35,8 @@ public:
         assignPatternWriter->addAssignPattern(2, varZ, "x");
         assignWriter->insertAssign(1);
         assignWriter->insertAssign(2);
+        assignWriter->insertAssign(3);
+
     }
 
 };
@@ -55,6 +57,16 @@ TEST_CASE_METHOD(AssignPatternMatchingFixture, "qps/QueryProcessingSubsystem: As
         REQUIRE(results1 == std::unordered_set<std::string>{"1"});
 
         std::string query2 = "assign a; Select a pattern a(_, \"x\")";
+        auto results2 = Utils::getResultsFromQuery(query2, pkbManager->getPKBReaderManager());
+        REQUIRE(results2 == std::unordered_set<std::string>{"2"});
+    }
+
+    SECTION("Pattern Matching with Specific RHS") {
+        std::string query1 = "assign a; Select a pattern a(_, _\"y\"_)";
+        auto results1 = Utils::getResultsFromQuery(query1, pkbManager->getPKBReaderManager());
+        REQUIRE(results1 == std::unordered_set<std::string>{"1"});
+
+        std::string query2 = "assign a; Select a pattern a(_, _\"x\"_)";
         auto results2 = Utils::getResultsFromQuery(query2, pkbManager->getPKBReaderManager());
         REQUIRE(results2 == std::unordered_set<std::string>{"2"});
     }

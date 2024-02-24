@@ -26,11 +26,11 @@ std::shared_ptr<ResultTable> FollowsStrategy::evaluateQuery(PKBReaderManager& pk
 
     // Handling different parameter types for the Follows relationship
     if (firstParam.getType() == TokenType::IDENT && secondParam.getType() == TokenType::IDENT) {
-        processSynonyms(firstParam, secondParam, variant, resultTable);
+        processSynonyms(firstParam, secondParam, variant, resultTable, parsingResult, pkbReaderManager);
     } else if (firstParam.getType() == TokenType::IDENT) {
-        processFirstParam(firstParam, secondParam, variant, resultTable);
+        processFirstParam(firstParam, secondParam, variant, resultTable, parsingResult, pkbReaderManager);
     } else if (secondParam.getType() == TokenType::IDENT) {
-        processSecondParam(firstParam, secondParam, variant, resultTable);
+        processSecondParam(firstParam, secondParam, variant, resultTable, parsingResult, pkbReaderManager);
     } else if (isBothParamsWildcard(firstParam, secondParam)) {
         resultTable->setAsTruthTable(); // Handling wildcard cases
     } else if (isBothParamsInteger(firstParam, secondParam)) {
@@ -49,14 +49,15 @@ std::shared_ptr<ResultTable> FollowsStrategy::evaluateQuery(PKBReaderManager& pk
  * @param variant Specifies whether it's a direct Follows or transitive Follows* relationship.
  * @param resultTable The table to be populated with query results.
  */
-void FollowsStrategy::processSynonyms(const Token& firstParam, const Token& secondParam, const std::string& variant, std::shared_ptr<ResultTable> resultTable) {
+void FollowsStrategy::processSynonyms(const Token& firstParam, const Token& secondParam, const std::string& variant, std::shared_ptr<ResultTable> resultTable,
+                                      const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
     std::string col1 = firstParam.getValue();
     std::string col2 = secondParam.getValue();
     resultTable->insertAllColumns({col1, col2});
 
     // Retrieve all precedents for Follows or Follows* relationships
     const auto& preFollows = variant == "Follows" ? followsReader->getAllPreFollows() : followsTReader->getAllPreFollowsT();
-
+//
     for (int stmt1 : preFollows) {
         auto postFollows = variant == "Follows" ? followsReader->getPostFollows(stmt1) : followsTReader->getPostFollowsT(stmt1);
 
@@ -76,7 +77,8 @@ void FollowsStrategy::processSynonyms(const Token& firstParam, const Token& seco
  * @param resultTable The table to be populated with query results.
  */
 void FollowsStrategy::processFirstParam(const Token& firstParam, const Token& secondParam, const string& variant,
-                                        std::shared_ptr<ResultTable> resultTable) {
+                                        std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult,
+                                        PKBReaderManager& pkbReaderManager) {
     string col1 = firstParam.getValue();
     resultTable->insertAllColumns({col1});
 
@@ -110,7 +112,8 @@ void FollowsStrategy::processFirstParam(const Token& firstParam, const Token& se
  * @param resultTable The table to be populated with query results.
  */
 void FollowsStrategy::processSecondParam(const Token& firstParam, const Token& secondParam, const string& variant,
-                                         std::shared_ptr<ResultTable> resultTable) {
+                                         std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult,
+                                         PKBReaderManager& pkbReaderManager) {
     string col2 = secondParam.getValue();
     resultTable->insertAllColumns({col2});
 

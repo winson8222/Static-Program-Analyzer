@@ -379,7 +379,7 @@ bool QueryParser::parseEntRef() {
         return true;
     } else {
         if(!parseVarSynonyms()){
-            parsingResult.setErrorMessage(getGrammarError());
+            parsingResult.setErrorMessage(getSemanticError());
             return false;
         }
         return true;

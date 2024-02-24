@@ -1133,3 +1133,282 @@ TEST_CASE("Check Evaluation result of 2 synonyms for UsesS and select statements
     std::unordered_set<string> res = evaluator.evaluateQuery();
     REQUIRE(res == std::unordered_set<string>{"x", "y", "z"});
 }
+
+TEST_CASE("Check Evaluation result of synonym for UsesS and select ifs") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<UsesSWriter> modifiesSWriter = pkbWriterManager->getUsesSWriter();
+    std::shared_ptr<IfWriter> ifWriter = pkbWriterManager->getIfWriter();
+    std::shared_ptr<WhileWriter> whileWriter = pkbWriterManager->getWhileWriter();
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    modifiesSWriter->addUsesS(2, "x");
+    modifiesSWriter->addUsesS(3, "y");
+    modifiesSWriter->addUsesS(4, "z");
+    ifWriter->insertIf(2);
+    whileWriter->insertWhile(3);
+
+
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "if"),
+            Token(TokenType::IDENT, "ifs"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "ifs"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Uses, "Uses"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::IDENT, "ifs"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Rparenthesis, ")")
+
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{"2"});
+}
+
+TEST_CASE("Check Evaluation result of synonym for UsesS and select whiles") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<UsesSWriter> modifiesSWriter = pkbWriterManager->getUsesSWriter();
+    std::shared_ptr<IfWriter> ifWriter = pkbWriterManager->getIfWriter();
+    std::shared_ptr<WhileWriter> whileWriter = pkbWriterManager->getWhileWriter();
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    modifiesSWriter->addUsesS(2, "x");
+    modifiesSWriter->addUsesS(3, "y");
+    modifiesSWriter->addUsesS(4, "z");
+    ifWriter->insertIf(2);
+    whileWriter->insertWhile(3);
+
+
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "while"),
+            Token(TokenType::IDENT, "w"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "w"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Uses, "Uses"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::IDENT, "w"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Rparenthesis, ")")
+
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{"3"});
+}
+
+TEST_CASE("Check Evaluation result of variable for UsesS and select ifs with wildcard") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<UsesSWriter> usesSWriter = pkbWriterManager->getUsesSWriter();
+    std::shared_ptr<IfWriter> ifWriter = pkbWriterManager->getIfWriter();
+    std::shared_ptr<WhileWriter> whileWriter = pkbWriterManager->getWhileWriter();
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+
+    usesSWriter->addUsesS(2, "x");
+    usesSWriter->addUsesS(3, "y");
+    usesSWriter->addUsesS(4, "z");
+    ifWriter->insertIf(2);
+    whileWriter->insertWhile(3);
+
+
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "variable"),
+            Token(TokenType::IDENT, "v"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "v"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Uses, "Uses"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::IDENT, "v"),
+            Token(TokenType::Rparenthesis, ")")
+
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{"x", "y", "z"});
+}
+
+
+TEST_CASE("Check Evaluation result of variable for ModifiesS and select ifs with wildcard") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<ModifiesSWriter> modifiesSWriter = pkbWriterManager->getModifiesSWriter();
+    std::shared_ptr<IfWriter> ifWriter = pkbWriterManager->getIfWriter();
+    std::shared_ptr<WhileWriter> whileWriter = pkbWriterManager->getWhileWriter();
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+
+    modifiesSWriter->addModifiesS(2, "x");
+    modifiesSWriter->addModifiesS(3, "y");
+    modifiesSWriter->addModifiesS(4, "z");
+    ifWriter->insertIf(2);
+    whileWriter->insertWhile(3);
+
+
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "variable"),
+            Token(TokenType::IDENT, "v"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "v"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Modifies, "Modifies"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::IDENT, "v"),
+            Token(TokenType::Rparenthesis, ")")
+
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{"x", "y", "z"});
+}
+
+TEST_CASE("Check Evaluation result of synonym for Modifies and select whiles") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<ModifiesSWriter> modifiesSWriter = pkbWriterManager->getModifiesSWriter();
+    std::shared_ptr<IfWriter> ifWriter = pkbWriterManager->getIfWriter();
+    std::shared_ptr<WhileWriter> whileWriter = pkbWriterManager->getWhileWriter();
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    modifiesSWriter->addModifiesS(2, "x");
+    modifiesSWriter->addModifiesS(3, "y");
+    modifiesSWriter->addModifiesS(4, "z");
+    ifWriter->insertIf(2);
+    whileWriter->insertWhile(3);
+
+
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "while"),
+            Token(TokenType::IDENT, "w"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "w"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Modifies, "Modifies"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::IDENT, "w"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Rparenthesis, ")")
+
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{"3"});
+}
+
+TEST_CASE("Check Evaluation result of synonym for Modifies and select ifs") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<ModifiesSWriter> modifiesSWriter = pkbWriterManager->getModifiesSWriter();
+    std::shared_ptr<IfWriter> ifWriter = pkbWriterManager->getIfWriter();
+    std::shared_ptr<WhileWriter> whileWriter = pkbWriterManager->getWhileWriter();
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    modifiesSWriter->addModifiesS(2, "x");
+    modifiesSWriter->addModifiesS(3, "y");
+    modifiesSWriter->addModifiesS(4, "z");
+    ifWriter->insertIf(2);
+    whileWriter->insertWhile(3);
+
+
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "if"),
+            Token(TokenType::IDENT, "ifs"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "ifs"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Modifies, "Modifies"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::IDENT, "ifs"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Rparenthesis, ")")
+
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{"2"});
+}

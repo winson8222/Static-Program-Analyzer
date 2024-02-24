@@ -19,6 +19,7 @@ protected:
     static string extractQuotedExpression(const Token& token);
     static bool isBothParamsWildcard(const Token& firstParam, const Token& secondParam);
     static unordered_set<int> combineFoundStatements(const unordered_set<int>& newResult, const unordered_set<int>& result);
+    static unordered_set<int> getFilteredStmtsNumByType(unordered_set<int> allStatements, string stmtType, PKBReaderManager pkbReaderManager);
 
 };
 

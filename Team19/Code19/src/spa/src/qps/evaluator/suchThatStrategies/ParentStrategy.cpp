@@ -20,13 +20,13 @@ std::shared_ptr<ResultTable> ParentStrategy::evaluateQuery(PKBReaderManager& pkb
     const Token& suchThatFirstParam = parsingResult.getSuchThatClauseFirstParam();
     const Token& suchThatSecondParam = parsingResult.getSuchThatClauseSecondParam();
     if (suchThatFirstParam.getType() == TokenType::IDENT && suchThatSecondParam.getType() == TokenType::IDENT) {
-        processSynonyms(suchThatFirstParam, suchThatSecondParam, variant, resultTable);
+        processSynonyms(suchThatFirstParam, suchThatSecondParam, variant, resultTable, parsingResult, pkbReaderManager);
     }
     else if (suchThatFirstParam.getType() == TokenType::IDENT) {
-        processFirstParam(suchThatFirstParam, suchThatSecondParam, variant, resultTable);
+        processFirstParam(suchThatFirstParam, suchThatSecondParam, variant, resultTable, parsingResult, pkbReaderManager);
     }
     else if (suchThatSecondParam.getType() == TokenType::IDENT) {
-        processSecondParam(suchThatFirstParam, suchThatSecondParam, variant, resultTable);
+        processSecondParam(suchThatFirstParam, suchThatSecondParam, variant, resultTable, parsingResult, pkbReaderManager);
     }
     else if (isBothParamsWildcard(suchThatFirstParam, suchThatSecondParam)) {
         resultTable->setAsTruthTable();
@@ -40,7 +40,8 @@ std::shared_ptr<ResultTable> ParentStrategy::evaluateQuery(PKBReaderManager& pkb
 
 
 
-void ParentStrategy::processSynonyms(const Token& firstParam, const Token& secondParam, const string& variant, std::shared_ptr<ResultTable> resultTable)
+void ParentStrategy::processSynonyms(const Token& firstParam, const Token& secondParam, const string& variant, std::shared_ptr<ResultTable> resultTable,
+                                     const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager)
 {
     // Implementation for processing when both parameters are synonyms
     string col1 = firstParam.getValue();
@@ -69,7 +70,7 @@ void ParentStrategy::processSynonyms(const Token& firstParam, const Token& secon
 
 // Additional helper methods for readability
 void ParentStrategy::processFirstParam(const Token& firstParam, const Token& secondParam, const string& variant,
-            std::shared_ptr<ResultTable> resultTable) {
+            std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
     // Implementation of processing when the first parameter matches the required synonym
     string col1 = firstParam.getValue();
     resultTable->insertAllColumns({ col1 });
@@ -97,7 +98,7 @@ void ParentStrategy::processFirstParam(const Token& firstParam, const Token& sec
 }
 
 void ParentStrategy::processSecondParam(const Token& firstParam, const Token& secondParam, const string& variant,
-            std::shared_ptr<ResultTable> resultTable) {
+            std::shared_ptr<ResultTable> resultTable,const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
     // Implementation of processing when the second parameter matches the required synonym
     string col2 = secondParam.getValue();
     resultTable->insertAllColumns({ col2 });
