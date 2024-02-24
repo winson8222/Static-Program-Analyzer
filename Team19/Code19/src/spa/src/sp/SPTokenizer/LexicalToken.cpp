@@ -2,7 +2,6 @@
 #include <iostream>
 
 
-
 LexicalToken::LexicalToken(LexicalTokenType type) {
     this->type = type;
     this->lineNumber = -1;

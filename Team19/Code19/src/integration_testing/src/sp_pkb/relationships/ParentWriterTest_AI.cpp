@@ -1,5 +1,6 @@
 #include "catch.hpp"
 
+#include <iostream>
 #include <filesystem>
 #include <fstream>
 #include <memory>
@@ -9,26 +10,27 @@
 
 TEST_CASE("sp/SourceProcessor: Parent") {
     SECTION("Basic Parent") {
+        std::cout << "kill me" << std::endl;
         std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
         std::string filename = "sample.txt";
         std::string sampleProgram = "procedure proc1 {"
-                                    "   x = 1;"
-                                    "   y = 2; }"
+                                    "   x = 1;"     // statement 1
+                                    "   y = 2; }"   // statement 2
                                     "procedure proc2 {"
-                                    "   z = 1;"
-                                    "   print z;"
-                                    "   y = 6 * z;"
-                                    "   while (z > 1) {"
-                                    "       z = z + 1; }}";
-//                                    "   if (z > 1) then {"
-//                                    "       z = z + 1; "
-//                                    "   } else {"
-//                                    "       z = z + 1;"
-//                                    "       x = 4; "
-//                                    "       while (z > 1) {"
-//                                    "           z = z + 1; }"
-//                                    "   }"
-//                                    "   print z; }";
+                                    "   z = 1;"     // statement 3
+                                    "   print z;"   // statement 4
+                                    "   y = 6 * z;" // statement 5
+                                    "   while (z > 1) {"    // statement 6
+                                    "       z = z + 1; }}"; // statement 7
+                                    "   if (z > 1) then {"  // statement 8
+                                    "       z = z + 1; "    // statement 9
+                                    "   } else {"
+                                    "       z = z + 1;"     // statement 10
+                                    "       x = 4; "        // statement 11
+                                    "       while (z > 1) {"    // statement 12
+                                    "           z = z + 1; }"   // statement 13
+                                    "   }"
+                                    "   print z; }";        // statement 14
         std::ofstream file;
         file.open(filename);
         file << sampleProgram;

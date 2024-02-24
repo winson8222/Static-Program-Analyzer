@@ -19,8 +19,6 @@ void PrintVisitor::visit() {
 	if (this->root->type != ASTNodeType::PRINT) {
 		throw std::runtime_error("This is not a print node!");
 	}
-	// I'm here in the Print Visitor - now my purpose is
-	// to populate print statements and the variable (and the uses relationships)
 
 	PrintExtractor printExtractor(this->root, this->pkbWriterManager);
 	printExtractor.extract();
@@ -29,6 +27,10 @@ void PrintVisitor::visit() {
 	variableVisitor.setUsedContext(contexts, root);
 	variableVisitor.visit();
 
+	setParents(this->contexts, this->root, this->pkbWriterManager);
+}
+
+void PrintVisitor::setParents(listnode contexts, std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager) {
 	int size = contexts.size();
 	for (int i = 0; i < size; i++) {
 		std::shared_ptr<ASTNode> context = contexts[i];
@@ -36,7 +38,7 @@ void PrintVisitor::visit() {
 		ParentTExtractor parentExtractor(context, root, pkbWriterManager);
 		parentExtractor.extract();
 	}
-    if (size > 0 && contexts[size - 1]->type != ASTNodeType::PROCEDURE) {
+	if (size > 0 && contexts[size - 1]->type != ASTNodeType::PROCEDURE) {
 		ParentExtractor parentExtractor(contexts[size - 1], root, pkbWriterManager);
 		parentExtractor.extract();
 	}

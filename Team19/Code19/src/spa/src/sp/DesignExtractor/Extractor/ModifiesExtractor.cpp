@@ -22,30 +22,38 @@ void ModifiesExtractor::extract() {
 			break;
 		default:
 			// to do: throw exception
+			// for now bugs will happen if exception is thrown so will handle in M2
 			break;
 	}
 }
 
 void ModifiesExtractor::getAssignModifies() {
-  this->pkbWriterManager->getModifiesSWriter()->addModifiesS(ast1->lineNumber, ast2->value);
+	// Add modifies to the ModifiesS table
+	this->pkbWriterManager->getModifiesSWriter()->addModifiesS(ast1->lineNumber, ast2->value);
 }
 
 void ModifiesExtractor::getReadModifies() {
-  this->pkbWriterManager->getModifiesSWriter()->addModifiesS(ast1->lineNumber, ast2->value);
+	// Add modifies to the ModifiesS table
+	this->pkbWriterManager->getModifiesSWriter()->addModifiesS(ast1->lineNumber, ast2->value);
 }
 
 void ModifiesExtractor::getIfModifies() {
-  this->pkbWriterManager->getModifiesSWriter()->addModifiesS(ast1->lineNumber, ast2->value);
+	// Add modifies to the ModifiesS table
+	this->pkbWriterManager->getModifiesSWriter()->addModifiesS(ast1->lineNumber, ast2->value);
 }
 
 void ModifiesExtractor::getWhileModifies() {
-  this->pkbWriterManager->getModifiesSWriter()->addModifiesS(ast1->lineNumber, ast2->value);
+	// Add modifies to the ModifiesS table
+	this->pkbWriterManager->getModifiesSWriter()->addModifiesS(ast1->lineNumber, ast2->value);
 }
 
 void ModifiesExtractor::getProcedureModifies() {
+	// Add modifies to the ModifiesP table
 	this->pkbWriterManager->getModifiesPWriter()->addModifiesP(ast1->value, ast2->value);
 }
 
 void ModifiesExtractor::getCallModifies() {
 	// Do nothing for now
+	// ideas: will need to modify pointers/variables in the future
+	// to access procedure for recursive calls
 }

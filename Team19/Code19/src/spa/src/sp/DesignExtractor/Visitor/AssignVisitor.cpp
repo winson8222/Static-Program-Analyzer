@@ -25,6 +25,10 @@ void AssignVisitor::visit() {
 	expressionVisitor.setUsedContext(this->contexts, this->root);
 	expressionVisitor.visit();
 
+	setParents(this->contexts, this->root, this->pkbWriterManager);
+}
+
+void AssignVisitor::setParents(listnode contexts, std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager) {
 	int size = contexts.size();
 	for (int i = 0; i < size; i++) {
 		std::shared_ptr<ASTNode> context = contexts[i];

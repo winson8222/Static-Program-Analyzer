@@ -134,23 +134,68 @@ TEST_CASE("sp/ast/ASTNode") {
     }
 
     SECTION("getRPNForm") {
+        // representing x + 1
         std::shared_ptr<ASTNode> ast1 = std::make_shared<ASTNode>(ASTNodeType::ADD, 1, ASTUtility::getASTNodeType(ASTNodeType::ADD));
         ast1->addChild(std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "x"));
         ast1->addChild(std::make_shared<ASTNode>(ASTNodeType::CONSTANT, 1, "1"));
 
         REQUIRE(ast1->getRPNForm() == "x1+");
 
+        // representing (x + 1) * y
         std::shared_ptr<ASTNode> ast2 = std::make_shared<ASTNode>(ASTNodeType::MULTIPLY, 1, ASTUtility::getASTNodeType(ASTNodeType::MULTIPLY));
         ast2->addChild(ast1);
         ast2->addChild(std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "y"));
 
         REQUIRE(ast2->getRPNForm() == "x1+y*");
 
+        // representing (x + 1) * y + 2
         std::shared_ptr<ASTNode> ast3 = std::make_shared<ASTNode>(ASTNodeType::ADD, 1, ASTUtility::getASTNodeType(ASTNodeType::ADD));
         ast3->addChild(ast2);
         ast3->addChild(std::make_shared<ASTNode>(ASTNodeType::CONSTANT, 1, "2"));
 
         REQUIRE(ast3->getRPNForm() == "x1+y*2+");
+
+        // representing (x + 1) * (y / 2)
+        std::shared_ptr<ASTNode> ast4 = std::make_shared<ASTNode>(ASTNodeType::MULTIPLY, 1, ASTUtility::getASTNodeType(ASTNodeType::MULTIPLY));
+        ast4->addChild(ast1);
+        std::shared_ptr<ASTNode> ast5 = std::make_shared<ASTNode>(ASTNodeType::DIVIDE, 1, ASTUtility::getASTNodeType(ASTNodeType::DIVIDE));
+        ast5->addChild(std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "y"));
+        ast5->addChild(std::make_shared<ASTNode>(ASTNodeType::CONSTANT, 1, "2"));
+        ast4->addChild(ast5);
+
+        REQUIRE(ast4->getRPNForm() == "x1+y2/*");
+
+        // representing (x + 1) * ((y - 6) * 2)
+        std::shared_ptr<ASTNode> ast6 = std::make_shared<ASTNode>(ASTNodeType::MULTIPLY, 1, ASTUtility::getASTNodeType(ASTNodeType::MULTIPLY));
+        ast6->addChild(ast1);
+        std::shared_ptr<ASTNode> ast7 = std::make_shared<ASTNode>(ASTNodeType::MULTIPLY, 1, ASTUtility::getASTNodeType(ASTNodeType::MULTIPLY));
+        std::shared_ptr<ASTNode> ast8 = std::make_shared<ASTNode>(ASTNodeType::SUBTRACT, 1, ASTUtility::getASTNodeType(ASTNodeType::SUBTRACT));
+        ast8->addChild(std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "y"));
+        ast8->addChild(std::make_shared<ASTNode>(ASTNodeType::CONSTANT, 1, "6"));
+        ast7->addChild(ast8);
+        ast7->addChild(std::make_shared<ASTNode>(ASTNodeType::CONSTANT, 1, "2"));
+        ast6->addChild(ast7);
+
+        REQUIRE(ast6->getRPNForm() == "x1+y6-2**");
+
+        // representing (a + b) * ((c / d) - (e * f))
+        std::shared_ptr<ASTNode> ast9 = std::make_shared<ASTNode>(ASTNodeType::MULTIPLY, 1, ASTUtility::getASTNodeType(ASTNodeType::MULTIPLY));
+        std::shared_ptr<ASTNode> ast10 = std::make_shared<ASTNode>(ASTNodeType::ADD, 1, ASTUtility::getASTNodeType(ASTNodeType::ADD));
+        ast10->addChild(std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "a"));
+        ast10->addChild(std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "b"));
+        ast9->addChild(ast10);
+        std::shared_ptr<ASTNode> ast11 = std::make_shared<ASTNode>(ASTNodeType::SUBTRACT, 1, ASTUtility::getASTNodeType(ASTNodeType::SUBTRACT));
+        std::shared_ptr<ASTNode> ast12 = std::make_shared<ASTNode>(ASTNodeType::DIVIDE, 1, ASTUtility::getASTNodeType(ASTNodeType::DIVIDE));
+        ast12->addChild(std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "c"));
+        ast12->addChild(std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "d"));
+        ast11->addChild(ast12);
+        std::shared_ptr<ASTNode> ast13 = std::make_shared<ASTNode>(ASTNodeType::MULTIPLY, 1, ASTUtility::getASTNodeType(ASTNodeType::MULTIPLY));
+        ast13->addChild(std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "e"));
+        ast13->addChild(std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "f"));
+        ast11->addChild(ast13);
+        ast9->addChild(ast11);
+
+        REQUIRE(ast9->getRPNForm() == "ab+cd/ef*-*");
     }
 }
 
