@@ -133,6 +133,14 @@ TEST_CASE("Calling parseProgram for while procedures", "[parse][program]") {
 	REQUIRE(whileChildren[1]->type == ASTNodeType::STATEMENT_LIST);
 }
 
+TEST_CASE("Test special procedure names", "[parse][program]") {
+	// Generate test file
+	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program5.txt";
+	REQUIRE(std::filesystem::exists(testFileName));
+	SimpleParserFacade parser(testFileName);
+	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
+}
+
 
 TEST_CASE("Test string representations of programs", "[parse][program]") {
 	// Generate test file

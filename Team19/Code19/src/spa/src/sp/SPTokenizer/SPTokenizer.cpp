@@ -40,7 +40,6 @@ std::vector<LexicalToken> SPTokenizer::tokenize(const std::string& content) {
 				}
 				LexicalTokenType type = rule.first;
 
-				handleKeywordConflict(type, isPreviousTokenKeyword);
 				LexicalToken t(type, lineNumber, (int)(originalLine.size() - line.size()), match.str());
 				assertValidToken(type, match.str());
 
@@ -72,17 +71,5 @@ void SPTokenizer::assertValidToken(LexicalTokenType type, const std::string& nam
 	std::regex regexPattern(pattern);
 	if (!std::regex_match(name, regexPattern)) {
 		throw std::runtime_error("ERROR: Name not valid " + name);
-	}
-}
-
-void SPTokenizer::handleKeywordConflict(LexicalTokenType& type, bool& isPreviousTokenKeyword) {
-	if (isPreviousTokenKeyword && (LexicalTokenTypeMapper::isKeyword(type) || type == LexicalTokenType::NAME)) {
-		type = LexicalTokenType::NAME;
-		isPreviousTokenKeyword = false;
-	}
-	else {
-		if (LexicalTokenTypeMapper::isKeyword(type)) {
-			isPreviousTokenKeyword = true;
-		}
 	}
 }
