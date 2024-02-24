@@ -9,7 +9,7 @@ procedure procedure {
 		while = then;
 	}
 
-	read = 1 + 3;
+	read = 1 + program;
 
 	call call;
 	print read;

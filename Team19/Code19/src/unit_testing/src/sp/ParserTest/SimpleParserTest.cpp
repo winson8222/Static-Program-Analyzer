@@ -164,7 +164,70 @@ TEST_CASE("Parsing single program with all possible statements types.") {
 	}
 
 	SECTION("Testing if-then-else statement") {
-		// TO write
+		auto& ifStatement = statements[1];
+
+		REQUIRE(ifStatement->type == ASTNodeType::IF_ELSE_THEN);
+		REQUIRE(ifStatement->lineNumber == 3);
+		REQUIRE(ifStatement->value == Utility::getASTNodeType(ASTNodeType::IF_ELSE_THEN));
+
+		auto& ifChildren = ifStatement->children;
+		REQUIRE(ifChildren.size() == 3);
+
+		SECTION("Testing predicates tree child node") {
+			auto& cond_expr = ifChildren[0];
+
+			REQUIRE(cond_expr->type == ASTNodeType::LESSER);
+			REQUIRE(cond_expr->lineNumber == 3);
+			REQUIRE(cond_expr->value == Utility::getASTNodeType(ASTNodeType::LESSER));
+
+			const auto& children = cond_expr->children;
+			REQUIRE(children.size() == 2);
+			REQUIRE(children[0]->type == ASTNodeType::VARIABLE);
+			REQUIRE(children[0]->lineNumber == 3);
+			REQUIRE(children[0]->value == "then");
+
+			REQUIRE(children[1]->type == ASTNodeType::CONSTANT);
+			REQUIRE(children[1]->lineNumber == 3);
+			REQUIRE(children[1]->value == "2");
+		}
+
+		SECTION("Testing If-then statement list node") {
+			REQUIRE(ifChildren[1]->type == ASTNodeType::STATEMENT_LIST);
+			auto& statement = (ifChildren[1]->children)[0];
+
+			REQUIRE(statement->type == ASTNodeType::ASSIGN);
+			REQUIRE(statement->lineNumber == 4);
+			REQUIRE(statement->value == Utility::getASTNodeType(ASTNodeType::ASSIGN));
+
+			const auto& children = statement->children;
+			REQUIRE(children.size() == 2);
+			REQUIRE(children[0]->type == ASTNodeType::VARIABLE);
+			REQUIRE(children[0]->lineNumber == 4);
+			REQUIRE(children[0]->value == "else");
+
+			REQUIRE(children[1]->type == ASTNodeType::VARIABLE);
+			REQUIRE(children[1]->lineNumber == 4);
+			REQUIRE(children[1]->value == "else");
+		}
+
+		SECTION("Testing Else statement list node") {
+			REQUIRE(ifChildren[1]->type == ASTNodeType::STATEMENT_LIST);
+			auto& statement = (ifChildren[2]->children)[0];
+
+			REQUIRE(statement->type == ASTNodeType::ASSIGN);
+			REQUIRE(statement->lineNumber == 5);
+			REQUIRE(statement->value == Utility::getASTNodeType(ASTNodeType::ASSIGN));
+
+			const auto& children = statement->children;
+			REQUIRE(children.size() == 2);
+			REQUIRE(children[0]->type == ASTNodeType::VARIABLE);
+			REQUIRE(children[0]->lineNumber == 5);
+			REQUIRE(children[0]->value == "while");
+
+			REQUIRE(children[1]->type == ASTNodeType::VARIABLE);
+			REQUIRE(children[1]->lineNumber == 5);
+			REQUIRE(children[1]->value == "then");
+		}
 	}
 
 	SECTION("Testing assign statement") {
@@ -192,9 +255,9 @@ TEST_CASE("Parsing single program with all possible statements types.") {
 				REQUIRE(constants[0]->lineNumber == 6);
 				REQUIRE(constants[0]->value == "1");
 
-				REQUIRE(constants[1]->type == ASTNodeType::CONSTANT);
+				REQUIRE(constants[1]->type == ASTNodeType::VARIABLE);
 				REQUIRE(constants[1]->lineNumber == 6);
-				REQUIRE(constants[1]->value == "3");
+				REQUIRE(constants[1]->value == "program");
 			}
 		}
 	}
@@ -302,26 +365,4 @@ TEST_CASE("Calling parseProgram for complex procedure", "[parse][program]") {
 	REQUIRE(lastExpr[0]->value == "cenY");
 	REQUIRE(lastExpr[1]->type == ASTNodeType::VARIABLE);
 	REQUIRE(lastExpr[1]->value == "cenY");
-}
-
-TEST_CASE("Calling parseProgram for if statement type procedure", "[parse][program]") {
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program7.txt";
-	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParserFacade parser(testFileName);
-	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
-
-	REQUIRE(tree_ptr->type == ASTNodeType::PROGRAMS);
-	REQUIRE(tree_ptr->lineNumber == -1);
-	REQUIRE(tree_ptr->value == Utility::getASTNodeType(ASTNodeType::PROGRAMS));
-
-
-	std::shared_ptr<ASTNode> ifStatement = (((tree_ptr->children)[0]->children)[0]->children)[0];
-	REQUIRE(ifStatement->type == ASTNodeType::IF_ELSE_THEN);
-
-	auto& ifChildren = ifStatement->children;
-	REQUIRE(ifChildren.size() == 3);
-
-	REQUIRE(ifChildren[0]->type == ASTNodeType::GREATER);
-	REQUIRE(ifChildren[1]->type == ASTNodeType::STATEMENT_LIST);
-	REQUIRE(ifChildren[2]->type == ASTNodeType::STATEMENT_LIST);
 }

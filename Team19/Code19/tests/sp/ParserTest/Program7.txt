@@ -1,9 +1,0 @@
-procedure procedure {
-	if (read > 2) then {
-		if = 3 + 1;
-	} else {
-		call = 3 + 2;
-	}
-
-
-}
