@@ -1,54 +1,62 @@
 #include "catch.hpp"
 #include <memory>
 #include "pkb/PKBManager.h"
+#include "pkb/writers/patterns/AssignPatternWriter.h"
+#include "pkb/readers/patterns/AssignPatternReader.h"
+#include "../Utils.h" // Assuming Utils.h is available for utility functions
 
-// Defines a setup for Assignment Pattern Matching tests to avoid repetition
+// Fixture class for setting up PKB and Assignment Pattern tests
 class AssignPatternMatchingFixture {
 public:
     std::shared_ptr<PKBManager> pkbManager;
     std::shared_ptr<AssignPatternWriter> assignPatternWriter;
-    std::shared_ptr<AssignPatternReader> assignPatternReader;
+    std::shared_ptr<VariableWriter> variableWriter;
+    std::shared_ptr<AssignWriter> assignWriter;
 
     AssignPatternMatchingFixture() : pkbManager(std::make_shared<PKBManager>()) {
         assignPatternWriter = pkbManager->getPKBWriterManager()->getAssignPatternWriter();
-        assignPatternReader = pkbManager->getPKBReaderManager()->getAssignPatternReader();
-        // Clearing previous data to ensure a clean start for each test
+        variableWriter = pkbManager->getPKBWriterManager()->getVariableWriter();
+        assignWriter = pkbManager->getPKBWriterManager()->getAssignWriter();
+        // Clearing previous data for a clean state
         assignPatternWriter->clear();
     }
 
     void populatePatterns() {
-        // Populating PKB with various assignment patterns for comprehensive testing
-        assignPatternWriter->addAssignPattern(1, "x", "v + x * y + z * t");
-        assignPatternWriter->addAssignPattern(2, "y", "x - 5");
-        assignPatternWriter->addAssignPattern(3, "z", "y * 2 + x / 5");
-        // Additional patterns can be added here
+        // Define variables as non-const strings
+        std::string varX = "x";
+        std::string varY = "y";
+        std::string varZ = "z";
+
+        // Populating assignment patterns for retrieval tests
+        variableWriter->insertVariable(varX);
+        variableWriter->insertVariable(varY);
+        variableWriter->insertVariable(varZ);
+        assignPatternWriter->addAssignPattern(1, varX, "y + 1");
+        assignPatternWriter->addAssignPattern(2, varZ, "x * 2");
+        assignWriter->insertAssign(1);
+        assignWriter->insertAssign(2);
     }
+
 };
 
-TEST_CASE_METHOD(AssignPatternMatchingFixture, "qps/QueryProcessingSubsystem: Assignment Pattern Matching", "[QPS][PKB][AssignPattern]") {
+TEST_CASE_METHOD(AssignPatternMatchingFixture, "qps/QueryProcessingSubsystem: AssignPatternReader Integration Test", "[QPS][PKB][AssignPattern]") {
     populatePatterns();
 
-    SECTION("Verify pattern retrieval for a specific statement") {
-        REQUIRE(assignPatternReader->contains(1) == true);
-        auto pattern = assignPatternReader->getPattern(1);
-        REQUIRE(pattern.first == "x");
-        REQUIRE(pattern.second == "v + x * y + z * t");
+    SECTION("Retrieve All RHS") {
+        std::unordered_set<std::string> expectedLhs = {"x", "z"};
+        std::string query = "variable v; assign a; Select v pattern a(v, _)";
+        auto result = Utils::getResultsFromQuery(query, pkbManager->getPKBReaderManager());
+        REQUIRE(result == expectedLhs);
     }
 
-    SECTION("Retrieve All Statement Numbers with Specific RHS") {
-        auto stmtsWithRHS = assignPatternReader->getStatementNumbersWithRHS("v + x * y + z * t");
-        REQUIRE(stmtsWithRHS.find(1) != stmtsWithRHS.end());
-    }
+    SECTION("Pattern Matching with Specific RHS") {
+        std::string query1 = "assign a; Select a pattern a(_, \"y + 1\")";
+        auto results1 = Utils::getResultsFromQuery(query1, pkbManager->getPKBReaderManager());
+        REQUIRE(results1 == std::unordered_set<std::string>{"1"});
 
-    SECTION("Matching with Variable as First Argument and Complex Expression Matches") {
-        // Combining related tests to reduce repetition and improve clarity
-        auto stmtsWithX = assignPatternReader->getStatementNumbersWithLHS("x");
-        REQUIRE(stmtsWithX.size() == 1);
-        REQUIRE(stmtsWithX.find(1) != stmtsWithX.end());
-
-        auto stmtsWithComplexRHS = assignPatternReader->getStatementNumbersWithRHS("y * 2 + x / 5");
-        REQUIRE(stmtsWithComplexRHS.size() == 1);
-        REQUIRE(stmtsWithComplexRHS.find(3) != stmtsWithComplexRHS.end());
+        std::string query2 = "assign a; Select a pattern a(_, \"x * 2\")";
+        auto results2 = Utils::getResultsFromQuery(query2, pkbManager->getPKBReaderManager());
+        REQUIRE(results2 == std::unordered_set<std::string>{"2"});
     }
 
 }
