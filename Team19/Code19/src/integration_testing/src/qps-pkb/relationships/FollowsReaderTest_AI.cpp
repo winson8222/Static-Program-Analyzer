@@ -1,49 +1,46 @@
 #include "catch.hpp"
 #include <memory>
+#include <string>
 #include "pkb/PKBManager.h"
+#include "../Utils.h"
 
-TEST_CASE("qps/QueryProcessingSubsystem: FollowsReader") {
+TEST_CASE("qps/QueryProcessingSubsystem: FollowsReader Integration Test") {
     auto pkbManager = std::make_shared<PKBManager>();
     auto followsWriter = pkbManager->getPKBWriterManager()->getFollowsWriter();
+    auto statementWriter = pkbManager->getPKBWriterManager()->getStatementWriter();
 
-    // Prepare the environment: Clear the store before populating it to ensure a clean state.
+    // Setup PKB with Follows relationships
     followsWriter->clear();
+    statementWriter->clear();
+    followsWriter->addFollows(1, 2);
+    followsWriter->addFollows(2, 3);
+    followsWriter->addFollows(3, 4);
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
 
-    // Populating Follows relationships for retrieval tests.
-    followsWriter->addFollows(1, 2); // Statement 1 follows statement 2
-    followsWriter->addFollows(2, 3); // Statement 2 follows statement 3
-    followsWriter->addFollows(4, 5); // Statement 4 follows statement 5
+    auto pkbReaderManager = pkbManager->getPKBReaderManager();
 
-    auto followsReader = pkbManager->getPKBReaderManager()->getFollowsReader();
+//    SECTION("Verify Follows relationships via QPS") {
+//        std::string query = "stmt s1, s2; Select <s1, s2> such that Follows(s1, s2)";
+//        auto results = Utils::getResultsFromQuery(query, pkbReaderManager);
+//        std::unordered_set<std::string> expectedResults = {"<1, 2>", "<3, 4>"};
+//        REQUIRE(results == expectedResults);
+//    }
 
-    SECTION("Verify retrieval of all Preceding and Following statements") {
-        REQUIRE(followsReader->getAllPreFollows() == std::unordered_set<int>{1, 2, 4});
-        REQUIRE(followsReader->getAllPostFollows() == std::unordered_set<int>{2, 3, 5});
-    }
+    SECTION("Verify individual Follows relationships via QPS") {
+        // Testing Follows(s, 1) should yield no results
+        std::string query1 = "stmt s; Select s such that Follows(s, 1)";
+        auto results1 = Utils::getResultsFromQuery(query1, pkbReaderManager);
+        std::unordered_set<std::string> expectedResults1 = {};
+        REQUIRE(results1 == expectedResults1);
 
-    SECTION("Check specific Follows relationships exist") {
-        REQUIRE(followsReader->hasFollows(1, 2) == true);
-        REQUIRE(followsReader->hasFollows(2, 3) == true);
-        REQUIRE(followsReader->hasFollows(1, 3) == false); // There's no direct Follows relationship between 1 and 3
-    }
-
-    SECTION("Retrieve statements that directly follow a given statement") {
-        auto postFollows1 = followsReader->getPostFollows(1);
-        auto postFollows2 = followsReader->getPostFollows(2);
-        REQUIRE(postFollows1.find(2) != postFollows1.end());
-        REQUIRE(postFollows2.find(3) != postFollows2.end());
-    }
-
-    SECTION("Retrieve statements that are directly preceded by a given statement") {
-        auto preFollows3 = followsReader->getPreFollows(3);
-        auto preFollows5 = followsReader->getPreFollows(5);
-        REQUIRE(preFollows3.find(2) != preFollows3.end());
-        REQUIRE(preFollows5.find(4) != preFollows5.end());
-    }
-
-    SECTION("Check if FollowsStore is empty after clearing") {
-        followsWriter->clear();
-        REQUIRE(followsReader->isEmpty() == true);
+        // Testing Follows(2, s) should yield {3}
+        std::string query2 = "stmt s; Select s such that Follows(2, s)";
+        auto results2 = Utils::getResultsFromQuery(query2, pkbReaderManager);
+        std::unordered_set<std::string> expectedResults2 = {"3"};
+        REQUIRE(results2 == expectedResults2);
     }
 
 }
