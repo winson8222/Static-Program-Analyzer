@@ -228,6 +228,55 @@ TEST_CASE("Check for semantic error for undeclared stmt synonyms") {
 
 }
 
+TEST_CASE("Check semantic error with first expression of Modifies be wildcard") {
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "stmt"),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::DesignEntity, "variable"),
+            Token(TokenType::IDENT, "v"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Modifies, "Modifies"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::IDENT, "v"),
+            Token(TokenType::Rparenthesis, ")")
+    };
+
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "semantic error at: _");
+
+}
+
+TEST_CASE("Check semantic error with first expression of Uses be wildcard") {
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "stmt"),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::DesignEntity, "variable"),
+            Token(TokenType::IDENT, "v"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Uses, "Uses"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::IDENT, "v"),
+            Token(TokenType::Rparenthesis, ")")
+    };
+
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "semantic error at: _");
+
+}
+
+
 TEST_CASE("Check Grammars of valid tokens that Modifies with two stmtRefs in paranthesis") {
     std::vector<Token> tokens = {
             Token(TokenType::DesignEntity, "stmt"),

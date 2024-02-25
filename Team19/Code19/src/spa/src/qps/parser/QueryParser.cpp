@@ -197,7 +197,7 @@ bool QueryParser::parseRelRef() {
         if (!advanceToken()) {
             return false;
         }
-        if(!parsestmtRefstmtRef()) {
+        if(!parseStmtRefStmtRef()) {
             return false;
         }
         return true;
@@ -251,6 +251,13 @@ bool QueryParser::parseUsesOrModifies() {
         parsingResult.setErrorMessage(getGrammarError());
         return false;
     }
+
+    if (match(TokenType::Wildcard)) {
+        parsingResult.setErrorMessage(getSemanticError());
+        return false;
+    }
+
+
 
 
     if (parseStmtRef()) {
@@ -312,7 +319,7 @@ bool QueryParser::parseUsesOrModifies() {
 
 // Parses a statement reference to statement reference relation.
 // Ensures correct syntax and processes multiple statement references.
-bool QueryParser::parsestmtRefstmtRef() {
+bool QueryParser::parseStmtRefStmtRef() {
     if (match(TokenType::Lparenthesis)) {
         if (!advanceToken()) {
             return false;
@@ -359,7 +366,7 @@ bool QueryParser::parsestmtRefstmtRef() {
 
 // Parses a statement reference in the query.
 bool QueryParser::parseStmtRef() {
-    if (match(TokenType::INTEGER) || match(TokenType::Wildcard)) {
+    if (match(TokenType::INTEGER)) {
         return true;
     } else {
         if(!parseStmtSynonyms()) {
