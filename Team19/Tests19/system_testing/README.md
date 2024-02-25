@@ -26,3 +26,14 @@ chmod +x run_tests.sh
 cd m1
 .\window_test.ps1
 ```
+
+Tips:
+
+If you cannot run for any reasons, please make sure that all subfolders to m1 exist on your working
+directory:
+
+m1\
+	- source\
+	- queries\
+	- outputs\
+	- logs\
