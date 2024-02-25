@@ -53,7 +53,14 @@ void FollowsStrategy::processSynonyms(const Token& firstParam, const Token& seco
                                       const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
     std::string col1 = firstParam.getValue();
     std::string col2 = secondParam.getValue();
-    resultTable->insertAllColumns({col1, col2});
+
+    // check if the same synonym is being referred to
+    if (col1 == col2) {
+        resultTable->insertAllColumns({col1});
+    } else {
+        resultTable->insertAllColumns({col1, col2});
+    }
+
     string firstStatementType = parsingResult.getDeclaredSynonym(firstParam.getValue());
     string secondStatementType = parsingResult.getDeclaredSynonym(secondParam.getValue());
     unordered_set<int> filteredPreFollows;
@@ -65,7 +72,15 @@ void FollowsStrategy::processSynonyms(const Token& firstParam, const Token& seco
         auto postFollows = variant == "Follows" ? followsReader->getPostFollows(stmt1) : followsTReader->getPostFollowsT(stmt1);
         filteredPostFollows = getFilteredStmtsNumByType(postFollows, secondStatementType, pkbReaderManager);
         for (int stmt2 : filteredPostFollows) {
-            resultTable->insertNewRow({{col1, std::to_string(stmt1)}, {col2, std::to_string(stmt2)}});
+            // if the two synonyms are the same, add only one col and the 2 value must be the same
+            if (col1 == col2) {
+                if (stmt1 == stmt2) {
+                    resultTable->insertNewRow({{col1, std::to_string(stmt1)}});
+                }
+            } else {
+                resultTable->insertNewRow({{col1, std::to_string(stmt1)}, {col2, std::to_string(stmt2)}});
+            }
+
         }
     }
 }

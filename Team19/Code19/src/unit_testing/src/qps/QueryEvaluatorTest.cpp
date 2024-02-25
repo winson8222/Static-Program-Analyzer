@@ -1555,3 +1555,50 @@ TEST_CASE("Check Evaluation result of synonym for Follows and select ifs with wh
     std::unordered_set<string> res = evaluator.evaluateQuery();
     REQUIRE(res == std::unordered_set<string>{"2"});
 }
+
+
+//stmt s;
+//Select s such that Follows (s, s)
+TEST_CASE("Check Evaluation result of synonym for Follows with same stmt being used as both params") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<FollowsWriter> followsWriter = pkbWriterManager->getFollowsWriter();
+    std::shared_ptr<IfWriter> ifWriter = pkbWriterManager->getIfWriter();
+    std::shared_ptr<WhileWriter> whileWriter = pkbWriterManager->getWhileWriter();
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    followsWriter->addFollows(1, 2);
+    followsWriter->addFollows(2,3);
+    followsWriter->addFollows(3,4);
+
+
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "stmt"),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Follows, "Follows"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::Rparenthesis, ")")
+
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{});
+}

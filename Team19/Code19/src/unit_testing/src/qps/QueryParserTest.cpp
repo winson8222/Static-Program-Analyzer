@@ -521,3 +521,28 @@ TEST_CASE("Check no grammatical error with QuoutConst with and expressionSpec") 
     REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "");
 
 }
+
+TEST_CASE("Check no grammatical error with assignment as first param of Parent") {
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "assign"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::DesignEntity, "while"),
+            Token(TokenType::IDENT, "w"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "w"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Parent, "Parent"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::INTEGER, "2"),
+            Token(TokenType::Rparenthesis, ")")
+    };
+
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "");
+
+}
+
