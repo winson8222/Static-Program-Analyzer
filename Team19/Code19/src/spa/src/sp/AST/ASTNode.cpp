@@ -69,7 +69,7 @@ std::string ASTNode::getRPNForm() {
     }
 
     if (children.size() == 0) {
-        return value;
+        return "'" + value + "'";
     }
     std::string result;
 
@@ -77,6 +77,6 @@ std::string ASTNode::getRPNForm() {
     for (const auto& child : children) {
 		result += child->getRPNForm();
 	}
-    result = result + value;
+    result = result + "'" + value + "'";
     return result;
 }
