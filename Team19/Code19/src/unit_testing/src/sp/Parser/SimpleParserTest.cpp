@@ -79,7 +79,7 @@ TEST_CASE("Single procedure, all possible conditional expressions in while state
 
 	const auto& statements = (procedure->children)[0]->children;
 
-	REQUIRE(statements.size() == 12);
+	REQUIRE(statements.size() == 13);
 
 	for (int i = 0; i < statements.size(); i++) {
 		auto& statement = statements[i];

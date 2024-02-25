@@ -11,4 +11,5 @@ procedure conditionalExpressions {
 	while((!(x == 2)) && (!(x == 1))) {read x;}
 	while( ((x == 2) && (x == 1)) || (x == 3)) {read x;}
 	while(!(!(!(!(!(!(!(!(!(!(x==3))))))))))) {read x;}
+	while(((x <= y) || (!(y == z))) && (!(z >= x))) {read x;}
 }
