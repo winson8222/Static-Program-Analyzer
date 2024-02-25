@@ -156,8 +156,12 @@ void QueryEvaluator::initializeEntityFactory() {
         // Entities returning unordered_set<string>
         {"variable", [&]() {
             return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getVariableReader()->getAllEntities());
+        }},
+        {"procedure", [&]() {
+            return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getProcedureReader()->getAllEntities());
         }}
         // Additional entity types can be added here as needed.
+
 
     };
 }
