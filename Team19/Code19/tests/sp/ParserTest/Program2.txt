@@ -1,5 +1,4 @@
 procedure conditionalExpressions {
-	while(0 < 2147483647) {read x;}
 	while(x == 2) {read x;}
 	while(x != 2) {read x;}
 	while(x < 2) {read x;}
@@ -7,6 +6,15 @@ procedure conditionalExpressions {
 	while(x > 2) {read x;}
 	while(x >= 2) {read x;}
 	while(!(x == 2)) {read x;}
+
+	while(0 == 2147483647) {read x;}
+	while(0 != 2147483647) {read x;}
+	while(0 < 2147483647) {read x;}
+	while(0 <= 2147483647) {read x;}
+	while(0 > 2147483647) {read x;}
+	while(0 >= 2147483647) {read x;}
+	while(!(0 == 2147483647)) {read x;}
+
 	while((x == 2) && (x == 1)) {read x;}
 	while((x != 2) || (x != 2)) {read x;}
 	while((!(x == 2)) && (!(x == 1))) {read x;}

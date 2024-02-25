@@ -96,7 +96,7 @@ TEST_CASE("Single procedure, all possible conditional expressions in while state
 
 	const auto& statements = (procedure->children)[0]->children;
 
-	REQUIRE(statements.size() == 14);
+	REQUIRE(statements.size() == 20);
 
 	for (int i = 0; i < statements.size(); i++) {
 		auto& statement = statements[i];
