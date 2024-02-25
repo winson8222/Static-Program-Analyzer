@@ -79,7 +79,7 @@ TEST_CASE("Modifies with valid statement and variable") {
 
 TEST_CASE("Modifies with invalid statement number") {
     REQUIRE(Tokenizer("stmt s; Select s such that Modifies(-1, \"x\")").tokenize()[9].getType() ==
-        TokenType::SyntaxError);
+            TokenType::SyntaxError);
 }
 
 TEST_CASE("Uses with invalid IDENT") {
@@ -603,42 +603,6 @@ TEST_CASE("Check if Tokenisation of quouted identifier for long names is correct
     REQUIRE(tokens[21].getType() == TokenType::Rparenthesis);
     REQUIRE(tokens[21].getValue() == ")");
 }
-//
-//stmt s1, s2;
-//Select s1 so that Follows(s1, s2)
-
-
-
-
-
-
-
-
-
-//TEST_CASE("Check if Tokenisation of expression spec") {
-//    Tokenizer tokenizer("assign a; Select a pattern a(\"z\", _\"x + 1\"_)");
-//    vector<Token> tokens = tokenizer.tokenize();
-//
-//
-//    REQUIRE(tokens.size() == 14);  // Expecting 14 tokens
-//    REQUIRE((tokens[0].getType() == TokenType::DesignEntity && tokens[0].getValue() == "assign"));
-//    REQUIRE((tokens[1].getType() == TokenType::IDENT && tokens[1].getValue() == "a"));
-//    REQUIRE((tokens[2].getType() == TokenType::Semicolon && tokens[2].getValue() == ";"));
-//    REQUIRE((tokens[3].getType() == TokenType::SelectKeyword && tokens[3].getValue() == "Select"));
-//    REQUIRE((tokens[4].getType() == TokenType::IDENT && tokens[4].getValue() == "a"));
-//    REQUIRE((tokens[5].getType() == TokenType::PatternKeyword && tokens[5].getValue() == "pattern"));
-//    REQUIRE((tokens[6].getType() == TokenType::IDENT && tokens[6].getValue() == "a"));
-//    REQUIRE((tokens[7].getType() == TokenType::Lparenthesis && tokens[7].getValue() == "("));
-//    REQUIRE((tokens[8].getType() == TokenType::QuoutIDENT && tokens[8].getValue() == "\"z\""));
-//    REQUIRE((tokens[9].getType() == TokenType::Comma && tokens[9].getValue() == ","));
-//    REQUIRE((tokens[10].getType() == TokenType::Wildcard && tokens[10].getValue() == "_"));
-//    REQUIRE((tokens[11].getType() == TokenType::QuoutConst && tokens[11].getValue() == "\"1\""));
-//    REQUIRE((tokens[12].getType() == TokenType::Wildcard && tokens[12].getValue() == "_"));
-//    REQUIRE((tokens[13].getType() == TokenType::Rparenthesis && tokens[13].getValue() == ")"));
-//
-//}
-
-
 
 
 

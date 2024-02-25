@@ -17,48 +17,50 @@ ParsingResult createParsingResultForFollows(int stmt1, int stmt2, bool isTransit
     return parsingResult;
 }
 
-TEST_CASE("FollowsStrategy Evaluation for Follows and FollowsT", "[Follows]") {
+TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/1") {
     auto pkb = std::make_shared<PKB>();
     auto followsStore = pkb->getFollowsStore();
     followsStore->addRelationship(1, 2);
     followsStore->addRelationship(2, 3);
-    followsStore->addRelationship(3, 4); // Added for transitive testing
+    followsStore->addRelationship(3, 4);
+    followsStore->addRelationship(1, 3);
+    followsStore->addRelationship(1, 4);
 
     auto pkbReaderManager = std::make_shared<PKBReaderManager>(pkb);
     FollowsStrategy followsStrategy;
 
     SECTION("Direct Follows(1, 2) is true") {
-        auto parsingResult1 = createParsingResultForFollows(1, 2);
-        auto resultTable = followsStrategy.evaluateQuery(*pkbReaderManager, parsingResult1);
-        // Verify result for Follows(1, 2)
+        auto parsingResult = createParsingResultForFollows(1, 2);
+        auto result = followsStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        REQUIRE(result->isTableTrue());
     }
 
     SECTION("Direct Follows(2, 3) is true") {
-        auto parsingResult2 = createParsingResultForFollows(2, 3);
-        auto resultTable = followsStrategy.evaluateQuery(*pkbReaderManager, parsingResult2);
-        // Verify result for Follows(2, 3)
+        auto parsingResult = createParsingResultForFollows(2, 3);
+        auto result = followsStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        REQUIRE(result->isTableTrue());
     }
 
     SECTION("Transitive Follows*(1, 3) is true") {
-        auto parsingResult3 = createParsingResultForFollows(1, 3, true);
-        auto resultTable = followsStrategy.evaluateQuery(*pkbReaderManager, parsingResult3);
-        // Verify result for Follows*(1, 3)
+        auto parsingResult = createParsingResultForFollows(1, 3, true);
+        auto result = followsStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        REQUIRE(result->isTableTrue());
     }
 
     SECTION("Transitive Follows*(1, 4) is true") {
-        auto parsingResult4 = createParsingResultForFollows(1, 4, true);
-        auto resultTable = followsStrategy.evaluateQuery(*pkbReaderManager, parsingResult4);
-        // Verify result for Follows*(1, 4)
+        auto parsingResult = createParsingResultForFollows(1, 4, true);
+        auto result = followsStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        REQUIRE(result->isTableTrue());
     }
 
     SECTION("Transitive Follows*(1, 5) is false") {
-        auto parsingResult5 = createParsingResultForFollows(1, 5, true);
-        auto resultTable = followsStrategy.evaluateQuery(*pkbReaderManager, parsingResult5);
-        // Verify result for Follows*(1, 5) is correctly handled
+        auto parsingResult = createParsingResultForFollows(1, 5, true);
+        auto result = followsStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        REQUIRE_FALSE(result->isTableTrue()); // Expecting this to be false as no such relationship exists
     }
 }
 
-TEST_CASE("Check Evaluation result of a simple select follows* query") {
+TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/2") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
@@ -99,7 +101,7 @@ TEST_CASE("Check Evaluation result of a simple select follows* query") {
 
 }
 
-TEST_CASE("Check Evaluation result of a simple select follows query") {
+TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/3") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
@@ -139,7 +141,7 @@ TEST_CASE("Check Evaluation result of a simple select follows query") {
 }
 
 
-TEST_CASE("Check Evaluation result of a simple select follows query (opposite)") {
+TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/4") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
@@ -178,7 +180,7 @@ TEST_CASE("Check Evaluation result of a simple select follows query (opposite)")
 
 }
 
-TEST_CASE("Check Evaluation result of a simple select followsT query") {
+TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/5") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
@@ -219,7 +221,7 @@ TEST_CASE("Check Evaluation result of a simple select followsT query") {
 }
 
 
-TEST_CASE("Check Evaluation result of a simple select followsT query (opposite)") {
+TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/6") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
@@ -260,7 +262,7 @@ TEST_CASE("Check Evaluation result of a simple select followsT query (opposite)"
 
 }
 
-TEST_CASE("Check Evaluation result of a simple select s1 follows query synonyms") {
+TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/7") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
@@ -302,7 +304,7 @@ TEST_CASE("Check Evaluation result of a simple select s1 follows query synonyms"
 
 }
 
-TEST_CASE("Check Evaluation result of a simple select s2 follows query synonyms") {
+TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/8") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
@@ -344,7 +346,7 @@ TEST_CASE("Check Evaluation result of a simple select s2 follows query synonyms"
 
 }
 
-TEST_CASE("Check Evaluation result of a selecting from a false statement") {
+TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/9") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
