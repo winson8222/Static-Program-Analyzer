@@ -128,6 +128,11 @@ stmt 1s;
 Select 1s such that Follows(8, 1s)
 SyntaxError
 5000
+25 - Valid Uses 7
+while w;
+Select w such that Uses(w, "print")
+8, 17
+5000
 27 - Invalid Follows 9
 stmt s1
 Select s1 such that Follows(9, s1)
@@ -391,7 +396,7 @@ Incomplete Query
 79 - Invalid Uses 3
 read r;
 Select r such that Uses(r, 1)
-SyntaxError
+SemanticError
 5000
 80 - Invalid Uses 4
 read r;
@@ -441,7 +446,7 @@ Select w such that Modifies(w, "print")
 89 - Valid Modifies 6
 if i;
 Select i such that Modifies(i, "procedure")
-8
+9
 5000
 90 - Valid Modifies 7
 assign a;

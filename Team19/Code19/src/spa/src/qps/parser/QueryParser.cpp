@@ -72,6 +72,7 @@ ParsingResult QueryParser::parse() {
     if (currentTokenIndex == tokens.size() - 1) {
         return parsingResult;
     }
+    parsingResult.setErrorMessage(getGrammarError());
     return parsingResult;
 }
 
@@ -234,8 +235,8 @@ bool QueryParser::parseRelRef() {
 bool QueryParser::isStmtRefStmtRef() {
     if (match(TokenType::Parent) || match(TokenType::ParentT) ||
         match(TokenType::Follows) || match(TokenType::FollowsT)) {
+        currentSuchThatToken = currentToken();
         return true;
-
     }
     return false;
 }
@@ -708,6 +709,30 @@ bool QueryParser::parseStmtSynonyms() {
     if(!ensureToken(TokenType::IDENT)){
         return false;
     }
+    if(currentSuchThatToken.getType() == TokenType::Parent || currentSuchThatToken.getType() == TokenType::ParentT) {
+        if (parsingResult.getDeclaredSynonym(currentToken().getValue()) != "stmt" &&
+                parsingResult.getDeclaredSynonym(currentToken().getValue()) != "assign" &&
+                parsingResult.getDeclaredSynonym(currentToken().getValue()) != "while" &&
+                parsingResult.getDeclaredSynonym(currentToken().getValue()) != "if" &&
+                parsingResult.getDeclaredSynonym(currentToken().getValue()) != "print" &&
+                parsingResult.getDeclaredSynonym(currentToken().getValue()) != "read") {
+            parsingResult.setErrorMessage(getSemanticError());
+            return false;
+        }
+    }
+
+    if(currentSuchThatToken.getType() == TokenType::Follows || currentSuchThatToken.getType() == TokenType::FollowsT) {
+        if (parsingResult.getDeclaredSynonym(currentToken().getValue()) != "stmt" &&
+           parsingResult.getDeclaredSynonym(currentToken().getValue()) != "assign" &&
+           parsingResult.getDeclaredSynonym(currentToken().getValue()) != "while" &&
+           parsingResult.getDeclaredSynonym(currentToken().getValue()) != "if" &&
+           parsingResult.getDeclaredSynonym(currentToken().getValue()) != "print" &&
+           parsingResult.getDeclaredSynonym(currentToken().getValue()) != "read") {
+            parsingResult.setErrorMessage(getSemanticError());
+            return false;
+        }
+    }
+
 
     if(currentSuchThatToken.getType() == TokenType::Uses) {
         if (parsingResult.getDeclaredSynonym(currentToken().getValue()) != "stmt" &&

@@ -677,3 +677,5 @@ TEST_CASE("Check semantic error with read in uses clause") {
     REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SemanticError");
 
 }
+
+

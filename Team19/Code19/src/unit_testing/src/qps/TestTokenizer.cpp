@@ -603,6 +603,10 @@ TEST_CASE("Check if Tokenisation of quouted identifier for long names is correct
     REQUIRE(tokens[21].getType() == TokenType::Rparenthesis);
     REQUIRE(tokens[21].getValue() == ")");
 }
+//
+//stmt s1, s2;
+//Select s1 so that Follows(s1, s2)
+
 
 
 
@@ -635,8 +639,6 @@ TEST_CASE("Check if Tokenisation of quouted identifier for long names is correct
 //}
 
 
-//assign a;
-//Select a such that Modifies(a, _) pattern a(_, _"abc"_)
 
 
 
