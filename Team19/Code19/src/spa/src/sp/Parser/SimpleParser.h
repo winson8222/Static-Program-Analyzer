@@ -2,12 +2,11 @@
 
 #include <memory>
 #include <vector>
-#include "sp/AST/ast.h"
-#include "sp/SPTokenizer/SPTokenizer.h"
-#include "sp/SPTokenizer/LexicalToken.h"
-#include "sp/SPTokenizer/FileProcessor.h"
-#include "sp/Utility.h"
+#include "sp/AST/AST.h"
+#include "sp/AST/ASTNode.h"
+#include "sp/AST/ASTUtility.h"
 #include "sp/AST/ASTHelper.h"
+#include "sp/SPTokenizer/LexicalToken.h"
 
 
 static int PROGRAM_LINE_NUMBER = -1;
@@ -16,7 +15,7 @@ static int PROGRAM_LINE_NUMBER = -1;
 // Prompt: https://platform.openai.com/playground/p/cJLjmmneCEs4z6ms7ZkBSxJB?model=gpt-4&mode=chat
 class SimpleParser {
 public:
-	SimpleParser(std::string filename);
+	SimpleParser(std::vector<LexicalToken> tokenStream);
 	std::shared_ptr<ASTNode> parseProgram();
 
 private:

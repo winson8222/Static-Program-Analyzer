@@ -1,9 +1,17 @@
 procedure procedure {
-	while (read > 2) {
-		if = 3 + 1;
+	while (!(read > procedure)) {
+		if = if;
 	} 
 
-	while (write < 2) {
-		else = 2;
+	if (then < 2) then {
+		else = else;
+	} else {
+		while = then;
 	}
+
+	read = 1 + program;
+
+	call call;
+	print read;
+	read print;
 }

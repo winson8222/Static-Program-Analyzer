@@ -19,4 +19,5 @@ void FileProcessor::assertFileExists(const std::string& filename) {
 	if (!exist) {
 		throw std::runtime_error("Error: File either does not exist, or is corrupted!");
 	}
+	// throw if file does not exist or is corrupted
 }

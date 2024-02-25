@@ -2,13 +2,14 @@
 
 ExpressionVisitor::ExpressionVisitor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
 	: IVisitor(root, pkbWriterManager) {
-
+	if (!ASTUtility::nodeCanFormValidExpression(root->type)) {
+		throw std::invalid_argument("Invalid root node type for ExpressionVisitor");
+	}
 }
 
 void ExpressionVisitor::visit() {
 	depthFirstSearch(root);
 }
-
 
 void ExpressionVisitor::depthFirstSearch(std::shared_ptr<ASTNode> node) {
 	if (node->type == ASTNodeType::VARIABLE) {

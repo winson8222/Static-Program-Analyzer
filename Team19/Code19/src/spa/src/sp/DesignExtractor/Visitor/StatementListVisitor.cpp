@@ -1,5 +1,12 @@
 #include "sp/DesignExtractor/Visitor/StatementListVisitor.h"
 
+StatementListVisitor::StatementListVisitor(std::shared_ptr<ASTNode> root,
+	std::shared_ptr<PKBWriterManager> pkbWriterManager)
+	: IVisitor(root, pkbWriterManager) {
+	if (!ASTUtility::nodeIsStatementList(root->type)) {
+		throw std::invalid_argument("ERROR: StatementListVisitor - input root is not of NodeType::STATEMENT_LIST");
+	}
+}
 
 void StatementListVisitor::visit() {
 	auto statementLists = this->root->children;
@@ -14,6 +21,9 @@ void StatementListVisitor::visit() {
 	}
 
 	// extract follows and follows* relationship
+	// this can only be done on the StatementList visitor
+	// current time complexity is O(n^2), due to the nested for loop
+	// in milestone 3 we try to optimize this to at least O(nlogn)
 	int size = statementLists.size();
 	for (int i = 0; i < size - 1; i++) {
 		std::shared_ptr<ASTNode> ast1 = statementLists[i];

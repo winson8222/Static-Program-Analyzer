@@ -4,11 +4,13 @@
 // Prompt: https://platform.openai.com/playground/p/TSrBejqZDhzJU0nYh4NsepD0
 #include "SimpleParser.h"
 #include "sp/AST/ASTHelper.h"
+#include "sp/SPTokenizer/SPTokenizer.h"
+#include "sp/SPTokenizer/FileProcessor.h"
 #include <memory>
 
 class SimpleParserFacade {
 private:
-    SimpleParser parser;
+    std::unique_ptr<SimpleParser> parser;
 
 public:
     SimpleParserFacade(const std::string& filename);

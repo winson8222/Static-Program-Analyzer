@@ -3,6 +3,13 @@
 #include <unordered_map>
 #include <string>
 
+
+/*
+* @brief Enum class for the different types of tokens, which includes
+* singular representations of a single token either keyword, operator, symbol, or general token,
+* or general representations of a group of tokens - the purpose of this is to allow for easier
+* parsing and tokenization of the source code.
+*/
 enum class LexicalTokenType {
     // Symbols
     SYMBOL_OPEN_BRACE, SYMBOL_CLOSE_BRACE,      // { and }

@@ -174,7 +174,7 @@ TEST_CASE("Check Evaluation result of a simple select all s given true condition
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
     std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE((res == std::unordered_set<string>{ "1", "2", "3" } || res == std::unordered_set<string>{"2", "3", "1"} || res == std::unordered_set<string>{"3", "2", "1"}));
+    REQUIRE(res == std::unordered_set<string>{ "SemanticError" });
 }
 
 

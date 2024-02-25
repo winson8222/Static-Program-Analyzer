@@ -546,3 +546,68 @@ TEST_CASE("Check no grammatical error with assignment as first param of Parent")
 
 }
 
+//assign a;
+//Select a such that Modifies(a, _) pattern a(_, _"abc"_)
+
+TEST_CASE("Check no grammatical error with such that Modifies and pattern clauses") {
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "assign"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Modifies, "Modifies"),
+            Token(TokenType::Modifies, "Modifies"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Rparenthesis, ")"),
+            Token(TokenType::PatternKeyword, "pattern"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::QuoutConst, "\"abc\""),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Rparenthesis, ")")
+    };
+
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "");
+
+}
+
+
+
+TEST_CASE("Check no grammatical error with such that Modifies and pattern clauses with quoted constant") {
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "assign"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Modifies, "Modifies"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Rparenthesis, ")"),
+            Token(TokenType::PatternKeyword, "pattern"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::QuoutConst, "\"x\""),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Rparenthesis, ")")
+    };
+
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "");
+
+}
