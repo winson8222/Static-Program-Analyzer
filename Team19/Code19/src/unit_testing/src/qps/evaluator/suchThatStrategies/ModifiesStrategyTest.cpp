@@ -4,6 +4,9 @@
 #include "pkb/PKBReaderManager.h"
 #include "pkb/PKB.h"
 #include "qps/ParsingResult.h"
+#include "../../spa/src/qps/parser/QueryParser.h"
+#include "../../spa/src/pkb/PKBManager.h"
+#include "../../spa/src/qps/evaluator/QueryEvaluator.h"
 
 // Helper function for creating a ParsingResult tailored for Modifies tests
 ParsingResult createParsingResultForModifies(const std::string& entity, const std::string& variable, bool isProcedure) {
@@ -97,3 +100,160 @@ ParsingResult createParsingResultForModifies(const std::string& entity, const st
 //    }
 //
 //}
+
+TEST_CASE("Check Evaluation result of a simple select v for ModifiesS") {
+std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+std::shared_ptr<ModifiesSWriter> modifiesSWriter = pkbWriterManager->getModifiesSWriter();
+statementWriter->insertStatement(1);
+statementWriter->insertStatement(2);
+statementWriter->insertStatement(3);
+modifiesSWriter->addModifiesS(2, "x");
+modifiesSWriter->addModifiesS(3, "y");
+
+std::vector<Token> tokens = {
+        Token(TokenType::DesignEntity, "stmt"),
+        Token(TokenType::IDENT, "s"),
+        Token(TokenType::Semicolon, ";"),
+        Token(TokenType::SelectKeyword, "Select"),
+        Token(TokenType::IDENT, "s"),
+        Token(TokenType::SuchKeyword, "such"),
+        Token(TokenType::ThatKeyword, "that"),
+        Token(TokenType::Modifies, "Modifies"),
+        Token(TokenType::Lparenthesis, "("),
+        Token(TokenType::IDENT, "s"),
+        Token(TokenType::Comma, ","),
+        Token(TokenType::QuoutIDENT, "\"x\""),
+        Token(TokenType::Rparenthesis, ")")
+
+};
+
+QueryParser parser(tokens);
+auto parsingResult = parser.parse();
+QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+std::vector<string> res = evaluator.evaluateQuery();
+REQUIRE(res == std::vector<string>{ "2" });
+
+}
+
+
+TEST_CASE("Check Evaluation result of a simple select all s given true condition for ModifiesS") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<ModifiesSWriter> modifiesSWriter = pkbWriterManager->getModifiesSWriter();
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    modifiesSWriter->addModifiesS(2, "x");
+    modifiesSWriter->addModifiesS(3, "y");
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "stmt"),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Modifies, "Modifies"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::QuoutIDENT, "\"x\""),
+            Token(TokenType::Rparenthesis, ")")
+
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::vector<string> res = evaluator.evaluateQuery();
+    REQUIRE((res == std::vector<string>{ "1", "2", "3" } || res == std::vector<string>{"2", "3", "1"} || res == std::vector<string>{"3", "2", "1"}));
+}
+
+
+
+
+
+TEST_CASE("Check Evaluation result of a simple select all s given true condition for ModifiesS (opposite)") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<ModifiesSWriter> modifiesSWriter = pkbWriterManager->getModifiesSWriter();
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    modifiesSWriter->addModifiesS(2, "x");
+    modifiesSWriter->addModifiesS(3, "y");
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "stmt"),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Modifies, "Modifies"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::INTEGER, "2"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Rparenthesis, ")")
+
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::vector<string> res = evaluator.evaluateQuery();
+    REQUIRE((res == std::vector<string>{ "1", "2", "3" } || res == std::vector<string>{"2", "3", "1"} || res == std::vector<string>{"3", "2", "1"}));
+}
+
+
+TEST_CASE("Check Evaluation result of a simple select variable given LHS for ModifiesS") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<ModifiesSWriter> modifiesSWriter = pkbWriterManager->getModifiesSWriter();
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    modifiesSWriter->addModifiesS(2, "x");
+    modifiesSWriter->addModifiesS(3, "y");
+    modifiesSWriter->addModifiesS(4, "z");
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "variable"),
+            Token(TokenType::IDENT, "v"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "v"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Modifies, "Modifies"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::INTEGER, "3"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::IDENT, "v"),
+            Token(TokenType::Rparenthesis, ")")
+
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::vector<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::vector<string>{"y"});
+}
