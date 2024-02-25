@@ -404,3 +404,9 @@ TEST_CASE("Parsing single procedure that contains 20 nested while loops.") {
 	REQUIRE(loop->lineNumber == line);
 }
 
+TEST_CASE("Parsing single procedure with nested while and if.") {
+	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program7.txt";
+	REQUIRE(std::filesystem::exists(testFileName));
+	SimpleParserFacade parser(testFileName);
+	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
+}
