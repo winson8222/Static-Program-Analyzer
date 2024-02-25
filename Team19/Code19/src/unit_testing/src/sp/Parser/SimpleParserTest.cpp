@@ -96,9 +96,9 @@ TEST_CASE("Single procedure, all possible conditional expressions in while state
 
 	const auto& statements = (procedure->children)[0]->children;
 
-	REQUIRE(statements.size() == 13);
+	REQUIRE(statements.size() == 14);
 
-	for (int i = 0; i < statements.size(); i++) {
+	for (int i = 0; i < statements.size() - 1; i++) {
 		auto& statement = statements[i];
 		REQUIRE(statement->type == ASTNodeType::WHILE);
 
@@ -106,6 +106,13 @@ TEST_CASE("Single procedure, all possible conditional expressions in while state
 		REQUIRE(contents->type == ASTNodeType::READ);
 		REQUIRE((contents->children)[0]->value == "x");
 	}
+
+	auto& statement = statements[13];
+	REQUIRE(statement->type == ASTNodeType::WHILE);
+
+	auto& contents = ((statement->children)[1]->children)[0];
+	REQUIRE(contents->type == ASTNodeType::READ);
+	REQUIRE((contents->children)[0]->value == "x");
 }
 
 TEST_CASE("Multiple procedures, all names that may be potential keywords.") {
