@@ -30,12 +30,44 @@ public:
 	* to -1 for all, and value = ""
 	*/
 	LexicalToken(LexicalTokenType type);
+
+	/*
+	* @brief Default constructor for creating a null lexical token.
+	*/
 	LexicalToken() = default;
+
+	/*
+	* @brief Returns whether the current token is of an input given type.
+	*/
 	bool isType(LexicalTokenType type);
+
+	/*
+	* @brief Returns a null lexical token.
+	*/
 	const LexicalToken& getNullToken();
+
+	/*
+	* @brief Returns the type of the lexical token in LexicalTokenType.
+	*/
 	LexicalTokenType getTokenType();
+
+	/*
+	* @brief Returns the line position of the lexical token in the given file
+	*/
 	int getLinePosition();
+
+	/*
+	* @brief Returns the line number of the lexical token in the given file
+	*/
 	int getLine();
+
+	/*
+	* @brief Returns the value of the lexical token represented as a string.
+	*/
 	std::string getValue() const;
+
+	/*
+	* @brief Prints the lexical token to the console.
+	*/
 	void print();
 };

@@ -31,8 +31,10 @@ void WhileVisitor::visit() {
 	statementListVisitor.setContext(contexts, root);
 	statementListVisitor.visit();
 
-	// setParentalContext for statementList
-	// map all nodes in the contexts to the current node
+	setParents(this->contexts, this->root, this->pkbWriterManager);
+}
+
+void WhileVisitor::setParents(listnode contexts, std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager) {
 	int size = contexts.size();
 	for (int i = 0; i < size; i++) {
 		std::shared_ptr<ASTNode> context = contexts[i];
@@ -40,7 +42,7 @@ void WhileVisitor::visit() {
 		ParentTExtractor parentExtractor(context, root, pkbWriterManager);
 		parentExtractor.extract();
 	}
-    if (size > 0 && contexts[size - 1]->type != ASTNodeType::PROCEDURE) {
+	if (size > 0 && contexts[size - 1]->type != ASTNodeType::PROCEDURE) {
 		ParentExtractor parentExtractor(contexts[size - 1], root, pkbWriterManager);
 		parentExtractor.extract();
 	}

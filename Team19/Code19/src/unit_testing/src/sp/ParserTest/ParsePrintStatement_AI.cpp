@@ -16,7 +16,7 @@ TEST_CASE("Testing PrintStmt::buildTree()", "[parse][print]") {
 
 	REQUIRE(printStatement->type == ASTNodeType::PRINT);
 	REQUIRE(printStatement->lineNumber == 1);
-	REQUIRE(printStatement->value == Utility::getASTNodeType(ASTNodeType::PRINT));
+	REQUIRE(printStatement->value == ASTUtility::getASTNodeType(ASTNodeType::PRINT));
 
 	SECTION("Testing tree child node") {
 		const auto& children = printStatement->children;

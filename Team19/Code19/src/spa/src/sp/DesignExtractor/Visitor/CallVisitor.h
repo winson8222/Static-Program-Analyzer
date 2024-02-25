@@ -10,16 +10,13 @@
 
 class CallVisitor : public StatementVisitor {
 public:
-	CallVisitor(std::shared_ptr<ASTNode> root, 
+	CallVisitor(std::shared_ptr<ASTNode> root,
 		listnode context,
-		std::shared_ptr<PKBWriterManager> pkbWriterManager)
-			: StatementVisitor(root, context, pkbWriterManager) {
-		// TODO
-		this->contexts = listnode(context.begin(), context.end());
-	}
+		std::shared_ptr<PKBWriterManager> pkbWriterManager);
 
 	void visit() override;
 	void addContext(std::shared_ptr<ASTNode> context);
+	void setParents(listnode contexts, std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager) override;
 };
 
 // ai-gen ends

@@ -6,7 +6,7 @@
 #include "sp/SPTokenizer/SPTokenizer.h"
 #include "sp/SPTokenizer/LexicalToken.h"
 #include "sp/SPTokenizer/FileProcessor.h"
-#include "sp/Utility.h"
+#include "sp/AST/ASTUtility.h"
 #include "sp/AST/ASTHelper.h"
 
 

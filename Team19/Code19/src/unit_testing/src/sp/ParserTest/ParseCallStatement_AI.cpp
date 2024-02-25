@@ -16,7 +16,7 @@ TEST_CASE("Testing CallStmt::buildTree()", "[parse][call]") {
 
 		REQUIRE(callStatement->type == ASTNodeType::CALL);
 		REQUIRE(callStatement->lineNumber == 1);
-		REQUIRE(callStatement->value == Utility::getASTNodeType(ASTNodeType::CALL));
+		REQUIRE(callStatement->value == ASTUtility::getASTNodeType(ASTNodeType::CALL));
 
 		SECTION("Testing tree child node") {
 			const auto& children = callStatement->children;

@@ -1,5 +1,5 @@
 #include "ASTNode.h"
-#include "sp/Utility.h"
+#include "sp/AST/ASTUtility.h"
 #include "AST.h"
 #include <sstream>
 
@@ -26,30 +26,28 @@ void ASTNode::setValue(std::string value) {
     this->value = value;
 }
 
-// Implementation of hash function for ASTNode
 std::size_t ASTNode::hash() const {
     // Concatenate the properties of ASTNode
     std::stringstream ss;
-    ss << Utility::getASTNodeType(type) << lineNumber << value;
+    ss << ASTUtility::getASTNodeType(type) << lineNumber << value;
 
     // Hash the concatenated string
     std::hash<std::string> hasher;
     return hasher(ss.str());
 }
 
-// Method to convert AST node to a string
 std::string ASTNode::toString() const {
     return "String representations: \n" + recursiveString(0);
 }
 
-// Helper method to convert AST node to a string recursively
 std::string ASTNode::recursiveString(int tabs) const {
     std::ostringstream stringStream;
 
-    // to tab a tree representing the children
+    // to tab a tree representing the children - each tab represents a level of the tree
     for (int i = 0; i < tabs; ++i)
         stringStream << "  ";
-    stringStream << "Type: " << Utility::getASTNodeType(type) << ", Line Number: " << lineNumber << ", Value: " << value << "\n";
+    stringStream << "Type: " << ASTUtility::getASTNodeType(type) << ", Line Number: " << lineNumber << ", Value: " << value << "\n";
+    // depth-first search to print the children recursively
     for (const auto& child : children) {
         stringStream << child->recursiveString(tabs + 1);
     }
@@ -63,18 +61,19 @@ bool ASTNode::operator==(const ASTNode& other) const {
 }
 
 std::string ASTNode::getRPNForm() {
-    if (Utility::nodeIsValidOperator(type) == false) {
+    if (!ASTUtility::nodeIsValidOperator(type) && !ASTUtility::nodeIsValidRelFactor(type)) {
         throw std::runtime_error("ERROR: ASTNode is not an operator");
     }
     if (children.size() > 2) {
 		throw std::runtime_error("ERROR: ASTNode is not valid expression");
     }
 
-
     if (children.size() == 0) {
         return value;
     }
     std::string result;
+
+    // depth-first search to concatenate the children recursively into RPN
     for (const auto& child : children) {
 		result += child->getRPNForm();
 	}

@@ -79,13 +79,21 @@ public:
      * @return A string representation of the AST node.
      */
     std::string toString() const;
+
+    /**
+    * @brief Converts the AST node to a string representation in Reverse Polish Notation (RPN).
+    *
+    * @return A string representation of the AST node in RPN.
+    */
     std::string getRPNForm();
 
-    // To be set as private in future
+    // To be set as private in future, probably milestone 2
     ASTNodeType type;
     std::vector<std::shared_ptr<ASTNode>> children;
     int lineNumber;
     std::string value;
+
+
 private:
     std::shared_ptr<ASTNode> root;
 
@@ -98,7 +106,10 @@ private:
     std::string recursiveString(int tabs) const;
 };
 
-
+/*
+* @brief Hash function for ASTNode.
+* This is to help with putting ASTNode on an unordered_map or unordered_set.
+*/
 namespace std {
     template<> struct hash<ASTNode> {
         std::size_t operator()(const ASTNode& node) const {

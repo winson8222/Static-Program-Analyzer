@@ -7,25 +7,38 @@
 #include <stdexcept>
 #include <iostream>
 
+
+/*
+* A visitor for the variable which should
+* call on all relevant extractors and sub-visitors
+*
+* This class is inherited from the IVisitor class,
+* so additional documentation should be taken from the
+* base abstract class unless further specified
+*/
 class VariableVisitor : public IVisitor {
 public:
 	VariableVisitor(std::shared_ptr<ASTNode> root,
-		std::shared_ptr<PKBWriterManager> pkbWriterManager)
-		: IVisitor(root, pkbWriterManager) {
-		if (root->type != ASTNodeType::VARIABLE) {
-			throw std::invalid_argument("ERROR: VARIABLE NOT SUPPORTED");
-		}
-		if (root->children.size() != 0) {
-			throw std::invalid_argument("ERROR: VARIABLE HAVE LEAFS");
-		}
-	}
+		std::shared_ptr<PKBWriterManager> pkbWriterManager);
 
 	void visit() override;
 
 	/*
-	* Set current Variable Visitor to contains context of which statement or procedure uses it
+	* Set current Variable Visitor to contains context of which statement or procedure USES it
+	* @param contexts - list of contexts that uses the variable
+	* @param parent - the parent node of the context
+	* This method should be called inside statements that are:
+	* - Assign, Call, If, While, Print
 	*/
 	void setUsedContext(listnode contexts, std::shared_ptr<ASTNode> parent);
+
+	/*
+	* Set current Variable Visitor to contains context of which statement or procedure MODIFIES it
+	* @param contexts - list of contexts that modifies the variable
+	* @param parent - the parent node of the context
+	* This method should be called inside statements that are:
+	* - Assign, Call, If, While, Read
+	*/
 	void setModifiedContext(listnode contexts, std::shared_ptr<ASTNode> parent);
 	
 private:

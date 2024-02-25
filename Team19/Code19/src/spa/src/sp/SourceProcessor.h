@@ -24,11 +24,29 @@ public:
 	std::shared_ptr<ASTNode> root;
 	std::shared_ptr<PKBManager> pkbManager;
 
+	/*
+	* @brief Constructor for SourceProcessor, initializes the parser and pkbManager
+	*/
 	SourceProcessor(std::string filename, std::shared_ptr<PKBManager> pkbManager);
+
+	/*
+	* @brief Reset the SourceProcessor to its initial state with no stored cache.
+	* This method is set here as prototype for future optimization of SP runtime.
+	*/
 	void reset();
 
+	/*
+	* @brief Parse the SIMPLE source code and build the AST
+	* This method takes in the filename, called on the Tokenizer to tokenize the source code
+	* into array of LexicalToken, then called on the parser to parse the array of LexicalToken
+	* and build the AST from the parsed source code, and save the root of the AST to this.
+	*/
 	void parseSIMPLE();
-	void buildAST();
 
+	/*
+	* @brief Extract the information from the AST and populate the PKB with all necessary information
+	* This method uses the DesignExtractor to extract all the information from the AST through visitors
+	* and extractors, then push to PKBWriterManager to insert entities and relationships into PKB.
+	*/
 	void extractAndPopulate();
 };
