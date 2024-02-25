@@ -78,18 +78,21 @@ TEST_CASE("Modifies with valid statement and variable") {
 
 
 TEST_CASE("Modifies with invalid statement number") {
-    REQUIRE_THROWS_WITH(Tokenizer("stmt s; Select s such that Modifies(-1, \"x\")").tokenize(),
-        "Unrecognized token: -1");
+    REQUIRE(Tokenizer("stmt s; Select s such that Modifies(-1, \"x\")").tokenize()[9].getType() ==
+        TokenType::SyntaxError);
 }
 
 TEST_CASE("Uses with invalid IDENT") {
-    REQUIRE_THROWS_WITH(Tokenizer("stmt 1a; Select s such that Uses(-1, \"x\")").tokenize(),
-        "Unrecognized token: 1a");
+    REQUIRE(Tokenizer("stmt 1a; Select s such that Uses(-1, \"x\")").tokenize()[1].getType() ==
+            TokenType::SyntaxError);
 }
 
 TEST_CASE("Follows with invalid quotes") {
-    REQUIRE_THROWS_WITH(Tokenizer("stmt a1; Select s such that Uses(1, \"x)").tokenize(),
-        "Unrecognized token: \"");
+
+
+
+    REQUIRE(Tokenizer("stmt a1; Select s such that Uses(1, \"x)").tokenize()[11].getType() ==
+            TokenType::SyntaxError);
 }
 
 

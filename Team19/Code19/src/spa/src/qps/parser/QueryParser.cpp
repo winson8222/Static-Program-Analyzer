@@ -383,8 +383,14 @@ bool QueryParser::parseStmtRefStmtRef() {
 
 // Parses a statement reference in the query.
 bool QueryParser::parseStmtRef() {
-    if (match(TokenType::INTEGER) || match(TokenType::Wildcard)) {
+    if (match(TokenType::Wildcard)) {
         return true;
+    } else if (match(TokenType::INTEGER)) {
+        if(checkValidStmtNum()) {
+            return true;
+        }
+        parsingResult.setErrorMessage(getSemanticError());
+        return false;
     } else {
         if(!parseStmtSynonyms()) {
             parsingResult.setErrorMessage(getGrammarError());
@@ -748,4 +754,12 @@ bool QueryParser::peekNextToken(TokenType type) {
     }
     return false;
 }
+
+bool QueryParser::checkValidStmtNum() {
+    if (stoi(currentToken().getValue()) < 1) {
+        return false;
+    }
+    return true;
+}
+
 

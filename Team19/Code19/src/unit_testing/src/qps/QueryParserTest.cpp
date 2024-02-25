@@ -610,3 +610,27 @@ TEST_CASE("Check no grammatical error with such that Modifies and pattern clause
     REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "");
 
 }
+
+//stmt s1;
+//Select s1 such that Follows(0, s1)
+
+TEST_CASE("Check semantic error with stmtNumber < 1") {
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "stmt"),
+            Token(TokenType::IDENT, "s1"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "s1"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Follows, "Follows"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::INTEGER, "-4"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::IDENT, "s1"),
+            Token(TokenType::Rparenthesis, ")")
+    };
+
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SemanticError");
+
+}

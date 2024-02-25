@@ -89,6 +89,7 @@ private:
 
     string getGrammarError();
     string getSemanticError();
+    bool checkValidStmtNum();
 
 
 

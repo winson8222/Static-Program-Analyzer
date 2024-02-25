@@ -38,6 +38,7 @@ enum class TokenType {
     ModifiesS,
     ModifiesP,
     ExpressionSpec,
+    SyntaxError,
 
 
 };

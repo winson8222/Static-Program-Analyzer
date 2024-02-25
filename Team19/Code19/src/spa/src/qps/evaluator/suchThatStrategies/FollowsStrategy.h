@@ -61,5 +61,5 @@ public:
      * @param secondParam The second parameter token of the query.
      * @param resultTable The result table to be populated with the evaluation results.
      */
-    void processIntegerParams(const Token& firstParam, const Token& secondParam, std::shared_ptr<ResultTable> resultTable);
+    void processIntegerParams(const Token& firstParam, const Token& secondParam, std::shared_ptr<ResultTable> resultTable) override;
 };
