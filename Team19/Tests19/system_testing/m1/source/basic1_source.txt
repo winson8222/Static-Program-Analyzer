@@ -1,0 +1,32 @@
+
+
+procedure procedure {
+    print print;
+    read read;
+    read = 5;
+    print = read;
+    else = read * print;
+    minus = print - read;
+    procedure = read + print / read;
+   
+    while (read < 10) {
+       if (!(print > 0)) then {
+          print print;
+       } else {
+          print read;
+          procedure = add % minus;  
+          if (procedure < 0) then {
+              while = print + read;
+              print while;
+           } else {
+			  print procedure;
+		   }
+      }
+      }
+    while (print != read) {
+        procedure = procedure -1;
+        print = print + 1;
+    }
+    if = add + minus / procedure * read - print;
+    print if;
+}
