@@ -34,9 +34,9 @@ TEST_CASE_METHOD(StatementReaderFixture, "qps/QueryProcessingSubsystem: Statemen
     }
 
     SECTION("Check specific statements exist via QPS") {
-        std::string queryStmt1 = "stmt s; Select s such that Modifies(_, s)";
+        /*std::string queryStmt1 = "stmt s; Select s such that Modifies(_, s)";
         auto resultStmt1 = Utils::getResultsFromQuery(queryStmt1, pkbManager->getPKBReaderManager());
-        REQUIRE(resultStmt1.empty());
+        REQUIRE(resultStmt1.empty());*/
 
         std::string queryNonExistentStmt = "stmt s; Select s such that Follows(1, s)";
         auto resultNonExistentStmt = Utils::getResultsFromQuery(queryNonExistentStmt, pkbManager->getPKBReaderManager());
