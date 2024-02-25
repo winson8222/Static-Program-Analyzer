@@ -1,3 +1,0 @@
-procedure p {
-x = 1;
-}

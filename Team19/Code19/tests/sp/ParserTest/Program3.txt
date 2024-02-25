@@ -1,27 +1,30 @@
-procedure computeCentroid {
-	count = 0;
-	cenX = 0;
-	cenY = 0;
-	while ((x != 0) && (y != 0)) {
-		count = count + 1;
-		cenX = cenX + x;
-		cenY = cenY + y;
-		call readPoint;
-	}
-	if (count == 0) then {
-		flag = 1;
-	} else {
-		cenX = cenX / count ;
-		cenY = cenY / count ;
-	}
-	normSq = cenX * cenX + cenY * cenY;
-}
-
-procedure procedure {
-	print k;
-}
-
-procedure readPoint {
-	read x;
-	read y;
-}
+procedure assign { read x; }
+procedure call { read x; }
+procedure constant { read x; }
+procedure while { read x; }
+procedure if { read x; }
+procedure else { read x; }
+procedure then { read x; }
+procedure print { read x; }
+procedure read { read x; }
+procedure stmtLst { read x; }
+procedure variable { read x; }
+procedure stmt { read x; }
+procedure procedure { read x; }
+procedure program { read x; }
+procedure Follows { read x; }
+procedure FollowsT { read x; }
+procedure Parent { read x; }
+procedure ParentT { read x; }
+procedure Uses { read x; }
+procedure UsesP { read x; }
+procedure UsesS { read x; }
+procedure Modifies { read x; }
+procedure ModifiesP { read x; }
+procedure ModifiesS { read x; }
+procedure Calls { read x; }
+procedure CallsT { read x; }
+procedure Next { read x; }
+procedure NextT { read x; }
+procedure Affects { read x; }
+procedure AffectsT { read x; }

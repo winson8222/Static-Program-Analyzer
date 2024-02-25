@@ -12,8 +12,8 @@
  *
  * @param filename The name of the file to parse.
  */
-SimpleParser::SimpleParser(std::string filename) {
-	this->tokenStream = SPTokenizer::tokenize(FileProcessor::readFileToString(filename));
+SimpleParser::SimpleParser(std::vector<LexicalToken> tokenStream) {
+	this->tokenStream = tokenStream;
 	this->tokenIndex = 0;
 }
 
