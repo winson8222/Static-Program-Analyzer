@@ -889,7 +889,7 @@ TEST_CASE("Check Evaluation result of a simple select all s given true condition
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
     std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{ "semantic error at: _" });
+    REQUIRE(res == std::unordered_set<string>{ "SemanticError" });
 }
 
 
@@ -1051,7 +1051,7 @@ TEST_CASE("Check Evaluation result of a simple select all s given true condition
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
     std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{ "semantic error at: _" });
+    REQUIRE(res == std::unordered_set<string>{ "SemanticError" });
 
 }
 
@@ -1317,7 +1317,7 @@ TEST_CASE("Check Evaluation result of variable for UsesS and select ifs with wil
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
     std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{"semantic error at: _"});
+    REQUIRE(res == std::unordered_set<string>{"SemanticError"});
 
 }
 
@@ -1366,7 +1366,7 @@ TEST_CASE("Check Evaluation result of variable for ModifiesS and select ifs with
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
     std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{"semantic error at: _"});
+    REQUIRE(res == std::unordered_set<string>{"SemanticError"});
 
 }
 

@@ -18,7 +18,7 @@ TEST_CASE("Check Grammar of Valid tokens with no declaration") {
             Token(TokenType::Rparenthesis, ")")
     };
 
-    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "incorrect grammar at: Select");
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SyntaxError");
 
 
 }
@@ -82,7 +82,7 @@ TEST_CASE("Check Grammar of Valid tokens with no relref keyword") {
 
 
 
-    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "incorrect grammar at: (");
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SyntaxError");
 }
 
 TEST_CASE("Check Grammar of Valid tokens with pattern query") {
@@ -150,7 +150,7 @@ TEST_CASE("Check Grammars of valid tokens that Follows with a stmtRef and an ent
             Token(TokenType::Rparenthesis, ")")
     };
 
-    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "incorrect grammar at: \"existentVar\"");
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SyntaxError");
 
 }
 
@@ -224,7 +224,7 @@ TEST_CASE("Check for semantic error for undeclared stmt synonyms") {
             Token(TokenType::Rparenthesis, ")")
     };
 
-    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "semantic error at: s3");
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SemanticError");
 
 }
 
@@ -248,7 +248,7 @@ TEST_CASE("Check semantic error with first expression of Modifies be wildcard") 
             Token(TokenType::Rparenthesis, ")")
     };
 
-    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "semantic error at: _");
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SemanticError");
 
 }
 
@@ -272,7 +272,7 @@ TEST_CASE("Check semantic error with first expression of Uses be wildcard") {
             Token(TokenType::Rparenthesis, ")")
     };
 
-    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "semantic error at: _");
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SemanticError");
 
 }
 
@@ -294,7 +294,7 @@ TEST_CASE("Check Grammars of valid tokens that Modifies with two stmtRefs in par
             Token(TokenType::Rparenthesis, ")")
     };
 
-    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "incorrect grammar at: 1");
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SyntaxError");
 
 }
 
@@ -403,7 +403,7 @@ TEST_CASE("Check Grammars of valid tokens have Modifies and pattern clauses") {
             Token(TokenType::Rparenthesis, ")")
     };
 
-    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "incorrect grammar at: 1");
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SyntaxError");
 
 }
 
@@ -427,7 +427,7 @@ TEST_CASE("Check Semantic error repeated token declarations") {
             Token(TokenType::Rparenthesis, ")")
     };
 
-    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "semantic error at: s");
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SemanticError");
 
 }
 
