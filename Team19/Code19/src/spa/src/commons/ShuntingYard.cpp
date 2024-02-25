@@ -1,6 +1,5 @@
 #include "ShuntingYard.h"
 
-#include <format>
 #include <stack>
 
 // ai-gen start(copilot, 1, e)
