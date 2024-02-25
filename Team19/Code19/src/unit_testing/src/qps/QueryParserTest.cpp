@@ -559,7 +559,6 @@ TEST_CASE("Check no grammatical error with such that Modifies and pattern clause
             Token(TokenType::SuchKeyword, "such"),
             Token(TokenType::ThatKeyword, "that"),
             Token(TokenType::Modifies, "Modifies"),
-            Token(TokenType::Modifies, "Modifies"),
             Token(TokenType::Lparenthesis, "("),
             Token(TokenType::IDENT, "a"),
             Token(TokenType::Comma, ","),

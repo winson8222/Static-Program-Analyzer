@@ -65,6 +65,84 @@ TEST_CASE("Check Evaluation result of a simple select all variables query") {
 
 }
 
+TEST_CASE("Check Evaluation result of a simple select all procedures query") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<ProcedureWriter> proWriter = pkbWriterManager->getProcedureWriter();
+    string x = "main";
+    string y = "proc1";
+    proWriter->insertProcedure(x);
+    proWriter->insertProcedure(y);
+
+
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "procedure"),
+            Token(TokenType::IDENT, "p"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "p"),
+
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ "main", "proc1"});
+
+}
+
+TEST_CASE("Check Evaluation result of a simple select all procedures query with true clause") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<ProcedureWriter> proWriter = pkbWriterManager->getProcedureWriter();
+    std::shared_ptr<AssignPatternWriter> assignPatternWriter = pkbWriterManager->getAssignPatternWriter();
+    std::shared_ptr<AssignWriter> assignWriter = pkbWriterManager->getAssignWriter();
+    string x = "main";
+    string y = "proc1";
+    proWriter->insertProcedure(x);
+    proWriter->insertProcedure(y);
+    assignPatternWriter->addAssignPattern(1, "x", "1");
+    assignWriter->insertAssign(1);
+
+
+
+
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "procedure"),
+            Token(TokenType::IDENT, "p"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::DesignEntity, "assign"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "p"),
+            Token(TokenType::PatternKeyword, "pattern"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::QuoutIDENT, "\"x\""),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::QuoutConst, "\"1\""),
+            Token(TokenType::Rparenthesis, ")")
+    };
+
+
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ "main", "proc1"});
+
+}
+
+
 TEST_CASE("Check Evaluation result of a simple select all whiles query") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
