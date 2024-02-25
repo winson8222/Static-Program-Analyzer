@@ -18,7 +18,7 @@ TEST_CASE("qps/QueryProcessingSubsystem: AssignPatternReader Integration Test") 
     int stmtNum1 = 1;
     std::string lhs1 = "x", rhs1 = "v + x * y + z * t + 1";
     variableWriter->insertVariable(lhs1);
-    assignPatternWriter->addAssignPattern(stmtNum1, lhs1, ShuntingYard::convertToPostfix(rhs1));
+    assignPatternWriter->addAssignPattern(stmtNum1, lhs1, rhs1);
     assignWriter->insertAssign(stmtNum1);
 
     SECTION("Wildcard RHS Pattern Match") {
