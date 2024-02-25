@@ -383,3 +383,30 @@ TEST_CASE("Calling parseProgram for complex procedure", "[parse][program]") {
 	REQUIRE(lastExpr[1]->type == ASTNodeType::VARIABLE);
 	REQUIRE(lastExpr[1]->value == "cenY");
 }
+
+TEST_CASE("Parsing single procedure that contains 4 nested while loops.") {
+	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program6.txt";
+	REQUIRE(std::filesystem::exists(testFileName));
+	SimpleParserFacade parser(testFileName);
+	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
+
+	auto& firstLoop = ((tree_ptr->children)[0]->children)[0]->children[0];
+	REQUIRE(firstLoop->type == ASTNodeType::WHILE);
+	REQUIRE(firstLoop->lineNumber == 1);
+
+	auto& secondLoop = (firstLoop->children)[1]->children[0];
+	REQUIRE(secondLoop->type == ASTNodeType::WHILE);
+	REQUIRE(secondLoop->lineNumber == 2);
+
+	auto& thirdLoop = (secondLoop->children)[1]->children[0];
+	REQUIRE(thirdLoop->type == ASTNodeType::WHILE);
+	REQUIRE(thirdLoop->lineNumber == 3);
+
+	auto& fourthLoop = (thirdLoop->children)[1]->children[0];
+	REQUIRE(fourthLoop->type == ASTNodeType::WHILE);
+	REQUIRE(fourthLoop->lineNumber == 4);
+
+	auto& fifthLoop = (fourthLoop->children)[1]->children[0];
+	REQUIRE(fifthLoop->type == ASTNodeType::WHILE);
+	REQUIRE(fifthLoop->lineNumber == 5);
+}
