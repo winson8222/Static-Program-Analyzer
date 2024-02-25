@@ -409,7 +409,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseAssign() {
 std::shared_ptr<ASTNode> SimpleParser::parseCondExpr() {
 	LexicalToken firstToken = this->peekNextToken();
 
-	if (firstToken.isType(LexicalTokenType::NAME)) {
+	if (firstToken.isType(LexicalTokenType::NAME) || firstToken.isType(LexicalTokenType::INTEGER)) {
 		return this->parseRelExpr();
 	}
 

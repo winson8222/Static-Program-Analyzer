@@ -1,0 +1,13 @@
+procedure nestedWhile {
+    while ((min > 0) && (max < 2147483647)) {
+        while (middle == min) {
+            while (min <= max) {
+                while (!((min < max) && (max > min)) ) {
+                    while (min < 2147483647) {
+                        read read;
+                    }
+                }
+            }
+        }
+    }
+}
