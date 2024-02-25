@@ -67,7 +67,7 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
         return TokenType::QuoutIDENT;
     }
     // QuoutConst: A constant enclosed in double quotes (for pattern matching).
-    else if (regex_match(tokenStr, regex("^\"[1-9]*\"$"))) {
+    else if (regex_match(tokenStr, regex("^\"[0-9]*\"$"))) {
         return TokenType::QuoutConst;
     }
     //
