@@ -9,15 +9,24 @@
 #include <stdexcept>   // For std::exception or specific exception types
 
 std::shared_ptr<ResultTable> ResultTable::joinOnColumns(const std::shared_ptr<ResultTable>& table2) {
-    // if table 2 is empty and is a truth table, return a copy of table1
+    // if table 2 is empty and is a false table, return a copy of table1
     // this is used for cases when joining a table with a true clause like Follows(1,2)
-    if (table2->isTruthTable && table2->rows.empty()) {
+    if (table2->isFalseTable && table2->rows.empty()) {
+        auto result = std::make_shared<ResultTable>(*table2);
+        return result;
+    }
+    // Opposite case where table 1 is empty and is a false table, return a copy of table2
+    if (this->isFalseTable && this->rows.empty()) {
+        // Return a copy of this table
         auto result = std::make_shared<ResultTable>(*this);
         return result;
     }
-    // Opposite case where table 1 is empty and is a truth table, return a copy of table2
-    if (this->isTruthTable && this->rows.empty()) {
-        // Return a copy of table2
+    if (!table2->isFalseTable && table2->rows.empty()) {
+        auto result = std::make_shared<ResultTable>(*this);
+        return result;
+    }
+    if (!this->isFalseTable && this->rows.empty()) {
+        // Return a copy of this table
         auto result = std::make_shared<ResultTable>(*table2);
         return result;
     }
@@ -235,9 +244,14 @@ std::unordered_set<std::string> ResultTable::getColumnValues(const std::string& 
     return uniqueColumnValues;
 }
 
-void ResultTable::setAsTruthTable()
+void ResultTable::setAsFalseTable()
 {
-    isTruthTable = true;
+    isFalseTable = false;
+}
+
+bool ResultTable::isTableFalse()
+{
+    return isFalseTable;
 }
 
 bool ResultTable::hasColumn(const std::string& columnName) const {
@@ -245,6 +259,11 @@ bool ResultTable::hasColumn(const std::string& columnName) const {
     auto it = std::find(colSet.begin(), colSet.end(), columnName);
     // Return true if the column is found, false otherwise
     return it != colSet.end();
+}
+
+bool ResultTable::isTableEmpty()
+{
+    return rows.empty() && colSet.empty();
 }
 
 

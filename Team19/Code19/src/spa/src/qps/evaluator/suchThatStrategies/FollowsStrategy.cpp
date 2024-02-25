@@ -32,7 +32,7 @@ std::shared_ptr<ResultTable> FollowsStrategy::evaluateQuery(PKBReaderManager& pk
     } else if (secondParam.getType() == TokenType::IDENT) {
         processSecondParam(firstParam, secondParam, variant, resultTable, parsingResult, pkbReaderManager);
     } else if (isBothParamsWildcard(firstParam, secondParam)) {
-        resultTable->setAsTruthTable(); // Handling wildcard cases
+        //resultTable->setAsTruthTable(); // Handling wildcard cases
     } else if (isBothParamsInteger(firstParam, secondParam)) {
         processIntegerParams(firstParam, secondParam, resultTable); // Handling integer cases
     }
@@ -178,7 +178,7 @@ void FollowsStrategy::processIntegerParams(const Token& firstParam, const Token&
     int firstStmtNum = std::stoi(firstParam.getValue());
     int secondStmtNum = std::stoi(secondParam.getValue());
 
-    if (followsReader->hasFollows(firstStmtNum, secondStmtNum)) {
-        resultTable->setAsTruthTable();
+    if (!followsReader->hasFollows(firstStmtNum, secondStmtNum)) {
+        resultTable->setAsFalseTable();
     }
 }

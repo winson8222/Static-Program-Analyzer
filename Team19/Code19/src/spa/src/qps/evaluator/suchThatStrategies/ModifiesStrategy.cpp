@@ -107,8 +107,8 @@ void ModifiesStrategy::processBothConstants(const Token &firstParam, const Token
     // check if the statement modifies the variable
     bool modifies = modifiesSReader
             ->doesStmtModifyVariable(stoi(firstParam.getValue()), secondParam.getValue());
-    if (modifies) {
-        resultTable->setAsTruthTable();
+    if (!modifies) {
+        resultTable->setAsFalseTable();
     }
 }
 
@@ -117,22 +117,22 @@ void ModifiesStrategy::processWildCards(const Token& firstParam, const Token& se
     if (firstParam.getType() == TokenType::Wildcard && secondParam.getType() == TokenType::Wildcard) {
         std::unordered_set<int> allModifiesStmts = modifiesSReader
                 ->getAllStmtsThatModifyAnyVariable();
-        if (!allModifiesStmts.empty()) {
-            resultTable->setAsTruthTable();
+        if (allModifiesStmts.empty()) {
+            resultTable->setAsFalseTable();
         }
     } else if (firstParam.getType() == TokenType::Wildcard) {
         std::unordered_set<int> allModifiesStmts = modifiesSReader
                 ->getAllStmtsThatModifyVariable(
                 extractQuotedExpression(secondParam));
-        if (!allModifiesStmts.empty()) {
-            resultTable->setAsTruthTable();
+        if (allModifiesStmts.empty()) {
+            resultTable->setAsFalseTable();
         }
     } else if (secondParam.getType() == TokenType::Wildcard) {
         std::unordered_set<std::string> allModifiedVars = modifiesSReader
                 ->getAllVariablesModifiedByStmt(
                 stoi(firstParam.getValue()));
-        if (!allModifiedVars.empty()) {
-            resultTable->setAsTruthTable();
+        if (allModifiedVars.empty()) {
+            resultTable->setAsFalseTable();
         }
     }
 }

@@ -29,7 +29,7 @@ std::shared_ptr<ResultTable> ParentStrategy::evaluateQuery(PKBReaderManager& pkb
         processSecondParam(suchThatFirstParam, suchThatSecondParam, variant, resultTable, parsingResult, pkbReaderManager);
     }
     else if (isBothParamsWildcard(suchThatFirstParam, suchThatSecondParam)) {
-        resultTable->setAsTruthTable();
+        //resultTable->setAsTruthTable();
     }
     else if (isBothParamsInteger(suchThatFirstParam, suchThatSecondParam)) {
         processIntegerParams(suchThatFirstParam, suchThatSecondParam, resultTable);
@@ -160,7 +160,7 @@ void ParentStrategy::processIntegerParams(const Token& firstParam, const Token& 
     int firstStmtNum = stoi(firstParam.getValue());
     int secondStmtNum = stoi(secondParam.getValue());
 
-    if (parentReader->hasParent(firstStmtNum, secondStmtNum)) {
-        resultTable->setAsTruthTable();
+    if (!parentReader->hasParent(firstStmtNum, secondStmtNum)) {
+        resultTable->setAsFalseTable();
     }
 }

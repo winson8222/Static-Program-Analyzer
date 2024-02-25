@@ -139,9 +139,9 @@ void PatternStrategy::getStatementsByIdent(const string& colName, const Token& f
     unordered_set<int> combinedStatements = combineFoundStatements(rightMatchedAssignments, leftMatchedAssignments);
     // combine the results with All assignment statements
     combinedStatements = combineFoundStatements(assignReader->getAllAssigns(), combinedStatements);
-    if (!combinedStatements.empty()) {
+    if (combinedStatements.empty()) {
         // if there are matches then set the result as a truth table because it is true
-        result->setAsTruthTable();
+        result->setAsFalseTable();
     }
     // convert combinedStatements into a set of strings
     unordered_set<string> combinedStatementsInString;

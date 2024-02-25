@@ -24,7 +24,7 @@ private:
     // this represents if there is an result or not, if not then the result is empty and no need to join
     bool noResults = false;
 
-    bool isTruthTable = false;
+    bool isFalseTable = true;
 
     //the unique values of each column
     std::vector<std::string> uniqueColumns;
@@ -84,7 +84,9 @@ public:
     bool isTableIdentical(const std::shared_ptr<ResultTable>& table2);
 
     std::unordered_set<std::string> getColumnValues(const std::string& columnName);
-    void setAsTruthTable();
+    void setAsFalseTable();
+    bool isTableFalse();
+    bool isTableEmpty();
 
     bool hasColumn(const std::string& columnName) const;
 };

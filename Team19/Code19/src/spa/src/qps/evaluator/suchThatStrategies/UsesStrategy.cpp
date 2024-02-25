@@ -103,8 +103,8 @@ void UsesStrategy::processBothConstants(const Token &firstParam, const Token &se
                                             std::shared_ptr<ResultTable> resultTable) {
     // check if the statement modifies the variable
     bool modifies = usesSReader->doesStmtUseVariable(stoi(firstParam.getValue()), secondParam.getValue());
-    if (modifies) {
-        resultTable->setAsTruthTable();
+    if (!modifies) {
+        resultTable->setAsFalseTable();
     }
 }
 
@@ -113,19 +113,19 @@ void UsesStrategy::processWildCards(const Token& firstParam, const Token& second
     if (firstParam.getType() == TokenType::Wildcard && secondParam.getType() == TokenType::Wildcard) {
         std::unordered_set<int> allUsesStmts = usesSReader->getAllStmtsThatUseAnyVariable();
         if (!allUsesStmts.empty()) {
-            resultTable->setAsTruthTable();
+            resultTable->setAsFalseTable();
         }
     } else if (firstParam.getType() == TokenType::Wildcard) {
         std::unordered_set<int> allModifiesStmts = usesSReader->getAllStmtsThatUseVariable(
                 extractQuotedExpression(secondParam));
         if (!allModifiesStmts.empty()) {
-            resultTable->setAsTruthTable();
+            resultTable->setAsFalseTable();
         }
     } else if (secondParam.getType() == TokenType::Wildcard) {
         std::unordered_set<std::string> allModifiedVars = usesSReader->getAllVariablesUsedByStmt(
                 stoi(firstParam.getValue()));
         if (!allModifiedVars.empty()) {
-            resultTable->setAsTruthTable();
+            resultTable->setAsFalseTable();
         }
     }
 }

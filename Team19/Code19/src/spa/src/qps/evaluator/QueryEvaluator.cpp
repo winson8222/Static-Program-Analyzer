@@ -63,10 +63,14 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
     if (result->hasColumn(requiredSynonym)) {
         return result->getColumnValues(requiredSynonym);
     }
+    else if(result->isTableFalse()){
+        //return empty set if the result table is not a truth table
+        return {};
+    }
     else {
         //return all statement/variables/whatever
         return getAllEntities(requiredType);
-	}
+    }
  
 }
 
