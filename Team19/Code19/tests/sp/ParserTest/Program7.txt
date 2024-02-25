@@ -1,0 +1,33 @@
+procedure nestedIfWhile {
+	while (x == y) {
+		if (x == y) then {
+			while(x > y) {
+				read x;
+			}
+
+			while (y > x) {
+				read y;
+			}
+		} else {
+			if (x != y) then {						
+				while(!(x == y)) {
+					read y;
+				}
+			} else {
+				while (x >= y) {
+					read y;
+				}
+			}
+
+			if (x >= y) then {
+				while(x <= y) {
+					read y;
+				}
+			} else {
+				while ((y > x) || (!(y == x))) {
+					read y;
+				}
+			}
+		}
+	}
+}
