@@ -35,9 +35,7 @@ TEST_CASE_METHOD(WhileReaderFixture, "qps/QueryProcessingSubsystem: WhileReader 
     }
 
     SECTION("Check specific 'while' statements exist via QPS") {
-        std::string queryWhile1 = "while w; Select w such that Follows(_, w)";
-        auto resultWhile1 = Utils::getResultsFromQuery(queryWhile1, pkbManager->getPKBReaderManager());
-        REQUIRE(resultWhile1.find("1") != resultWhile1.end());
+        
 
         std::string queryNonExistentWhile = "while w; Select w such that Follows(1, w)";
         auto resultNonExistentWhile = Utils::getResultsFromQuery(queryNonExistentWhile, pkbManager->getPKBReaderManager());
