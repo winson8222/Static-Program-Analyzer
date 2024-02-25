@@ -1,4 +1,3 @@
--x
 Write-Host "[System Test] Running all tests for Milestone 1"
 $EXIT_CODE = 0
 
