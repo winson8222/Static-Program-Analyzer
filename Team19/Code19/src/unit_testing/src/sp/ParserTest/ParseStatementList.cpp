@@ -21,7 +21,7 @@ TEST_CASE("Calling multiple statements", "[parse][statementList]") {
 
 	REQUIRE(statementList->type == ASTNodeType::STATEMENT_LIST);
 	REQUIRE(statementList->lineNumber == 0);
-	REQUIRE(statementList->value == Utility::getASTNodeType(ASTNodeType::STATEMENT_LIST));
+	REQUIRE(statementList->value == ASTUtility::getASTNodeType(ASTNodeType::STATEMENT_LIST));
 
 	SECTION("Testing Print child node") {
 		const auto& statements = statementList->children;
@@ -30,16 +30,16 @@ TEST_CASE("Calling multiple statements", "[parse][statementList]") {
 		auto callStatement = statements[0];
 		REQUIRE(callStatement->type == ASTNodeType::CALL);
 		REQUIRE(callStatement->lineNumber == 1);
-		REQUIRE(callStatement->value == Utility::getASTNodeType(ASTNodeType::CALL));
+		REQUIRE(callStatement->value == ASTUtility::getASTNodeType(ASTNodeType::CALL));
 
 		auto printStatement = statements[1];
 		REQUIRE(printStatement->type == ASTNodeType::PRINT);
 		REQUIRE(printStatement->lineNumber == 2);
-		REQUIRE(printStatement->value == Utility::getASTNodeType(ASTNodeType::PRINT));
+		REQUIRE(printStatement->value == ASTUtility::getASTNodeType(ASTNodeType::PRINT));
 
 		auto readStatement = statements[2];
 		REQUIRE(readStatement->type == ASTNodeType::READ);
 		REQUIRE(readStatement->lineNumber == 3);
-		REQUIRE(readStatement->value == Utility::getASTNodeType(ASTNodeType::READ));
+		REQUIRE(readStatement->value == ASTUtility::getASTNodeType(ASTNodeType::READ));
 	}
 }

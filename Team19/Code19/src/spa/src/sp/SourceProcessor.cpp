@@ -12,11 +12,6 @@ void SourceProcessor::parseSIMPLE() {
 	this->root = parser.parse();
 }
 
-void SourceProcessor::buildAST() {
-	// Build AST from parsed tokens (not implemented)
-	// this->root = ast.build();
-}
-
 void SourceProcessor::extractAndPopulate() {
     // Use PKBWriter to insert entities and relationships into PKB
     std::shared_ptr<PKBWriterManager> pkbWriterManager = this->pkbManager->getPKBWriterManager();

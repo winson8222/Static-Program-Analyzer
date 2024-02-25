@@ -6,15 +6,17 @@
 #include "sp/DesignExtractor/Extractor/ProcedureExtractor.h"
 #include "sp/DesignExtractor/Visitor/StatementListVisitor.h"
 
+
+/*
+* A visitor for the procedure node which should
+* call on all relevant extractors and sub-visitors
+*
+* This class is inherited from the IVisitor class,
+* so additional documentation should be taken from the
+* base abstract class unless further specified
+*/
 class ProcedureVisitor : public IVisitor {
 public:
-	ProcedureVisitor(std::shared_ptr<ASTNode> node, std::shared_ptr<PKBWriterManager> pkbWriterManager)
-		: IVisitor(node, pkbWriterManager) {
-		if (node->type != ASTNodeType::PROCEDURE) {
-			throw std::invalid_argument("ProcedureVisitor - input node type must be of type PROCEDURE");
-		}
-		this->contexts = std::vector<std::shared_ptr<ASTNode>>();
-	}
-
+	ProcedureVisitor(std::shared_ptr<ASTNode> node, std::shared_ptr<PKBWriterManager> pkbWriterManager);
 	void visit() override;
 };

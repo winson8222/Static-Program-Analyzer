@@ -14,7 +14,7 @@ TEST_CASE("Testing parseAssign with only one constant", "[parse][assign]") {
 
 		REQUIRE(assignStatement->type == ASTNodeType::ASSIGN);
 		REQUIRE(assignStatement->lineNumber == 1);
-		REQUIRE(assignStatement->value == Utility::getASTNodeType(ASTNodeType::ASSIGN));
+		REQUIRE(assignStatement->value == ASTUtility::getASTNodeType(ASTNodeType::ASSIGN));
 
 		SECTION("Testing tree child node") {
 			const auto& children = assignStatement->children;
@@ -42,7 +42,7 @@ TEST_CASE("Testing parseAssign with an expression", "[parse][assign]") {
 
 		REQUIRE(assignStatement->type == ASTNodeType::ASSIGN);
 		REQUIRE(assignStatement->lineNumber == 1);
-		REQUIRE(assignStatement->value == Utility::getASTNodeType(ASTNodeType::ASSIGN));
+		REQUIRE(assignStatement->value == ASTUtility::getASTNodeType(ASTNodeType::ASSIGN));
 
 		SECTION("Testing tree child node") {
 			const auto& children = assignStatement->children;
@@ -53,7 +53,7 @@ TEST_CASE("Testing parseAssign with an expression", "[parse][assign]") {
 
 			REQUIRE(children[1]->type == ASTNodeType::ADD);
 			REQUIRE(children[1]->lineNumber == 1);
-			REQUIRE(children[1]->value == Utility::getASTNodeType(ASTNodeType::ADD));
+			REQUIRE(children[1]->value == ASTUtility::getASTNodeType(ASTNodeType::ADD));
 
 			SECTION("Testing expression of children") {
 				const auto& constants = children[1]->children;

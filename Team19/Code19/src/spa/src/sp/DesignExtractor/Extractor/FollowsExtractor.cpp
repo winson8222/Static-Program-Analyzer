@@ -8,7 +8,7 @@ void FollowsExtractor::extract() {
 }
 
 void FollowsTExtractor::extract() {
-	// Extract all the follows relationships
+	// Extract all the follows star relationships
 	this->pkbWriterManager->getFollowsTWriter()->addFollowsT(
 		this->ast1->lineNumber, this->ast2->lineNumber
 	);

@@ -1,5 +1,13 @@
 #include "sp/DesignExtractor/Visitor/ProcedureVisitor.h"
 
+ProcedureVisitor::ProcedureVisitor(std::shared_ptr<ASTNode> node, std::shared_ptr<PKBWriterManager> pkbWriterManager)
+	: IVisitor(node, pkbWriterManager) {
+	if (node->type != ASTNodeType::PROCEDURE) {
+		throw std::invalid_argument("ProcedureVisitor - input node type must be of type PROCEDURE");
+	}
+	this->contexts = std::vector<std::shared_ptr<ASTNode>>();
+}
+
 void ProcedureVisitor::visit() {
 	ProcedureExtractor extractor(this->root, this->pkbWriterManager);
 	extractor.extract();

@@ -1,5 +1,16 @@
 #include "sp/DesignExtractor/Visitor/VariableVisitor.h"
 
+VariableVisitor::VariableVisitor(std::shared_ptr<ASTNode> root,
+	std::shared_ptr<PKBWriterManager> pkbWriterManager)
+	: IVisitor(root, pkbWriterManager) {
+	if (root->type != ASTNodeType::VARIABLE) {
+		throw std::invalid_argument("ERROR: VARIABLE NOT SUPPORTED");
+	}
+	if (root->children.size() != 0) {
+		throw std::invalid_argument("ERROR: VARIABLE HAVE LEAFS");
+	}
+}
+
 void VariableVisitor::visit() {
 	VariableExtractor variableExtractor(root, this->pkbWriterManager);
 	variableExtractor.extract();

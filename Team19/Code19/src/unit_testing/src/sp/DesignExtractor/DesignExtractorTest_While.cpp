@@ -2,7 +2,7 @@
 #include "sp/AST/ASTNode.h"
 #include "sp/Parser/SimpleParserFacade.h"
 #include "pkb/PKBManager.h"
-#include "sp/Utility.h"
+#include "sp/AST/ASTUtility.h"
 #include "catch.hpp"
 #include <fstream>
 #include <iostream>

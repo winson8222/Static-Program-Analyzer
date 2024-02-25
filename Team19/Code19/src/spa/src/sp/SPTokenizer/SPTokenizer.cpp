@@ -6,9 +6,9 @@
 #include <regex>
 #include <stdexcept>
 
-/** Splits the text file into a array of strings, with each element representing a line of text.
- *  Returns: A vector of size equal to the number of lines in the input content.
- */
+
+// ai-gen start (copilot, 2, e)
+// prompt: GitHub Copilot
 
 std::vector<std::string> SPTokenizer::splitLine(const std::string& content) {
 	std::vector<std::string> result;
@@ -73,3 +73,5 @@ void SPTokenizer::assertValidToken(LexicalTokenType type, const std::string& nam
 		throw std::runtime_error("ERROR: Name not valid " + name);
 	}
 }
+
+// ai-gen end

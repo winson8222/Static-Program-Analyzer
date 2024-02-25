@@ -22,5 +22,13 @@ public:
 	static std::vector<std::string> splitLine(const std::string& content);
 
 private:
+
+	/*
+	* @brief Check and assert that a string valued token is valid.
+	* @param type The type of the token to be checked.
+	* @param name The name of the token to be checked.
+	* @throws std::invalid_argument if the token is invalid - which happens if it
+	* fails the regex check - having only alphanumeric characters and first character being a letter.
+	*/
 	static void assertValidToken(LexicalTokenType type, const std::string& name);
 };

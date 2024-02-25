@@ -16,7 +16,7 @@ TEST_CASE("Testing ReadStmt::buildTree()", "[parse][read]") {
 
 		REQUIRE(readStatement->type == ASTNodeType::READ);
 		REQUIRE(readStatement->lineNumber == 1);
-		REQUIRE(readStatement->value == Utility::getASTNodeType(ASTNodeType::READ));
+		REQUIRE(readStatement->value == ASTUtility::getASTNodeType(ASTNodeType::READ));
 
 		SECTION("Testing tree child node") {
 			const auto& children = readStatement->children;
@@ -40,7 +40,7 @@ TEST_CASE("Testing ReadStmt::buildTree() with read as variable", "[parse][read]"
 
 		REQUIRE(readStatement->type == ASTNodeType::READ);
 		REQUIRE(readStatement->lineNumber == 1);
-		REQUIRE(readStatement->value == Utility::getASTNodeType(ASTNodeType::READ));
+		REQUIRE(readStatement->value == ASTUtility::getASTNodeType(ASTNodeType::READ));
 
 		SECTION("Testing tree child node") {
 			const auto& children = readStatement->children;
