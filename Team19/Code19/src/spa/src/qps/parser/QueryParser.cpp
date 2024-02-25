@@ -655,12 +655,14 @@ bool QueryParser::ensureToken(TokenType expected) {
 
 // Throws a standard invalid_argument exception with a custom error message for grammar error.
 string QueryParser::getGrammarError() {
-    return "incorrect grammar at: " + currentToken().getValue();
+    //return "incorrect grammar at: " + currentToken().getValue();
+    return "SyntaxError";
 }
 
 // Throws a standard invalid_argument exception with a custom error message for semantic error.
 string QueryParser::getSemanticError() {
-    return "semantic error at: " + currentToken().getValue();
+    //return "semantic error at: " + currentToken().getValue();
+    return "SemanticError";
 }
 
 // Parses a variable synonym in the query.
