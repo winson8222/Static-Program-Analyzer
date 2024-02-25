@@ -33,6 +33,7 @@ public:
         variableWriter->insertVariable(varZ);
         assignPatternWriter->addAssignPattern(1, varX, "y");
         assignPatternWriter->addAssignPattern(2, varZ, "x");
+        assignPatternWriter->addAssignPattern(3, varY, "z");
         assignWriter->insertAssign(1);
         assignWriter->insertAssign(2);
         assignWriter->insertAssign(3);
@@ -45,9 +46,9 @@ TEST_CASE_METHOD(AssignPatternMatchingFixture, "qps/QueryProcessingSubsystem: As
     populatePatterns();
 
     SECTION("Retrieve All RHS") {
-        std::unordered_set<std::string> expectedLhs = {"x", "z"};
+        std::unordered_set<std::string> expectedLhs = {"x", "z", "y"};
         std::string query = "variable v; assign a; Select v pattern a(v, _)";
-        auto result = Utils::getResultsFromQuery(query, pkbManager->getPKBReaderManager());
+        std::unordered_set<std::string> result = Utils::getResultsFromQuery(query, pkbManager->getPKBReaderManager());
         REQUIRE(result == expectedLhs);
     }
 
