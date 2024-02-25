@@ -404,3 +404,61 @@ TEST_CASE("Parsing single procedure that contains 20 nested while loops.") {
 	REQUIRE(loop->lineNumber == line);
 }
 
+TEST_CASE("Parsing single procedure with nested while and if.") {
+	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program7.txt";
+	REQUIRE(std::filesystem::exists(testFileName));
+	SimpleParserFacade parser(testFileName);
+	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
+
+	auto& loop = ((tree_ptr->children)[0]->children)[0]->children[0];
+	REQUIRE(loop->type == ASTNodeType::WHILE);
+	REQUIRE(loop->lineNumber == 1);
+	loop = (loop->children)[1]->children[0];
+
+	REQUIRE(loop->type == ASTNodeType::IF_ELSE_THEN);
+	REQUIRE(loop->lineNumber == 2);
+
+	SECTION("Testing internal If-then.") {
+		auto& ifThenStatementList = (loop->children)[1]->children;
+		REQUIRE(ifThenStatementList.size() == 2);
+
+		REQUIRE(ifThenStatementList[0]->type == ASTNodeType::WHILE);
+		REQUIRE(ifThenStatementList[0]->lineNumber == 3);
+
+		REQUIRE(ifThenStatementList[1]->type == ASTNodeType::WHILE);
+		REQUIRE(ifThenStatementList[1]->lineNumber == 5);
+	}
+
+	SECTION("Testing internal Else.") {
+		auto& elseStatementList = (loop->children)[2]->children;
+		REQUIRE(elseStatementList.size() == 2);
+
+		SECTION("Testing first if-else.") {
+			auto& if1 = elseStatementList[0];
+			REQUIRE(if1->type == ASTNodeType::IF_ELSE_THEN);
+			REQUIRE(if1->lineNumber == 7);
+			
+			auto& if1while1 = if1->children[1]->children[0];
+			REQUIRE(if1while1->type == ASTNodeType::WHILE);
+			REQUIRE(if1while1->lineNumber == 8);
+
+			auto& if1while2 = if1->children[2]->children[0];
+			REQUIRE(if1while2->type == ASTNodeType::WHILE);
+			REQUIRE(if1while2->lineNumber == 10);
+		}
+
+		SECTION("Testing second if-else.") {
+			auto& if2 = elseStatementList[1];
+			REQUIRE(if2->type == ASTNodeType::IF_ELSE_THEN);
+			REQUIRE(if2->lineNumber == 12);
+
+			auto& if2while1 = if2->children[1]->children[0];
+			REQUIRE(if2while1->type == ASTNodeType::WHILE);
+			REQUIRE(if2while1->lineNumber == 13);
+
+			auto& if2while2 = if2->children[2]->children[0];
+			REQUIRE(if2while2->type == ASTNodeType::WHILE);
+			REQUIRE(if2while2->lineNumber == 15);
+		}
+	}
+}
