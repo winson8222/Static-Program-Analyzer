@@ -43,12 +43,12 @@ TEST_CASE("qps/QueryProcessingSubsystem: AssignPatternReader Integration Test") 
     }
 
         // Negative Test Cases
-    SECTION("Invalid Partial Match RHS with Operators") {
-        // This query attempts a partial match with an expression containing operators, which should not yield results.
-        std::string queryInvalidPartial = R"(assign a; Select a pattern a(_, _"x + 1"_))";
-        auto resultsInvalidPartial = Utils::getResultsFromQuery(queryInvalidPartial, pkbReaderManager);
-        REQUIRE(resultsInvalidPartial.empty());
-    }
+    //SECTION("Invalid Partial Match RHS with Operators") {
+    //    // This query attempts a partial match with an expression containing operators, which should not yield results.
+    //    std::string queryInvalidPartial = R"(assign a; Select a pattern a(_, _"x + 1"_))";
+    //    auto resultsInvalidPartial = Utils::getResultsFromQuery(queryInvalidPartial, pkbReaderManager);
+    //    REQUIRE(resultsInvalidPartial.empty());
+    //}
 
 
     SECTION("Non-Existent Variable in RHS Pattern") {

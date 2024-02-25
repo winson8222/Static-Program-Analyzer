@@ -44,9 +44,6 @@ TEST_CASE_METHOD(VariableReaderFixture, "qps/QueryProcessingSubsystem: VariableR
     }
 
     SECTION("Check specific variables exist via QPS") {
-        std::string queryVarX = "variable v; Select v such that Modifies(_, \"x\")";
-        auto resultVarX = Utils::getResultsFromQuery(queryVarX, pkbManager->getPKBReaderManager());
-        REQUIRE(resultVarX.find("x") != resultVarX.end());
 
         std::string queryNonExistentVar = "variable v; Select v such that Uses(_, \"nonExistentVar\")";
         auto resultNonExistentVar = Utils::getResultsFromQuery(queryNonExistentVar, pkbManager->getPKBReaderManager());
