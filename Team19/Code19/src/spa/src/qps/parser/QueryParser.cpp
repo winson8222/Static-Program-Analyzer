@@ -253,7 +253,7 @@ bool QueryParser::isUsesOrModifies() {
 // set the Token type for the such that clause relationship more specifically
 bool QueryParser::parseUsesOrModifies() {
     // need to differentiate between usesS/UsesP and modifiesS/ModifiesP
-    Token suchThatToken = currentToken();
+    currentSuchThatToken = currentToken();
 
 
     if (!advanceToken()) {
@@ -278,12 +278,12 @@ bool QueryParser::parseUsesOrModifies() {
 
 
     if (parseStmtRef()) {
-        if (suchThatToken.getType() == TokenType::Uses) {
-            suchThatToken.setType(TokenType::UsesS);
-            parsingResult.setSuchThatClauseRelationship(suchThatToken);
+        if (currentSuchThatToken.getType() == TokenType::Uses) {
+            currentSuchThatToken.setType(TokenType::UsesS);
+            parsingResult.setSuchThatClauseRelationship(currentSuchThatToken);
         } else {
-            suchThatToken.setType(TokenType::ModifiesS);
-            parsingResult.setSuchThatClauseRelationship(suchThatToken);
+            currentSuchThatToken.setType(TokenType::ModifiesS);
+            parsingResult.setSuchThatClauseRelationship(currentSuchThatToken);
         }
         parsingResult.setSuchThatClauseFirstParam(currentToken());
         if (!advanceToken()) {
@@ -291,12 +291,12 @@ bool QueryParser::parseUsesOrModifies() {
         }
 
     } else if (parseEntRef()) {
-        if (suchThatToken.getType() == TokenType::Uses) {
-            suchThatToken.setType(TokenType::UsesP);
-            parsingResult.setSuchThatClauseRelationship(suchThatToken);
+        if (currentSuchThatToken.getType() == TokenType::Uses) {
+            currentSuchThatToken.setType(TokenType::UsesP);
+            parsingResult.setSuchThatClauseRelationship(currentSuchThatToken);
         } else {
-            suchThatToken.setType(TokenType::ModifiesP);
-            parsingResult.setSuchThatClauseRelationship(suchThatToken);
+            currentSuchThatToken.setType(TokenType::ModifiesP);
+            parsingResult.setSuchThatClauseRelationship(currentSuchThatToken);
         }
         parsingResult.setSuchThatClauseFirstParam(currentToken());
         if (!advanceToken()) {
@@ -709,19 +709,31 @@ bool QueryParser::parseStmtSynonyms() {
         return false;
     }
 
-
-    if (parsingResult.getDeclaredSynonym(currentToken().getValue()) != "stmt" &&
-        parsingResult.getDeclaredSynonym(currentToken().getValue()) != "read" &&
-        parsingResult.getDeclaredSynonym(currentToken().getValue()) != "print" &&
-        parsingResult.getDeclaredSynonym(currentToken().getValue()) != "while" &&
-        parsingResult.getDeclaredSynonym(currentToken().getValue()) != "if" &&
-        parsingResult.getDeclaredSynonym(currentToken().getValue()) != "procedure" &&
-        parsingResult.getDeclaredSynonym(currentToken().getValue()) != "assign"){
-        parsingResult.setErrorMessage(getSemanticError());
-        return false;
+    if(currentSuchThatToken.getType() == TokenType::Uses) {
+        if (parsingResult.getDeclaredSynonym(currentToken().getValue()) != "stmt" &&
+            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "print" &&
+            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "while" &&
+            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "if" &&
+            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "procedure" &&
+            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "assign"){
+            parsingResult.setErrorMessage(getSemanticError());
+            return false;
+        }
     }
-    return true;
 
+    if (currentSuchThatToken.getType() == TokenType::Modifies) {
+        if (parsingResult.getDeclaredSynonym(currentToken().getValue()) != "stmt" &&
+            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "read" &&
+            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "while" &&
+            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "if" &&
+            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "procedure" &&
+            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "assign"){
+            parsingResult.setErrorMessage(getSemanticError());
+            return false;
+        }
+    }
+
+    return true;
 
 }
 

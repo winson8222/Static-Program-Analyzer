@@ -32,11 +32,9 @@ private:
     size_t currentTokenIndex;
 
 
-
-
-
-
     ParsingResult parsingResult;
+
+    Token currentSuchThatToken;
 
 
     // Private methods for parsing different parts of the input.

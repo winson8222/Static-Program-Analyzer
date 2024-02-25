@@ -634,3 +634,46 @@ TEST_CASE("Check semantic error with stmtNumber < 1") {
     REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SemanticError");
 
 }
+
+
+TEST_CASE("Check semantic error with print in modifies clause") {
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "print"),
+            Token(TokenType::IDENT, "p"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "p"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Modifies, "Modifies"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::IDENT, "p"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::QuoutIDENT, "\"print\""),
+            Token(TokenType::Rparenthesis, ")")
+    };
+
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SemanticError");
+
+}
+
+TEST_CASE("Check semantic error with read in uses clause") {
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "read"),
+            Token(TokenType::IDENT, "r"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "r"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Uses, "Uses"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::IDENT, "r"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::QuoutIDENT, "\"print\""),
+            Token(TokenType::Rparenthesis, ")")
+    };
+
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SemanticError");
+
+}
