@@ -64,8 +64,8 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
         return result->getColumnValues(requiredSynonym);
     }
     else if(result->isTableFalse()){
-        //return empty set if the result table is not a truth table
-        return {};
+        unordered_set<string> empty;
+        return empty;
     }
     else {
         //return all statement/variables/whatever

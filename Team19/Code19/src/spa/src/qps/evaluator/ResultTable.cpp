@@ -246,7 +246,7 @@ std::unordered_set<std::string> ResultTable::getColumnValues(const std::string& 
 
 void ResultTable::setAsFalseTable()
 {
-    isFalseTable = false;
+    isFalseTable = true;
 }
 
 bool ResultTable::isTableFalse()

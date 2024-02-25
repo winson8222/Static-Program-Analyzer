@@ -24,7 +24,7 @@ private:
     // this represents if there is an result or not, if not then the result is empty and no need to join
     bool noResults = false;
 
-    bool isFalseTable = true;
+    bool isFalseTable = false;
 
     //the unique values of each column
     std::vector<std::string> uniqueColumns;
