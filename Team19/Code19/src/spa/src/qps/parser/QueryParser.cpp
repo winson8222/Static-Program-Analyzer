@@ -379,7 +379,7 @@ bool QueryParser::parseEntRef() {
         return true;
     } else {
         if(!parseVarSynonyms()){
-            parsingResult.setErrorMessage(getGrammarError());
+            parsingResult.setErrorMessage(getSemanticError());
             return false;
         }
         return true;
@@ -461,36 +461,35 @@ bool QueryParser::parsePatternClause() {
 // Handles different forms of expressions like quoted constants, wildcards, or quoted expressions.
 bool QueryParser::parseExpressionSpec() {
 
-    if (match(TokenType::QuoutConst) || match(TokenType::QuoutIDENT)) {
+    if (match(TokenType::QuoutConst) || match(TokenType::QuoutIDENT) || match(TokenType::ExpressionSpec)) {
         return true;
     } else if (match(TokenType::Wildcard)) {
-        if (!peekNextToken(TokenType::DoubleQuote)) {
+        if (peekNextToken(TokenType::Rparenthesis)) {
             return true;
         }
         if (!advanceToken()) {
             return false;
         }
-        if (match(TokenType::DoubleQuote)) {
-            if(!parseQuotedExpression()){
-                parsingResult.setErrorMessage(getGrammarError());
-                return false;
-            }
-            if (!advanceToken()) {
-                return false;
-            }
-            if(!ensureToken(TokenType::Wildcard)){
-                return false;
-            }
-            return true;
-        }
-        return true;
-        
-    } else if (match(TokenType::DoubleQuote)) {
-        if(!parseQuotedExpression()) {
+
+
+
+
+        if (!match(TokenType::QuoutIDENT) && !match(TokenType::QuoutConst) && !match(TokenType::ExpressionSpec)) {
             parsingResult.setErrorMessage(getGrammarError());
             return false;
         }
+
+        if (!advanceToken()) {
+            return false;
+        }
+
+        if(!ensureToken(TokenType::Wildcard)){
+            return false;
+        }
         return true;
+
+    } else if (match(TokenType::QuoutIDENT)) {
+        return parseQuotedExpression();
     } else {
         parsingResult.setErrorMessage(getGrammarError());
         return false;
@@ -514,7 +513,7 @@ bool QueryParser::parseQuotedExpression() {
     }
     return true;
 
-    
+
 }
 
 // Parses an expression in the query.
@@ -557,7 +556,7 @@ bool QueryParser::parseTerm() {
             if (!advanceToken()) {
                 return false;
             }
-        } 
+        }
         if(!parseFactor()) {
             parsingResult.setErrorMessage(getGrammarError());
             return false;
@@ -677,7 +676,15 @@ bool QueryParser::parseStmtSynonyms() {
     if(!ensureToken(TokenType::IDENT)){
         return false;
     }
-    if (parsingResult.getDeclaredSynonym(currentToken().getValue()) != "stmt") {
+
+
+    if (parsingResult.getDeclaredSynonym(currentToken().getValue()) != "stmt" &&
+        parsingResult.getDeclaredSynonym(currentToken().getValue()) != "read" &&
+        parsingResult.getDeclaredSynonym(currentToken().getValue()) != "print" &&
+        parsingResult.getDeclaredSynonym(currentToken().getValue()) != "while" &&
+        parsingResult.getDeclaredSynonym(currentToken().getValue()) != "if" &&
+        parsingResult.getDeclaredSynonym(currentToken().getValue()) != "procedure" &&
+        parsingResult.getDeclaredSynonym(currentToken().getValue()) != "assign"){
         parsingResult.setErrorMessage(getSemanticError());
         return false;
     }

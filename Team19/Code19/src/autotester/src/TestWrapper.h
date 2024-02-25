@@ -7,10 +7,9 @@
 
 // include your other headers here
 #include "AbstractWrapper.h"
-// #include "pkb/PKBManager.h"
 #include "pkb/PKBManager.h"
 #include "qps/Evaluator/QueryEvaluator.h"
-#include "qps/Parser/QueryParser.h"
+#include "qps/parser/QueryParser.h"
 #include "sp/SourceProcessor.h"
 
 

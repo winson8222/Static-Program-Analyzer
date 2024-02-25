@@ -13,11 +13,25 @@
 
 typedef std::vector<std::shared_ptr<ASTNode>> listnode;
 
+/*
+* Class to create the visitor for the statement, by using the factory pattern
+* to default switching to statement type
+*/
 class StatementFactory  {
 public:
+    /*
+    * @brief create the visitor for the statement, by using the factory pattern
+    * @param node the ASTNode to be visited
+    * @param parent the list of ASTNode to be visited
+    * @param pkbWriterManager the pkbWriterManager to be visited
+    * @return the visitor for the statement
+    */
     std::shared_ptr<StatementVisitor> createVisitor(std::shared_ptr<ASTNode> node, listnode parent, std::shared_ptr<PKBWriterManager> pkbWriterManager);
 };
 
+/*
+* For future SWE Designs: to create the visitor for the expression, by using the factory pattern
+*/
 class ExpressionFactory  {
     std::shared_ptr<IVisitor> createVisitor(std::shared_ptr<ASTNode> node, std::shared_ptr<PKBWriterManager> pkbWriterManager);
 };

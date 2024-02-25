@@ -23,7 +23,7 @@ public:
                                string expressionValue, std::shared_ptr<ResultTable> result, bool partialMatch);
     void fillSingleColumnResult(const string& colName, const unordered_set<string>& follows, std::shared_ptr<ResultTable> result);
     void fillStmtSynonymPairResult(const unordered_set<int>& patternNumbers, const string& assignSynonym, const Token& firstParam, const std::shared_ptr<ResultTable>& result);
-    void getAllStatementsByRHS(string patternSynonym , string expressionValue, std::shared_ptr<ResultTable> result);
+    void getAllStatementsByRHS(string patternSynonym , string expressionValue, std::shared_ptr<ResultTable> result, bool partialMatch);
 
     // Method to handle 'if' patterns
     void handleIfPatterns(const ParsingResult& parsingResult, std::shared_ptr<ResultTable> result);

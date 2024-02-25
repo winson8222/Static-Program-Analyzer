@@ -3,7 +3,7 @@
 #include "qps/evaluator/suchThatStrategies/StmtStmtStrategy.h"
 #include "pkb/PKBReaderManager.h"
 #include "pkb/PKB.h"
-#include "qps/ParsingResult.h"
+#include "qps/parser/ParsingResult.h"
 
 // Derive a class from StmtStmtStrategy for testing
 class TestableStmtStmtStrategy : public StmtStmtStrategy {
@@ -14,8 +14,8 @@ public:
 
     // Implement pure virtual methods to satisfy compiler
     void processIntegerParams(const Token& firstParam, const Token& secondParam, std::shared_ptr<ResultTable> resultTable) override {}
-    void processFirstParam(const Token& firstParam, const Token& secondParam, const string& variant, std::shared_ptr<ResultTable> resultTable) override {}
-    void processSecondParam(const Token& firstParam, const Token& secondParam, const string& variant, std::shared_ptr<ResultTable> resultTable) override {}
+//    void processFirstParam(const Token& firstParam, const Token& secondParam, const string& variant, std::shared_ptr<ResultTable> resultTable) override {}
+//    void processSecondParam(const Token& firstParam, const Token& secondParam, const string& variant, std::shared_ptr<ResultTable> resultTable) override {}
 };
 //
 //TEST_CASE("StmtStmtStrategy Protected Methods", "[StmtStmtStrategy]") {

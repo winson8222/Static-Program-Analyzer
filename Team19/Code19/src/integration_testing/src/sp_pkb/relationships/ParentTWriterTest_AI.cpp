@@ -40,9 +40,7 @@ TEST_CASE("sp/SourceProcessor: ParentT") {
         std::shared_ptr<ParentTReader> parentTReader = pkbReaderManager->getParentTReader();
         REQUIRE(parentTReader->getChildT(1).empty());
         REQUIRE(parentTReader->getAllChildrenT() == std::unordered_set<int>{7, 9, 10, 11, 12, 13});
-
         REQUIRE(parentTReader->getKeys() == std::unordered_set<int>{6, 8, 12});
-
         REQUIRE(parentTReader->getParentT(13) == std::unordered_set<int>{8, 12});
         REQUIRE(parentTReader->getParentT(12) == std::unordered_set<int>{8});
         REQUIRE(parentTReader->getParentT(11) == std::unordered_set<int>{8});

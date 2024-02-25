@@ -18,6 +18,7 @@ private:
     std::shared_ptr<FollowsTReader> followsTReader; ///< Reader to access transitive Follows relationships.
     std::shared_ptr<StatementReader> statementReader; ///< Reader to access statement-related information.
 
+
 public:
     /**
      * Evaluates a query based on the Follows or Follows* relationship.
@@ -34,7 +35,7 @@ public:
      * @param variant The variant of the Follows relationship (direct or transitive).
      * @param resultTable The result table to be populated with the evaluation results.
      */
-    void processSynonyms(const Token& firstParam, const Token& secondParam, const string& variant, std::shared_ptr<ResultTable> resultTable);
+    void processSynonyms(const Token& firstParam, const Token& secondParam, const string& variant, std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager);
 
     /**
      * Processes queries where the first parameter is a synonym and the second parameter is specific.
@@ -43,7 +44,7 @@ public:
      * @param variant The variant of the Follows relationship (direct or transitive).
      * @param resultTable The result table to be populated with the evaluation results.
      */
-    void processFirstParam(const Token& firstParam, const Token& secondParam, const string& variant, std::shared_ptr<ResultTable> resultTable) override;
+    void processFirstParam(const Token& firstParam, const Token& secondParam, const string& variant, std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) override;
 
     /**
      * Processes queries where the second parameter is a synonym and the first parameter is specific.
@@ -52,7 +53,7 @@ public:
      * @param variant The variant of the Follows relationship (direct or transitive).
      * @param resultTable The result table to be populated with the evaluation results.
      */
-    void processSecondParam(const Token& firstParam, const Token& secondParam, const string& variant, std::shared_ptr<ResultTable> resultTable) override;
+    void processSecondParam(const Token& firstParam, const Token& secondParam, const string& variant, std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) override;
 
     /**
      * Processes queries where both parameters are integers.
@@ -60,5 +61,5 @@ public:
      * @param secondParam The second parameter token of the query.
      * @param resultTable The result table to be populated with the evaluation results.
      */
-    void processIntegerParams(const Token& firstParam, const Token& secondParam, std::shared_ptr<ResultTable> resultTable) override;
+    void processIntegerParams(const Token& firstParam, const Token& secondParam, std::shared_ptr<ResultTable> resultTable);
 };

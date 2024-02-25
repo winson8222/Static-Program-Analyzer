@@ -45,7 +45,7 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
 	QueryParser parser(tokens);
 	auto parsingResult = parser.parse();
 	QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-	std::vector<string> res = evaluator.evaluateQuery();
+	std::unordered_set<string> res = evaluator.evaluateQuery();
 	for (auto & re : res) {
 		results.push_back(re);
 	}

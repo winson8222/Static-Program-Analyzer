@@ -51,7 +51,7 @@ TEST_CASE("Single procedure, with read statement") {
 	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
 
 	REQUIRE(tree_ptr->type == ASTNodeType::PROGRAMS);
-	REQUIRE(tree_ptr->value == Utility::getASTNodeType(ASTNodeType::PROGRAMS));
+	REQUIRE(tree_ptr->value == ASTUtility::getASTNodeType(ASTNodeType::PROGRAMS));
 
 
 	const auto& procedures = tree_ptr->children;
@@ -100,7 +100,7 @@ TEST_CASE("Multiple procedures, all names that may be potential keywords.") {
 
 	REQUIRE(tree_ptr->type == ASTNodeType::PROGRAMS);
 	REQUIRE(tree_ptr->lineNumber == -1);
-	REQUIRE(tree_ptr->value == Utility::getASTNodeType(ASTNodeType::PROGRAMS));
+	REQUIRE(tree_ptr->value == ASTUtility::getASTNodeType(ASTNodeType::PROGRAMS));
 
 	REQUIRE(tree_ptr->children.size() == 30);
 }
@@ -118,7 +118,7 @@ TEST_CASE("Parsing single program with all possible statements types.") {
 		std::shared_ptr<ASTNode> whileStatement = statements[0];
 		REQUIRE(whileStatement->type == ASTNodeType::WHILE);
 		REQUIRE(whileStatement->lineNumber == 1);
-		REQUIRE(whileStatement->value == Utility::getASTNodeType(ASTNodeType::WHILE));
+		REQUIRE(whileStatement->value == ASTUtility::getASTNodeType(ASTNodeType::WHILE));
 
 		auto& whileChildren = whileStatement->children;
 		REQUIRE(whileChildren.size() == 2);
@@ -130,7 +130,7 @@ TEST_CASE("Parsing single program with all possible statements types.") {
 
 			REQUIRE(cond_expr->type == ASTNodeType::GREATER);
 			REQUIRE(cond_expr->lineNumber == 1);
-			REQUIRE(cond_expr->value == Utility::getASTNodeType(ASTNodeType::GREATER));
+			REQUIRE(cond_expr->value == ASTUtility::getASTNodeType(ASTNodeType::GREATER));
 
 			const auto& children = cond_expr->children;
 			REQUIRE(children.size() == 2);
@@ -149,7 +149,7 @@ TEST_CASE("Parsing single program with all possible statements types.") {
 
 			REQUIRE(statement->type == ASTNodeType::ASSIGN);
 			REQUIRE(statement->lineNumber == 2);
-			REQUIRE(statement->value == Utility::getASTNodeType(ASTNodeType::ASSIGN));
+			REQUIRE(statement->value == ASTUtility::getASTNodeType(ASTNodeType::ASSIGN));
 
 			const auto& children = statement->children;
 			REQUIRE(children.size() == 2);
@@ -168,7 +168,7 @@ TEST_CASE("Parsing single program with all possible statements types.") {
 
 		REQUIRE(ifStatement->type == ASTNodeType::IF_ELSE_THEN);
 		REQUIRE(ifStatement->lineNumber == 3);
-		REQUIRE(ifStatement->value == Utility::getASTNodeType(ASTNodeType::IF_ELSE_THEN));
+		REQUIRE(ifStatement->value == ASTUtility::getASTNodeType(ASTNodeType::IF_ELSE_THEN));
 
 		auto& ifChildren = ifStatement->children;
 		REQUIRE(ifChildren.size() == 3);
@@ -178,7 +178,7 @@ TEST_CASE("Parsing single program with all possible statements types.") {
 
 			REQUIRE(cond_expr->type == ASTNodeType::LESSER);
 			REQUIRE(cond_expr->lineNumber == 3);
-			REQUIRE(cond_expr->value == Utility::getASTNodeType(ASTNodeType::LESSER));
+			REQUIRE(cond_expr->value == ASTUtility::getASTNodeType(ASTNodeType::LESSER));
 
 			const auto& children = cond_expr->children;
 			REQUIRE(children.size() == 2);
@@ -197,7 +197,7 @@ TEST_CASE("Parsing single program with all possible statements types.") {
 
 			REQUIRE(statement->type == ASTNodeType::ASSIGN);
 			REQUIRE(statement->lineNumber == 4);
-			REQUIRE(statement->value == Utility::getASTNodeType(ASTNodeType::ASSIGN));
+			REQUIRE(statement->value == ASTUtility::getASTNodeType(ASTNodeType::ASSIGN));
 
 			const auto& children = statement->children;
 			REQUIRE(children.size() == 2);
@@ -216,7 +216,7 @@ TEST_CASE("Parsing single program with all possible statements types.") {
 
 			REQUIRE(statement->type == ASTNodeType::ASSIGN);
 			REQUIRE(statement->lineNumber == 5);
-			REQUIRE(statement->value == Utility::getASTNodeType(ASTNodeType::ASSIGN));
+			REQUIRE(statement->value == ASTUtility::getASTNodeType(ASTNodeType::ASSIGN));
 
 			const auto& children = statement->children;
 			REQUIRE(children.size() == 2);
@@ -235,7 +235,7 @@ TEST_CASE("Parsing single program with all possible statements types.") {
 
 		REQUIRE(assignStatement->type == ASTNodeType::ASSIGN);
 		REQUIRE(assignStatement->lineNumber == 6);
-		REQUIRE(assignStatement->value == Utility::getASTNodeType(ASTNodeType::ASSIGN));
+		REQUIRE(assignStatement->value == ASTUtility::getASTNodeType(ASTNodeType::ASSIGN));
 
 		SECTION("Testing tree child node") {
 			const auto& children = assignStatement->children;
@@ -246,7 +246,7 @@ TEST_CASE("Parsing single program with all possible statements types.") {
 
 			REQUIRE(children[1]->type == ASTNodeType::ADD);
 			REQUIRE(children[1]->lineNumber == 6);
-			REQUIRE(children[1]->value == Utility::getASTNodeType(ASTNodeType::ADD));
+			REQUIRE(children[1]->value == ASTUtility::getASTNodeType(ASTNodeType::ADD));
 
 			SECTION("Testing expression of children") {
 				const auto& constants = children[1]->children;
@@ -266,7 +266,7 @@ TEST_CASE("Parsing single program with all possible statements types.") {
 		auto& callStatement = statements[3];
 		REQUIRE(callStatement->type == ASTNodeType::CALL);
 		REQUIRE(callStatement->lineNumber == 7);
-		REQUIRE(callStatement->value == Utility::getASTNodeType(ASTNodeType::CALL));
+		REQUIRE(callStatement->value == ASTUtility::getASTNodeType(ASTNodeType::CALL));
 
 		SECTION("Testing tree child node") {
 			const auto& children = callStatement->children;
@@ -281,7 +281,7 @@ TEST_CASE("Parsing single program with all possible statements types.") {
 		auto& printStatement = statements[4];
 		REQUIRE(printStatement->type == ASTNodeType::PRINT);
 		REQUIRE(printStatement->lineNumber == 8);
-		REQUIRE(printStatement->value == Utility::getASTNodeType(ASTNodeType::PRINT));
+		REQUIRE(printStatement->value == ASTUtility::getASTNodeType(ASTNodeType::PRINT));
 
 		SECTION("Testing tree child node") {
 			const auto& children = printStatement->children;
@@ -296,7 +296,7 @@ TEST_CASE("Parsing single program with all possible statements types.") {
 		auto& readStatement = statements[5];
 		REQUIRE(readStatement->type == ASTNodeType::READ);
 		REQUIRE(readStatement->lineNumber == 9);
-		REQUIRE(readStatement->value == Utility::getASTNodeType(ASTNodeType::READ));
+		REQUIRE(readStatement->value == ASTUtility::getASTNodeType(ASTNodeType::READ));
 
 		SECTION("Testing tree child node") {
 			const auto& children = readStatement->children;

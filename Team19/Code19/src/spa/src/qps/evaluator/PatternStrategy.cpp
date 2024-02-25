@@ -49,7 +49,7 @@ std::shared_ptr<ResultTable> PatternStrategy::evaluateQuery(PKBReaderManager& pk
         getStatementsByIdent(assignParamValue, patternFirstParam, secondParamValue , result, partialMatch);
     } else {
         // if the first param is a wildcard, we need to retrieve all stmts that match the right hand side
-        getAllStatementsByRHS(assignParamValue, secondParamValue, result);
+        getAllStatementsByRHS(assignParamValue, secondParamValue, result, partialMatch);
     }
 
 
@@ -153,16 +153,28 @@ void PatternStrategy::getStatementsByIdent(const string& colName, const Token& f
     fillSingleColumnResult(colName, combinedStatementsInString, result);
 }
 
-void PatternStrategy::getAllStatementsByRHS(string patternSynonym , string expressionValue, std::shared_ptr<ResultTable> result) {
+void PatternStrategy::getAllStatementsByRHS(string patternSynonym , string expressionValue, std::shared_ptr<ResultTable> result, bool partialMatch) {
     result -> insertAllColumns({ patternSynonym });
     unordered_set<int> rightMatchedAssignments;
-    if (expressionValue == "_") {
-        rightMatchedAssignments = assignReader->getAllAssigns();
-        // convert the result into a set of strings
+
+    if (partialMatch) {
+        if (expressionValue == "_") {
+            rightMatchedAssignments = assignReader->getAllAssigns();
+        } else {
+            rightMatchedAssignments = assignPatternReader->getStatementNumbersWithPartialRHS(expressionValue);
+            // combine with all the assignment statements
+            rightMatchedAssignments = combineFoundStatements(assignReader->getAllAssigns(), rightMatchedAssignments);
+        }
     } else {
-        rightMatchedAssignments = assignPatternReader->getStatementNumbersWithRHS(expressionValue);
-        // combine with all the assignment statements
-        rightMatchedAssignments = combineFoundStatements(assignReader->getAllAssigns(), rightMatchedAssignments);
+        if (expressionValue == "_") {
+            rightMatchedAssignments = assignReader->getAllAssigns();
+            // convert the result into a set of strings
+        } else {
+
+            rightMatchedAssignments = assignPatternReader->getStatementNumbersWithRHS(expressionValue);
+            // combine with all the assignment statements
+            rightMatchedAssignments = combineFoundStatements(assignReader->getAllAssigns(), rightMatchedAssignments);
+        }
     }
     unordered_set<string> combinedStatementsInString;
     convertIntSetToStringSet(rightMatchedAssignments, combinedStatementsInString);
