@@ -1,0 +1,5 @@
+procedure procedure {
+	while ((read != 11)) {
+		print = 0;
+	}
+}
