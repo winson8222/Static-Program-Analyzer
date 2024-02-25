@@ -22,25 +22,31 @@ TEST_CASE("qps/QueryProcessingSubsystem: FollowsReader Integration Test") {
 
     auto pkbReaderManager = pkbManager->getPKBReaderManager();
 
-//    SECTION("Verify Follows relationships via QPS") {
-//        std::string query = "stmt s1, s2; Select <s1, s2> such that Follows(s1, s2)";
-//        auto results = Utils::getResultsFromQuery(query, pkbReaderManager);
-//        std::unordered_set<std::string> expectedResults = {"<1, 2>", "<3, 4>"};
-//        REQUIRE(results == expectedResults);
-//    }
+    SECTION("Statements directly following a given statement") {
+        std::string queryDirectFollows = "stmt s; Select s such that Follows(1, s)";
+        auto resultsDirectFollows = Utils::getResultsFromQuery(queryDirectFollows, pkbReaderManager);
+        std::unordered_set<std::string> expectedResultsDirectFollows = {"2"};
+        REQUIRE(resultsDirectFollows == expectedResultsDirectFollows);
+    }
 
-    SECTION("Verify individual Follows relationships via QPS") {
-        // Testing Follows(s, 1) should yield no results
-        std::string query1 = "stmt s; Select s such that Follows(s, 1)";
-        auto results1 = Utils::getResultsFromQuery(query1, pkbReaderManager);
-        std::unordered_set<std::string> expectedResults1 = {};
-        REQUIRE(results1 == expectedResults1);
+    SECTION("Statements that directly follow any statement") {
+        std::string queryDirectlyFollowsAny = "stmt s; Select s such that Follows(s, _)";
+        auto resultsDirectlyFollowsAny = Utils::getResultsFromQuery(queryDirectlyFollowsAny, pkbReaderManager);
+        std::unordered_set<std::string> expectedResultsDirectlyFollowsAny = {"1", "2", "3"};
+        REQUIRE(resultsDirectlyFollowsAny == expectedResultsDirectlyFollowsAny);
+    }
 
-        // Testing Follows(2, s) should yield {3}
-        std::string query2 = "stmt s; Select s such that Follows(2, s)";
-        auto results2 = Utils::getResultsFromQuery(query2, pkbReaderManager);
-        std::unordered_set<std::string> expectedResults2 = {"3"};
-        REQUIRE(results2 == expectedResults2);
+    SECTION("Statements directly followed by any statement") {
+        std::string queryDirectlyFollowedByAny = "stmt s; Select s such that Follows(_, s)";
+        auto resultsDirectlyFollowedByAny = Utils::getResultsFromQuery(queryDirectlyFollowedByAny, pkbReaderManager);
+        std::unordered_set<std::string> expectedResultsDirectlyFollowedByAny = {"2", "3", "4"};
+        REQUIRE(resultsDirectlyFollowedByAny == expectedResultsDirectlyFollowedByAny);
+    }
+
+    SECTION("Verify non-existent Follows relationship") {
+        std::string queryNonExistentFollows = "stmt s; Select s such that Follows(999, s)";
+        auto resultsNonExistentFollows = Utils::getResultsFromQuery(queryNonExistentFollows, pkbReaderManager);
+        REQUIRE(resultsNonExistentFollows.empty());
     }
 
 }

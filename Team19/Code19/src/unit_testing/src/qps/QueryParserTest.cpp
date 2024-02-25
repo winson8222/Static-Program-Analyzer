@@ -18,7 +18,7 @@ TEST_CASE("Check Grammar of Valid tokens with no declaration") {
             Token(TokenType::Rparenthesis, ")")
     };
 
-    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "incorrect grammar at: Select");
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SyntaxError");
 
 
 }
@@ -82,7 +82,7 @@ TEST_CASE("Check Grammar of Valid tokens with no relref keyword") {
 
 
 
-    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "incorrect grammar at: (");
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SyntaxError");
 }
 
 TEST_CASE("Check Grammar of Valid tokens with pattern query") {
@@ -150,7 +150,7 @@ TEST_CASE("Check Grammars of valid tokens that Follows with a stmtRef and an ent
             Token(TokenType::Rparenthesis, ")")
     };
 
-    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "incorrect grammar at: \"existentVar\"");
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SyntaxError");
 
 }
 
@@ -224,9 +224,58 @@ TEST_CASE("Check for semantic error for undeclared stmt synonyms") {
             Token(TokenType::Rparenthesis, ")")
     };
 
-    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "semantic error at: s3");
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SemanticError");
 
 }
+
+TEST_CASE("Check semantic error with first expression of Modifies be wildcard") {
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "stmt"),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::DesignEntity, "variable"),
+            Token(TokenType::IDENT, "v"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Modifies, "Modifies"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::IDENT, "v"),
+            Token(TokenType::Rparenthesis, ")")
+    };
+
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SemanticError");
+
+}
+
+TEST_CASE("Check semantic error with first expression of Uses be wildcard") {
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "stmt"),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::DesignEntity, "variable"),
+            Token(TokenType::IDENT, "v"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Uses, "Uses"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::IDENT, "v"),
+            Token(TokenType::Rparenthesis, ")")
+    };
+
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SemanticError");
+
+}
+
 
 TEST_CASE("Check Grammars of valid tokens that Modifies with two stmtRefs in paranthesis") {
     std::vector<Token> tokens = {
@@ -245,7 +294,7 @@ TEST_CASE("Check Grammars of valid tokens that Modifies with two stmtRefs in par
             Token(TokenType::Rparenthesis, ")")
     };
 
-    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "incorrect grammar at: 1");
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SyntaxError");
 
 }
 
@@ -354,7 +403,7 @@ TEST_CASE("Check Grammars of valid tokens have Modifies and pattern clauses") {
             Token(TokenType::Rparenthesis, ")")
     };
 
-    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "incorrect grammar at: 1");
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SyntaxError");
 
 }
 
@@ -378,7 +427,7 @@ TEST_CASE("Check Semantic error repeated token declarations") {
             Token(TokenType::Rparenthesis, ")")
     };
 
-    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "semantic error at: s");
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SemanticError");
 
 }
 
@@ -467,6 +516,96 @@ TEST_CASE("Check no grammatical error with QuoutConst with and expressionSpec") 
             Token(TokenType::ExpressionSpec, "\"x + 1\""),
             Token(TokenType::Rparenthesis, ")")
 
+    };
+
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "");
+
+}
+
+TEST_CASE("Check no grammatical error with assignment as first param of Parent") {
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "assign"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::DesignEntity, "while"),
+            Token(TokenType::IDENT, "w"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "w"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Parent, "Parent"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::INTEGER, "2"),
+            Token(TokenType::Rparenthesis, ")")
+    };
+
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "");
+
+}
+
+//assign a;
+//Select a such that Modifies(a, _) pattern a(_, _"abc"_)
+
+TEST_CASE("Check no grammatical error with such that Modifies and pattern clauses") {
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "assign"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Modifies, "Modifies"),
+            Token(TokenType::Modifies, "Modifies"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Rparenthesis, ")"),
+            Token(TokenType::PatternKeyword, "pattern"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::QuoutConst, "\"abc\""),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Rparenthesis, ")")
+    };
+
+    REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "");
+
+}
+
+
+
+TEST_CASE("Check no grammatical error with such that Modifies and pattern clauses with quoted constant") {
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "assign"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Modifies, "Modifies"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Rparenthesis, ")"),
+            Token(TokenType::PatternKeyword, "pattern"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::QuoutConst, "\"x\""),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Rparenthesis, ")")
     };
 
     REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "");

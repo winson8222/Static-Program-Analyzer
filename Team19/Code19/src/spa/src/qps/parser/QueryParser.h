@@ -58,7 +58,7 @@ private:
     bool parseStmtRef();
     bool parseDesignEntity();
     bool parseUsesOrModifies();
-    bool parsestmtRefstmtRef();
+    bool parseStmtRefStmtRef();
     bool parseExpression();
     bool parseTerm();
     bool parseFactor();

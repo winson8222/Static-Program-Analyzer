@@ -22,7 +22,6 @@ private:
     std::vector<std::unordered_map<std::string, std::string>> rows;
 
     // this represents if there is an result or not, if not then the result is empty and no need to join
-    bool noResults = false;
 
     bool isTruthTable = false;
 
@@ -85,6 +84,9 @@ public:
 
     std::unordered_set<std::string> getColumnValues(const std::string& columnName);
     void setAsTruthTable();
+
+    bool isTableTrue();
+
 
     bool hasColumn(const std::string& columnName) const;
 };

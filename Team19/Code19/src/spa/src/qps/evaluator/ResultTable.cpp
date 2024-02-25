@@ -240,6 +240,13 @@ void ResultTable::setAsTruthTable()
     isTruthTable = true;
 }
 
+bool ResultTable::isTableTrue()
+{
+    return isTruthTable;
+}
+
+
+
 bool ResultTable::hasColumn(const std::string& columnName) const {
     // Search for the column name in colSet
     auto it = std::find(colSet.begin(), colSet.end(), columnName);

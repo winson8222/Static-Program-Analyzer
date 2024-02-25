@@ -197,7 +197,7 @@ bool QueryParser::parseRelRef() {
         if (!advanceToken()) {
             return false;
         }
-        if(!parsestmtRefstmtRef()) {
+        if(!parseStmtRefStmtRef()) {
             return false;
         }
         return true;
@@ -251,6 +251,13 @@ bool QueryParser::parseUsesOrModifies() {
         parsingResult.setErrorMessage(getGrammarError());
         return false;
     }
+
+    if (match(TokenType::Wildcard)) {
+        parsingResult.setErrorMessage(getSemanticError());
+        return false;
+    }
+
+
 
 
     if (parseStmtRef()) {
@@ -312,7 +319,7 @@ bool QueryParser::parseUsesOrModifies() {
 
 // Parses a statement reference to statement reference relation.
 // Ensures correct syntax and processes multiple statement references.
-bool QueryParser::parsestmtRefstmtRef() {
+bool QueryParser::parseStmtRefStmtRef() {
     if (match(TokenType::Lparenthesis)) {
         if (!advanceToken()) {
             return false;
@@ -648,12 +655,14 @@ bool QueryParser::ensureToken(TokenType expected) {
 
 // Throws a standard invalid_argument exception with a custom error message for grammar error.
 string QueryParser::getGrammarError() {
-    return "incorrect grammar at: " + currentToken().getValue();
+    //return "incorrect grammar at: " + currentToken().getValue();
+    return "SyntaxError";
 }
 
 // Throws a standard invalid_argument exception with a custom error message for semantic error.
 string QueryParser::getSemanticError() {
-    return "semantic error at: " + currentToken().getValue();
+    //return "semantic error at: " + currentToken().getValue();
+    return "SemanticError";
 }
 
 // Parses a variable synonym in the query.

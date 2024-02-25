@@ -48,7 +48,11 @@ void ParentStrategy::processSynonyms(const Token& firstParam, const Token& secon
     string col2 = secondParam.getValue();
     string firstStatementType = parsingResult.getDeclaredSynonyms().at(col1);
     string secondStatementType = parsingResult.getDeclaredSynonyms().at(col2);
-    resultTable->insertAllColumns({ col1, col2 }); // Assuming results are pairs of statements
+    if (col1 == col2) {
+        resultTable->insertAllColumns({col1});
+    } else {
+        resultTable->insertAllColumns({col1, col2});
+    }
     // Retrieve the relationships
     unordered_set<int> filteredParents;
     const unordered_set<int>& parents = (variant == "Parent") ?
@@ -66,10 +70,17 @@ void ParentStrategy::processSynonyms(const Token& firstParam, const Token& secon
         filteredChildren = getFilteredStmtsNumByType(children, secondStatementType, pkbReaderManager);
         // For each stmt1, iterate through all its postFollows
         for (int stmt2 : filteredChildren) {
-            unordered_map<string, string> row;
-            row[col1] = to_string(stmt1);
-            row[col2] = to_string(stmt2);
-            resultTable->insertNewRow(row);
+            if (col1 == col2) {
+                if (stmt1 == stmt2) {
+                    resultTable->insertNewRow({{col1, std::to_string(stmt1)}});
+                }
+            } else {
+                unordered_map<string, string> row;
+                row[col1] = to_string(stmt1);
+                row[col2] = to_string(stmt2);
+                resultTable->insertNewRow(row);
+            }
+
         }
     }
 }

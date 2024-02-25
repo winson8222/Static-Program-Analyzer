@@ -1,4 +1,4 @@
-#pragma
+#pragma once
 
 #include "qps/evaluator/suchThatStrategies/StmtEntStrategy.h"
 
