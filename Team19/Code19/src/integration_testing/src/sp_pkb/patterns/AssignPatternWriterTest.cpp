@@ -42,21 +42,21 @@ TEST_CASE("sp/SourceProcessor: AssignPattern") {
 		std::shared_ptr<AssignPatternReader> assignPatternReader = pkbReaderManager->getAssignPatternReader();
 		std::unordered_set<int> expectedAssignPattern = { 3, 6, 9 };
 		REQUIRE(assignPatternReader->getAllStatementNumbers() == expectedAssignPattern);
-		REQUIRE(assignPatternReader->getLHS(3) == "y");
-		REQUIRE(assignPatternReader->getLHS(6) == "z");
-		REQUIRE(assignPatternReader->getLHS(9) == "y");
-		REQUIRE(assignPatternReader->getRHS(3) == "y1+");
-		REQUIRE(assignPatternReader->getRHS(6) == "z1+");
-		REQUIRE(assignPatternReader->getRHS(9) == "y1+");
+		REQUIRE(assignPatternReader->getLHS(3) == "'y'");
+		REQUIRE(assignPatternReader->getLHS(6) == "'z'");
+		REQUIRE(assignPatternReader->getLHS(9) == "'y'");
+		REQUIRE(assignPatternReader->getRHS(3) == "'y''1''+'");
+		REQUIRE(assignPatternReader->getRHS(6) == "'z''1''+'");
+		REQUIRE(assignPatternReader->getRHS(9) == "'y''1''+'");
 
-		REQUIRE(assignPatternReader->getStatementNumbersWithLHS("y") == std::unordered_set<int>({ 3, 9 }));
-		REQUIRE(assignPatternReader->getStatementNumbersWithLHS("z") == std::unordered_set<int>({ 6 }));
-		REQUIRE(assignPatternReader->getStatementNumbersWithRHS("y1+") == std::unordered_set<int>({ 3, 9 }));
-		REQUIRE(assignPatternReader->getStatementNumbersWithRHS("z1+") == std::unordered_set<int>({ 6 }));
+		REQUIRE(assignPatternReader->getStatementNumbersWithLHS("'y'") == std::unordered_set<int>({ 3, 9 }));
+		REQUIRE(assignPatternReader->getStatementNumbersWithLHS("'z'") == std::unordered_set<int>({ 6 }));
+		REQUIRE(assignPatternReader->getStatementNumbersWithRHS("'y''1''+'") == std::unordered_set<int>({ 3, 9 }));
+		REQUIRE(assignPatternReader->getStatementNumbersWithRHS("'z''1''+'") == std::unordered_set<int>({ 6 }));
 
-		REQUIRE(assignPatternReader->getStatementNumbersWithPartialRHS("y") == std::unordered_set<int>({ 3, 9 }));
-		REQUIRE(assignPatternReader->getStatementNumbersWithPartialRHS("z") == std::unordered_set<int>({ 6 }));
-		REQUIRE(assignPatternReader->getStatementNumbersWithPartialRHS("1") == std::unordered_set<int>({ 3, 6, 9 }));
+		REQUIRE(assignPatternReader->getStatementNumbersWithPartialRHS("'y'") == std::unordered_set<int>({ 3, 9 }));
+		REQUIRE(assignPatternReader->getStatementNumbersWithPartialRHS("'z'") == std::unordered_set<int>({ 6 }));
+		REQUIRE(assignPatternReader->getStatementNumbersWithPartialRHS("'1'") == std::unordered_set<int>({ 3, 6, 9 }));
 		std::filesystem::remove(filename);
 	}
 }
@@ -67,7 +67,7 @@ TEST_CASE("sp/SourceProcessor: Complicated Reverse-Polish Notation") {
 
 		std::string filename = "./sample.txt";
 		std::string sampleProgram = "procedure proc1 {"
-			"  x = (3 + 2) * 8 - 4 / 8 + (3 - 2) * x; }";
+			"  x = (3 + 2) * 8 - 4 / 8 + (3 - 2) % x; }";
 		std::ofstream file;
 		file.open(filename);
 		file << sampleProgram;
@@ -86,12 +86,12 @@ TEST_CASE("sp/SourceProcessor: Complicated Reverse-Polish Notation") {
 		std::shared_ptr<AssignPatternReader> assignPatternReader = pkbReaderManager->getAssignPatternReader();
 		std::unordered_set<int> expectedAssignPattern = { 1 };
 		REQUIRE(assignPatternReader->getAllStatementNumbers() == expectedAssignPattern);
-		REQUIRE(assignPatternReader->getLHS(1) == "x");
-		REQUIRE(assignPatternReader->getRHS(1) == "32+8*48/-32-x*+");
+		REQUIRE(assignPatternReader->getLHS(1) == "'x'");
+		REQUIRE(assignPatternReader->getRHS(1) == "'3''2''+''8''*''4''8''/''-''3''2''-''x''%''+'");
 
-		REQUIRE(assignPatternReader->getStatementNumbersWithLHS("x") == std::unordered_set<int>({ 1 }));
-		REQUIRE(assignPatternReader->getStatementNumbersWithLHS("y") == std::unordered_set<int>({ }));
-		REQUIRE(assignPatternReader->getStatementNumbersWithRHS("32+8*48/-32-x*+") == std::unordered_set<int>({ 1 }));
+		REQUIRE(assignPatternReader->getStatementNumbersWithLHS("'x'") == std::unordered_set<int>({ 1 }));
+		REQUIRE(assignPatternReader->getStatementNumbersWithLHS("'y'") == std::unordered_set<int>({ }));
+		REQUIRE(assignPatternReader->getStatementNumbersWithRHS("'3''2''+''8''*''4''8''/''-''3''2''-''x''%''+'") == std::unordered_set<int>({ 1 }));
 		std::filesystem::remove(filename);
 	}
 }

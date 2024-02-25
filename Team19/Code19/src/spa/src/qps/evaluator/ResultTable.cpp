@@ -254,5 +254,9 @@ bool ResultTable::hasColumn(const std::string& columnName) const {
     return it != colSet.end();
 }
 
+bool ResultTable::isEmpty() {
+    return rows.empty();
+}
+
 
 

@@ -89,6 +89,8 @@ public:
 
 
     bool hasColumn(const std::string& columnName) const;
+
+    bool isEmpty();
 };
 
 

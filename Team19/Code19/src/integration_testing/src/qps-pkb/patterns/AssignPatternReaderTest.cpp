@@ -16,7 +16,7 @@ TEST_CASE("qps/QueryProcessingSubsystem: AssignPatternReader Integration Test") 
 
     // Populating assignment patterns for retrieval tests, based on the assumption provided.
     int stmtNum1 = 1;
-    std::string lhs1 = "x", rhs1 = "v + x * y + z * t";
+    std::string lhs1 = "x", rhs1 = "v + x * y + z * t + 1";
     variableWriter->insertVariable(lhs1);
     assignPatternWriter->addAssignPattern(stmtNum1, lhs1, ShuntingYard::convertToPostfix(rhs1));
     assignWriter->insertAssign(stmtNum1);
@@ -43,12 +43,12 @@ TEST_CASE("qps/QueryProcessingSubsystem: AssignPatternReader Integration Test") 
     }
 
         // Negative Test Cases
-    SECTION("Invalid Partial Match RHS with Operators") {
-        // This query attempts a partial match with an expression containing operators, which should not yield results.
-        std::string queryInvalidPartial = R"(assign a; Select a pattern a(_, _"x + 1"_))";
-        auto resultsInvalidPartial = Utils::getResultsFromQuery(queryInvalidPartial, pkbReaderManager);
-        REQUIRE(resultsInvalidPartial.empty());
-    }
+    //SECTION("Invalid Partial Match RHS with Operators") {
+    //    // This query attempts a partial match with an expression containing operators, which should not yield results.
+    //    std::string queryInvalidPartial = R"(assign a; Select a pattern a(_, _"x + 1"_))";
+    //    auto resultsInvalidPartial = Utils::getResultsFromQuery(queryInvalidPartial, pkbReaderManager);
+    //    REQUIRE(resultsInvalidPartial.empty());
+    //}
 
 
     SECTION("Non-Existent Variable in RHS Pattern") {

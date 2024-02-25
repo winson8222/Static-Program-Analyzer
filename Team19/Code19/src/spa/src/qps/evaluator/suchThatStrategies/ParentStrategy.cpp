@@ -61,7 +61,7 @@ void ParentStrategy::processSynonyms(const Token& firstParam, const Token& secon
 
     filteredParents = getFilteredStmtsNumByType(parents, firstStatementType, pkbReaderManager);
     // Iterate through the preFollows set and find corresponding postFollows
-    for (int stmt1 : parents) {
+    for (int stmt1 : filteredParents) {
         unordered_set<int> filteredChildren;
         unordered_set<int> children = (variant == "Parent") ?
             parentReader->getChild(stmt1) :

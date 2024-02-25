@@ -49,7 +49,14 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
     for (auto& strategy : strategies) {
         if (isFirstStrategy) {
             result = strategy->evaluateQuery(*pkbReaderManager, parsingResult);
-            isFirstStrategy = false;
+            if (result->isEmpty() && !result->isTableTrue()) {
+                return {};
+            }
+
+            // if it is not a truth table we still need to populate the result table
+            if (!result->isTableTrue()) {
+                isFirstStrategy = false;
+            }
         }
         else {
             result = result->joinOnColumns(strategy->evaluateQuery(*pkbReaderManager, parsingResult));
@@ -65,7 +72,7 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
     }
     else {
         //return all statement/variables/whatever
-        if (result->isTableTrue() || isFirstStrategy) {
+        if (result->isTableTrue() || !result->isEmpty() || isFirstStrategy) {
             return getAllEntities(requiredType);
         }
         return {};
