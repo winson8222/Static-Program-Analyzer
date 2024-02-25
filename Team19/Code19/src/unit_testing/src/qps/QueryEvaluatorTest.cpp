@@ -2,6 +2,8 @@
 #include "pkb/PKBManager.h"
 #include "qps/evaluator/QueryEvaluator.h"
 #include "catch.hpp"
+#include "commons/ShuntingYard.h"
+
 
 using namespace std;
 // Test for Parsing Result assuming that the query is valid
@@ -1061,4 +1063,50 @@ TEST_CASE("Check Evaluation result of pattern and follows") {
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
     std::unordered_set<string> res = evaluator.evaluateQuery();
     REQUIRE(res == std::unordered_set<string>{"1", "2", "3", "4"});
+}
+
+TEST_CASE("Pattern partial match with semi-string") {
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "assign"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::PatternKeyword, "pattern"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::QuoutConst, "\"1\""),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Rparenthesis, ")")
+    };
+
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<AssignPatternWriter> assignPatternWriter = pkbWriterManager->getAssignPatternWriter();
+    std::shared_ptr<AssignWriter> assignWriter = pkbWriterManager->getAssignWriter();
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    assignPatternWriter->addAssignPattern(1, ShuntingYard::convertToPostfix("y"), ShuntingYard::convertToPostfix("x + 1"));
+    assignPatternWriter->addAssignPattern(2, ShuntingYard::convertToPostfix("z"), ShuntingYard::convertToPostfix("11 + y"));
+    assignPatternWriter->addAssignPattern(3, ShuntingYard::convertToPostfix("x"), ShuntingYard::convertToPostfix("111 + x"));
+    assignPatternWriter->addAssignPattern(4, ShuntingYard::convertToPostfix("w"), ShuntingYard::convertToPostfix("1111"));
+    assignWriter->insertAssign(1);
+    assignWriter->insertAssign(2);
+    assignWriter->insertAssign(3);
+    assignWriter->insertAssign(4);
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ "1" });
+
 }
