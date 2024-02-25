@@ -20,10 +20,10 @@ public:
         std::shared_ptr<ResultTable> resultTable) = 0;
 
     virtual void processFirstParam(const Token& firstParam, const Token& secondParam, const string& variant,
-        std::shared_ptr<ResultTable> resultTable) = 0;
+        std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) = 0;
 
     virtual void processSecondParam(const Token& firstParam, const Token& secondParam, const string& variant,
-        std::shared_ptr<ResultTable> resultTable) = 0;
+        std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) = 0;
 protected:
     static bool isBothParamsInteger(const Token& firstParam, const Token& secondParam);
 

@@ -6,7 +6,7 @@
 // prompt: used copilot
 class ShuntingYard {
 public:
-  std::string convertToPostfix(const std::string& infixExpression);
+  static std::string convertToPostfix(const std::string& infixExpression);
 private:
   static int precedence(char c);
   static bool isOperator(char c);

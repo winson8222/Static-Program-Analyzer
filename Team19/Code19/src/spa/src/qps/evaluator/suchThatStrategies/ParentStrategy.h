@@ -17,11 +17,11 @@ public:
     std::shared_ptr<ResultTable> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult) override;
 
     void processSynonyms(const Token& firstParam, const Token& secondParam,
-        const string& variant, std::shared_ptr<ResultTable> resultTable);
+        const string& variant, std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult,PKBReaderManager& pkbReaderManager);
     void processFirstParam(const Token& firstParam, const Token& secondParam, const string& variant,
-        std::shared_ptr<ResultTable> resultTable) override;
+        std::shared_ptr<ResultTable> resultTable,const ParsingResult& parsingResult,PKBReaderManager& pkbReaderManager) override;
     void processSecondParam(const Token& firstParam, const Token& secondParam, const string& variant,
-        std::shared_ptr<ResultTable> resultTable) override;
+        std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult,PKBReaderManager& pkbReaderManager) override;
     void processIntegerParams(const Token& firstParam, const Token& secondParam,
         std::shared_ptr<ResultTable> resultTable) override;
 

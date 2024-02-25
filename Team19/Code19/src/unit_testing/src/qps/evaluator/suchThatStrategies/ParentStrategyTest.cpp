@@ -3,7 +3,6 @@
 #include "qps/evaluator/suchThatStrategies/ParentStrategy.h"
 #include "pkb/PKBReaderManager.h"
 #include "pkb/PKB.h"
-#include "qps/ParsingResult.h"
 #include "qps/parser/Token.h"
 
 ParsingResult createParsingResultForParent(int parentStmt, int childStmt, bool isTransitive = false) {
