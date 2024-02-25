@@ -434,13 +434,31 @@ TEST_CASE("Parsing single procedure with nested while and if.") {
 		REQUIRE(elseStatementList.size() == 2);
 
 		SECTION("Testing first if-else.") {
-			// TODO
+			auto& if1 = elseStatementList[0];
+			REQUIRE(if1->type == ASTNodeType::IF_ELSE_THEN);
+			REQUIRE(if1->lineNumber == 7);
+			
+			auto& if1while1 = if1->children[1]->children[0];
+			REQUIRE(if1while1->type == ASTNodeType::WHILE);
+			REQUIRE(if1while1->lineNumber == 8);
+
+			auto& if1while2 = if1->children[2]->children[0];
+			REQUIRE(if1while2->type == ASTNodeType::WHILE);
+			REQUIRE(if1while2->lineNumber == 10);
 		}
 
 		SECTION("Testing second if-else.") {
-			// TODO
+			auto& if2 = elseStatementList[1];
+			REQUIRE(if2->type == ASTNodeType::IF_ELSE_THEN);
+			REQUIRE(if2->lineNumber == 12);
+
+			auto& if2while1 = if2->children[1]->children[0];
+			REQUIRE(if2while1->type == ASTNodeType::WHILE);
+			REQUIRE(if2while1->lineNumber == 13);
+
+			auto& if2while2 = if2->children[2]->children[0];
+			REQUIRE(if2while2->type == ASTNodeType::WHILE);
+			REQUIRE(if2while2->lineNumber == 15);
 		}
 	}
-
-
 }

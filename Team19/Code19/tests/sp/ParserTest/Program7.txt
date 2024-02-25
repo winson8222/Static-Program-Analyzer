@@ -9,7 +9,7 @@ procedure nestedIfWhile {
 				read y;
 			}
 		} else {
-			if (x != y) then {						// 7
+			if (x != y) then {						
 				while(!(x == y)) {
 					read y;
 				}
@@ -20,11 +20,13 @@ procedure nestedIfWhile {
 			}
 
 			if (x >= y) then {
-				while(x <= y){
+				while(x <= y) {
 					read y;
 				}
 			} else {
-				read x;
+				while ((y > x) || (!(y == x))) {
+					read y;
+				}
 			}
 		}
 	}
