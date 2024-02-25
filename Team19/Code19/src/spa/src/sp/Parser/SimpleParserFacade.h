@@ -10,7 +10,7 @@
 
 class SimpleParserFacade {
 private:
-    SimpleParser parser;
+    std::unique_ptr<SimpleParser> parser;
 
 public:
     SimpleParserFacade(const std::string& filename);

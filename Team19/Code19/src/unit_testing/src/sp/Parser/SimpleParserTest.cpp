@@ -51,24 +51,8 @@ TEST_CASE("Program parsing throws an error for extra parenthesis around cond_exp
 	CHECK_THROWS_AS(parser.parse(), std::runtime_error);
 }
 
-TEST_CASE("Program parsing throws an error for invalid procedure name containing special symbols.") {
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program_Invalid7.txt";
-	REQUIRE(std::filesystem::exists(testFileName));
-
-
-	//CHECK_THROWS_AS(parser.parse(), std::runtime_error);
-}
-
-TEST_CASE("Program parsing throws an error for invalid procedure name starting with numbers.") {
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program_Invalid8.txt";
-	REQUIRE(std::filesystem::exists(testFileName));
-
-
-	//CHECK_THROWS_AS(parser.parse(), std::runtime_error);
-}
-
 TEST_CASE("Program parsing throws an error for invalid keyword.") {
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program_Invalid9.txt";
+	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program_Invalid7.txt";
 	REQUIRE(std::filesystem::exists(testFileName));
 	SimpleParserFacade parser(testFileName);
 
