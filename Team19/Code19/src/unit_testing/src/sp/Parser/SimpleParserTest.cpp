@@ -96,7 +96,7 @@ TEST_CASE("Single procedure, all possible conditional expressions in while state
 
 	const auto& statements = (procedure->children)[0]->children;
 
-	REQUIRE(statements.size() == 13);
+	REQUIRE(statements.size() == 20);
 
 	for (int i = 0; i < statements.size(); i++) {
 		auto& statement = statements[i];
@@ -383,3 +383,24 @@ TEST_CASE("Calling parseProgram for complex procedure", "[parse][program]") {
 	REQUIRE(lastExpr[1]->type == ASTNodeType::VARIABLE);
 	REQUIRE(lastExpr[1]->value == "cenY");
 }
+
+TEST_CASE("Parsing single procedure that contains 20 nested while loops.") {
+	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program6.txt";
+	REQUIRE(std::filesystem::exists(testFileName));
+	SimpleParserFacade parser(testFileName);
+	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
+
+	auto& loop = ((tree_ptr->children)[0]->children)[0]->children[0];
+	int line = 1;
+
+	while (line <= 20) {
+		REQUIRE(loop->type == ASTNodeType::WHILE);
+		REQUIRE(loop->lineNumber == line);
+		loop = (loop->children)[1]->children[0];
+		line++;
+	}
+
+	REQUIRE(loop->type == ASTNodeType::READ);
+	REQUIRE(loop->lineNumber == line);
+}
+

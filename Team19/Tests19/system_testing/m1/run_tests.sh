@@ -16,7 +16,8 @@ for file in source/*_source.txt; do
 		QUERIES=$(grep -o '</query>' "$FILENAME" | wc -l);
 		PASSES=$(grep -o '<passed/>' "$FILENAME" | wc -l);
 		FAILS=$(grep -o '</failed>' "$FILENAME" | wc -l);
-		echo "[System Test] Queries: $QUERIES; Passes: $PASSES; Fails: $FAILS"
+		EXCEPTIONS=$(grep -o '<exception/>' "$FILENAME" | wc -l);
+		echo "[System Test] Queries: $QUERIES; Passes: $PASSES; Fails: $FAILS Exceptions: $EXCEPTIONS"
 
 		if [ "$QUERIES" != "$PASSES" ]
 		then

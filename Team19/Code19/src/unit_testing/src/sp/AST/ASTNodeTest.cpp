@@ -139,21 +139,21 @@ TEST_CASE("sp/ast/ASTNode") {
         ast1->addChild(std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "x"));
         ast1->addChild(std::make_shared<ASTNode>(ASTNodeType::CONSTANT, 1, "1"));
 
-        REQUIRE(ast1->getRPNForm() == "x1+");
+        REQUIRE(ast1->getRPNForm() == "'x''1''+'");
 
         // representing (x + 1) * y
         std::shared_ptr<ASTNode> ast2 = std::make_shared<ASTNode>(ASTNodeType::MULTIPLY, 1, ASTUtility::getASTNodeType(ASTNodeType::MULTIPLY));
         ast2->addChild(ast1);
         ast2->addChild(std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "y"));
 
-        REQUIRE(ast2->getRPNForm() == "x1+y*");
+        REQUIRE(ast2->getRPNForm() == "'x''1''+''y''*'");
 
         // representing (x + 1) * y + 2
         std::shared_ptr<ASTNode> ast3 = std::make_shared<ASTNode>(ASTNodeType::ADD, 1, ASTUtility::getASTNodeType(ASTNodeType::ADD));
         ast3->addChild(ast2);
         ast3->addChild(std::make_shared<ASTNode>(ASTNodeType::CONSTANT, 1, "2"));
 
-        REQUIRE(ast3->getRPNForm() == "x1+y*2+");
+        REQUIRE(ast3->getRPNForm() == "'x''1''+''y''*''2''+'");
 
         // representing (x + 1) * (y / 2)
         std::shared_ptr<ASTNode> ast4 = std::make_shared<ASTNode>(ASTNodeType::MULTIPLY, 1, ASTUtility::getASTNodeType(ASTNodeType::MULTIPLY));
@@ -163,7 +163,7 @@ TEST_CASE("sp/ast/ASTNode") {
         ast5->addChild(std::make_shared<ASTNode>(ASTNodeType::CONSTANT, 1, "2"));
         ast4->addChild(ast5);
 
-        REQUIRE(ast4->getRPNForm() == "x1+y2/*");
+        REQUIRE(ast4->getRPNForm() == "'x''1''+''y''2''/''*'");
 
         // representing (x + 1) * ((y - 6) * 2)
         std::shared_ptr<ASTNode> ast6 = std::make_shared<ASTNode>(ASTNodeType::MULTIPLY, 1, ASTUtility::getASTNodeType(ASTNodeType::MULTIPLY));
@@ -176,7 +176,7 @@ TEST_CASE("sp/ast/ASTNode") {
         ast7->addChild(std::make_shared<ASTNode>(ASTNodeType::CONSTANT, 1, "2"));
         ast6->addChild(ast7);
 
-        REQUIRE(ast6->getRPNForm() == "x1+y6-2**");
+        REQUIRE(ast6->getRPNForm() == "'x''1''+''y''6''-''2''*''*'");
 
         // representing (a + b) * ((c / d) - (e * f))
         std::shared_ptr<ASTNode> ast9 = std::make_shared<ASTNode>(ASTNodeType::MULTIPLY, 1, ASTUtility::getASTNodeType(ASTNodeType::MULTIPLY));
@@ -195,7 +195,7 @@ TEST_CASE("sp/ast/ASTNode") {
         ast11->addChild(ast13);
         ast9->addChild(ast11);
 
-        REQUIRE(ast9->getRPNForm() == "ab+cd/ef*-*");
+        REQUIRE(ast9->getRPNForm() == "'a''b''+''c''d''/''e''f''*''-''*'");
     }
 }
 
