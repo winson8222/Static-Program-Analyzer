@@ -46,7 +46,7 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
         // and avoids assigning wrong token type
         if (!tokens.empty() && (tokens.back().getType() == TokenType::SelectKeyword 
             || checkIfDeclaration() || tokens.back().getType() == TokenType::Lparenthesis 
-            || tokens.back().getType() == TokenType::Rparenthesis)) {
+            || tokens.back().getType() == TokenType::Comma)) {
             return TokenType::IDENT;
         }
         if (tokenStr == "Select") {
@@ -94,7 +94,7 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     else if (regex_match(tokenStr, regex("^(stmt|read|print|while|if|assign|variable|constant|procedure)$"))) {
         if (!tokens.empty() && (tokens.back().getType() == TokenType::SelectKeyword 
             || checkIfDeclaration() || tokens.back().getType() == TokenType::Lparenthesis 
-            || tokens.back().getType() == TokenType::Rparenthesis)) {
+            || tokens.back().getType() == TokenType::Comma)) {
             return TokenType::IDENT;
         }
         else {
@@ -105,7 +105,7 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     else if (regex_match(tokenStr, regex("^(Follows|Follows\\*|Parent|Parent\\*|Uses|Modifies)$"))) {
         if (!tokens.empty() && (tokens.back().getType() == TokenType::SelectKeyword 
             || checkIfDeclaration() || tokens.back().getType() == TokenType::Lparenthesis 
-            || tokens.back().getType() == TokenType::Rparenthesis)) {
+            || tokens.back().getType() == TokenType::Comma)) {
             return TokenType::IDENT;
         }
         else if (tokenStr == "Follows") {
