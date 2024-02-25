@@ -15,6 +15,8 @@ TEST_CASE("qps/QueryProcessingSubsystem: FollowsTReader Integration Test") {
     followsTWriter->addFollowsT(1, 2);
     followsTWriter->addFollowsT(2, 3);
     followsTWriter->addFollowsT(3, 4);
+    followsTWriter->addFollowsT(1, 3);
+    followsTWriter->addFollowsT(1, 4);
     statementWriter->insertStatement(1);
     statementWriter->insertStatement(2);
     statementWriter->insertStatement(3);
