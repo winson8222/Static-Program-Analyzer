@@ -366,7 +366,7 @@ bool QueryParser::parseStmtRefStmtRef() {
 
 // Parses a statement reference in the query.
 bool QueryParser::parseStmtRef() {
-    if (match(TokenType::INTEGER)) {
+    if (match(TokenType::INTEGER) || match(TokenType::Wildcard)) {
         return true;
     } else {
         if(!parseStmtSynonyms()) {
