@@ -5,7 +5,7 @@
 #include <vector>
 #include <sstream>
 
-#include "sp/ast/ASTNode.h"
+#include "sp/AST/ASTNode.h"
 #include "sp/AST/ASTUtility.h"
 
 

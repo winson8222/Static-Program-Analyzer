@@ -2,11 +2,11 @@
 
 #include <memory>
 #include <vector>
-#include "sp/AST/ast.h"
-
-#include "sp/SPTokenizer/LexicalToken.h"
+#include "sp/AST/AST.h"
+#include "sp/AST/ASTNode.h"
 #include "sp/AST/ASTUtility.h"
 #include "sp/AST/ASTHelper.h"
+#include "sp/SPTokenizer/LexicalToken.h"
 
 
 static int PROGRAM_LINE_NUMBER = -1;

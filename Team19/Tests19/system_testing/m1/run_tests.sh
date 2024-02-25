@@ -8,7 +8,7 @@ for file in source/*_source.txt; do
   ../../../Code19/cmake-build-debug/src/autotester/autotester "$file" queries/"$test_name"_queries.txt outputs/"$test_name"_output.xml > logs/log_"$test_name".txt
 
 	if [ "$?" != 0 ] # Check if the test caused the autotester to crash
-	then;
+	then
 	    EXIT_CODE="1";
 	else
 		head -1 logs/log_"$test_name".txt;
