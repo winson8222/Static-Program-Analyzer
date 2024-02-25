@@ -1,7 +1,7 @@
 1 - Select all variables
 variable v;
 Select v
-print, read, add, minus, procedure, while, if
+print, read, add, minus, procedure, while, if, else
 5000
 2 - Select all Assigns
 assign a;
@@ -86,27 +86,27 @@ Select s1 such that Follows*(11, s1)
 18 - Invalid Follows
 stmt s1, s2;
 Select s1 so that Follows(s1, s2)
-incorrect grammar at: so
+SyntaxError
 5000
 19 - Invalid Follows 1
 stmt s1;
 Select s1 such that Follow(1, s1)
-incorrect grammar at: Follow
+SyntaxError
 5000
 20 - Invalid Follows 2
 stmt s1;
 Select s1 such that Follows(2, s)
-semantic error at: s
+SemanticError
 5000
 21 - Invalid Follows 3
 stmt s1;
 Select s1 such that Follows(0, s1)
-semantic error at: 0
+SemanticError
 5000
 22 - Invalid Follows 4
 stmt s1;
 Select s1 such that Follows(-4, s1)
-semantic error at: -4
+SemanticError
 5000
 23 - Invalid Follows 5
 stmt s1;
@@ -116,10 +116,15 @@ Incomplete Query
 24 - Invalid Follows 6
 stm s1;
 Select s1 such that Follows(6, s1)
-incorrect grammar at: stm
+SyntaxError
 5000
 25 - Invalid Follows 7
 stmt stmt;
 Select stmt such that Follows(7, stmt)
 8
+5000
+26 - Invalid Follows 8
+stmt 1s;
+Select s1 such that Follows(8, 1s)
+SyntaxError
 5000

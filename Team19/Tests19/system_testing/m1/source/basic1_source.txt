@@ -5,7 +5,7 @@ procedure procedure {
     read read;
     read = 5;
     print = read;
-    add = read * print;
+    else = read * print;
     minus = print - read;
     procedure = read + print / read;
    
