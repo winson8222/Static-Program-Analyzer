@@ -3,7 +3,7 @@
 #include "qps/evaluator/suchThatStrategies/UsesStrategy.h"
 #include "pkb/PKBReaderManager.h"
 #include "pkb/PKB.h"
-#include "qps/ParsingResult.h"
+#include "qps/parser/ParsingResult.h"
 #include "../../spa/src/qps/parser/QueryParser.h"
 #include "../../spa/src/pkb/PKBManager.h"
 #include "../../spa/src/qps/evaluator/QueryEvaluator.h"
@@ -99,8 +99,8 @@ TEST_CASE("Check Evaluation result of a simple select v for UseS") {
     QueryParser parser(tokens);
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::vector<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::vector<string>{ "2" });
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ "2" });
 
 }
 
@@ -139,8 +139,8 @@ TEST_CASE("Check Evaluation result of a simple select all s given true condition
     QueryParser parser(tokens);
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::vector<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::vector<string>{ "1", "2", "3", "4" });
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ "1", "2", "3", "4" });
 }
 
 
@@ -179,8 +179,8 @@ TEST_CASE("Check Evaluation result of a simple select all s given true condition
     QueryParser parser(tokens);
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::vector<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::vector<string>{ "1", "2", "3", "4" });
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ "1", "2", "3", "4" });
 }
 
 TEST_CASE("Check Evaluation result of a simple select variable given LHS for UsesS") {
@@ -220,8 +220,8 @@ TEST_CASE("Check Evaluation result of a simple select variable given LHS for Use
     QueryParser parser(tokens);
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::vector<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::vector<string>{"y"});
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{"y"});
 }
 
 
@@ -265,6 +265,6 @@ TEST_CASE("Check Evaluation result of 2 synonyms for UsesS and select statements
     QueryParser parser(tokens);
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::vector<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::vector<string>{"x", "y", "z"});
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{"x", "y", "z"});
 }

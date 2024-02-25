@@ -3,7 +3,7 @@
 #include "qps/evaluator/suchThatStrategies/FollowsStrategy.h"
 #include "pkb/PKBReaderManager.h"
 #include "pkb/PKB.h"
-#include "qps/ParsingResult.h"
+#include "qps/parser/ParsingResult.h"
 #include "../../spa/src/qps/parser/QueryParser.h"
 #include "../../spa/src/pkb/PKBManager.h"
 #include "../../spa/src/qps/evaluator/QueryEvaluator.h"
@@ -94,8 +94,8 @@ TEST_CASE("Check Evaluation result of a simple select follows* query") {
     QueryParser parser(tokens);
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::vector<string> res = evaluator.evaluateQuery();
-    REQUIRE((res == std::vector<string>{ "2", "1" } || res == std::vector<string>{"1", "2"}));
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE((res == std::unordered_set<string>{ "2", "1" } || res == std::unordered_set<string>{"1", "2"}));
 
 }
 
@@ -133,8 +133,8 @@ TEST_CASE("Check Evaluation result of a simple select follows query") {
     QueryParser parser(tokens);
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::vector<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::vector<string>{ "1" });
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ "1" });
 
 }
 
@@ -173,8 +173,8 @@ TEST_CASE("Check Evaluation result of a simple select follows query (opposite)")
     QueryParser parser(tokens);
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::vector<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::vector<string>{ "3" });
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ "3" });
 
 }
 
@@ -213,8 +213,8 @@ TEST_CASE("Check Evaluation result of a simple select followsT query") {
     QueryParser parser(tokens);
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::vector<string> res = evaluator.evaluateQuery();
-    REQUIRE((res == std::vector<string>{ "1", "2" } || res == std::vector<string>{"2", "1"}));
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE((res == std::unordered_set<string>{ "1", "2" } || res == std::unordered_set<string>{"2", "1"}));
 
 }
 
@@ -255,8 +255,8 @@ TEST_CASE("Check Evaluation result of a simple select followsT query (opposite)"
     QueryParser parser(tokens);
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::vector<string> res = evaluator.evaluateQuery();
-    REQUIRE((res == std::vector<string>{ "3", "2" } || res == std::vector<string>{"2", "3"}));
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE((res == std::unordered_set<string>{ "3", "2" } || res == std::unordered_set<string>{"2", "3"}));
 
 }
 
@@ -297,8 +297,8 @@ TEST_CASE("Check Evaluation result of a simple select s1 follows query synonyms"
     QueryParser parser(tokens);
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::vector<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::vector<string>{ "2", "1" });
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ "2", "1" });
 
 }
 
@@ -339,8 +339,48 @@ TEST_CASE("Check Evaluation result of a simple select s2 follows query synonyms"
     QueryParser parser(tokens);
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::vector<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::vector<string>{ "3", "2" });
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ "3", "2" });
+
+}
+
+TEST_CASE("Check Evaluation result of a selecting from a false statement") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<FollowsWriter> followWriter = pkbWriterManager->getFollowsWriter();
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    followWriter->addFollows(1, 2);
+    followWriter->addFollows(2, 3);
+
+
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "stmt"),
+            Token(TokenType::IDENT, "s1"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "s1"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Follows, "Follows"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::INTEGER, "1"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::INTEGER, "4"),
+            Token(TokenType::Rparenthesis, ")")
+
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ });
 
 }
 

@@ -3,7 +3,7 @@
 #include "qps/evaluator/suchThatStrategies/ModifiesStrategy.h"
 #include "pkb/PKBReaderManager.h"
 #include "pkb/PKB.h"
-#include "qps/ParsingResult.h"
+#include "qps/parser/ParsingResult.h"
 #include "../../spa/src/qps/parser/QueryParser.h"
 #include "../../spa/src/pkb/PKBManager.h"
 #include "../../spa/src/qps/evaluator/QueryEvaluator.h"
@@ -134,8 +134,8 @@ std::vector<Token> tokens = {
 QueryParser parser(tokens);
 auto parsingResult = parser.parse();
 QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-std::vector<string> res = evaluator.evaluateQuery();
-REQUIRE(res == std::vector<string>{ "2" });
+std::unordered_set<string> res = evaluator.evaluateQuery();
+REQUIRE(res == std::unordered_set<string>{ "2" });
 
 }
 
@@ -173,8 +173,8 @@ TEST_CASE("Check Evaluation result of a simple select all s given true condition
     QueryParser parser(tokens);
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::vector<string> res = evaluator.evaluateQuery();
-    REQUIRE((res == std::vector<string>{ "1", "2", "3" } || res == std::vector<string>{"2", "3", "1"} || res == std::vector<string>{"3", "2", "1"}));
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE((res == std::unordered_set<string>{ "1", "2", "3" } || res == std::unordered_set<string>{"2", "3", "1"} || res == std::unordered_set<string>{"3", "2", "1"}));
 }
 
 
@@ -214,8 +214,8 @@ TEST_CASE("Check Evaluation result of a simple select all s given true condition
     QueryParser parser(tokens);
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::vector<string> res = evaluator.evaluateQuery();
-    REQUIRE((res == std::vector<string>{ "1", "2", "3" } || res == std::vector<string>{"2", "3", "1"} || res == std::vector<string>{"3", "2", "1"}));
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE((res == std::unordered_set<string>{ "1", "2", "3" } || res == std::unordered_set<string>{"2", "3", "1"} || res == std::unordered_set<string>{"3", "2", "1"}));
 }
 
 
@@ -254,6 +254,6 @@ TEST_CASE("Check Evaluation result of a simple select variable given LHS for Mod
     QueryParser parser(tokens);
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::vector<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::vector<string>{"y"});
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{"y"});
 }

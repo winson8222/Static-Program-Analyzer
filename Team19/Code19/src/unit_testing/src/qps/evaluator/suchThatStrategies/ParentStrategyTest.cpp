@@ -3,7 +3,7 @@
 #include "qps/evaluator/suchThatStrategies/ParentStrategy.h"
 #include "pkb/PKBReaderManager.h"
 #include "pkb/PKB.h"
-#include "qps/ParsingResult.h"
+#include "qps/parser/ParsingResult.h"
 #include "../../spa/src/qps/parser/QueryParser.h"
 #include "../../spa/src/pkb/PKBManager.h"
 #include "../../spa/src/qps/evaluator/QueryEvaluator.h"
@@ -92,8 +92,8 @@ std::vector<Token> tokens = {
 QueryParser parser(tokens);
 auto parsingResult = parser.parse();
 QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-std::vector<string> res = evaluator.evaluateQuery();
-REQUIRE(res == std::vector<string>{ "1" });
+std::unordered_set<string> res = evaluator.evaluateQuery();
+REQUIRE(res == std::unordered_set<string>{ "1" });
 
 }
 
@@ -131,8 +131,8 @@ TEST_CASE("Check Evaluation result of a simple select Parent query (opposite)") 
     QueryParser parser(tokens);
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::vector<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::vector<string>{ "3" });
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ "3" });
 
 }
 
