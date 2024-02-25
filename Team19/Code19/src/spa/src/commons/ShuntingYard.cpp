@@ -1,5 +1,6 @@
 #include "ShuntingYard.h"
 
+#include <format>
 #include <stack>
 
 // ai-gen start(copilot, 1, e)
@@ -44,25 +45,33 @@ std::string ShuntingYard::infixToPostfix(const std::string& infixExpression) {
         continue;
         }
         if (isOperand(c)) {
-        postfixExpression += c;
+            postfixExpression += "'";
+            postfixExpression += c;
+            postfixExpression += "'";
         } else if (isOperator(c)) {
-        while (!stack.empty() && isOperator(stack.top()) && ( precedence(c) <= precedence(stack.top()))) {
-            postfixExpression += stack.top();
-            stack.pop();
-        }
-        stack.push(c);
+            while (!stack.empty() && isOperator(stack.top()) && ( precedence(c) <= precedence(stack.top()))) {
+                postfixExpression += "'";
+                postfixExpression += stack.top();
+                postfixExpression += "'";
+                stack.pop();
+            }
+            stack.push(c);
         } else if (isLeftParenthesis(c)) {
-        stack.push(c);
+            stack.push(c);
         } else if (isRightParenthesis(c)) {
-        while (!stack.empty() && !isLeftParenthesis(stack.top())) {
-            postfixExpression += stack.top();
+            while (!stack.empty() && !isLeftParenthesis(stack.top())) {
+                postfixExpression += "'";
+                postfixExpression += stack.top();
+                postfixExpression += "'";
+                stack.pop();
+            }
             stack.pop();
-        }
-        stack.pop();
         }
     }
     while (!stack.empty()) {
+        postfixExpression += "'";
         postfixExpression += stack.top();
+        postfixExpression += "'";
         stack.pop();
     }
     return postfixExpression;
