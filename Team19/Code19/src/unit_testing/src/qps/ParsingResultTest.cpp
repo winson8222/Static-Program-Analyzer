@@ -100,14 +100,8 @@ TEST_CASE("Check Parsing Result for suchthat-cl ModifiesS with wild card as firs
 
     QueryParser parser(tokens);
     auto parsingResult = parser.parse();
-    REQUIRE(parsingResult.getDeclaredSynonym("v") == "variable");
-    REQUIRE(parsingResult.getRequiredSynonym() == "v");
-    REQUIRE(parsingResult.getSuchThatClauseRelationship().getType() == TokenType::ModifiesS);
-    REQUIRE(parsingResult.getSuchThatClauseRelationship().getValue()  == "Modifies");
-    REQUIRE(parsingResult.getSuchThatClauseFirstParam().getType() == TokenType::Wildcard);
-    REQUIRE(parsingResult.getSuchThatClauseFirstParam().getValue() == "_");
-    REQUIRE(parsingResult.getSuchThatClauseSecondParam().getType() == TokenType::QuoutIDENT);
-    REQUIRE(parsingResult.getSuchThatClauseSecondParam().getValue() == "\"existentVar\"");
+    REQUIRE(parsingResult.getErrorMessage() == "SemanticError");
+
 
 }
 
