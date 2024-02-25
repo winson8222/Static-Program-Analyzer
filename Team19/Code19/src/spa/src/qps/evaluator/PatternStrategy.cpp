@@ -1,5 +1,6 @@
 #include "PatternStrategy.h"
 #include "qps/parser/Token.h" // Include the Token header
+#include "commons/ShuntingYard.h"
 #include <regex>
 #include <iostream>
 #include <utility>
@@ -37,6 +38,8 @@ std::shared_ptr<ResultTable> PatternStrategy::evaluateQuery(PKBReaderManager& pk
             secondParamValue = patternSecondParam.getValue();
         } else {
             secondParamValue = extractQuotedExpression(patternSecondParam);
+            secondParamValue = ShuntingYard::convertToPostfix(secondParamValue);
+
         }
     } else {
         secondParamValue = patternSecondParam.getValue();
