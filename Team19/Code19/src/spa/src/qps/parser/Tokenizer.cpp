@@ -44,7 +44,9 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     else if (regex_match(tokenStr, regex("^(Select|pattern|such|that)$"))) {
         // The first case check if there is unconventional naming 
         // and avoids assigning wrong token type
-        if (!tokens.empty() && (tokens.back().getType() == TokenType::SelectKeyword || checkIfDeclaration())) {
+        if (!tokens.empty() && (tokens.back().getType() == TokenType::SelectKeyword 
+            || checkIfDeclaration() || tokens.back().getType() == TokenType::Lparenthesis 
+            || tokens.back().getType() == TokenType::Rparenthesis)) {
             return TokenType::IDENT;
         }
         if (tokenStr == "Select") {
@@ -90,7 +92,9 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     }
     // DesignEntity: Specific keywords.
     else if (regex_match(tokenStr, regex("^(stmt|read|print|while|if|assign|variable|constant|procedure)$"))) {
-        if (!tokens.empty() && (tokens.back().getType() == TokenType::SelectKeyword || checkIfDeclaration())) {
+        if (!tokens.empty() && (tokens.back().getType() == TokenType::SelectKeyword 
+            || checkIfDeclaration() || tokens.back().getType() == TokenType::Lparenthesis 
+            || tokens.back().getType() == TokenType::Rparenthesis)) {
             return TokenType::IDENT;
         }
         else {
@@ -99,7 +103,9 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     }
     // RelRef: Specific keywords.
     else if (regex_match(tokenStr, regex("^(Follows|Follows\\*|Parent|Parent\\*|Uses|Modifies)$"))) {
-        if (!tokens.empty() && (tokens.back().getType() == TokenType::SelectKeyword || checkIfDeclaration())) {
+        if (!tokens.empty() && (tokens.back().getType() == TokenType::SelectKeyword 
+            || checkIfDeclaration() || tokens.back().getType() == TokenType::Lparenthesis 
+            || tokens.back().getType() == TokenType::Rparenthesis)) {
             return TokenType::IDENT;
         }
         else if (tokenStr == "Follows") {
