@@ -16,7 +16,7 @@ TEST_CASE("qps/QueryProcessingSubsystem: AssignPatternReader Integration Test") 
 
     // Populating assignment patterns for retrieval tests, based on the assumption provided.
     int stmtNum1 = 1;
-    std::string lhs1 = "x", rhs1 = "v + x * y + z * t";
+    std::string lhs1 = "x", rhs1 = "v + x * y + z * t + 1";
     variableWriter->insertVariable(lhs1);
     assignPatternWriter->addAssignPattern(stmtNum1, lhs1, ShuntingYard::convertToPostfix(rhs1));
     assignWriter->insertAssign(stmtNum1);
