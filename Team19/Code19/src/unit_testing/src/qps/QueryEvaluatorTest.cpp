@@ -1094,10 +1094,10 @@ TEST_CASE("Pattern partial match with semi-string") {
     statementWriter->insertStatement(2);
     statementWriter->insertStatement(3);
     statementWriter->insertStatement(4);
-    assignPatternWriter->addAssignPattern(1, ShuntingYard::convertToPostfix("y"), ShuntingYard::convertToPostfix("x + 1"));
-    assignPatternWriter->addAssignPattern(2, ShuntingYard::convertToPostfix("z"), ShuntingYard::convertToPostfix("11 + y"));
-    assignPatternWriter->addAssignPattern(3, ShuntingYard::convertToPostfix("x"), ShuntingYard::convertToPostfix("111 + x"));
-    assignPatternWriter->addAssignPattern(4, ShuntingYard::convertToPostfix("w"), ShuntingYard::convertToPostfix("1111"));
+    assignPatternWriter->addAssignPattern(1, "y", "x + 1");
+    assignPatternWriter->addAssignPattern(2, "z", "11 + y");
+    assignPatternWriter->addAssignPattern(3, "x", "111 + x");
+    assignPatternWriter->addAssignPattern(4, "w", "1111");
     assignWriter->insertAssign(1);
     assignWriter->insertAssign(2);
     assignWriter->insertAssign(3);

@@ -88,7 +88,7 @@ TEST_CASE("pkb/stores/patterns/assign/AssignPatternStore") {
         assignPatternStore.addAssignPattern(1, "x", "123+3");
         assignPatternStore.addAssignPattern(2, "x", "122+3");
         assignPatternStore.addAssignPattern(3, "x", "143+3");
-        auto expected = std::unordered_set<int>{1, 3};
+        auto expected = std::unordered_set<int>{};
         REQUIRE(assignPatternStore.getStatementNumbersWithPartialRHS("3+3") == expected);
     }
 

@@ -7,6 +7,7 @@
 #include "string"
 #include "IAssignPatternReader.h"
 #include "IAssignPatternWriter.h"
+#include <regex>
 
 // ai-gen start(copilot, 2, e)
 // prompt: used copilot
@@ -98,9 +99,18 @@ public:
     // Checks if the store contains a partial RHS and returns the set of statement numbers that contain the partial RHS.
     std::unordered_set<int> getStatementNumbersWithPartialRHS(const std::string& RHS) override {
         std::unordered_set<int> result;
+        std::regex tokenRegex("[^\\+\\-\\*/%\\^\\(\\) ]+"); // Regex to split by operators and spaces
+
         for (auto const& [key, value] : RHSMap) {
-            if (value.find(RHS) != std::string::npos) {
-                result.insert(key);
+            std::sregex_token_iterator iter(value.begin(), value.end(), tokenRegex);
+            std::sregex_token_iterator end;
+
+            while (iter != end) {
+                std::string token = *iter++;
+                if (token == RHS) {
+                    result.insert(key);
+                    break; // Match found, no need to continue checking
+                }
             }
         }
         return result;
