@@ -409,4 +409,38 @@ TEST_CASE("Parsing single procedure with nested while and if.") {
 	REQUIRE(std::filesystem::exists(testFileName));
 	SimpleParserFacade parser(testFileName);
 	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
+
+	auto& loop = ((tree_ptr->children)[0]->children)[0]->children[0];
+	REQUIRE(loop->type == ASTNodeType::WHILE);
+	REQUIRE(loop->lineNumber == 1);
+	loop = (loop->children)[1]->children[0];
+
+	REQUIRE(loop->type == ASTNodeType::IF_ELSE_THEN);
+	REQUIRE(loop->lineNumber == 2);
+
+	SECTION("Testing internal If-then.") {
+		auto& ifThenStatementList = (loop->children)[1]->children;
+		REQUIRE(ifThenStatementList.size() == 2);
+
+		REQUIRE(ifThenStatementList[0]->type == ASTNodeType::WHILE);
+		REQUIRE(ifThenStatementList[0]->lineNumber == 3);
+
+		REQUIRE(ifThenStatementList[1]->type == ASTNodeType::WHILE);
+		REQUIRE(ifThenStatementList[1]->lineNumber == 5);
+	}
+
+	SECTION("Testing internal Else.") {
+		auto& elseStatementList = (loop->children)[2]->children;
+		REQUIRE(elseStatementList.size() == 2);
+
+		SECTION("Testing first if-else.") {
+			// TODO
+		}
+
+		SECTION("Testing second if-else.") {
+			// TODO
+		}
+	}
+
+
 }
