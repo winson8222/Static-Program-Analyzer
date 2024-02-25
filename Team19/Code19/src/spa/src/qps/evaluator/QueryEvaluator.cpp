@@ -65,7 +65,10 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
     }
     else {
         //return all statement/variables/whatever
-        return getAllEntities(requiredType);
+        if (result->isTableTrue() || isFirstStrategy) {
+            return getAllEntities(requiredType);
+        }
+        return {};
 	}
  
 }

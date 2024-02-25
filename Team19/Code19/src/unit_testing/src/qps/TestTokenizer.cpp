@@ -604,6 +604,8 @@ TEST_CASE("Check if Tokenisation of quouted identifier for long names is correct
 
 
 
+
+
 //TEST_CASE("Check if Tokenisation of expression spec") {
 //    Tokenizer tokenizer("assign a; Select a pattern a(\"z\", _\"x + 1\"_)");
 //    vector<Token> tokens = tokenizer.tokenize();
@@ -626,3 +628,10 @@ TEST_CASE("Check if Tokenisation of quouted identifier for long names is correct
 //    REQUIRE((tokens[13].getType() == TokenType::Rparenthesis && tokens[13].getValue() == ")"));
 //
 //}
+
+
+//assign a;
+//Select a such that Modifies(a, _) pattern a(_, _"abc"_)
+
+
+
