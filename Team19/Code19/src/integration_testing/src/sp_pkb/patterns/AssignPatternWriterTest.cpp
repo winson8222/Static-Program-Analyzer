@@ -90,7 +90,6 @@ TEST_CASE("sp/SourceProcessor: Complicated Reverse-Polish Notation") {
 		REQUIRE(assignPatternReader->getRHS(1) == "'3''2''+''8''*''4''8''/''-''3''2''-''x''%''+'");
 
 		REQUIRE(assignPatternReader->getStatementNumbersWithLHS("x") == std::unordered_set<int>({ 1 }));
-
 		// Non-existent token
 		REQUIRE(assignPatternReader->getStatementNumbersWithLHS("'x'") == std::unordered_set<int>({ })); 
 		REQUIRE(assignPatternReader->getStatementNumbersWithRHS("'3''2''+''8''*''4''8''/''-''3''2''-''x''%''+'") == std::unordered_set<int>({ 1 }));
