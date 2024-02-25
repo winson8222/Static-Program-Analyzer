@@ -4,6 +4,5 @@ file(GLOB_RECURSE sp_files "${CMAKE_CURRENT_SOURCE_DIR}/src/sp/*.cpp" "${CMAKE_C
 file(GLOB_RECURSE qps_files "${CMAKE_CURRENT_SOURCE_DIR}/src/qps/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/src/qps/*.h" "${CMAKE_CURRENT_SOURCE_DIR}/src/qps/*.hpp")
 
 add_executable(unit_testing ${srcs} ${headers} ${sp_files} ${qps_files}
-        src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrategyTest.cpp)
 
 target_link_libraries(unit_testing spa)
