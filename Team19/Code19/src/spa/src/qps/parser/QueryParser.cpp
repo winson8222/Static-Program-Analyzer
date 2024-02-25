@@ -18,8 +18,6 @@ ParsingResult QueryParser::parse() {
     }
 
 
-
-
     if(!parseSelectClause()) {
         return parsingResult;
     }
@@ -47,8 +45,27 @@ ParsingResult QueryParser::parse() {
             return parsingResult;
         }
         
-    } else {
+    }
+
+    if (match(TokenType::PatternKeyword)) {
         if(!parsePatternClause()) {
+            return parsingResult;
+        }
+
+        if (currentTokenIndex == tokens.size() - 1) {
+            return parsingResult;
+        }
+
+        if (!advanceToken()) {
+            return parsingResult;
+        }
+
+        if (match(TokenType::SuchKeyword)) {
+            if(!parseSuchThatClause()) {
+                return parsingResult;
+            }
+        } else {
+            parsingResult.setErrorMessage(getGrammarError());
             return parsingResult;
         }
     }
