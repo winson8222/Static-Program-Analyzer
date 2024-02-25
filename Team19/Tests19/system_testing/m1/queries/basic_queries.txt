@@ -1,0 +1,45 @@
+1 - Basic Follows
+stmt s; assign a;
+Select s such that Follows (s, a)
+1
+5000
+2 - Keyword Follows
+stmt Follows; assign a;
+Select Follows such that Follows (Follows, a)
+1
+5000
+3 - Keyword Parent
+stmt Parent; assign a;
+Select Parent such that Follows (Parent, a)
+1
+5000
+4 - Repeated use of Variable
+stmt s;
+Select s such that Follows (s, s)
+none
+5000
+5 - Keyword while
+stmt stmt; assign a;
+Select stmt such that Follows (stmt, a)
+1
+5000
+6 - Find procedures
+read read;
+Select read
+3
+5000
+7 - Pattern
+assign a, a1; variable v; stmt s;
+Select a such that Follows (a, a1) pattern a(v, _)
+1
+5000
+8 - Variables
+variable v;
+Select v
+x, y, read
+5000
+9 - comment
+stmt s; variable v;
+Select v such that Modifies(s, v)
+x, y, read
+5000
