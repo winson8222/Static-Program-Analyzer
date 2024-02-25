@@ -78,7 +78,10 @@ void FollowsStrategy::processSynonyms(const Token& firstParam, const Token& seco
                     resultTable->insertNewRow({{col1, std::to_string(stmt1)}});
                 }
             } else {
-                resultTable->insertNewRow({{col1, std::to_string(stmt1)}, {col2, std::to_string(stmt2)}});
+                unordered_map<string, string> row;
+                row[col1] = to_string(stmt1);
+                row[col2] = to_string(stmt2);
+                resultTable->insertNewRow(row);
             }
 
         }
