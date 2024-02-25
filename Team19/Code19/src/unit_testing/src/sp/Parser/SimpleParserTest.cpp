@@ -404,4 +404,3 @@ TEST_CASE("Parsing single procedure that contains 20 nested while loops.") {
 	REQUIRE(loop->lineNumber == line);
 }
 
-
