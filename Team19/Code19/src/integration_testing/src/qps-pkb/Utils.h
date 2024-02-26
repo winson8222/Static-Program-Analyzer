@@ -3,8 +3,8 @@
 #include "utility"
 
 #include "pkb/PKBManager.h"
-#include "qps/Evaluator/QueryEvaluator.h"
-#include "qps/Parser/QueryParser.h"
+#include "qps/evaluator/QueryEvaluator.h"
+#include "qps/parser/QueryParser.h"
 #include "sp/SourceProcessor.h"
 
 class Utils {

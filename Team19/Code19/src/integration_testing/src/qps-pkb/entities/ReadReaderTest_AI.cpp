@@ -32,17 +32,5 @@ TEST_CASE_METHOD(ReadReaderFixture, "qps/QueryProcessingSubsystem: ReadReader In
         REQUIRE(results == expectedResults);
     }
 
-//    SECTION("Check for the existence of a specific 'read' statement") {
-//        std::string queryExists = "read r; Select BOOLEAN such that Uses(r, _)";
-//        auto resultsExists = Utils::getResultsFromQuery(queryExists, pkbManager->getPKBReaderManager());
-//        // Assuming 'Uses' is just a placeholder for any relevant condition to check existence
-//        REQUIRE(!resultsExists.empty()); // Adjust based on actual data and query capabilities
-//    }
-//
-//    SECTION("Test for a non-existent 'read' statement") {
-//        std::string queryNonExistent = "read r; Select BOOLEAN such that Uses(r, \"nonExistentVar\")";
-//        auto resultsNonExistent = Utils::getResultsFromQuery(queryNonExistent, pkbManager->getPKBReaderManager());
-//        REQUIRE(resultsNonExistent.find("FALSE") != resultsNonExistent.end());
-//    }
 
 }

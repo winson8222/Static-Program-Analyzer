@@ -105,8 +105,9 @@ void ModifiesStrategy::processBothConstants(const Token &firstParam, const Token
                                             const ParsingResult &parsingResult,
                                             std::shared_ptr<ResultTable> resultTable) {
     // check if the statement modifies the variable
+    string extractedVar = extractQuotedExpression(secondParam);
     bool modifies = modifiesSReader
-            ->doesStmtModifyVariable(stoi(firstParam.getValue()), secondParam.getValue());
+            ->doesStmtModifyVariable(stoi(firstParam.getValue()), extractedVar);
     if (modifies) {
         resultTable->setAsTruthTable();
     }
