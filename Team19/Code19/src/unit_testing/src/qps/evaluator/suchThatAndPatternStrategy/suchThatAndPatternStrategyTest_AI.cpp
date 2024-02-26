@@ -266,7 +266,7 @@ TEST_CASE("Pattern partial match with semi-string") {
             Token(TokenType::Wildcard, "_"),
             Token(TokenType::Comma, ","),
             Token(TokenType::Wildcard, "_"),
-            Token(TokenType::QuoutConst, "\"5\""),
+            Token(TokenType::QuoutConst, "\"55\""),
             Token(TokenType::Wildcard, "_"),
             Token(TokenType::Rparenthesis, ")")
     };
@@ -297,7 +297,6 @@ TEST_CASE("Pattern partial match with semi-string") {
 //    assignWriter->insertAssign(5);
 
     std::shared_ptr<AssignPatternReader> dddd = pkbReaderManager->getAssignPatternReader();
-    std::cout << "DDDDDDDD: " <<dddd->getRHS(9) << std::endl;
 
     QueryParser parser(tokens);
     auto parsingResult = parser.parse();

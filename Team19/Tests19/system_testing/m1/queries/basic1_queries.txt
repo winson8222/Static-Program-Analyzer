@@ -556,7 +556,7 @@ Select a pattern a(_, _)
 111 - Valid pattern 6
 assign a;
 Select a pattern a(_, _"procedure"_)
-6
+18, 20
 5000
 112 - Valid pattern 7
 assign a;
