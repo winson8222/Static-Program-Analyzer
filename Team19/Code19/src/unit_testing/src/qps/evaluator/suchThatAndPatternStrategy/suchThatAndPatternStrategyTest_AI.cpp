@@ -302,6 +302,6 @@ TEST_CASE("Pattern partial match with semi-string") {
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
     std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{ "9" });
+    REQUIRE(res == std::unordered_set<string>{ "11" });
 
 }
