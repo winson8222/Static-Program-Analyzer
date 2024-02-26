@@ -10,7 +10,7 @@
 #include <unordered_set>
 #include <vector>
 
-TEST_CASE("temp test") {
+TEST_CASE("Test integrating PKB to SP") {
     const std::string testFileName = "../../../../../tests/sp/DesignExtractorTest/int1.txt";
     REQUIRE(std::filesystem::exists(testFileName));
     SimpleParserFacade parser(testFileName);
@@ -20,14 +20,6 @@ TEST_CASE("temp test") {
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
     DesignExtractorFacade fde(tree_ptr, pkbWriterManager);
     REQUIRE_NOTHROW(fde.extractAll());
-
-    std::cout << tree_ptr->toString() << std::endl;
-
-    auto reader = pkb->getPKBReaderManager();
-    auto temp = reader->getModifiesSReader()->getAllVariablesModifiedByAnyStmt();
-    for (auto i : temp) {
-		std::cout << i << std::endl;
-	}
 }
 
 TEST_CASE("Test Parser-Visitor-Extractor-PKB integration") {
