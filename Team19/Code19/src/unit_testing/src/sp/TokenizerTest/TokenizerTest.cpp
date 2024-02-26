@@ -71,38 +71,6 @@ TEST_CASE("Check operator tokenizations", "[tokenize]") {
     REQUIRE(actualOutput[5].getTokenType() == LexicalTokenType::OPERATOR_GREATER_EQUAL);
 }
 
-
-// IMPORTANT: When Tokenizer is able to check syntax, e.g. assigning the 2nd 'procedure' to NAME in procedure procedure, this will not work.
-/*
-TEST_CASE("Tokenize file with keywords", "[tokenize]") {
-    const std::string testFileName = "../../../../../tests/sp/TokenizerTest/sourcefile4.txt";
-    REQUIRE(std::filesystem::exists(testFileName));
-    std::string actualContent = FileProcessor::readFileToString(testFileName);
-
-    auto actualOutput = SPTokenizer::tokenize(actualContent);
-    REQUIRE(actualOutput.size() == 9);
-    REQUIRE(actualOutput[0].getTokenType() == LexicalTokenType::KEYWORD_IF);
-    REQUIRE(actualOutput[1].getTokenType() == LexicalTokenType::KEYWORD_THEN);
-    REQUIRE(actualOutput[2].getTokenType() == LexicalTokenType::KEYWORD_ELSE);
-    REQUIRE(actualOutput[3].getTokenType() == LexicalTokenType::KEYWORD_READ);
-    REQUIRE(actualOutput[4].getTokenType() == LexicalTokenType::KEYWORD_CALL);
-    REQUIRE(actualOutput[5].getTokenType() == LexicalTokenType::KEYWORD_PRINT);
-    REQUIRE(actualOutput[6].getTokenType() == LexicalTokenType::KEYWORD_WHILE);
-    REQUIRE(actualOutput[7].getTokenType() == LexicalTokenType::KEYWORD_PROCEDURE);
-    REQUIRE(actualOutput[8].getTokenType() == LexicalTokenType::NAME);
-}
-
-* FUTURE TEST CASES THAT ARE TO BE ADDRESSED.
-TEST_CASE("Tokenizer throws runtime error for invalid syntax", "[tokenize]") {
-    const std::string testFileName = "../../../../../tests/sp/TokenizerTest/invalid1.txt";
-    REQUIRE(std::filesystem::exists(testFileName));
-    std::string actualContent = Tokenizer::readFileToString(testFileName);
-
-    REQUIRE_THROWS_WITH(Tokenizer::tokenize(actualContent), "Error: Invalid SIMPLE syntax.");
-}
-*/
-
-
 TEST_CASE("Tokenizer throws runtime error for invalid syntax", "[tokenize]") {
     const std::string testFileName = "../../../../../tests/sp/TokenizerTest/sourcefile5.txt";
     REQUIRE(std::filesystem::exists(testFileName));

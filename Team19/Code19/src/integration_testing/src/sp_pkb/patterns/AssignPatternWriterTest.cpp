@@ -51,9 +51,6 @@ TEST_CASE("sp/SourceProcessor: AssignPattern") {
 
 		REQUIRE(assignPatternReader->getStatementNumbersWithLHS("y") == std::unordered_set<int>({ 3, 9 }));
 		REQUIRE(assignPatternReader->getStatementNumbersWithLHS("z") == std::unordered_set<int>({ 6 }));
-//		REQUIRE(assignPatternReader->getStatementNumbersWithRHS("'y''1''+'") == std::unordered_set<int>({ 3, 9 }));
-//		REQUIRE(assignPatternReader->getStatementNumbersWithRHS("'z''1''+'") == std::unordered_set<int>({ 6 }));
-
 		REQUIRE(assignPatternReader->getStatementNumbersWithPartialRHS("y") == std::unordered_set<int>({ 3, 9 }));
 		REQUIRE(assignPatternReader->getStatementNumbersWithPartialRHS("z") == std::unordered_set<int>({ 6 }));
 		REQUIRE(assignPatternReader->getStatementNumbersWithPartialRHS("1") == std::unordered_set<int>({ 3, 6, 9 }));
@@ -91,9 +88,6 @@ TEST_CASE("sp/SourceProcessor: Complicated Reverse-Polish Notation") {
 
 		REQUIRE(assignPatternReader->getStatementNumbersWithLHS("x") == std::unordered_set<int>({ 1 }));
         std::unordered_set<int> test = assignPatternReader->getStatementNumbersWithPartialRHS("'3'");
-		// Non-existent token
-//		REQUIRE(assignPatternReader->getStatementNumbersWithLHS("'x'") == std::unordered_set<int>({ }));
-//		REQUIRE(assignPatternReader->getStatementNumbersWithRHS("'3''2''+''8''*''4''8''/''-''3''2''-''x''%''+'") == std::unordered_set<int>({ 1 }));
 		std::filesystem::remove(filename);
 	}
 }

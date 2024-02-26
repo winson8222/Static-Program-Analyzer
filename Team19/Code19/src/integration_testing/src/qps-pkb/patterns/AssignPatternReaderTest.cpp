@@ -35,15 +35,6 @@ TEST_CASE("qps/QueryProcessingSubsystem: AssignPatternReader Integration Test") 
         REQUIRE(resultPartialMatchVariable == expectedResultsPartialMatchVariable);
     }
 
-    // Invalid test case
-//    SECTION("Partial Matching with Constant in RHS Pattern") {
-//        std::string queryPartialMatchConstant = R"(assign a; Select a pattern a(_, _"1"_))";
-//        auto resultPartialMatchConstant = Utils::getResultsFromQuery(queryPartialMatchConstant, pkbReaderManager);
-//        std::unordered_set<std::string> expectedResultsPartialMatchConstant = {"1"};
-//        REQUIRE(resultPartialMatchConstant == expectedResultsPartialMatchConstant);
-//    }
-
-
     SECTION("Non-Existent Variable in RHS Pattern") {
         // This query attempts to match a pattern with a non-existent variable in the RHS, which should yield no results.
         std::string queryNonExistentVariable = R"(assign a; Select a pattern a(_, _"nonExistentVar"_))";

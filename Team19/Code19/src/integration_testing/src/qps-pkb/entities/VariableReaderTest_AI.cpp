@@ -43,8 +43,6 @@ TEST_CASE_METHOD(VariableReaderFixture, "qps/QueryProcessingSubsystem: VariableR
         REQUIRE(results == expectedResults);
     }
 
-
-
     SECTION("Verify store is cleared correctly via QPS") {
         variableWriter->clear(); // Clear all variables
         std::string query = "variable v; Select v";
