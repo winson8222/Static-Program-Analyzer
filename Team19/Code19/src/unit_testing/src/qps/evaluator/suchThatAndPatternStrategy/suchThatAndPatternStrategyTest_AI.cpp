@@ -230,7 +230,9 @@ TEST_CASE("Pattern partial match with semi-string") {
                                 "   read x;"
                                 "   while (y > 1) {"
                                 "       y = y + 5; }" // 9
-                                "   read x; }";
+                                "   read x; "
+                                "   y = 55;"
+                                "}";
     std::ofstream file;
     file.open(filename);
     file << sampleProgram;
@@ -293,6 +295,9 @@ TEST_CASE("Pattern partial match with semi-string") {
 //    assignWriter->insertAssign(3);
 //    assignWriter->insertAssign(4);
 //    assignWriter->insertAssign(5);
+
+    std::shared_ptr<AssignPatternReader> dddd = pkbReaderManager->getAssignPatternReader();
+    std::cout << "DDDDDDDD: " <<dddd->getRHS(9) << std::endl;
 
     QueryParser parser(tokens);
     auto parsingResult = parser.parse();

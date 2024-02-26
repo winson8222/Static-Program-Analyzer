@@ -100,16 +100,25 @@ public:
     std::unordered_set<int> getStatementNumbersWithPartialRHS(const std::string& RHS) override {
         std::unordered_set<int> result;
         std::regex tokenRegex("[^\\+\\-\\*/%\\^\\(\\) ]+"); // Regex to split by operators and spaces
-
         for (auto const& [key, value] : RHSMap) {
-            std::sregex_token_iterator iter(value.begin(), value.end(), tokenRegex);
-            std::sregex_token_iterator end;
-
-            while (iter != end) {
-                std::string token = *iter++;
-                if (token == RHS) {
-                    result.insert(key);
-                    break; // Match found, no need to continue checking
+            bool foundQuote = false;
+            std::string temp;
+            for (auto const& i : value) {
+                if (i == '\'') {
+                    if (foundQuote) {
+                        if (temp == RHS) {
+                            result.insert(key);
+                            temp = "";
+                            foundQuote = false;
+                            break; // Match found, no need to continue checking
+                        }
+                        temp = "";
+                    }
+                    foundQuote = !foundQuote;
+                    continue;
+                }
+                if (foundQuote) {
+                    temp += i;
                 }
             }
         }
@@ -131,8 +140,29 @@ public:
     std::unordered_set<int> getStatementNumbersWithLHSPartialRHS(const std::string& LHS, const std::string& RHS) override {
         std::unordered_set<int> result;
         for (auto const& [key, value] : LHSMap) {
-            if (value == LHS && RHSMap.at(key).find(RHS) != std::string::npos) {
-                result.insert(key);
+            if (value == LHS) {
+                std::regex tokenRegex("[^\\+\\-\\*/%\\^\\(\\) ]+"); // Regex to split by operators and spaces
+                std::string rhsAtKey = RHSMap.at(key);
+                bool foundQuote = false;
+                std::string temp;
+                for (auto const& i : rhsAtKey) {
+                    if (i == '\'') {
+                        if (foundQuote) {
+                            if (temp == RHS) {
+                                result.insert(key);
+                                temp = "";
+                                foundQuote = false;
+                                break; // Match found, no need to continue checking
+                            }
+                            temp = "";
+                        }
+                        foundQuote = !foundQuote;
+                        continue;
+                    }
+                    if (foundQuote) {
+                        temp += i;
+                    }
+                }
             }
         }
         return result;

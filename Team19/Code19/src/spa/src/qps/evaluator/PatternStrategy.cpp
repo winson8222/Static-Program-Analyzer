@@ -121,6 +121,9 @@ void PatternStrategy::getStatementsByIdent(const string& colName, const Token& f
 
     // get All the statements that match the pattern based on the left hand side
     const unordered_set<int>& leftMatchedAssignments = assignPatternReader->getStatementNumbersWithLHS(identityName);
+    std::cout << "leftMatchedAssignments size: " << leftMatchedAssignments.size() << endl;
+    std::cout << expressionValue << endl;
+
     unordered_set<int> rightMatchedAssignments;
     if (partialMatch) {
         // get All the statements that match the pattern based on the right hand side

@@ -45,7 +45,7 @@ TEST_CASE("Check Evaluation result of true clause for Pattern and select assignm
             Token(TokenType::Wildcard, "_"),
             Token(TokenType::Comma, ","),
             Token(TokenType::Wildcard, "_"),
-            Token(TokenType::QuoutConst, "\"print\""),
+            Token(TokenType::QuoutIDENT, "\"print\""),
             Token(TokenType::Wildcard, "_"),
             Token(TokenType::Rparenthesis, ")")
     };
