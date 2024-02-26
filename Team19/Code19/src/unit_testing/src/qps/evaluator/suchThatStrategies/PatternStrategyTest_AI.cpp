@@ -31,7 +31,7 @@ TEST_CASE("Check Evaluation result of true clause for Pattern and select assignm
 // Inserting assignments matching the pattern
 // Assuming "a" is the variable being assigned and "minus - print" as an expression example that matches the pattern
     assignWriter->insertAssign(6); // Linking statement number 6 as an assignment
-    assignPatternWriter->addAssignPattern(6, "a", "print - minus"); // Expression matches the pattern _"print"_
+    assignPatternWriter->addAssignPattern(6, "a", "'print''minus''-'");
 
     std::vector<Token> tokens = {
             Token(TokenType::DesignEntity, "assign"),
