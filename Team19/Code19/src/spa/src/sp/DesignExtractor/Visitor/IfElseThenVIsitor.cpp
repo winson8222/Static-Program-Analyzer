@@ -27,6 +27,7 @@ void IfElseThenVisitor::visit() {
 
 	// Visit all expressions
 	ExpressionVisitor expressionVisitor(condition, pkbWriterManager);
+	expressionVisitor.setUsedContext(contexts, root);
 	expressionVisitor.visit();
 
 	StatementListVisitor thenStatementListVisitor(thenStatementList, pkbWriterManager);
