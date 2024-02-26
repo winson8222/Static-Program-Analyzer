@@ -5,13 +5,13 @@
 
 Item | Version
 -|-
-OS | Window, MacOS
-Toolchain | Visual Studio, CMake, CLion
+OS | Window
+Toolchain | Visual Studio, CMake
 C++ Standard | C++17
 
 ### Additional Build Instructions
 
-To be updated
+This is a multi-platform project done on Windows and MacOS. We used the following tech stacks as listed below for our development.
 
 # Team Members
 
