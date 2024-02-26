@@ -24,18 +24,5 @@ TEST_CASE("qps/QueryProcessingSubsystem: PrintReader Integration Test") {
         REQUIRE(results == expectedResults);
     }
 
-//    SECTION("Check for the existence of a specific 'print' statement") {
-//        std::string queryExists = "print p; Select BOOLEAN such that Uses(p, _)";
-//        auto resultsExists = Utils::getResultsFromQuery(queryExists, pkbReaderManager);
-//        // Assuming 'Uses' is just a placeholder for any relevant condition to check the existence
-//        REQUIRE(!resultsExists.empty()); // Adjust based on actual data and query capabilities
-//    }
-//
-//    SECTION("Test for a non-existent 'print' statement") {
-//        std::string queryNonExistent = "print p; Select BOOLEAN such that Uses(p, \"nonExistentVar\")";
-//        auto resultsNonExistent = Utils::getResultsFromQuery(queryNonExistent, pkbReaderManager);
-//        // Assuming 'Uses' is a placeholder; adjust the query to fit actual testing needs
-//        REQUIRE(resultsNonExistent.find("FALSE") != resultsNonExistent.end());
-//    }
 
 }

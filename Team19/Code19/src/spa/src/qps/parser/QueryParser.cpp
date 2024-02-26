@@ -72,6 +72,7 @@ ParsingResult QueryParser::parse() {
     if (currentTokenIndex == tokens.size() - 1) {
         return parsingResult;
     }
+    parsingResult.setErrorMessage(getGrammarError());
     return parsingResult;
 }
 
@@ -234,8 +235,8 @@ bool QueryParser::parseRelRef() {
 bool QueryParser::isStmtRefStmtRef() {
     if (match(TokenType::Parent) || match(TokenType::ParentT) ||
         match(TokenType::Follows) || match(TokenType::FollowsT)) {
+        currentSuchThatToken = currentToken();
         return true;
-
     }
     return false;
 }
@@ -253,7 +254,7 @@ bool QueryParser::isUsesOrModifies() {
 // set the Token type for the such that clause relationship more specifically
 bool QueryParser::parseUsesOrModifies() {
     // need to differentiate between usesS/UsesP and modifiesS/ModifiesP
-    Token suchThatToken = currentToken();
+    currentSuchThatToken = currentToken();
 
 
     if (!advanceToken()) {
@@ -278,12 +279,12 @@ bool QueryParser::parseUsesOrModifies() {
 
 
     if (parseStmtRef()) {
-        if (suchThatToken.getType() == TokenType::Uses) {
-            suchThatToken.setType(TokenType::UsesS);
-            parsingResult.setSuchThatClauseRelationship(suchThatToken);
+        if (currentSuchThatToken.getType() == TokenType::Uses) {
+            currentSuchThatToken.setType(TokenType::UsesS);
+            parsingResult.setSuchThatClauseRelationship(currentSuchThatToken);
         } else {
-            suchThatToken.setType(TokenType::ModifiesS);
-            parsingResult.setSuchThatClauseRelationship(suchThatToken);
+            currentSuchThatToken.setType(TokenType::ModifiesS);
+            parsingResult.setSuchThatClauseRelationship(currentSuchThatToken);
         }
         parsingResult.setSuchThatClauseFirstParam(currentToken());
         if (!advanceToken()) {
@@ -291,12 +292,12 @@ bool QueryParser::parseUsesOrModifies() {
         }
 
     } else if (parseEntRef()) {
-        if (suchThatToken.getType() == TokenType::Uses) {
-            suchThatToken.setType(TokenType::UsesP);
-            parsingResult.setSuchThatClauseRelationship(suchThatToken);
+        if (currentSuchThatToken.getType() == TokenType::Uses) {
+            currentSuchThatToken.setType(TokenType::UsesP);
+            parsingResult.setSuchThatClauseRelationship(currentSuchThatToken);
         } else {
-            suchThatToken.setType(TokenType::ModifiesP);
-            parsingResult.setSuchThatClauseRelationship(suchThatToken);
+            currentSuchThatToken.setType(TokenType::ModifiesP);
+            parsingResult.setSuchThatClauseRelationship(currentSuchThatToken);
         }
         parsingResult.setSuchThatClauseFirstParam(currentToken());
         if (!advanceToken()) {
@@ -383,8 +384,14 @@ bool QueryParser::parseStmtRefStmtRef() {
 
 // Parses a statement reference in the query.
 bool QueryParser::parseStmtRef() {
-    if (match(TokenType::INTEGER) || match(TokenType::Wildcard)) {
+    if (match(TokenType::Wildcard)) {
         return true;
+    } else if (match(TokenType::INTEGER)) {
+        if(checkValidStmtNum()) {
+            return true;
+        }
+        parsingResult.setErrorMessage(getSemanticError());
+        return false;
     } else {
         if(!parseStmtSynonyms()) {
             parsingResult.setErrorMessage(getGrammarError());
@@ -702,20 +709,56 @@ bool QueryParser::parseStmtSynonyms() {
     if(!ensureToken(TokenType::IDENT)){
         return false;
     }
-
-
-    if (parsingResult.getDeclaredSynonym(currentToken().getValue()) != "stmt" &&
-        parsingResult.getDeclaredSynonym(currentToken().getValue()) != "read" &&
-        parsingResult.getDeclaredSynonym(currentToken().getValue()) != "print" &&
-        parsingResult.getDeclaredSynonym(currentToken().getValue()) != "while" &&
-        parsingResult.getDeclaredSynonym(currentToken().getValue()) != "if" &&
-        parsingResult.getDeclaredSynonym(currentToken().getValue()) != "procedure" &&
-        parsingResult.getDeclaredSynonym(currentToken().getValue()) != "assign"){
-        parsingResult.setErrorMessage(getSemanticError());
-        return false;
+    if(currentSuchThatToken.getType() == TokenType::Parent || currentSuchThatToken.getType() == TokenType::ParentT) {
+        if (parsingResult.getDeclaredSynonym(currentToken().getValue()) != "stmt" &&
+                parsingResult.getDeclaredSynonym(currentToken().getValue()) != "assign" &&
+                parsingResult.getDeclaredSynonym(currentToken().getValue()) != "while" &&
+                parsingResult.getDeclaredSynonym(currentToken().getValue()) != "if" &&
+                parsingResult.getDeclaredSynonym(currentToken().getValue()) != "print" &&
+                parsingResult.getDeclaredSynonym(currentToken().getValue()) != "read") {
+            parsingResult.setErrorMessage(getSemanticError());
+            return false;
+        }
     }
-    return true;
 
+    if(currentSuchThatToken.getType() == TokenType::Follows || currentSuchThatToken.getType() == TokenType::FollowsT) {
+        if (parsingResult.getDeclaredSynonym(currentToken().getValue()) != "stmt" &&
+           parsingResult.getDeclaredSynonym(currentToken().getValue()) != "assign" &&
+           parsingResult.getDeclaredSynonym(currentToken().getValue()) != "while" &&
+           parsingResult.getDeclaredSynonym(currentToken().getValue()) != "if" &&
+           parsingResult.getDeclaredSynonym(currentToken().getValue()) != "print" &&
+           parsingResult.getDeclaredSynonym(currentToken().getValue()) != "read") {
+            parsingResult.setErrorMessage(getSemanticError());
+            return false;
+        }
+    }
+
+
+    if(currentSuchThatToken.getType() == TokenType::Uses) {
+        if (parsingResult.getDeclaredSynonym(currentToken().getValue()) != "stmt" &&
+            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "print" &&
+            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "while" &&
+            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "if" &&
+            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "procedure" &&
+            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "assign"){
+            parsingResult.setErrorMessage(getSemanticError());
+            return false;
+        }
+    }
+
+    if (currentSuchThatToken.getType() == TokenType::Modifies) {
+        if (parsingResult.getDeclaredSynonym(currentToken().getValue()) != "stmt" &&
+            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "read" &&
+            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "while" &&
+            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "if" &&
+            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "procedure" &&
+            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "assign"){
+            parsingResult.setErrorMessage(getSemanticError());
+            return false;
+        }
+    }
+
+    return true;
 
 }
 
@@ -748,4 +791,12 @@ bool QueryParser::peekNextToken(TokenType type) {
     }
     return false;
 }
+
+bool QueryParser::checkValidStmtNum() {
+    if (stoi(currentToken().getValue()) < 1) {
+        return false;
+    }
+    return true;
+}
+
 

@@ -140,8 +140,7 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
         return TokenType::Operator;
     }
 
-    // If no pattern matches, throw an error.
-    throw std::invalid_argument("Unrecognized token: " + tokenStr);
+    return TokenType::SyntaxError;
 
 }
 
