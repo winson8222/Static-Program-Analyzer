@@ -1,5 +1,9 @@
 procedure if {
     x = 1;
     y = 2;
-    read read;
+   if (z < z) then {
+     read read;
+    } else {
+    x = 1;
+	}
 }
