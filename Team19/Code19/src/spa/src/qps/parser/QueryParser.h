@@ -52,11 +52,11 @@ private:
     bool parseEntRef();
     bool parseExpressionSpec();
     bool parseQuotedExpression();
-    bool parseRelRef();
+    bool parseRelRef(SuchThatClause& clause);
     bool parseStmtRef();
     bool parseDesignEntity();
-    bool parseUsesOrModifies();
-    bool parseStmtRefStmtRef();
+    bool parseUsesOrModifies(SuchThatClause& clause);
+    bool parseStmtRefStmtRef(SuchThatClause& clause);
     bool parseExpression();
     bool parseTerm();
     bool parseFactor();

@@ -64,10 +64,6 @@ const string& ParsingResult::getRequiredSynonymType(const string& requiredSynony
 }
 
 
-const string ParsingResult::getPatternClauseRelationshipType(int index) const {
-    return getDeclaredSynonym(patternClauses.at(index).relationship.getValue());
-}
-
 // check if the query is valid
 bool ParsingResult::isQueryValid() {
     return errorMessage.empty();

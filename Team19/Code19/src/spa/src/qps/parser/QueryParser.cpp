@@ -27,48 +27,53 @@ ParsingResult QueryParser::parse() {
     if (!advanceToken()) {
         return parsingResult;
     }
-
-    // check if there is a such that or pattern clause with such that coming first
-    if (match(TokenType::SuchKeyword)) {
-        if(!parseSuchThatClause()) {
-            return parsingResult;
-        }
-
-        if (currentTokenIndex == tokens.size() - 1) {
-            return parsingResult;
-        }
-
-        if (!advanceToken()) {
-            return parsingResult;
-        }
-        if(!parsePatternClause()) {
-            return parsingResult;
-        }
-        
-    }
-
-    if (match(TokenType::PatternKeyword)) {
-        if(!parsePatternClause()) {
-            return parsingResult;
-        }
-
-        if (currentTokenIndex == tokens.size() - 1) {
-            return parsingResult;
-        }
-
-        if (!advanceToken()) {
-            return parsingResult;
-        }
-
-        if (match(TokenType::SuchKeyword)) {
-            if(!parseSuchThatClause()) {
+    while (currentTokenIndex == tokens.size() - 1) {
+        // check if there is a such that or pattern clause with such that coming first
+        if (match(TokenType::SuchKeyword) || (match(TokenType::AndKeyword) && currentToken().getValue() == "such that")) {
+            if (!parseSuchThatClause()) {
                 return parsingResult;
             }
-        } else {
+
+            if (currentTokenIndex == tokens.size() - 1) {
+                return parsingResult;
+            }
+
+            if (!advanceToken()) {
+                return parsingResult;
+            }
+
+        } else if (match(TokenType::PatternKeyword) || (match(TokenType::AndKeyword) && currentToken().getValue() == "pattern")) {
+            if (!parsePatternClause()) {
+                return parsingResult;
+            }
+
+            if (currentTokenIndex == tokens.size() - 1) {
+                return parsingResult;
+            }
+
+            if (!advanceToken()) {
+                return parsingResult;
+            }
+
+        }
+        else if (match(TokenType::PatternKeyword) || (match(TokenType::AndKeyword) && currentToken().getValue() == "with")) {
+            if (!parseWithClause()) {
+                return parsingResult;
+            }
+
+            if (currentTokenIndex == tokens.size() - 1) {
+                return parsingResult;
+            }
+
+            if (!advanceToken()) {
+                return parsingResult;
+            }
+        }
+        else {
             parsingResult.setErrorMessage(getGrammarError());
-            return parsingResult;
         }
     }
+    
     if (currentTokenIndex == tokens.size() - 1) {
         return parsingResult;
     }
@@ -189,11 +194,10 @@ bool QueryParser::parseSelectClause() {
 }
 
 
-
-
 // Parses the 'such that' clause in the query.
 // Ensures the correct syntax and calls the function to process relation references.
 bool QueryParser::parseSuchThatClause() {
+    SuchThatClause clause;
     if (!advanceToken()) {
         return false;
     }
@@ -203,24 +207,27 @@ bool QueryParser::parseSuchThatClause() {
     if (!advanceToken()) {
         return false;
     }
-
-    return parseRelRef();
+    if (!parseRelRef(clause)) { 
+        return false;
+    }
+    parsingResult.addSuchThatClause(clause);
+    return true;
 }
 
 // Parses relation references in a 'such that' clause.
 // Determines the type of relation and calls the appropriate parsing function.
-bool QueryParser::parseRelRef() {
+bool QueryParser::parseRelRef(SuchThatClause& clause) {
     if (isStmtRefStmtRef()) {
-        parsingResult.setSuchThatClauseRelationship(currentToken());
+        clause.relationship = currentToken();
         if (!advanceToken()) {
             return false;
         }
-        if(!parseStmtRefStmtRef()) {
+        if(!parseStmtRefStmtRef(clause)) {
             return false;
         }
         return true;
     } else if (isUsesOrModifies()) {
-        if(!parseUsesOrModifies()) {
+        if(!parseUsesOrModifies(clause)) {
             return false;
         }
         return true;
@@ -252,7 +259,7 @@ bool QueryParser::isUsesOrModifies() {
 // Parses a 'Uses' or 'Modifies' relation in the query.
 // Ensures correct syntax and processes statement and entity references.
 // set the Token type for the such that clause relationship more specifically
-bool QueryParser::parseUsesOrModifies() {
+bool QueryParser::parseUsesOrModifies(SuchThatClause& clause) {
     // need to differentiate between usesS/UsesP and modifiesS/ModifiesP
     currentSuchThatToken = currentToken();
 
@@ -281,12 +288,12 @@ bool QueryParser::parseUsesOrModifies() {
     if (parseStmtRef()) {
         if (currentSuchThatToken.getType() == TokenType::Uses) {
             currentSuchThatToken.setType(TokenType::UsesS);
-            parsingResult.setSuchThatClauseRelationship(currentSuchThatToken);
+            clause.firstParam = currentSuchThatToken;
         } else {
             currentSuchThatToken.setType(TokenType::ModifiesS);
-            parsingResult.setSuchThatClauseRelationship(currentSuchThatToken);
+            clause.firstParam = currentSuchThatToken;
         }
-        parsingResult.setSuchThatClauseFirstParam(currentToken());
+        clause.firstParam = currentToken();
         if (!advanceToken()) {
             return false;
         }
@@ -294,12 +301,12 @@ bool QueryParser::parseUsesOrModifies() {
     } else if (parseEntRef()) {
         if (currentSuchThatToken.getType() == TokenType::Uses) {
             currentSuchThatToken.setType(TokenType::UsesP);
-            parsingResult.setSuchThatClauseRelationship(currentSuchThatToken);
+            clause.relationship = currentSuchThatToken;
         } else {
             currentSuchThatToken.setType(TokenType::ModifiesP);
-            parsingResult.setSuchThatClauseRelationship(currentSuchThatToken);
+            clause.relationship = currentSuchThatToken;
         }
-        parsingResult.setSuchThatClauseFirstParam(currentToken());
+        clause.relationship = currentToken();
         if (!advanceToken()) {
             return false;
         }
@@ -324,8 +331,7 @@ bool QueryParser::parseUsesOrModifies() {
     if(!parseEntRef()) {
         return false;
     }
-
-    parsingResult.setSuchThatClauseSecondParam(currentToken());
+    clause.secondParam = currentToken();
     if (!advanceToken()) {
         return false;
     }
@@ -337,7 +343,7 @@ bool QueryParser::parseUsesOrModifies() {
 
 // Parses a statement reference to statement reference relation.
 // Ensures correct syntax and processes multiple statement references.
-bool QueryParser::parseStmtRefStmtRef() {
+bool QueryParser::parseStmtRefStmtRef(SuchThatClause& clause) {
     if (match(TokenType::Lparenthesis)) {
         if (!advanceToken()) {
             return false;
@@ -351,7 +357,7 @@ bool QueryParser::parseStmtRefStmtRef() {
     if(!parseStmtRef()){
         return false;
     }
-    parsingResult.setSuchThatClauseFirstParam(currentToken());
+    clause.firstParam = currentToken();
     if (!advanceToken()) {
         return false;
     }
@@ -371,7 +377,7 @@ bool QueryParser::parseStmtRefStmtRef() {
     if(!parseStmtRef()) {
         return false;
     }
-    parsingResult.setSuchThatClauseSecondParam(currentToken());
+    clause.secondParam = currentToken();
     if (!advanceToken()) {
         return false;
     }
@@ -424,7 +430,7 @@ bool QueryParser::parseEntRef() {
 // Parses the pattern clause in the query.
 // Ensures the correct syntax and processes entity references and expression specifications.
 bool QueryParser::parsePatternClause() {
-
+    PatternClause clause;
     if(!ensureToken(TokenType::PatternKeyword)) {
         return false;
     }
@@ -435,7 +441,7 @@ bool QueryParser::parsePatternClause() {
     if(!ensureToken(TokenType::IDENT)) {
         return false;
     }
-    parsingResult.setPatternClauseRelationship(currentToken());
+    clause.relationship = currentToken();
     if(!parseAssignSynonyms()){
         return false;
     }
@@ -451,7 +457,7 @@ bool QueryParser::parsePatternClause() {
     if(!parseEntRef()) {
         return false;
     }
-    parsingResult.setPatternClauseFirstParam(currentToken());
+    clause.secondParam = currentToken();
 
     if (!advanceToken()) {
         return false;
@@ -467,17 +473,51 @@ bool QueryParser::parsePatternClause() {
     // Store the current token index before parsing the expression spec
     size_t startIndex = currentTokenIndex;
 
-    if(!parseExpressionSpec()) {
-        parsingResult.setErrorMessage(getGrammarError());
-        return false;
+    string patternType = parsingResult.getDeclaredSynonym(clause.relationship.getValue());
+    if (patternType == "if") {
+        if (!ensureToken(TokenType::Wildcard)) {
+            return false;
+        }
+        clause.secondParam = currentToken();
+        if (!advanceToken()) {
+            return false;
+        }
+        if (!ensureToken(TokenType::Comma)) {
+            return false;
+        }
+        if (!advanceToken()) {
+            return false;
+        }
+        if (!ensureToken(TokenType::Wildcard)) {
+            return false;
+        }
+        clause.thirdParam = currentToken();
     }
+    else if (patternType == "while") {
+        if (!ensureToken(TokenType::Wildcard)) {
+            return false;
+        }
+        clause.secondParam = currentToken();
+        if (!advanceToken()) {
+            return false;
+        }
+        if (!ensureToken(TokenType::Comma)) {
+            return false;
+        }
+    }
+    else {
+        if (!parseExpressionSpec()) {
+            parsingResult.setErrorMessage(getGrammarError());
+            return false;
+        }
 
-    // Concatenate all token values from startIndex to the current index
-    string concatenatedTokens;
-    for (size_t i = startIndex; i <= currentTokenIndex; ++i) {
-        concatenatedTokens += tokens[i].getValue();
+        // Concatenate all token values from startIndex to the current index
+        string concatenatedTokens;
+        for (size_t i = startIndex; i <= currentTokenIndex; ++i) {
+            concatenatedTokens += tokens[i].getValue();
+        }
+        clause.secondParam = Token(TokenType::ExpressionSpec, concatenatedTokens);
     }
-    parsingResult.setPatternClauseSecondParam(Token(TokenType::ExpressionSpec, concatenatedTokens));
 
     if (!advanceToken()) {
         return false;
@@ -485,6 +525,7 @@ bool QueryParser::parsePatternClause() {
     if(!ensureToken(TokenType::Rparenthesis)){
         return false;
     }
+    parsingResult.addPatternClause(clause);
     return true;
 }
 
