@@ -39,6 +39,23 @@ enum class TokenType {
     ModifiesP,
     ExpressionSpec,
     SyntaxError,
+    //M2
+    Calls,
+    CallsT,
+    Next,
+    NextT,
+    WithKeyword,
+    AttrName,
+    Dot,
+    Tuple,
+    AndKeyword,
+    BooleanKeyword,
+    Equal,
+    LeftAngleBracket,
+    RightAngleBracket,
+
+
+
 
 
 };
