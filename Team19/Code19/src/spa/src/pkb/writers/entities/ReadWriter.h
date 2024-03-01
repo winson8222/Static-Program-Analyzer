@@ -8,25 +8,19 @@
 // prompt: used copilot
 class ReadWriter: public IEntityWriter<int> {
 private:
-    std::shared_ptr<ReadStore> readStore;
+	std::shared_ptr<ReadStore> readStore;
 public:
-    explicit ReadWriter(std::shared_ptr<ReadStore> rs) : readStore(std::move(rs)) {}
+	ReadWriter(std::shared_ptr<ReadStore> as);
 
-    bool addEntity(int entity) override {
-      return insertRead(entity);
-    }
+	bool addEntity(int entity) override;
 
-    void clear() override {
-      readStore->clear();
-    }
+	void clear() override;
 
-    /**
-     * @brief Inserts a "Read" statement into the store.
-     * @param stmtNum The statement number of the read statement.
-     * @return True if the read statement is successfully inserted, false otherwise.
-     */
-    bool insertRead(int stmtNum) {
-      return readStore->addEntity(stmtNum);
-    }
+	/**
+	 * @brief Inserts an "Read" statement into the store.
+	 * @param stmtNum The statement number of the read statement.
+	 * @return True read the read statement is successfully inserted, false otherwise.
+	 */
+	bool insertRead(int stmtNum);
 };
 // ai-gen end

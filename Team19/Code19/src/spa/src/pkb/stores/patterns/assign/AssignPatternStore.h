@@ -99,28 +99,10 @@ public:
     // Checks if the store contains a partial RHS and returns the set of statement numbers that contain the partial RHS.
     std::unordered_set<int> getStatementNumbersWithPartialRHS(const std::string& RHS) override {
         std::unordered_set<int> result;
-        std::regex tokenRegex("[^\\+\\-\\*/%\\^\\(\\) ]+"); // Regex to split by operators and spaces
         for (auto const& [key, value] : RHSMap) {
-            bool foundQuote = false;
-            std::string temp;
-            for (auto const& i : value) {
-                if (i == '\'') {
-                    if (foundQuote) {
-                        if (temp == RHS) {
-                            result.insert(key);
-                            temp = "";
-                            foundQuote = false;
-                            break; // Match found, no need to continue checking
-                        }
-                        temp = "";
-                    }
-                    foundQuote = !foundQuote;
-                    continue;
-                }
-                if (foundQuote) {
-                    temp += i;
-                }
-            }
+            if (value.find(RHS) != std::string::npos) {
+				result.insert(key);
+			}
         }
         return result;
     }
@@ -141,28 +123,9 @@ public:
         std::unordered_set<int> result;
         for (auto const& [key, value] : LHSMap) {
             if (value == LHS) {
-                std::regex tokenRegex("[^\\+\\-\\*/%\\^\\(\\) ]+"); // Regex to split by operators and spaces
-                std::string rhsAtKey = RHSMap.at(key);
-                bool foundQuote = false;
-                std::string temp;
-                for (auto const& i : rhsAtKey) {
-                    if (i == '\'') {
-                        if (foundQuote) {
-                            if (temp == RHS) {
-                                result.insert(key);
-                                temp = "";
-                                foundQuote = false;
-                                break; // Match found, no need to continue checking
-                            }
-                            temp = "";
-                        }
-                        foundQuote = !foundQuote;
-                        continue;
-                    }
-                    if (foundQuote) {
-                        temp += i;
-                    }
-                }
+				if (RHSMap.at(key).find(RHS) != std::string::npos) {
+					result.insert(key);
+				}
             }
         }
         return result;

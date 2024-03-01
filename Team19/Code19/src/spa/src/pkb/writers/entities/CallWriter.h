@@ -8,25 +8,19 @@
 // prompt: used copilot
 class CallWriter: public IEntityWriter<int> {
 private:
-    std::shared_ptr<CallStore> callStore;
+	std::shared_ptr<CallStore> callStore;
 public:
-    explicit CallWriter(std::shared_ptr<CallStore> cs) : callStore(std::move(cs)) {}
+	CallWriter(std::shared_ptr<CallStore> as);
 
-    bool addEntity(int entity) override {
-      return insertCall(entity);
-    }
+	bool addEntity(int entity) override;
 
-    void clear() override {
-      callStore->clear();
-    }
+	void clear() override;
 
-    /**
-     * @brief Inserts a "Call" statement into the store.
-     * @param stmtNum The statement number of the call statement.
-     * @return True if the call statement is successfully inserted, false otherwise.
-     */
-    bool insertCall(int stmtNum) {
-      return callStore->addEntity(stmtNum);
-    }
+	/**
+	 * @brief Inserts an "Call" statement into the store.
+	 * @param stmtNum The statement number of the call statement.
+	 * @return True if the call statement is successfully inserted, false otherwise.
+	 */
+	bool insertCall(int stmtNum);
 };
 // ai-gen end

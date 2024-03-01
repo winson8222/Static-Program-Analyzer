@@ -59,7 +59,7 @@ private:
     std::shared_ptr<WhilePatternWriter> whilePatternWriter;
 
 public:
-    explicit PKBWriterManager(const std::shared_ptr<PKB>& pkb): pkb(pkb) {
+    PKBWriterManager(const std::shared_ptr<PKB>& pkb): pkb(pkb) {
       followsWriter = std::make_shared<FollowsWriter>(pkb->getFollowsStore());
       followsTWriter = std::make_shared<FollowsTWriter>(pkb->getFollowsTStore());
       parentWriter = std::make_shared<ParentWriter>(pkb->getParentStore());

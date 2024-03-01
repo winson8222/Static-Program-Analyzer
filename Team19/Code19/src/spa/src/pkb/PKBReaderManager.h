@@ -60,7 +60,7 @@ private:
     std::shared_ptr<WhilePatternReader> whilePatternReader;
 
 public:
-    explicit PKBReaderManager(const std::shared_ptr<PKB>& pkb): pkb(pkb) {
+    PKBReaderManager(const std::shared_ptr<PKB>& pkb): pkb(pkb) {
       assignReader = std::make_shared<AssignReader>(pkb->getAssignStore());
       variableReader = std::make_shared<VariableReader>(pkb->getVariableStore());
       procedureReader = std::make_shared<ProcedureReader>(pkb->getProcedureStore());

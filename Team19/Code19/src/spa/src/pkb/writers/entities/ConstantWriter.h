@@ -8,25 +8,19 @@
 // prompt: used copilot
 class ConstantWriter: public IEntityWriter<int> {
 private:
-    std::shared_ptr<ConstantStore> constantStore;
+	std::shared_ptr<ConstantStore> constantStore;
 public:
-    explicit ConstantWriter(std::shared_ptr<ConstantStore> cs) : constantStore(std::move(cs)) {}
+	ConstantWriter(std::shared_ptr<ConstantStore> as);
 
-    bool addEntity(int entity) override {
-        return insertConstant(entity);
-    }
+	bool addEntity(int entity) override;
 
-    void clear() override {
-        constantStore->clear();
-    }
+	void clear() override;
 
-    /**
-     * @brief Inserts a constant into the store.
-     * @param constantValue The value of the constant to be inserted.
-     * @return True if the constant is successfully inserted, false otherwise.
-     */
-    bool insertConstant(int constantValue) {
-        return constantStore->addEntity(constantValue);
-    }
+	/**
+	 * @brief Inserts a constant into the store.
+	 * @param constant The constant being stored.
+	 * @return True if the constant is successfully inserted, false otherwise.
+	 */
+	bool insertConstant(int constant);
 };
 // ai-gen end
