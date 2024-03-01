@@ -42,6 +42,7 @@ private:
     bool parseSelectClause();
     bool parseSuchThatClause();
     bool parsePatternClause();
+    bool parseWithClause();
 
     bool isUsesOrModifies();
     bool isStmtRefStmtRef();
@@ -60,6 +61,8 @@ private:
     bool parseExpression();
     bool parseTerm();
     bool parseFactor();
+    bool parseRef();
+    bool parseAttrRef();
 
     // Method to get the current token.
     // Returns a constant reference to the current Token object.
