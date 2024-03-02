@@ -40,21 +40,6 @@ void IfElseThenVisitor::visit() {
 
 	setParents(this->contexts, this->root, this->pkbWriterManager);
 }
-
-void IfElseThenVisitor::setParents(listnode contexts, std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager) {
-	int size = contexts.size();
-	for (int i = 0; i < size; i++) {
-		std::shared_ptr<ASTNode> context = contexts[i];
-		if (context->type == ASTNodeType::PROCEDURE) continue;
-		ParentTExtractor parentExtractor(context, root, pkbWriterManager);
-		parentExtractor.extract();
-	}
-	if (size > 0 && contexts[size - 1]->type != ASTNodeType::PROCEDURE) {
-		ParentExtractor parentExtractor(contexts[size - 1], root, pkbWriterManager);
-		parentExtractor.extract();
-	}
-}
-
 void IfElseThenVisitor::addContext(std::shared_ptr<ASTNode> context) {
 	// Do nothing
 }
