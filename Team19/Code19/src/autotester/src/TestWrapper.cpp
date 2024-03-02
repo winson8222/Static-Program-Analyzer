@@ -16,9 +16,7 @@ TestWrapper::TestWrapper() {
 	pkbManager = std::make_shared<PKBManager>();
 	pkbReaderManager = pkbManager->getPKBReaderManager();
 	pkbWriterManager = pkbManager->getPKBWriterManager();
-
-    pkbWriterManager->getFollowsWriter();
-
+	pkbCacheManager = pkbManager->getPKBCacheManager();
 }
 
 // method for parsing the SIMPLE source
@@ -51,5 +49,6 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
 	}
 	// store the answers to the query in the results list (it is initially empty)
 	// each result must be a string.
-
+	// Clear cache after each query
+	pkbCacheManager->clearCache();
 }

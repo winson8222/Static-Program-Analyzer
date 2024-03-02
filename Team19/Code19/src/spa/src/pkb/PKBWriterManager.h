@@ -23,6 +23,7 @@
 #include "pkb/writers/relationships/UsesSWriter.h"
 #include "pkb/writers/relationships/ModifiesPWriter.h"
 #include "pkb/writers/relationships/ModifiesSWriter.h"
+#include "pkb/writers/relationships/NextWriter.h"
 
 #include "pkb/writers/patterns/AssignPatternWriter.h"
 #include "pkb/writers/patterns/IfPatternWriter.h"
@@ -42,6 +43,7 @@ private:
     std::shared_ptr<UsesSWriter> usesSWriter;
     std::shared_ptr<ModifiesPWriter> modifiesPWriter;
     std::shared_ptr<ModifiesSWriter> modifiesSWriter;
+	std::shared_ptr<NextWriter> nextWriter;
 
     std::shared_ptr<AssignWriter> assignWriter;
     std::shared_ptr<VariableWriter> variableWriter;
@@ -68,6 +70,7 @@ public:
       usesSWriter = std::make_shared<UsesSWriter>(pkb->getUsesSStore());
       modifiesPWriter = std::make_shared<ModifiesPWriter>(pkb->getModifiesPStore());
       modifiesSWriter = std::make_shared<ModifiesSWriter>(pkb->getModifiesSStore());
+	  nextWriter = std::make_shared<NextWriter>(pkb->getNextStore());
 
       assignWriter = std::make_shared<AssignWriter>(pkb->getAssignStore());
       variableWriter = std::make_shared<VariableWriter>(pkb->getVariableStore());
@@ -116,6 +119,10 @@ public:
     std::shared_ptr<ModifiesSWriter> getModifiesSWriter() {
       return modifiesSWriter;
     }
+
+	std::shared_ptr<NextWriter> getNextWriter() {
+	  return nextWriter;
+	}
 
     // Entities
     std::shared_ptr<VariableWriter> getVariableWriter() {

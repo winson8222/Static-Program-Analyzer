@@ -10,6 +10,9 @@
 #include "pkb/stores/relationships/types/ParentTStore.h"
 #include "pkb/stores/relationships/types/ModifiesPStore.h"
 #include "pkb/stores/relationships/types/ModifiesSStore.h"
+#include "pkb/stores/relationships/types/NextStore.h"
+#include "pkb/stores/relationships/types/NextTStore.h"
+
 #include "pkb/stores/entities/types/StatementStore.h"
 #include "pkb/stores/entities/types/ReadStore.h"
 #include "pkb/stores/entities/types/PrintStore.h"
@@ -20,6 +23,7 @@
 #include "pkb/stores/entities/types/VariableStore.h"
 #include "pkb/stores/entities/types/ConstantStore.h"
 #include "pkb/stores/entities/types/ProcedureStore.h"
+
 #include "pkb/stores/patterns/assign/AssignPatternStore.h"
 #include "pkb/stores/patterns/control/IfPatternStore.h"
 #include "pkb/stores/patterns/control/WhilePatternStore.h"
@@ -38,6 +42,8 @@ private:
     std::shared_ptr<UsesSStore> usesSStore;
     std::shared_ptr<ModifiesPStore> modifiesPStore;
     std::shared_ptr<ModifiesSStore> modifiesSStore;
+	std::shared_ptr<NextStore> nextStore;
+	std::shared_ptr<NextTStore> nextTStore;
 
     // Entity stores
     std::shared_ptr<StatementStore> statementStore;
@@ -66,6 +72,8 @@ public:
         usesSStore = std::make_shared<UsesSStore>();
         modifiesPStore = std::make_shared<ModifiesPStore>();
         modifiesSStore = std::make_shared<ModifiesSStore>();
+		nextStore = std::make_shared<NextStore>();
+		nextTStore = std::make_shared<NextTStore>();
 
         // Initialize all entities stores
         statementStore = std::make_shared<StatementStore>();
@@ -94,6 +102,8 @@ public:
     std::shared_ptr<UsesSStore> getUsesSStore() { return usesSStore; }
     std::shared_ptr<ModifiesPStore> getModifiesPStore() { return modifiesPStore; }
     std::shared_ptr<ModifiesSStore> getModifiesSStore() { return modifiesSStore; }
+	std::shared_ptr<NextStore> getNextStore() { return nextStore; }
+	std::shared_ptr<NextTStore> getNextTStore() { return nextTStore; }
 
     // Entity Getters
     std::shared_ptr<StatementStore> getStatementStore() { return statementStore; }
