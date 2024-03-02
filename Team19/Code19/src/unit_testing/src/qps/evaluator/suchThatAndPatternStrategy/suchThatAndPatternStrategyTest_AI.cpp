@@ -146,6 +146,116 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrate
 
     }
 
+    SECTION("Check Evaluation result of a simple select Parent* query + adding ifs with partial expression") {
+        std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+        std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+        std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+        std::shared_ptr<ParentTWriter> parentTWriter = pkbWriterManager->getParentTWriter();
+        std::shared_ptr<WhileWriter> whileWriter = pkbWriterManager->getWhileWriter();
+        std::shared_ptr<IfWriter> ifWriter = pkbWriterManager->getIfWriter();
+        std::shared_ptr<AssignWriter> assignWriter = pkbWriterManager->getAssignWriter();
+        std::shared_ptr<AssignPatternWriter> assignPatternWriter = pkbWriterManager->getAssignPatternWriter();
+
+
+        statementWriter->insertStatement(1);
+        statementWriter->insertStatement(2);
+        statementWriter->insertStatement(3);
+        statementWriter->insertStatement(4);
+        statementWriter->insertStatement(5);
+        statementWriter->insertStatement(6);
+        whileWriter->insertWhile(1);
+        whileWriter->insertWhile(3);
+        assignWriter->insertAssign(2);
+        assignWriter->insertAssign(4);
+        // testing x + 2 + y + 1
+        assignPatternWriter->addAssignPattern(2, "x", "'x''2''+''y''+''1''+");
+        assignPatternWriter->addAssignPattern(4, "x", "'2''x''+'");
+        assignPatternWriter->addAssignPattern(6, "x", "'1''x''+'");
+
+
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "assign"),
+                Token(TokenType::IDENT, "a"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::IDENT, "a"),
+                Token(TokenType::PatternKeyword, "pattern"),
+                Token(TokenType::IDENT, "a"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::Wildcard, "_"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::Wildcard, "_"),
+                Token(TokenType::ExpressionSpec, "\"x + 2\""),
+                Token(TokenType::Wildcard, "_"),
+                Token(TokenType::Rparenthesis, ")"),
+
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{ "2" });
+
+    }
+
+    SECTION("Check Evaluation result of a simple select Parent* query + adding ifs with partial expression") {
+        std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+        std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+        std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+        std::shared_ptr<ParentTWriter> parentTWriter = pkbWriterManager->getParentTWriter();
+        std::shared_ptr<WhileWriter> whileWriter = pkbWriterManager->getWhileWriter();
+        std::shared_ptr<IfWriter> ifWriter = pkbWriterManager->getIfWriter();
+        std::shared_ptr<AssignWriter> assignWriter = pkbWriterManager->getAssignWriter();
+        std::shared_ptr<AssignPatternWriter> assignPatternWriter = pkbWriterManager->getAssignPatternWriter();
+
+
+        statementWriter->insertStatement(1);
+        statementWriter->insertStatement(2);
+        statementWriter->insertStatement(3);
+        statementWriter->insertStatement(4);
+        statementWriter->insertStatement(5);
+        statementWriter->insertStatement(6);
+        whileWriter->insertWhile(1);
+        whileWriter->insertWhile(3);
+        assignWriter->insertAssign(2);
+        assignWriter->insertAssign(4);
+        // testing x + 2 + y + 1
+        assignPatternWriter->addAssignPattern(2, "x", "'x''2''+''y''+''1''+");
+        assignPatternWriter->addAssignPattern(4, "x", "'2''x''+'");
+        assignPatternWriter->addAssignPattern(6, "x", "'1''x''+'");
+
+
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "assign"),
+                Token(TokenType::IDENT, "a"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::IDENT, "a"),
+                Token(TokenType::PatternKeyword, "pattern"),
+                Token(TokenType::IDENT, "a"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::Wildcard, "_"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::Wildcard, "_"),
+                Token(TokenType::ExpressionSpec, "\"x + 2 + y\""),
+                Token(TokenType::Wildcard, "_"),
+                Token(TokenType::Rparenthesis, ")"),
+
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{ "2" });
+
+    }
+
     SECTION("Check Evaluation result of pattern and follows") {
         std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
         std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();

@@ -38,7 +38,7 @@ std::shared_ptr<ResultTable> PatternStrategy::evaluateQuery(PKBReaderManager& pk
             secondParamValue = patternSecondParam.getValue();
         } else {
             secondParamValue = extractQuotedExpression(patternSecondParam);
-            //secondParamValue = ShuntingYard::convertToPostfix(secondParamValue);
+            secondParamValue = ShuntingYard::convertToPostfix(secondParamValue);
 
         }
     } else {
