@@ -23,6 +23,7 @@ private:
     std::shared_ptr<PKBManager> pkbManager;
     std::shared_ptr<PKBReaderManager> pkbReaderManager;
     std::shared_ptr<PKBWriterManager> pkbWriterManager;
+	std::shared_ptr<PKBCacheManager> pkbCacheManager;
 
 public:
     // default constructor

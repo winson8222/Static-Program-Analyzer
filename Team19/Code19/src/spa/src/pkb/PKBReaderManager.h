@@ -25,6 +25,8 @@
 #include "pkb/readers/relationships/UsesSReader.h"
 #include "pkb/readers/relationships/CallsReader.h"
 #include "pkb/readers/relationships/CallsTReader.h"
+#include "pkb/readers/relationships/NextReader.h"
+#include "pkb/readers/relationships/NextTReader.h"
 
 #include "pkb/readers/patterns/AssignPatternReader.h"
 #include "pkb/readers/patterns/IfPatternReader.h"
@@ -57,6 +59,8 @@ private:
     std::shared_ptr<UsesSReader> usesSReader;
     std::shared_ptr<CallsReader> callsReader;
     std::shared_ptr<CallsTReader> callsTReader;
+    std::shared_ptr<NextReader> nextReader;
+    std::shared_ptr<NextTReader> nextTReader;
 
     std::shared_ptr<AssignPatternReader> assignPatternReader;
     std::shared_ptr<IfPatternReader> ifPatternReader;
@@ -85,7 +89,8 @@ public:
       usesSReader = std::make_shared<UsesSReader>(pkb->getUsesSStore());
       callsReader = std::make_shared<CallsReader>(pkb->getCallsStore());
       callsTReader = std::make_shared<CallsTReader>(pkb->getCallsTStore());
-
+      nextReader = std::make_shared<NextReader>(pkb->getNextStore());
+      nextTReader = std::make_shared<NextTReader>(pkb->getNextStore(), pkb->getNextTStore());
 
       assignPatternReader = std::make_shared<AssignPatternReader>(pkb->getAssignPatternStore());
       ifPatternReader = std::make_shared<IfPatternReader>(pkb->getIfPatternStore());
@@ -93,79 +98,28 @@ public:
     }
 
     // Entity Readers
-    std::shared_ptr<AssignReader> getAssignReader() {
-        return assignReader;
-    }
+    std::shared_ptr<AssignReader> getAssignReader() { return assignReader; }
+    std::shared_ptr<VariableReader> getVariableReader() { return variableReader; }
+    std::shared_ptr<ProcedureReader> getProcedureReader() { return procedureReader; }
+    std::shared_ptr<StatementReader> getStatementReader() { return statementReader; }
+    std::shared_ptr<IfReader> getIfReader() { return ifReader; }
+    std::shared_ptr<WhileReader> getWhileReader() { return whileReader;}
+    std::shared_ptr<CallReader> getCallReader() { return callReader; }
+    std::shared_ptr<ReadReader> getReadReader() { return readReader; }
+    std::shared_ptr<ConstantReader> getConstantReader() { return constantReader; }
+    std::shared_ptr<PrintReader> getPrintReader() { return printReader; }
 
-    std::shared_ptr<VariableReader> getVariableReader() {
-        return variableReader;
-    }
-
-    std::shared_ptr<ProcedureReader> getProcedureReader() {
-        return procedureReader;
-    }
-
-    std::shared_ptr<StatementReader> getStatementReader() {
-        return statementReader;
-    }
-
-    std::shared_ptr<IfReader> getIfReader() {
-        return ifReader;
-    }
-
-    std::shared_ptr<WhileReader> getWhileReader() {
-        return whileReader;
-    }
-
-    std::shared_ptr<CallReader> getCallReader() {
-        return callReader;
-    }
-
-    std::shared_ptr<ReadReader> getReadReader() {
-        return readReader;
-    }
-
-    std::shared_ptr<ConstantReader> getConstantReader() {
-        return constantReader;
-    }
-
-    std::shared_ptr<PrintReader> getPrintReader() {
-        return printReader;
-    }
-
-    // Relationship Readers
-
-    std::shared_ptr<FollowsReader> getFollowsReader() {
-        return followsReader;
-    }
-
-    std::shared_ptr<FollowsTReader> getFollowsTReader() {
-        return followsTReader;
-    }
-
-    std::shared_ptr<ParentReader> getParentReader() {
-        return parentReader;
-    }
-
-    std::shared_ptr<ParentTReader> getParentTReader() {
-        return parentTReader;
-    }
-
-    std::shared_ptr<ModifiesPReader> getModifiesPReader() {
-        return modifiesPReader;
-    }
-
-    std::shared_ptr<ModifiesSReader> getModifiesSReader() {
-        return modifiesSReader;
-    }
-
-    std::shared_ptr<UsesPReader> getUsesPReader() {
-        return usesPReader;
-    }
-
-    std::shared_ptr<UsesSReader> getUsesSReader() {
-        return usesSReader;
-    }
+	// Relationship Readers
+    std::shared_ptr<FollowsReader> getFollowsReader() { return followsReader; }
+    std::shared_ptr<FollowsTReader> getFollowsTReader() { return followsTReader; }
+    std::shared_ptr<ParentReader> getParentReader() { return parentReader; }
+    std::shared_ptr<ParentTReader> getParentTReader() { return parentTReader; }
+    std::shared_ptr<ModifiesPReader> getModifiesPReader() { return modifiesPReader; }
+    std::shared_ptr<ModifiesSReader> getModifiesSReader() { return modifiesSReader; }
+    std::shared_ptr<UsesPReader> getUsesPReader() { return usesPReader; }
+    std::shared_ptr<UsesSReader> getUsesSReader() { return usesSReader; }
+	std::shared_ptr<NextReader> getNextReader() { return nextReader; }
+	std::shared_ptr<NextTReader> getNextTReader() { return nextTReader; }
 
     std::shared_ptr<CallsReader> getCallsReader() {
         return callsReader;
@@ -176,16 +130,8 @@ public:
     }
 
     // Pattern Readers
-    std::shared_ptr<AssignPatternReader> getAssignPatternReader() {
-        return assignPatternReader;
-    }
-
-    std::shared_ptr<IfPatternReader> getIfPatternReader() {
-        return ifPatternReader;
-    }
-
-    std::shared_ptr<WhilePatternReader> getWhilePatternReader() {
-        return whilePatternReader;
-    }
+    std::shared_ptr<AssignPatternReader> getAssignPatternReader() { return assignPatternReader; }
+    std::shared_ptr<IfPatternReader> getIfPatternReader() { return ifPatternReader; }
+    std::shared_ptr<WhilePatternReader> getWhilePatternReader() { return whilePatternReader; }
 };
 // ai-gen end

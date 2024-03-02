@@ -2,9 +2,7 @@
 
 // ai-gen start(copilot, 2, e)
 // prompt: used copilot
-FollowsReader::FollowsReader(std::shared_ptr<FollowsStore> store) {
-  followsStore = std::move(store);
-}
+FollowsReader::FollowsReader(std::shared_ptr<FollowsStore> store) : followsStore(std::move(store)) {}
 
 // Inherited methods
 bool FollowsReader::isEmpty() {
