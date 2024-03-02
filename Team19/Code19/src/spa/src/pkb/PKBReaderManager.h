@@ -23,7 +23,8 @@
 #include "pkb/readers/relationships/ModifiesSReader.h"
 #include "pkb/readers/relationships/UsesPReader.h"
 #include "pkb/readers/relationships/UsesSReader.h"
-
+#include "pkb/readers/relationships/CallsReader.h"
+#include "pkb/readers/relationships/CallsTReader.h"
 
 #include "pkb/readers/patterns/AssignPatternReader.h"
 #include "pkb/readers/patterns/IfPatternReader.h"
@@ -54,6 +55,8 @@ private:
     std::shared_ptr<ModifiesSReader> modifiesSReader;
     std::shared_ptr<UsesPReader> usesPReader;
     std::shared_ptr<UsesSReader> usesSReader;
+    std::shared_ptr<CallsReader> callsReader;
+    std::shared_ptr<CallsTReader> callsTReader;
 
     std::shared_ptr<AssignPatternReader> assignPatternReader;
     std::shared_ptr<IfPatternReader> ifPatternReader;
@@ -80,6 +83,8 @@ public:
       modifiesSReader = std::make_shared<ModifiesSReader>(pkb->getModifiesSStore());
       usesPReader = std::make_shared<UsesPReader>(pkb->getUsesPStore());
       usesSReader = std::make_shared<UsesSReader>(pkb->getUsesSStore());
+      callsReader = std::make_shared<CallsReader>(pkb->getCallsStore());
+      callsTReader = std::make_shared<CallsTReader>(pkb->getCallsTStore());
 
 
       assignPatternReader = std::make_shared<AssignPatternReader>(pkb->getAssignPatternStore());
@@ -160,6 +165,14 @@ public:
 
     std::shared_ptr<UsesSReader> getUsesSReader() {
         return usesSReader;
+    }
+
+    std::shared_ptr<CallsReader> getCallsReader() {
+        return callsReader;
+    }
+
+    std::shared_ptr<CallsTReader> getCallsTReader() {
+        return callsTReader;
     }
 
     // Pattern Readers

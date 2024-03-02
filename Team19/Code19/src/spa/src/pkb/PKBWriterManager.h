@@ -23,6 +23,8 @@
 #include "pkb/writers/relationships/UsesSWriter.h"
 #include "pkb/writers/relationships/ModifiesPWriter.h"
 #include "pkb/writers/relationships/ModifiesSWriter.h"
+#include "pkb/writers/relationships/CallsWriter.h"
+#include "pkb/writers/relationships/CallsTWriter.h"
 
 #include "pkb/writers/patterns/AssignPatternWriter.h"
 #include "pkb/writers/patterns/IfPatternWriter.h"
@@ -42,6 +44,8 @@ private:
     std::shared_ptr<UsesSWriter> usesSWriter;
     std::shared_ptr<ModifiesPWriter> modifiesPWriter;
     std::shared_ptr<ModifiesSWriter> modifiesSWriter;
+    std::shared_ptr<CallsWriter> callsWriter;
+    std::shared_ptr<CallsTWriter> callsTWriter;
 
     std::shared_ptr<AssignWriter> assignWriter;
     std::shared_ptr<VariableWriter> variableWriter;
@@ -68,6 +72,8 @@ public:
       usesSWriter = std::make_shared<UsesSWriter>(pkb->getUsesSStore());
       modifiesPWriter = std::make_shared<ModifiesPWriter>(pkb->getModifiesPStore());
       modifiesSWriter = std::make_shared<ModifiesSWriter>(pkb->getModifiesSStore());
+      callsWriter = std::make_shared<CallsWriter>(pkb->getCallsStore());
+      callsTWriter = std::make_shared<CallsTWriter>(pkb->getCallsTStore());
 
       assignWriter = std::make_shared<AssignWriter>(pkb->getAssignStore());
       variableWriter = std::make_shared<VariableWriter>(pkb->getVariableStore());
@@ -115,6 +121,14 @@ public:
 
     std::shared_ptr<ModifiesSWriter> getModifiesSWriter() {
       return modifiesSWriter;
+    }
+
+    std::shared_ptr<CallsWriter> getCallsWriter() {
+        return callsWriter;
+    }
+
+    std::shared_ptr<CallsTWriter> getCallsTWriter() {
+        return callsTWriter;
     }
 
     // Entities

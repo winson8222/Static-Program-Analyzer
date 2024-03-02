@@ -10,6 +10,8 @@
 #include "pkb/stores/relationships/types/ParentTStore.h"
 #include "pkb/stores/relationships/types/ModifiesPStore.h"
 #include "pkb/stores/relationships/types/ModifiesSStore.h"
+#include "pkb/stores/relationships/types/CallsStore.h"
+#include "pkb/stores/relationships/types/CallsTStore.h"
 #include "pkb/stores/entities/types/StatementStore.h"
 #include "pkb/stores/entities/types/ReadStore.h"
 #include "pkb/stores/entities/types/PrintStore.h"
@@ -38,6 +40,8 @@ private:
     std::shared_ptr<UsesSStore> usesSStore;
     std::shared_ptr<ModifiesPStore> modifiesPStore;
     std::shared_ptr<ModifiesSStore> modifiesSStore;
+    std::shared_ptr<CallsStore> callsStore;
+    std::shared_ptr<CallsTStore> callsTStore;
 
     // Entity stores
     std::shared_ptr<StatementStore> statementStore;
@@ -66,6 +70,8 @@ public:
         usesSStore = std::make_shared<UsesSStore>();
         modifiesPStore = std::make_shared<ModifiesPStore>();
         modifiesSStore = std::make_shared<ModifiesSStore>();
+        callsStore = std::make_shared<CallsStore>();
+        callsTStore = std::make_shared<CallsTStore>();
 
         // Initialize all entities stores
         statementStore = std::make_shared<StatementStore>();
@@ -94,6 +100,8 @@ public:
     std::shared_ptr<UsesSStore> getUsesSStore() { return usesSStore; }
     std::shared_ptr<ModifiesPStore> getModifiesPStore() { return modifiesPStore; }
     std::shared_ptr<ModifiesSStore> getModifiesSStore() { return modifiesSStore; }
+    std::shared_ptr<CallsStore> getCallsStore() { return callsStore; }
+    std::shared_ptr<CallsTStore> getCallsTStore() { return callsTStore; }
 
     // Entity Getters
     std::shared_ptr<StatementStore> getStatementStore() { return statementStore; }
