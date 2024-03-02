@@ -27,7 +27,7 @@ ParsingResult QueryParser::parse() {
     if (!advanceToken()) {
         return parsingResult;
     }
-    while (currentTokenIndex == tokens.size() - 1) {
+    while (currentTokenIndex <= tokens.size() - 1) {
         // check if there is a such that or pattern clause with such that coming first
         if (match(TokenType::SuchKeyword) || (match(TokenType::AndKeyword) && currentToken().getValue() == "such that")) {
             if (match(TokenType::SuchKeyword)) {
@@ -120,6 +120,11 @@ bool QueryParser::parseDeclarations() {
                 parsingResult.setErrorMessage(getGrammarError());
                 return false;
             }
+            // check if the token value is declared as synonyms in any of the set
+            if (!parsingResult.getDeclaredSynonym(currentToken().getValue()).empty()) {
+                parsingResult.setErrorMessage(getSemanticError());
+                return false;
+            }
             parsingResult.addDeclaredSynonym(currentToken().getValue(), assignmentType);
             if (!advanceToken()) {
                 return false;
@@ -165,11 +170,7 @@ bool QueryParser::parseSynonym() {
     if (!ensureToken(TokenType::IDENT)) {
         return false;
     }
-    // check if the token value is declared as synonyms in any of the set
-    if (!parsingResult.getDeclaredSynonym(currentToken().getValue()).empty()) {
-        parsingResult.setErrorMessage(getSemanticError());
-        return false;
-    }
+    
     return true;
 
 }
@@ -187,40 +188,70 @@ bool QueryParser::parseSelectClause() {
         return false;
     }
     if (match(TokenType::LeftAngleBracket)) {
+        if (!advanceToken()) {
+            return false;
+        }
         while (!match(TokenType::RightAngleBracket)) {
+            currentSuchThatToken = currentToken();
             size_t startIndex = currentTokenIndex;
-            if (!ensureToken(TokenType::IDENT) || !parseAttrRef()) {
-                return false;
+            
+            if (peekNextToken(TokenType::Dot)) {
+                if (!parseAttrRef()) {
+                    return false;
+                }
             }
+            else {
+                if (!ensureToken(TokenType::IDENT)) {
+                    return false;
+                }
+            }
+            
             string concatenatedTokens;
             for (size_t i = startIndex; i <= currentTokenIndex; ++i) {
                 concatenatedTokens += tokens[i].getValue();
             }
             parsingResult.setRequiredSynonym(concatenatedTokens);
-            if (parsingResult.getDeclaredSynonym(concatenatedTokens).empty()) {
+            if (parsingResult.getDeclaredSynonym(currentSuchThatToken.getValue()).empty()) {
                 parsingResult.setErrorMessage(getSemanticError());
                 return false;
             }
             if (!advanceToken()) {
                 return false;
             }
+            if (match(TokenType::RightAngleBracket)) {
+                return true;
+            }
             if (!ensureToken(TokenType::Comma)) {
+                return false;
+            }
+            if (!advanceToken()) {
                 return false;
             }
         }
         return true;
     }
     else {
+        currentSuchThatToken = currentToken();
         size_t startIndex = currentTokenIndex;
-        if (!ensureToken(TokenType::IDENT) || !parseAttrRef()) {
-            return false;
+        if (tokens.size() > currentTokenIndex + 1 && peekNextToken(TokenType::Dot)) {
+            if (!parseAttrRef()) {
+                return false;
+            }
+        }
+        else {
+            if (!match(TokenType::IDENT)) {
+                if (!ensureToken(TokenType::BooleanKeyword)) {
+                    return false;
+                }
+                
+            }
         }
         string concatenatedTokens;
         for (size_t i = startIndex; i <= currentTokenIndex; ++i) {
             concatenatedTokens += tokens[i].getValue();
         }
         parsingResult.setRequiredSynonym(concatenatedTokens);
-        if (parsingResult.getDeclaredSynonym(concatenatedTokens).empty()) {
+        if (parsingResult.getDeclaredSynonym(currentSuchThatToken.getValue()).empty() && currentSuchThatToken.getValue() != "BOOLEAN") {
             parsingResult.setErrorMessage(getSemanticError());
             return false;
         }
@@ -272,7 +303,9 @@ bool QueryParser::parseRelRef(SuchThatClause& clause) {
 // Checks if the current context is a statement reference to statement reference relation.
 bool QueryParser::isStmtRefStmtRef() {
     if (match(TokenType::Parent) || match(TokenType::ParentT) ||
-        match(TokenType::Follows) || match(TokenType::FollowsT)) {
+        match(TokenType::Follows) || match(TokenType::FollowsT) ||
+        match(TokenType::Calls) || match(TokenType::CallsT) ||
+        match(TokenType::Next) || match(TokenType::NextT)) {
         currentSuchThatToken = currentToken();
         return true;
     }
@@ -319,10 +352,10 @@ bool QueryParser::parseUsesOrModifies(SuchThatClause& clause) {
     if (parseStmtRef()) {
         if (currentSuchThatToken.getType() == TokenType::Uses) {
             currentSuchThatToken.setType(TokenType::UsesS);
-            clause.firstParam = currentSuchThatToken;
+            clause.relationship = currentSuchThatToken;
         } else {
             currentSuchThatToken.setType(TokenType::ModifiesS);
-            clause.firstParam = currentSuchThatToken;
+            clause.relationship = currentSuchThatToken;
         }
         clause.firstParam = currentToken();
         if (!advanceToken()) {
@@ -337,7 +370,7 @@ bool QueryParser::parseUsesOrModifies(SuchThatClause& clause) {
             currentSuchThatToken.setType(TokenType::ModifiesP);
             clause.relationship = currentSuchThatToken;
         }
-        clause.relationship = currentToken();
+        clause.firstParam = currentToken();
         if (!advanceToken()) {
             return false;
         }
@@ -488,7 +521,7 @@ bool QueryParser::parsePatternClause() {
     if(!parseEntRef()) {
         return false;
     }
-    clause.secondParam = currentToken();
+    clause.firstParam = currentToken();
 
     if (!advanceToken()) {
         return false;
@@ -719,6 +752,8 @@ const Token& QueryParser::currentToken() const {
     return tokens[currentTokenIndex];
 }
 
+
+
 // Advances to the next token in the token sequence.
 // Returns true if advancement is successful, false if it reaches the end of the token sequence.
 bool QueryParser::advanceToken() {
@@ -788,6 +823,7 @@ bool QueryParser::parseStmtSynonyms() {
                 parsingResult.getDeclaredSynonym(currentToken().getValue()) != "while" &&
                 parsingResult.getDeclaredSynonym(currentToken().getValue()) != "if" &&
                 parsingResult.getDeclaredSynonym(currentToken().getValue()) != "print" &&
+                parsingResult.getDeclaredSynonym(currentToken().getValue()) != "procedure" &&
                 parsingResult.getDeclaredSynonym(currentToken().getValue()) != "read") {
             parsingResult.setErrorMessage(getSemanticError());
             return false;
@@ -800,6 +836,7 @@ bool QueryParser::parseStmtSynonyms() {
            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "while" &&
            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "if" &&
            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "print" &&
+           parsingResult.getDeclaredSynonym(currentToken().getValue()) != "procedure" &&
            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "read") {
             parsingResult.setErrorMessage(getSemanticError());
             return false;
@@ -939,7 +976,7 @@ bool QueryParser::parseRef() {
 }
 
 bool QueryParser::parseAttrRef() {
-    if (!parseSynonym) {
+    if (!parseSynonym()) {
         return false;
     }
     if (!advanceToken()) {
