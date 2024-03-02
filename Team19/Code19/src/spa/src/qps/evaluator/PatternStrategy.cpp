@@ -12,7 +12,7 @@ using namespace std;
 // where ent can be a wildcard, a quoted IDENT, or a synonym,
 // and expressionSpec is a wildcard, or a quoted expression or quoted expression surrounded by wildcards.
 
-std::shared_ptr<ResultTable> PatternStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult) {
+std::shared_ptr<ResultTable> PatternStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) {
 
     std::shared_ptr<ResultTable> result = std::make_shared<ResultTable>();
 
@@ -23,10 +23,10 @@ std::shared_ptr<ResultTable> PatternStrategy::evaluateQuery(PKBReaderManager& pk
 
 
 
-
-    const Token& patternFirstParam = parsingResult.getPatternClauseFirstParam();
-    const Token& patternSecondParam = parsingResult.getPatternClauseSecondParam();
-    const Token& patternAssignParam = parsingResult.getPatternClauseRelationship();
+    const PatternClause* patternClause = dynamic_cast<const PatternClause*>(&clause);
+    const Token& patternFirstParam = patternClause->firstParam;
+    const Token& patternSecondParam = patternClause->secondParam;
+    const Token& patternAssignParam = patternClause->relationship;
     const string assignParamValue = patternAssignParam.getValue();
     bool partialMatch = patternSecondParam.getValue()[0] == '_' && patternSecondParam.getValue().length() > 1;
     string secondParamValue;

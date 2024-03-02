@@ -7,18 +7,21 @@ using namespace std;
 // A parents relationship is defined between two statements (stmtRef, stmtRef),
 // where a stmtRef can be a wildcard, an integer, or a synonym.
 
-std::shared_ptr<ResultTable> ParentStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult) {
+std::shared_ptr<ResultTable> ParentStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) {
     auto resultTable = make_shared<ResultTable>();
-    string requiredSynonym = parsingResult.getRequiredSynonym();
-    string variant = parsingResult.getSuchThatClauseRelationship().getValue();
+    string requiredSynonym = parsingResult.getRequiredSynonyms()[0];
+    
 
     // Obtain readers from PKBReaderManager
     this->parentReader = pkbReaderManager.getParentReader();
     this->parentTTReader = pkbReaderManager.getParentTReader();
     this->statementReader = pkbReaderManager.getStatementReader();
 
-    const Token& suchThatFirstParam = parsingResult.getSuchThatClauseFirstParam();
-    const Token& suchThatSecondParam = parsingResult.getSuchThatClauseSecondParam();
+    const SuchThatClause* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
+    const Token& suchThatFirstParam = suchClause->firstParam;
+    const Token& suchThatSecondParam = suchClause->secondParam;
+    string variant = suchClause->relationship.getValue();
+
     if (suchThatFirstParam.getType() == TokenType::IDENT && suchThatSecondParam.getType() == TokenType::IDENT) {
         processSynonyms(suchThatFirstParam, suchThatSecondParam, variant, resultTable, parsingResult, pkbReaderManager);
     }

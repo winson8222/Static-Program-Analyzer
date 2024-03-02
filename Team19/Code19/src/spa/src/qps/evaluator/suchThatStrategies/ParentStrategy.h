@@ -14,7 +14,7 @@ private:
     std::shared_ptr<StatementReader> statementReader;
 
 public:
-    std::shared_ptr<ResultTable> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult) override;
+    std::shared_ptr<ResultTable> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) override;
 
     void processSynonyms(const Token& firstParam, const Token& secondParam,
         const string& variant, std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult,PKBReaderManager& pkbReaderManager);
