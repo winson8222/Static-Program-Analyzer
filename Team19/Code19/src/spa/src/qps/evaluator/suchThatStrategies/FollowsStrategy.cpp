@@ -4,6 +4,7 @@
 // Standard library dependencies
 #include <string>
 #include <unordered_set>
+#include <iostream>
 
 /**
  * Evaluates Follows or Follows* queries between two statements.
@@ -19,7 +20,6 @@ std::shared_ptr<ResultTable> FollowsStrategy::evaluateQuery(PKBReaderManager& pk
     // Initializing PKB readers for Follows relationships
     followsReader = pkbReaderManager.getFollowsReader();
     followsTReader = pkbReaderManager.getFollowsTReader();
-
     const SuchThatClause* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
     const Token& firstParam = suchClause->firstParam;
     const Token& secondParam = suchClause->secondParam;

@@ -11,9 +11,11 @@
 ParsingResult createParsingResultForFollows(int stmt1, int stmt2, bool isTransitive = false) {
     ParsingResult parsingResult;
     TokenType relationshipType = isTransitive ? TokenType::FollowsT : TokenType::Follows;
-    parsingResult.setSuchThatClauseRelationship(Token(relationshipType, ""));
-    parsingResult.setSuchThatClauseFirstParam(Token(TokenType::INTEGER, std::to_string(stmt1)));
-    parsingResult.setSuchThatClauseSecondParam(Token(TokenType::INTEGER, std::to_string(stmt2)));
+    SuchThatClause clause;
+    clause.relationship = Token(relationshipType, "");
+    clause.firstParam = Token(TokenType::INTEGER, std::to_string(stmt1));
+    clause.secondParam = Token(TokenType::INTEGER, std::to_string(stmt2));
+    parsingResult.addSuchThatClause(clause);
     return parsingResult;
 }
 
@@ -31,31 +33,31 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/1") {
 
     SECTION("Direct Follows(1, 2) is true") {
         auto parsingResult = createParsingResultForFollows(1, 2);
-        auto result = followsStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        auto result = followsStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
         REQUIRE(result->isTableTrue());
     }
 
     SECTION("Direct Follows(2, 3) is true") {
         auto parsingResult = createParsingResultForFollows(2, 3);
-        auto result = followsStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        auto result = followsStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
         REQUIRE(result->isTableTrue());
     }
 
     SECTION("Transitive Follows*(1, 3) is true") {
         auto parsingResult = createParsingResultForFollows(1, 3, true);
-        auto result = followsStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        auto result = followsStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
         REQUIRE(result->isTableTrue());
     }
 
     SECTION("Transitive Follows*(1, 4) is true") {
         auto parsingResult = createParsingResultForFollows(1, 4, true);
-        auto result = followsStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        auto result = followsStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
         REQUIRE(result->isTableTrue());
     }
 
     SECTION("Transitive Follows*(1, 5) is false") {
         auto parsingResult = createParsingResultForFollows(1, 5, true);
-        auto result = followsStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        auto result = followsStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
         REQUIRE_FALSE(result->isTableTrue()); // Expecting this to be false as no such relationship exists
     }
 }

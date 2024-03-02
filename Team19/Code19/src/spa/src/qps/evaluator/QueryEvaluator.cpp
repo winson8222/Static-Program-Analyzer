@@ -31,37 +31,43 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
         error.insert(parsingResult.getErrorMessage());
         return error;
     }
-    
+    vector<SuchThatClause> suchThatClauses = parsingResult.getSuchThatClauses();
     // Add such-that-strategies based on the relationship specified in the query.
-    for (auto clause : parsingResult.getSuchThatClauses()) {
+    for (auto clause : suchThatClauses) {
         std::string suchThatRelationship = clause.relationship.getValue();
         auto it = strategyFactory.find(suchThatRelationship);
         if (it != strategyFactory.end()) {
-            strategyAndClausePairs.emplace_back(it->second(), &clause);
+            addStrategy(it->second());
         }
     }
     
-
+    vector<PatternClause> patternClauses = parsingResult.getPatternClauses();
     // Add PatternStrategy if pattern clause exists in the query.
-    for (auto clause : parsingResult.getPatternClauses()) {
-        strategyAndClausePairs.emplace_back(std::make_unique<PatternStrategy>(), &clause);
+    for (auto clause : patternClauses) {
+        addStrategy(std::make_unique<PatternStrategy>());
     }
-
-    //// Handle WithClauses 
-    //for (auto& clause : parsingResult.getWithClauses()) {
-    //    // Assuming a hypothetical WithStrategy for with clauses
-    //    strategyAndClausePairs.emplace_back(std::make_unique<WithStrategy>(), &clause);
-    //}
     
+    /*vector<WithClause> withClauses = parsingResult.getWithClauses();
+    for (auto cluase : withClauses) {
+
+    }*/
 
     // Evaluate the query using the strategies and compile the results.
     bool isFirstStrategy = true;
-    for (auto& [strategy, clause] : strategyAndClausePairs) {
-        std::shared_ptr<ResultTable> currentResult;
-        currentResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult, *clause);
-        
+    int suchThatCounter = 0;
+    int patternCounter = 0;
+    for (auto& strategy : strategies) {
+        if (suchThatCounter < suchThatClauses.size()) {
+            result = strategy->evaluateQuery(*pkbReaderManager, parsingResult, suchThatClauses[suchThatCounter]);
+            suchThatCounter++;
+        }
+        else if (patternCounter < patternClauses.size()) {
+            result = strategy->evaluateQuery(*pkbReaderManager, parsingResult, patternClauses[patternCounter]);
+            patternCounter++;
+        }
         if (isFirstStrategy) {
-            result = currentResult;
+            
+            
             if (result->isEmpty() && !result->isTableTrue()) {
                 return {};
             }
@@ -72,10 +78,9 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
             }
         }
         else {
-            result = result->joinOnColumns(currentResult);
+            result = result->joinOnColumns(result);
         }
     }
-
 
     // Retrieve and return the results based on the required synonym.
     std::vector<std::string> requiredSynonyms = parsingResult.getRequiredSynonyms();
