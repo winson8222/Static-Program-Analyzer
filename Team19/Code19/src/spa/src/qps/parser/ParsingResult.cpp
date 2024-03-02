@@ -28,16 +28,16 @@ void ParsingResult::addWithClause(const WithClause& clause) {
     withClauses.push_back(clause);
 }
 
-const SuchThatClause& ParsingResult::getSuchThatClause(int index) const {
-    return suchThatClauses.at(index);
+const vector<SuchThatClause>& ParsingResult::getSuchThatClauses() const {
+    return suchThatClauses;
 }
 
-const PatternClause& ParsingResult::getPatternClause(int index) const {
-    return patternClauses.at(index);
+const vector<PatternClause>& ParsingResult::getPatternClauses() const {
+    return patternClauses;
 }
 
-const WithClause& ParsingResult::getWithClause(int index) const {
-    return withClauses.at(index);
+const vector<WithClause>& ParsingResult::getWithClauses() const {
+    return withClauses;
 }
 
 // Getters

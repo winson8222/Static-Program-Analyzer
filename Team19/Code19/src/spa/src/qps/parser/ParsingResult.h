@@ -8,18 +8,23 @@
 
 using namespace std;
 
+struct Clause {
+    virtual ~Clause() {} 
+};
+
 // Define clause structs
-struct SuchThatClause {
+struct SuchThatClause : public Clause {
     Token relationship, firstParam, secondParam;
 };
 
-struct PatternClause {
+struct PatternClause : public Clause {
     Token relationship, firstParam, secondParam, thirdParam;
 };
 
-struct WithClause {
+struct WithClause : public Clause {
     Token relationship, firstParam, secondParam;
 };
+
 
 class ParsingResult {
 public:
@@ -48,9 +53,9 @@ public:
     const string& getRequiredSynonymType(const string& requiredSynonym) const;
 
     // New methods to get clause by index
-    const SuchThatClause& getSuchThatClause(int index) const;
-    const PatternClause& getPatternClause(int index) const;
-    const WithClause& getWithClause(int index) const;
+    const vector<SuchThatClause>& getSuchThatClauses() const;
+    const vector<PatternClause>& getPatternClauses() const;
+    const vector<WithClause>& getWithClauses() const;
 
 private:
     unordered_map<string, string> declaredSynonyms;
