@@ -79,7 +79,7 @@ public:
     * commonly then recursively traverses the AST to set the parents of the contexts if
     * the node is not a procedure node
 	*/
-    virtual void setParents(listnode contexts, std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager) = 0;
+    void setParents(listnode contexts, std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager);
 };
 
 // ai-gen end
