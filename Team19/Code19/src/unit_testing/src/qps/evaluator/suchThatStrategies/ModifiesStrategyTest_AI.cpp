@@ -1,6 +1,6 @@
 
 #include "catch.hpp"
-#include "qps/evaluator/suchThatStrategies/ModifiesStrategy.h"
+#include "qps/evaluator/strategies/suchThatStrategies/ModifiesStrategy.h"
 #include "pkb/PKBReaderManager.h"
 #include "pkb/PKB.h"
 #include "qps/parser/ParsingResult.h"

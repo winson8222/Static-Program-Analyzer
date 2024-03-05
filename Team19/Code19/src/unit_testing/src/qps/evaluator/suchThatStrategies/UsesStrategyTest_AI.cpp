@@ -1,22 +1,25 @@
 
 #include "catch.hpp"
-#include "qps/evaluator/suchThatStrategies/UsesStrategy.h"
+#include "qps/evaluator/strategies/suchThatStrategies/UsesStrategy.h"
 #include "pkb/PKBReaderManager.h"
 #include "pkb/PKB.h"
 #include "qps/parser/ParsingResult.h"
 #include "../../spa/src/qps/parser/QueryParser.h"
 #include "../../spa/src/pkb/PKBManager.h"
 #include "../../spa/src/qps/evaluator/QueryEvaluator.h"
+#include "qps/parser/clauses/SuchThatClause.h"
 
 // Helper function for creating a ParsingResult tailored for Uses tests
 ParsingResult createParsingResultForUses(const std::string& entity, const std::string& variable, bool isProcedure) {
     ParsingResult parsingResult;
-    parsingResult.setSuchThatClauseRelationship(Token(TokenType::Uses, "Uses"));
-    TokenType entityType = isProcedure ? TokenType::IDENT : TokenType::INTEGER;
-    parsingResult.setSuchThatClauseFirstParam(Token(entityType, entity));
-    parsingResult.setSuchThatClauseSecondParam(Token(TokenType::IDENT, variable));
+    SuchThatClause usesClause;
+    usesClause.relationship = Token(TokenType::Uses, "Uses");
+    usesClause.firstParam = Token(isProcedure ? TokenType::IDENT : TokenType::INTEGER, entity);
+    usesClause.secondParam = Token(TokenType::IDENT, variable);
+    parsingResult.addSuchThatClause(usesClause);
     return parsingResult;
 }
+
 
 TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy") {
     SECTION("Check Evaluation result of a simple select v for UseS") {
