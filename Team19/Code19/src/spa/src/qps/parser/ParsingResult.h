@@ -5,36 +5,11 @@
 #include <unordered_map>
 #include <utility>
 #include "Token.h"
+#include "clauses/SuchThatClause.h"
+#include "clauses/PatternClause.h"
+#include "clauses/WithClause.h"
 
 using namespace std;
-
-struct Clause {
-    virtual ~Clause() {} 
-    virtual std::string getTypeName() const = 0;
-};
-
-// Define clause structs
-struct SuchThatClause : public Clause {
-    std::string getTypeName() const override {
-        return "SuchThatClause";
-    }
-    Token relationship, firstParam, secondParam;
-};
-
-struct PatternClause : public Clause {
-    std::string getTypeName() const override {
-        return "PatternClause";
-    }
-    Token relationship, firstParam, secondParam, thirdParam;
-};
-
-struct WithClause : public Clause {
-    std::string getTypeName() const override {
-        return "WithClause";
-    }
-    Token relationship, firstParam, secondParam;
-};
-
 
 class ParsingResult {
 public:
