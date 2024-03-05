@@ -1,6 +1,6 @@
 #pragma once
 
-#include "qps/evaluator/suchThatStrategies/StmtEntStrategy.h"
+#include "StmtEntStrategy.h"
 
 
 using namespace std;

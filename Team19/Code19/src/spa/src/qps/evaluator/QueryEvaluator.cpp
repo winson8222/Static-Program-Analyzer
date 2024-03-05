@@ -1,5 +1,5 @@
 #include "QueryEvaluator.h"
-#include "PatternStrategy.h"
+#include "qps/evaluator/strategies/PatternStrategy.h"
 #include "qps/evaluator/ResultTable.h"
 #include <variant>
 

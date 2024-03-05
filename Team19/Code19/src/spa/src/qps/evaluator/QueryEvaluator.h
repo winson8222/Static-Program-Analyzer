@@ -5,10 +5,10 @@
 #include "QueryEvaluationStrategy.h" // Include the strategy interface
 #include "qps/evaluator/ResultTable.h"
 #include "qps/parser/Token.h"
-#include "qps/evaluator/suchThatStrategies/FollowsStrategy.h" // Include FollowsStrategy
-#include "qps/evaluator/suchThatStrategies/ParentStrategy.h" // Include ParentStrategy
-#include "qps/evaluator/suchThatStrategies/ModifiesStrategy.h" // Include ModifiesStrategy
-#include "qps/evaluator/suchThatStrategies/UsesStrategy.h" // Include UsesStrategy
+#include "qps/evaluator/strategies/suchThatStrategies/FollowsStrategy.h" // Include FollowsStrategy
+#include "qps/evaluator/strategies/suchThatStrategies/ParentStrategy.h" // Include ParentStrategy
+#include "qps/evaluator/strategies/suchThatStrategies/ModifiesStrategy.h" // Include ModifiesStrategy
+#include "qps/evaluator/strategies/suchThatStrategies/UsesStrategy.h" // Include UsesStrategy
 #include <variant>
 
 

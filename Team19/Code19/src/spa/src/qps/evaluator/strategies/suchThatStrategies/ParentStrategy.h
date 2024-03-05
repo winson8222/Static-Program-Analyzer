@@ -2,7 +2,7 @@
 // FollowsStrategy.h
 #define FOLLOWSSTRATEGY_H
 
-#include "qps/evaluator/suchThatStrategies/StmtStmtStrategy.h"
+#include "StmtStmtStrategy.h"
 
 
 using namespace std;

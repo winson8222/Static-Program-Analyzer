@@ -1,6 +1,6 @@
 #pragma once // Ensures the file is included only once during compilation
 
-#include "qps/evaluator/suchThatStrategies/StmtStmtStrategy.h"
+#include "StmtStmtStrategy.h"
 #include <memory> // For std::shared_ptr
 
 /**

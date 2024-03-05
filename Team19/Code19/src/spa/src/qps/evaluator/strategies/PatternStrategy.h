@@ -1,7 +1,7 @@
 #pragma
 #define PATTERNSTRATEGY_H
 
-#include "qps/evaluator/suchThatStrategies/StmtStmtStrategy.h"
+#include "qps/evaluator/strategies/suchThatStrategies/StmtStmtStrategy.h"
 
 
 using namespace std;
