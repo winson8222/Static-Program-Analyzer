@@ -11,7 +11,7 @@
  */
 std::unordered_set<int> NextTStore::populateAndGetPreviousT(int stmt, const std::shared_ptr<NextStore>& nextStore, std::unordered_set<int> visited) {
 	if (hasPreviousTPopulated(stmt)) {
-		return getRelationshipsByValue(stmt);
+		return NextTStore::getRelationshipsByValue(stmt);
 	}
 	std::unordered_set<int> result;
   	std::unordered_set<int> previousSet = nextStore->getRelationshipsByValue(stmt);
@@ -35,7 +35,7 @@ std::unordered_set<int> NextTStore::populateAndGetPreviousT(int stmt, const std:
  */
 std::unordered_set<int> NextTStore::populateAndGetNextT(int stmt, const std::shared_ptr<NextStore>& nextStore, std::unordered_set<int> visited) {
 	if (hasNextTPopulated(stmt)) {
-		return getRelationshipsByKey(stmt);
+		return NextTStore::getRelationshipsByKey(stmt);
 	}
 	std::unordered_set<int> result;
 	std::unordered_set<int> nextSet = nextStore->getRelationshipsByKey(stmt);
@@ -151,6 +151,49 @@ bool NextTStore::hasPreviousTPopulated(int stmt) {
  */
 bool NextTStore::hasNextTPopulated(int stmt) {
 	return nextTPopulated.find(stmt) != nextTPopulated.end();
+}
+
+/**
+ * Populates the entire NextTStore with the nextT relationships from the given NextStore.
+ */
+bool NextTStore::populateNextTStore(const std::shared_ptr<NextStore>& nextStore) {
+	populateAndGetAllNextT(nextStore);
+	populateAndGetAllPreviousT(nextStore);
+	return true;
+}
+
+/**
+ * Gets the nextT relationships for a given statement.
+ * @param stmt The statement number to get the nextT relationships for.
+ * @return The set of nextT relationships for the given statement.
+ */
+std::unordered_set<int> NextTStore::getNextT(int stmt) {
+	return NextTStore::getRelationshipsByKey(stmt);
+}
+
+/**
+ * Gets the previousT relationships for a given statement.
+ * @param stmt The statement number to get the previousT relationships for.
+ * @return The set of previousT relationships for the given statement.
+ */
+std::unordered_set<int> NextTStore::getPreviousT(int stmt) {
+	return NextTStore::getRelationshipsByValue(stmt);
+}
+
+/**
+ * Gets all previousT relationships for all statements.
+ * @return The set of all previousT relationships for all statements.
+ */
+std::unordered_set<int> NextTStore::getAllPreviousT() {
+	return NextTStore::getKeys();
+}
+
+/**
+ * Gets all nextT relationships for all statements.
+ * @return The set of all nextT relationships for all statements.
+ */
+std::unordered_set<int> NextTStore::getAllNextT() {
+	return NextTStore::getValues();
 }
 
 /**

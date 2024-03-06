@@ -35,12 +35,20 @@ public:
 
 	std::unordered_map<int, std::unordered_set<int>> populateAndGetEntireNextTStore(const std::shared_ptr<NextStore>& nextStore, bool reversed);
 
+	// Populate and get
 	std::unordered_set<int> populateAndGetNextT(int stmt, const std::shared_ptr<NextStore>& nextStore, std::unordered_set<int> visited);
 	std::unordered_set<int> populateAndGetPreviousT(int stmt, const std::shared_ptr<NextStore>& nextStore, std::unordered_set<int> visited);
 
 	std::unordered_set<int> populateAndGetAllPreviousT(const std::shared_ptr<NextStore>& nextStore);
 	std::unordered_set<int> populateAndGetAllNextT(const std::shared_ptr<NextStore>& nextStore);
 
+	// Get only
+	std::unordered_set<int> getNextT(int stmt);
+	std::unordered_set<int> getPreviousT(int stmt);
+	std::unordered_set<int> getAllPreviousT();
+	std::unordered_set<int> getAllNextT();
+
+	bool populateNextTStore(const std::shared_ptr<NextStore>& nextStore);
 
 	void clear() override;
 };

@@ -74,21 +74,14 @@ std::unordered_set<int> NextTReader::getNextT(int stmt) {
 }
 
 std::unordered_map<int, std::unordered_set<int>> NextTReader::getAllNextTRelationships() {
-	return nextTStore->populateAndGetEntireNextTStore(nextStore, false);
+	return nextTStore->getKeyValueRelationships();
 }
 
 std::unordered_map<int, std::unordered_set<int>> NextTReader::getAllReversedNextTRelationships() {
-	return nextTStore->populateAndGetEntireNextTStore(nextStore, true);
+	return nextTStore->getValueKeyRelationships();
 }
 
 bool NextTReader::hasNextT(int stmt1, int stmt2) {
-	if (nextTStore->hasNextTPopulated(stmt1)) {
-		// NextTStore populated for nextT
-		return nextTStore->hasRelationship(stmt1, stmt2);
-	} else {
-		// NextTStore not populated for nextT
-		std::unordered_set<int> nextTSet = nextTStore->populateAndGetNextT(stmt1, nextStore, {});
-		return nextTSet.find(stmt2) != nextTSet.end();
-	}
+	return nextTStore->hasRelationship(stmt1, stmt2);
 }
 // ai-gen end
