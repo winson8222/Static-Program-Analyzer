@@ -4,9 +4,9 @@
 #include "pkb/PKBReaderManager.h"
 #include "pkb/PKB.h"
 #include "qps/parser/ParsingResult.h"
-#include "../../spa/src/qps/parser/QueryParser.h"
-#include "../../spa/src/pkb/PKBManager.h"
-#include "../../spa/src/qps/evaluator/QueryEvaluator.h"
+#include "qps/parser/QueryParser.h"
+#include "pkb/PKBManager.h"
+#include "qps/evaluator/QueryEvaluator.h"
 
 ParsingResult createParsingResultForParent(int parentStmt, int childStmt, bool isTransitive = false) {
     ParsingResult parsingResult;

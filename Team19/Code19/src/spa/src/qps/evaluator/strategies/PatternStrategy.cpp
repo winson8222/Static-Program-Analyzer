@@ -60,10 +60,6 @@ std::shared_ptr<ResultTable> PatternStrategy::evaluateQuery(PKBReaderManager& pk
 }
 
 
-
-
-
-
 // create a unordered map with the column name and the value and add to the table as a row
 void PatternStrategy::fillSingleColumnResult(const string& colName, const unordered_set<string>& valuesSet, std::shared_ptr<ResultTable> result) {
     // if the column exists, throw an error

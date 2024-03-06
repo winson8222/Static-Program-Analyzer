@@ -4,9 +4,9 @@
 #include "pkb/PKBReaderManager.h"
 #include "pkb/PKB.h"
 #include "qps/parser/ParsingResult.h"
-#include "../../spa/src/qps/parser/QueryParser.h"
-#include "../../spa/src/pkb/PKBManager.h"
-#include "../../spa/src/qps/evaluator/QueryEvaluator.h"
+#include "qps/parser/QueryParser.h"
+#include "pkb/PKBManager.h"
+#include "qps/evaluator/QueryEvaluator.h"
 
 // Helper function for creating a ParsingResult tailored for Modifies tests
 ParsingResult createParsingResultForModifies(const std::string& entity, const std::string& variable, bool isProcedure) {
