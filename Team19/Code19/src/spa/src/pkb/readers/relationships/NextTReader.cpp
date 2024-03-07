@@ -1,14 +1,12 @@
 #include "NextTReader.h"
-#include <iostream>
+
 // ai-gen start(copilot, 2, e)
 // prompt: used copilot
-NextTReader::NextTReader(std::shared_ptr<NextStore> nextStore, std::shared_ptr<NextTStore> nextTStore) :
-	nextTStore(std::move(nextTStore)), nextStore(std::move(nextStore)) {}
+NextTReader::NextTReader(std::shared_ptr<NextTStore> nextTStore) : nextTStore(std::move(nextTStore)) {}
 
 // Inherited methods
 bool NextTReader::isEmpty() {
-	// Since NextStore is a subset of NextTStore, checking if NextStore is empty is sufficient
-	return nextStore->isEmpty();
+	return nextTStore->isEmpty();
 }
 
 std::unordered_map<int, std::unordered_set<int>> NextTReader::getKeyValueRelationships() {
@@ -40,13 +38,11 @@ bool NextTReader::hasRelationship(int stmt1, int stmt2) {
 }
 
 std::unordered_set<int> NextTReader::getAllPreviousT() {
-	// Since NextStore is a subset of NextTStore, getting all previous of NextStore is sufficient
-	return nextTStore->populateAndGetAllPreviousT(nextStore);
+	return nextTStore->populateAndGetAllPreviousT();
 }
 
 std::unordered_set<int> NextTReader::getAllNextT() {
-	// Since NextStore is a subset of NextTStore, getting all next of NextStore is sufficient
-	return nextTStore->populateAndGetAllNextT(nextStore);
+	return nextTStore->populateAndGetAllNextT();
 }
 
 std::unordered_set<int> NextTReader::getPreviousT(int stmt) {
@@ -55,7 +51,7 @@ std::unordered_set<int> NextTReader::getPreviousT(int stmt) {
 		return nextTStore->getRelationshipsByValue(stmt);
 	} else {
 		// NextTStore not populated for previousT
-		std::unordered_set<int> result = nextTStore->populateAndGetPreviousT(stmt, nextStore, {});
+		std::unordered_set<int> result = nextTStore->populateAndGetPreviousT(stmt, {});
 		nextTStore->populatePreviousT(stmt);
 		return result;
 	}
@@ -67,7 +63,7 @@ std::unordered_set<int> NextTReader::getNextT(int stmt) {
 		return nextTStore->getRelationshipsByKey(stmt);
 	} else {
 		// NextTStore not populated for nextT
-		std::unordered_set<int> result = nextTStore->populateAndGetNextT(stmt, nextStore, {});
+		std::unordered_set<int> result = nextTStore->populateAndGetNextT(stmt, {});
 		nextTStore->populateNextT(stmt);
 		return result;
 	}

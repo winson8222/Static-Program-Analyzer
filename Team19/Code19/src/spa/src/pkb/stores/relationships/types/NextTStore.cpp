@@ -2,6 +2,8 @@
 
 // ai-gen start(copilot, 2, e)
 // prompt: used copilot
+
+NextTStore::NextTStore(std::shared_ptr<NextStore> nextStore) :nextStore(std::move(nextStore)){}
 /**
  * Recursively populates and returns all previousT relationships for a given statement.
  * @param stmt The statement number to populate previousT relationships for.
@@ -9,7 +11,7 @@
  * @param visited The set of visited statements to prevent infinite recursion.
  * @return The set of all previousT relationships for the given statement.
  */
-std::unordered_set<int> NextTStore::populateAndGetPreviousT(int stmt, const std::shared_ptr<NextStore>& nextStore, std::unordered_set<int> visited) {
+std::unordered_set<int> NextTStore::populateAndGetPreviousT(int stmt, std::unordered_set<int> visited) {
 	if (hasPreviousTPopulated(stmt)) {
 		return NextTStore::getRelationshipsByValue(stmt);
 	}
@@ -20,7 +22,7 @@ std::unordered_set<int> NextTStore::populateAndGetPreviousT(int stmt, const std:
 		NextTStore::addRelationship(previous, stmt);
 		result.insert(previous);
 		if (visited.find(previous) != visited.end()) continue;
-		std::unordered_set<int> previousPreviousSet = NextTStore::populateAndGetPreviousT(previous, nextStore, visited);
+		std::unordered_set<int> previousPreviousSet = NextTStore::populateAndGetPreviousT(previous, visited);
 		addRelationshipAndResult(stmt, result, previousPreviousSet, true);
 	}
 	return result;
@@ -33,7 +35,7 @@ std::unordered_set<int> NextTStore::populateAndGetPreviousT(int stmt, const std:
  * @param visited The set of visited statements to prevent infinite recursion.
  * @return The set of all nextT relationships for the given statement.
  */
-std::unordered_set<int> NextTStore::populateAndGetNextT(int stmt, const std::shared_ptr<NextStore>& nextStore, std::unordered_set<int> visited) {
+std::unordered_set<int> NextTStore::populateAndGetNextT(int stmt, std::unordered_set<int> visited) {
 	if (hasNextTPopulated(stmt)) {
 		return NextTStore::getRelationshipsByKey(stmt);
 	}
@@ -44,7 +46,7 @@ std::unordered_set<int> NextTStore::populateAndGetNextT(int stmt, const std::sha
 		NextTStore::addRelationship(stmt, next);
 		result.insert(next);
 		if (visited.find(next) != visited.end()) continue;
-		std::unordered_set<int> nextNextSet = NextTStore::populateAndGetNextT(next, nextStore, visited);
+		std::unordered_set<int> nextNextSet = NextTStore::populateAndGetNextT(next, visited);
 		addRelationshipAndResult(stmt, result, nextNextSet, false);
 	}
 	return result;
@@ -56,9 +58,9 @@ std::unordered_set<int> NextTStore::populateAndGetNextT(int stmt, const std::sha
  * @param reversed Whether to get the nextT relationships in reverse.
  * @return The map of all nextT relationships for all statements in the given NextStore.
  */
-std::unordered_map<int, std::unordered_set<int>> NextTStore::populateAndGetEntireNextTStore(const std::shared_ptr<NextStore>& nextStore, bool reversed) {
-	std::unordered_set<int> previousSet = populateAndGetAllPreviousT(nextStore);
-	std::unordered_set<int> nextSet = populateAndGetAllNextT(nextStore);
+std::unordered_map<int, std::unordered_set<int>> NextTStore::populateAndGetEntireNextTStore(bool reversed) {
+	std::unordered_set<int> previousSet = populateAndGetAllPreviousT();
+	std::unordered_set<int> nextSet = populateAndGetAllNextT();
 	std::unordered_map<int, std::unordered_set<int>> result;
 	for (int i : reversed ? nextSet : previousSet) {
 		result[i] = reversed ? NextTStore::getRelationshipsByValue(i) : NextTStore::getRelationshipsByKey(i);
@@ -71,14 +73,14 @@ std::unordered_map<int, std::unordered_set<int>> NextTStore::populateAndGetEntir
  * @param nextStore The NextStore to get the next relationships from.
  * @return The set of all previousT relationships for all statements in the given NextStore.
  */
-std::unordered_set<int> NextTStore::populateAndGetAllPreviousT(const std::shared_ptr<NextStore>& nextStore) {
+std::unordered_set<int> NextTStore::populateAndGetAllPreviousT() {
 	std::unordered_set<int> result;
 	for (int i : nextStore->getValues()) {
 		if (NextTStore::hasPreviousTPopulated(i)) {
 			result.insert(NextTStore::getRelationshipsByValue(i).begin(), NextTStore::getRelationshipsByValue(i).end());
 			continue;
 		}
-		std::unordered_set<int> previousTSet = NextTStore::populateAndGetPreviousT(i, nextStore, std::unordered_set<int>{});
+		std::unordered_set<int> previousTSet = NextTStore::populateAndGetPreviousT(i, std::unordered_set<int>{});
 		result.insert(previousTSet.begin(), previousTSet.end());
 		NextTStore::populatePreviousT(i);
 	}
@@ -90,14 +92,14 @@ std::unordered_set<int> NextTStore::populateAndGetAllPreviousT(const std::shared
  * @param nextStore The NextStore to get the next relationships from.
  * @return The set of all nextT relationships for all statements in the given NextStore.
  */
-std::unordered_set<int> NextTStore::populateAndGetAllNextT(const std::shared_ptr<NextStore>& nextStore) {
+std::unordered_set<int> NextTStore::populateAndGetAllNextT() {
 	std::unordered_set<int> result;
 	for (int i : nextStore->getKeys()) {
 		if (NextTStore::hasNextTPopulated(i)) {
 			result.insert(NextTStore::getRelationshipsByKey(i).begin(), NextTStore::getRelationshipsByKey(i).end());
 			continue;
 		}
-		std::unordered_set<int> nextTSet = NextTStore::populateAndGetNextT(i, nextStore, std::unordered_set<int>{});
+		std::unordered_set<int> nextTSet = NextTStore::populateAndGetNextT(i, std::unordered_set<int>{});
 		result.insert(nextTSet.begin(), nextTSet.end());
 		NextTStore::populateNextT(i);
 	}
@@ -156,9 +158,9 @@ bool NextTStore::hasNextTPopulated(int stmt) {
 /**
  * Populates the entire NextTStore with the nextT relationships from the given NextStore.
  */
-bool NextTStore::populateNextTStore(const std::shared_ptr<NextStore>& nextStore) {
-	populateAndGetAllNextT(nextStore);
-	populateAndGetAllPreviousT(nextStore);
+bool NextTStore::populateNextTStore() {
+	populateAndGetAllNextT();
+	populateAndGetAllPreviousT();
 	return true;
 }
 

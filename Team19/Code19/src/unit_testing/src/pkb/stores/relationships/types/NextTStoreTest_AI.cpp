@@ -4,20 +4,20 @@
 #include "pkb/stores/relationships/types/NextTStore.h"
 
 TEST_CASE("pkb/stores/relationships/types/NextTStore") {
-	auto nextTStore = std::make_shared<NextTStore>();
 	auto nextStore = std::make_shared<NextStore>();
+	auto nextTStore = std::make_shared<NextTStore>(nextStore);
 	nextStore->addRelationship(1, 2);
 	nextStore->addRelationship(2, 3);
 	nextStore->addRelationship(3, 4);
 	SECTION("populateAndGetPreviousT") {
-		REQUIRE(nextTStore->populateAndGetPreviousT(4, nextStore, std::unordered_set<int>{}) == std::unordered_set<int>{3, 2, 1});
+		REQUIRE(nextTStore->populateAndGetPreviousT(4, std::unordered_set<int>{}) == std::unordered_set<int>{3, 2, 1});
 		REQUIRE(nextTStore->getRelationshipsByValue(3) == std::unordered_set<int>{2, 1});
 		REQUIRE(nextTStore->getRelationshipsByValue(2) == std::unordered_set<int>{1});
 		REQUIRE(nextTStore->getRelationshipsByValue(1).empty());
 	}
 	nextStore->addRelationship(3, 2);
 	SECTION("populateAndGetPreviousT: Loop") {
-		REQUIRE(nextTStore->populateAndGetPreviousT(4, nextStore, std::unordered_set<int>{}) == std::unordered_set<int>{3, 2, 1});
+		REQUIRE(nextTStore->populateAndGetPreviousT(4, std::unordered_set<int>{}) == std::unordered_set<int>{3, 2, 1});
 		REQUIRE(nextTStore->getRelationshipsByValue(3) == std::unordered_set<int>{1, 2});
 		REQUIRE(nextTStore->getRelationshipsByValue(2) == std::unordered_set<int>{1, 3});
 		REQUIRE(nextTStore->getRelationshipsByValue(1).empty());
@@ -28,14 +28,14 @@ TEST_CASE("pkb/stores/relationships/types/NextTStore") {
 	}
 
 	SECTION("populateAndGetNextT") {
-		REQUIRE(nextTStore->populateAndGetNextT(1, nextStore, std::unordered_set<int>{}) == std::unordered_set<int>{2, 3, 4});
+		REQUIRE(nextTStore->populateAndGetNextT(1, std::unordered_set<int>{}) == std::unordered_set<int>{2, 3, 4});
 		REQUIRE(nextTStore->getRelationshipsByKey(2) == std::unordered_set<int>{3, 4});
 		REQUIRE(nextTStore->getRelationshipsByKey(3) == std::unordered_set<int>{2, 4});
 		REQUIRE(nextTStore->getRelationshipsByKey(4).empty());
 	}
 
 	SECTION("populateAndGetNext: Partial Population") {
-		REQUIRE(nextTStore->populateAndGetNextT(2, nextStore, std::unordered_set<int>{}) == std::unordered_set<int>{3, 4});
+		REQUIRE(nextTStore->populateAndGetNextT(2, std::unordered_set<int>{}) == std::unordered_set<int>{3, 4});
 		REQUIRE(nextTStore->getRelationshipsByKey(1).empty());
 		REQUIRE(nextTStore->getRelationshipsByKey(2) == std::unordered_set<int>{3, 4});
 		REQUIRE(nextTStore->getRelationshipsByKey(3) == std::unordered_set<int>{2, 4});
@@ -43,7 +43,7 @@ TEST_CASE("pkb/stores/relationships/types/NextTStore") {
 	}
 
 	SECTION("populateAndGetAllPreviousT") {
-		REQUIRE(nextTStore->populateAndGetAllPreviousT(nextStore) == std::unordered_set<int>{1, 2, 3});
+		REQUIRE(nextTStore->populateAndGetAllPreviousT() == std::unordered_set<int>{1, 2, 3});
 		REQUIRE(nextTStore->getRelationshipsByValue(1).empty());
 		REQUIRE(nextTStore->getRelationshipsByValue(2) == std::unordered_set<int>{1, 3});
 		REQUIRE(nextTStore->getRelationshipsByValue(3) == std::unordered_set<int>{1, 2});
@@ -54,7 +54,7 @@ TEST_CASE("pkb/stores/relationships/types/NextTStore") {
 	}
 
 	SECTION("populateAndGetAllNextT") {
-		REQUIRE(nextTStore->populateAndGetAllNextT(nextStore) == std::unordered_set<int>{2, 3, 4});
+		REQUIRE(nextTStore->populateAndGetAllNextT() == std::unordered_set<int>{2, 3, 4});
 		REQUIRE(nextTStore->getRelationshipsByKey(1) == std::unordered_set<int>{2, 3, 4});
 		REQUIRE(nextTStore->getRelationshipsByKey(2) == std::unordered_set<int>{3, 4});
 		REQUIRE(nextTStore->getRelationshipsByKey(3) == std::unordered_set<int>{2, 4});
@@ -69,7 +69,7 @@ TEST_CASE("pkb/stores/relationships/types/NextTStore") {
 	}
 
 	SECTION("populateAndGetEntireNextTStore: Not Reversed") {
-		REQUIRE(nextTStore->populateAndGetEntireNextTStore(nextStore, false) == std::unordered_map<int, std::unordered_set<int>>{
+		REQUIRE(nextTStore->populateAndGetEntireNextTStore(false) == std::unordered_map<int, std::unordered_set<int>>{
 			{1, std::unordered_set<int>{2, 3, 4}},
 			{2, std::unordered_set<int>{3, 4}},
 			{3, std::unordered_set<int>{2, 4}}});
@@ -84,7 +84,7 @@ TEST_CASE("pkb/stores/relationships/types/NextTStore") {
 	}
 
 	SECTION("populateAndGetEntireNextTStore: Reversed") {
-		REQUIRE(nextTStore->populateAndGetEntireNextTStore(nextStore, true) == std::unordered_map<int, std::unordered_set<int>> {
+		REQUIRE(nextTStore->populateAndGetEntireNextTStore(true) == std::unordered_map<int, std::unordered_set<int>> {
 			{2, std::unordered_set<int>{1, 3}},
 			{3, std::unordered_set<int>{1, 2}},
 			{4, std::unordered_set<int>{1, 2, 3}}});
@@ -99,7 +99,7 @@ TEST_CASE("pkb/stores/relationships/types/NextTStore") {
 	}
 
 	SECTION("populateNextTStore") {
-		REQUIRE(nextTStore->populateNextTStore(nextStore));
+		REQUIRE(nextTStore->populateNextTStore());
 		REQUIRE(nextTStore->hasPreviousTPopulated(2));
 		REQUIRE(nextTStore->hasPreviousTPopulated(3));
 		REQUIRE(nextTStore->hasPreviousTPopulated(4));
@@ -108,14 +108,14 @@ TEST_CASE("pkb/stores/relationships/types/NextTStore") {
 		REQUIRE(nextTStore->hasNextTPopulated(3));
 		REQUIRE(nextTStore->getRelationshipsByKey(4).empty());
 		REQUIRE(nextTStore->getRelationshipsByValue(1).empty());
-		REQUIRE(nextTStore->populateAndGetEntireNextTStore(nextStore, false) == std::unordered_map<int, std::unordered_set<int>>{
+		REQUIRE(nextTStore->populateAndGetEntireNextTStore(false) == std::unordered_map<int, std::unordered_set<int>>{
 			{1, std::unordered_set<int>{2, 3, 4}},
 			{2, std::unordered_set<int>{3, 4}},
 			{3, std::unordered_set<int>{2, 4}}});
 	}
 
 	SECTION("getNextT") {
-		nextTStore->populateNextTStore(nextStore);
+		nextTStore->populateNextTStore();
 		REQUIRE(nextTStore->getNextT(1) == std::unordered_set<int>{2, 3, 4});
 		REQUIRE(nextTStore->getNextT(2) == std::unordered_set<int>{3, 4});
 		REQUIRE(nextTStore->getNextT(3) == std::unordered_set<int>{2, 4});
@@ -123,7 +123,7 @@ TEST_CASE("pkb/stores/relationships/types/NextTStore") {
 	}
 
 	SECTION("getPreviousT") {
-		nextTStore->populateNextTStore(nextStore);
+		nextTStore->populateNextTStore();
 		REQUIRE(nextTStore->getPreviousT(1).empty());
 		REQUIRE(nextTStore->getPreviousT(2) == std::unordered_set<int>{1, 3});
 		REQUIRE(nextTStore->getPreviousT(3) == std::unordered_set<int>{1, 2});
@@ -131,12 +131,12 @@ TEST_CASE("pkb/stores/relationships/types/NextTStore") {
 	}
 
 	SECTION("getAllPreviousT") {
-		nextTStore->populateNextTStore(nextStore);
+		nextTStore->populateNextTStore();
 		REQUIRE(nextTStore->getAllPreviousT() == std::unordered_set<int>{1, 2, 3});
 	}
 
 	SECTION("getAllNextT") {
-		nextTStore->populateNextTStore(nextStore);
+		nextTStore->populateNextTStore();
 		REQUIRE(nextTStore->getAllNextT() == std::unordered_set<int>{2, 3, 4});
 	}
 

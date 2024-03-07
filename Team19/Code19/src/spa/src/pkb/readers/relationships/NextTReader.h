@@ -3,17 +3,15 @@
 #include <memory>
 
 #include "pkb/stores/relationships/IRelationshipReader.h"
-#include "pkb/stores/relationships/types/NextStore.h"
 #include "pkb/stores/relationships/types/NextTStore.h"
 
 // ai-gen start(copilot, 2, e)
 // prompt: used copilot
 class NextTReader: public IRelationshipReader<int, int> {
 private:
-	std::shared_ptr<NextStore> nextStore;
 	std::shared_ptr<NextTStore> nextTStore;
 public:
-	NextTReader(std::shared_ptr<NextStore> store, std::shared_ptr<NextTStore> nextTStore);
+	NextTReader(std::shared_ptr<NextTStore> nextTStore);
 
 	// Inherited methods
 	bool isEmpty() override;

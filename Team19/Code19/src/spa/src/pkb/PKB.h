@@ -14,6 +14,7 @@
 #include "pkb/stores/relationships/types/CallsTStore.h"
 #include "pkb/stores/relationships/types/NextStore.h"
 #include "pkb/stores/relationships/types/NextTStore.h"
+#include "pkb/stores/relationships/types/AffectsStore.h"
 
 #include "pkb/stores/entities/types/StatementStore.h"
 #include "pkb/stores/entities/types/ReadStore.h"
@@ -48,6 +49,7 @@ private:
     std::shared_ptr<CallsTStore> callsTStore;
     std::shared_ptr<NextStore> nextStore;
     std::shared_ptr<NextTStore> nextTStore;
+	std::shared_ptr<AffectsStore> affectsStore;
 
     // Entity stores
     std::shared_ptr<StatementStore> statementStore;
@@ -67,6 +69,18 @@ private:
     std::shared_ptr<WhilePatternStore> whilePatternStore;
 public:
     PKB() {
+		// Initialize all entities stores
+        statementStore = std::make_shared<StatementStore>();
+        readStore = std::make_shared<ReadStore>();
+        printStore = std::make_shared<PrintStore>();
+        callStore = std::make_shared<CallStore>();
+        whileStore = std::make_shared<WhileStore>();
+        ifStore = std::make_shared<IfStore>();
+        assignStore = std::make_shared<AssignStore>();
+        variableStore = std::make_shared<VariableStore>();
+        constantStore = std::make_shared<ConstantStore>();
+        procedureStore = std::make_shared<ProcedureStore>();
+
         // Initialise all relationship stores
         followsTStore = std::make_shared<FollowsTStore>();
         followsStore = std::make_shared<FollowsStore>();
@@ -79,19 +93,8 @@ public:
         callsStore = std::make_shared<CallsStore>();
         callsTStore = std::make_shared<CallsTStore>();
         nextStore = std::make_shared<NextStore>();
-        nextTStore = std::make_shared<NextTStore>();
-
-        // Initialize all entities stores
-        statementStore = std::make_shared<StatementStore>();
-        readStore = std::make_shared<ReadStore>();
-        printStore = std::make_shared<PrintStore>();
-        callStore = std::make_shared<CallStore>();
-        whileStore = std::make_shared<WhileStore>();
-        ifStore = std::make_shared<IfStore>();
-        assignStore = std::make_shared<AssignStore>();
-        variableStore = std::make_shared<VariableStore>();
-        constantStore = std::make_shared<ConstantStore>();
-        procedureStore = std::make_shared<ProcedureStore>();
+        nextTStore = std::make_shared<NextTStore>(nextStore);
+        affectsStore = std::make_shared<AffectsStore>(assignStore, nextStore, usesSStore, modifiesSStore);
 
         // Initialize all pattern stores
         assignPatternStore = std::make_shared<AssignPatternStore>();
@@ -112,6 +115,7 @@ public:
     std::shared_ptr<CallsTStore> getCallsTStore() { return callsTStore; }
     std::shared_ptr<NextStore> getNextStore() { return nextStore; }
     std::shared_ptr<NextTStore> getNextTStore() { return nextTStore; }
+    std::shared_ptr<AffectsStore> getAffectsStore() { return affectsStore; }
 
     // Entity Getters
     std::shared_ptr<StatementStore> getStatementStore() { return statementStore; }

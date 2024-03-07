@@ -24,23 +24,26 @@
  */
 class NextTStore : public RelationshipStore<int, int> {
 private:
+	std::shared_ptr<NextStore> nextStore;
 	std::unordered_set<int> nextTPopulated;
 	std::unordered_set<int> previousTPopulated;
 	void addRelationshipAndResult(int stmt, std::unordered_set<int>& result, const std::unordered_set<int>& set, bool reversed);
 public:
+	NextTStore(std::shared_ptr<NextStore> nextStore);
+
 	bool hasNextTPopulated(int stmt);
 	bool hasPreviousTPopulated(int stmt);
 	void populateNextT(int stmt);
 	void populatePreviousT(int stmt);
 
-	std::unordered_map<int, std::unordered_set<int>> populateAndGetEntireNextTStore(const std::shared_ptr<NextStore>& nextStore, bool reversed);
+	std::unordered_map<int, std::unordered_set<int>> populateAndGetEntireNextTStore(bool reversed);
 
 	// Populate and get
-	std::unordered_set<int> populateAndGetNextT(int stmt, const std::shared_ptr<NextStore>& nextStore, std::unordered_set<int> visited);
-	std::unordered_set<int> populateAndGetPreviousT(int stmt, const std::shared_ptr<NextStore>& nextStore, std::unordered_set<int> visited);
+	std::unordered_set<int> populateAndGetNextT(int stmt, std::unordered_set<int> visited);
+	std::unordered_set<int> populateAndGetPreviousT(int stmt, std::unordered_set<int> visited);
 
-	std::unordered_set<int> populateAndGetAllPreviousT(const std::shared_ptr<NextStore>& nextStore);
-	std::unordered_set<int> populateAndGetAllNextT(const std::shared_ptr<NextStore>& nextStore);
+	std::unordered_set<int> populateAndGetAllPreviousT();
+	std::unordered_set<int> populateAndGetAllNextT();
 
 	// Get only
 	std::unordered_set<int> getNextT(int stmt);
@@ -48,7 +51,7 @@ public:
 	std::unordered_set<int> getAllPreviousT();
 	std::unordered_set<int> getAllNextT();
 
-	bool populateNextTStore(const std::shared_ptr<NextStore>& nextStore);
+	bool populateNextTStore();
 
 	void clear() override;
 };

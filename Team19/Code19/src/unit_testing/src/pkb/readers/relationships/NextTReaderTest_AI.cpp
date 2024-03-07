@@ -1,5 +1,4 @@
 #include "catch.hpp"
-#include <iostream>
 
 #include "pkb/PKBManager.h"
 TEST_CASE("pkb/readers/relationships/NextTReader") {
