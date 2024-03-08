@@ -73,6 +73,60 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrate
 
     }
 
+    SECTION("Check Evaluation result of a tuple select Parent* query with pattern ") {
+        statementWriter->insertStatement(1);
+        statementWriter->insertStatement(2);
+        statementWriter->insertStatement(3);
+        whileWriter->insertWhile(1);
+        whileWriter->insertWhile(3);
+        assignWriter->insertAssign(2);
+        assignWriter->insertAssign(4);
+        assignPatternWriter->addAssignPattern(2, "x", "'1''x''+'");
+        assignPatternWriter->addAssignPattern(4, "x", "'2''x''+'");
+        parentTWriter->addParentT(1, 2);
+        parentTWriter->addParentT(3, 4);
+
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "assign"),
+                Token(TokenType::IDENT, "a"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::DesignEntity, "while"),
+                Token(TokenType::IDENT, "w"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::LeftAngleBracket, "<"),
+                Token(TokenType::IDENT, "w"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::IDENT, "a"),
+                Token(TokenType::RightAngleBracket, ">"),
+                Token(TokenType::PatternKeyword, "pattern"),
+                Token(TokenType::IDENT, "a"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::Wildcard, "_"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::Wildcard, "_"),
+                Token(TokenType::QuoutConst, "\"1\""),
+                Token(TokenType::Wildcard, "_"),
+                Token(TokenType::Rparenthesis, ")"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::ParentT, "Parent*"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::IDENT, "w"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::IDENT, "a"),
+                Token(TokenType::Rparenthesis, ")")
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
+        std::unordered_set<string> expectedResults = { "1", "2", "3" };
+        REQUIRE(actualResults == expectedResults);
+
+    }
+
     SECTION("Check Evaluation result of a simple select Parent* query + adding ifs ") {
 
         statementWriter->insertStatement(1);
