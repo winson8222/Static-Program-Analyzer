@@ -991,4 +991,5 @@ bool QueryParser::parseAttrRef() {
     if (!ensureToken(TokenType::AttrName)) {
         return false;
     }
+    return true;
 }
