@@ -55,7 +55,7 @@ TEST_CASE("src/qps/parser/QueryParser") {
                 Token(TokenType::IDENT, "s"),
         };
 
-        REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "Incomplete Query");
+        REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SyntaxError");
     }
 
 
