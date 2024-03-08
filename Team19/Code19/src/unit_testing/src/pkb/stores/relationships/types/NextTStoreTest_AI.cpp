@@ -1,4 +1,3 @@
-/*
 #include "catch.hpp"
 
 #include "pkb/stores/relationships/types/NextStore.h"
@@ -157,4 +156,3 @@ TEST_CASE("pkb/stores/relationships/types/NextTStore") {
 		REQUIRE_FALSE(nextTStore->hasPreviousTPopulated(4));
 	}
 }
-*/

@@ -1,4 +1,3 @@
-/*
 #include "catch.hpp"
 
 #include "pkb/PKBManager.h"
@@ -33,7 +32,6 @@ TEST_CASE("pkb/readers/relationships/NextTReader") {
 	nextWriter->addNext(3, 2);
 	nextWriter->addNext(3, 4);
 
-	// Error Occurs here.
 	pkbCacheManager->populateCache();
 
 	SECTION("getNextT: Non-empty") {
@@ -98,4 +96,3 @@ TEST_CASE("pkb/readers/relationships/NextTReader") {
 		REQUIRE(nextTReader->getNextT(4).empty());
 	}
 }
-*/
