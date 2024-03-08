@@ -23,6 +23,9 @@ public:
     ParsingResult parse();
 
     ParsingResult getParsingResult() const;  // Method to retrieve the result
+    void throwGrammarError();
+    void throwSemanticError();
+    void throwIncompleteQueryError();
 
 private:
     // Vector of tokens to be parsed.
@@ -38,38 +41,38 @@ private:
 
 
     // Private methods for parsing different parts of the input.
-    bool parseDeclarations();
-    bool parseSelectClause();
-    bool parseSuchThatClause();
-    bool parsePatternClause();
-    bool parseWithClause();
+    void parseDeclarations();
+    void parseSelectClause();
+    void parseSuchThatClause();
+    void parsePatternClause();
+    void parseWithClause();
 
     bool isUsesOrModifies();
     bool isStmtRefStmtRef();
     bool isVarName();
     bool isConstValue();
 
-    bool parseSynonym();
-    bool parseEntRef();
-    bool parseExpressionSpec();
-    bool parseQuotedExpression();
-    bool parseRelRef(SuchThatClause& clause);
-    bool parseStmtRef();
-    bool parseDesignEntity();
-    bool parseUsesOrModifies(SuchThatClause& clause);
-    bool parseStmtRefStmtRef(SuchThatClause& clause);
-    bool parseExpression();
-    bool parseTerm();
-    bool parseFactor();
-    bool parseRef();
-    bool parseAttrRef();
+    void parseSynonym();
+    void parseEntRef();
+    void parseExpressionSpec();
+    void parseQuotedExpression();
+    void parseRelRef(SuchThatClause& clause);
+    void parseStmtRef();
+    void parseDesignEntity();
+    void parseUsesOrModifies(SuchThatClause& clause);
+    void parseStmtRefStmtRef(SuchThatClause& clause);
+    void parseExpression();
+    void parseTerm();
+    void parseFactor();
+    void parseRef();
+    void parseAttrRef();
 
     // Method to get the current token.
     // Returns a constant reference to the current Token object.
     const Token& currentToken() const;
 
     // Method to advance to the next token in the sequence.
-    bool advanceToken();
+    void advanceToken();
 
     // Method to check if the next token matches a given TokenType.
     bool peekNextToken(TokenType type);
@@ -78,18 +81,19 @@ private:
     // Returns true if it matches, false otherwise.
     bool match(TokenType type);
 
-    bool parseVarSynonyms();
-    bool parseStmtSynonyms();
-    bool parseAssignSynonyms();
+    void parseVarSynonyms();
+    void parseStmtSynonyms();
+    void parseAssignSynonyms();
 
 
 
 
 
-    bool ensureToken(TokenType expected);
+    void ensureToken(TokenType expected);
 
     string getGrammarError();
     string getSemanticError();
+
     bool checkValidStmtNum();
 
 
