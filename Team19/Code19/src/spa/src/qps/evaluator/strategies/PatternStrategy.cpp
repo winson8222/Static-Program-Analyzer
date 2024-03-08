@@ -24,9 +24,9 @@ std::shared_ptr<ResultTable> PatternStrategy::evaluateQuery(PKBReaderManager& pk
 
 
     const PatternClause* patternClause = dynamic_cast<const PatternClause*>(&clause);
-    const Token& patternFirstParam = patternClause->firstParam;
-    const Token& patternSecondParam = patternClause->secondParam;
-    const Token& patternAssignParam = patternClause->relationship;
+    const Token& patternFirstParam = patternClause->getFirstParam();
+    const Token& patternSecondParam = patternClause->getSecondParam();
+    const Token& patternAssignParam = patternClause->getRelationship();
     const string assignParamValue = patternAssignParam.getValue();
     bool partialMatch = patternSecondParam.getValue()[0] == '_' && patternSecondParam.getValue().length() > 1;
     string secondParamValue;

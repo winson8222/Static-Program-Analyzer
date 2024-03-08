@@ -12,9 +12,9 @@ ParsingResult createParsingResultForFollows(int stmt1, int stmt2, bool isTransit
     ParsingResult parsingResult;
     TokenType relationshipType = isTransitive ? TokenType::FollowsT : TokenType::Follows;
     SuchThatClause clause;
-    clause.relationship = Token(relationshipType, "");
-    clause.firstParam = Token(TokenType::INTEGER, std::to_string(stmt1));
-    clause.secondParam = Token(TokenType::INTEGER, std::to_string(stmt2));
+    clause.setRelationship(Token(relationshipType, ""));
+    clause.setFirstParam(Token(TokenType::INTEGER, std::to_string(stmt1)));
+    clause.setSecondParam(Token(TokenType::INTEGER, std::to_string(stmt2)));
     parsingResult.addSuchThatClause(clause);
     return parsingResult;
 }

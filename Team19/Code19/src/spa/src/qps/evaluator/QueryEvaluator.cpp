@@ -34,7 +34,7 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
     vector<SuchThatClause> suchThatClauses = parsingResult.getSuchThatClauses();
     // Add such-that-strategies based on the relationship specified in the query.
     for (auto clause : suchThatClauses) {
-        std::string suchThatRelationship = clause.relationship.getValue();
+        std::string suchThatRelationship = clause.getRelationship().getValue();
         auto it = strategyFactory.find(suchThatRelationship);
         if (it != strategyFactory.end()) {
             addStrategy(it->second());

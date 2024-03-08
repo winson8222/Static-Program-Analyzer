@@ -7,8 +7,8 @@ std::shared_ptr<ResultTable> ModifiesStrategy::evaluateQuery(PKBReaderManager& p
 
 
     const SuchThatClause* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
-    const Token& suchThatFirstParam = suchClause->firstParam;
-    const Token& suchThatSecondParam = suchClause->secondParam;
+    const Token& suchThatFirstParam = suchClause->getFirstParam();
+    const Token& suchThatSecondParam = suchClause->getSecondParam();
 
     if (suchThatFirstParam.getType() == TokenType::IDENT && suchThatSecondParam.getType() == TokenType::IDENT) {
         processBothSynonyms(suchThatFirstParam, suchThatSecondParam, parsingResult, resultTable, pkbReaderManager);

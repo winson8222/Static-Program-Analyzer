@@ -280,7 +280,7 @@ bool QueryParser::parseSuchThatClause() {
 // Determines the type of relation and calls the appropriate parsing function.
 bool QueryParser::parseRelRef(SuchThatClause& clause) {
     if (isStmtRefStmtRef()) {
-        clause.relationship = currentToken();
+        clause.setRelationship(currentToken());
         if (!advanceToken()) {
             return false;
         }
@@ -352,12 +352,13 @@ bool QueryParser::parseUsesOrModifies(SuchThatClause& clause) {
     if (parseStmtRef()) {
         if (currentSuchThatToken.getType() == TokenType::Uses) {
             currentSuchThatToken.setType(TokenType::UsesS);
-            clause.relationship = currentSuchThatToken;
+            clause.setRelationship(currentSuchThatToken);
+            
         } else {
             currentSuchThatToken.setType(TokenType::ModifiesS);
-            clause.relationship = currentSuchThatToken;
+            clause.setRelationship(currentSuchThatToken);
         }
-        clause.firstParam = currentToken();
+        clause.setFirstParam(currentToken());
         if (!advanceToken()) {
             return false;
         }
@@ -365,12 +366,12 @@ bool QueryParser::parseUsesOrModifies(SuchThatClause& clause) {
     } else if (parseEntRef()) {
         if (currentSuchThatToken.getType() == TokenType::Uses) {
             currentSuchThatToken.setType(TokenType::UsesP);
-            clause.relationship = currentSuchThatToken;
+            clause.setRelationship(currentSuchThatToken);
         } else {
             currentSuchThatToken.setType(TokenType::ModifiesP);
-            clause.relationship = currentSuchThatToken;
+            clause.setRelationship(currentSuchThatToken);
         }
-        clause.firstParam = currentToken();
+        clause.setFirstParam(currentToken());
         if (!advanceToken()) {
             return false;
         }
@@ -395,7 +396,7 @@ bool QueryParser::parseUsesOrModifies(SuchThatClause& clause) {
     if(!parseEntRef()) {
         return false;
     }
-    clause.secondParam = currentToken();
+    clause.setSecondParam(currentToken());
     if (!advanceToken()) {
         return false;
     }
@@ -421,7 +422,7 @@ bool QueryParser::parseStmtRefStmtRef(SuchThatClause& clause) {
     if(!parseStmtRef()){
         return false;
     }
-    clause.firstParam = currentToken();
+    clause.setFirstParam(currentToken());
     if (!advanceToken()) {
         return false;
     }
@@ -441,7 +442,7 @@ bool QueryParser::parseStmtRefStmtRef(SuchThatClause& clause) {
     if(!parseStmtRef()) {
         return false;
     }
-    clause.secondParam = currentToken();
+    clause.setSecondParam(currentToken());
     if (!advanceToken()) {
         return false;
     }
@@ -505,7 +506,7 @@ bool QueryParser::parsePatternClause() {
     if(!ensureToken(TokenType::IDENT)) {
         return false;
     }
-    clause.relationship = currentToken();
+    clause.setRelationship(currentToken());
     if(!parseAssignSynonyms()){
         return false;
     }
@@ -521,7 +522,8 @@ bool QueryParser::parsePatternClause() {
     if(!parseEntRef()) {
         return false;
     }
-    clause.firstParam = currentToken();
+    clause.setFirstParam(currentToken());
+    
 
     if (!advanceToken()) {
         return false;
@@ -535,12 +537,12 @@ bool QueryParser::parsePatternClause() {
     }
     
 
-    string patternType = parsingResult.getDeclaredSynonym(clause.relationship.getValue());
+    string patternType = parsingResult.getDeclaredSynonym(clause.getRelationship().getValue());
     if (patternType == "if") {
         if (!ensureToken(TokenType::Wildcard)) {
             return false;
         }
-        clause.secondParam = currentToken();
+        clause.setSecondParam(currentToken());
         if (!advanceToken()) {
             return false;
         }
@@ -553,13 +555,13 @@ bool QueryParser::parsePatternClause() {
         if (!ensureToken(TokenType::Wildcard)) {
             return false;
         }
-        clause.thirdParam = currentToken();
+        clause.setThirdParam(currentToken());
     }
     else if (patternType == "while") {
         if (!ensureToken(TokenType::Wildcard)) {
             return false;
         }
-        clause.secondParam = currentToken();
+        clause.setSecondParam(currentToken());
         if (!advanceToken()) {
             return false;
         }
@@ -581,7 +583,7 @@ bool QueryParser::parsePatternClause() {
         for (size_t i = startIndex; i <= currentTokenIndex; ++i) {
             concatenatedTokens += tokens[i].getValue();
         }
-        clause.secondParam = Token(TokenType::ExpressionSpec, concatenatedTokens);
+        clause.setSecondParam(Token(TokenType::ExpressionSpec, concatenatedTokens));
     }
 
     if (!advanceToken()) {
@@ -915,7 +917,7 @@ bool QueryParser::parseWithClause() {
     if (!ensureToken(TokenType::WithKeyword)) {
         return false;
     }
-    clause.relationship = currentToken();
+    clause.setRelationship(currentToken());
     if (!advanceToken()) {
         return false;
     }
@@ -928,7 +930,7 @@ bool QueryParser::parseWithClause() {
     for (size_t i = startIndex; i <= currentTokenIndex; ++i) {
         concatenatedTokens += tokens[i].getValue();
     }
-    clause.firstParam = Token(TokenType::Ref, concatenatedTokens);
+    clause.setFirstParam(Token(TokenType::Ref, concatenatedTokens));
 
     if (!advanceToken()) {
         return false;
@@ -948,7 +950,7 @@ bool QueryParser::parseWithClause() {
     for (size_t i = startIndex; i <= currentTokenIndex; ++i) {
         concatenatedTokens += tokens[i].getValue();
     }
-    clause.secondParam = Token(TokenType::Ref, concatenatedTokens);
+    clause.setSecondParam(Token(TokenType::Ref, concatenatedTokens));
     
     parsingResult.addWithClause(clause);
     return true;

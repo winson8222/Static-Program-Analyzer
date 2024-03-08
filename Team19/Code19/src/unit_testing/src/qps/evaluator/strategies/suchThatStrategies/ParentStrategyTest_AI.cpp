@@ -13,9 +13,9 @@ ParsingResult createParsingResultForParent(int parentStmt, int childStmt, bool i
     TokenType relationshipType = isTransitive ? TokenType::ParentT : TokenType::Parent;
 
     SuchThatClause clause;
-    clause.relationship = Token(relationshipType, "");
-    clause.firstParam = Token(TokenType::INTEGER, std::to_string(parentStmt));
-    clause.secondParam = Token(TokenType::INTEGER, std::to_string(childStmt));
+    clause.setRelationship(Token(relationshipType, ""));
+    clause.setFirstParam(Token(TokenType::INTEGER, std::to_string(parentStmt)));
+    clause.setSecondParam(Token(TokenType::INTEGER, std::to_string(childStmt)));
     parsingResult.addSuchThatClause(clause);
     return parsingResult;
 }

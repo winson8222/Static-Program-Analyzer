@@ -21,9 +21,9 @@ std::shared_ptr<ResultTable> FollowsStrategy::evaluateQuery(PKBReaderManager& pk
     followsReader = pkbReaderManager.getFollowsReader();
     followsTReader = pkbReaderManager.getFollowsTReader();
     const SuchThatClause* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
-    const Token& firstParam = suchClause->firstParam;
-    const Token& secondParam = suchClause->secondParam;
-    string variant = suchClause->relationship.getValue();
+    const Token& firstParam = suchClause->getFirstParam();
+    const Token& secondParam = suchClause->getSecondParam();
+    string variant = suchClause->getRelationship().getValue();
 
     // Handling different parameter types for the Follows relationship
     if (firstParam.getType() == TokenType::IDENT && secondParam.getType() == TokenType::IDENT) {

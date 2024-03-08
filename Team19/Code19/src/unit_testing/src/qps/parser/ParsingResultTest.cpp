@@ -42,12 +42,12 @@ TEST_CASE("src/qps/parser/ParsingResult") {
         auto suchThatClause = parsingResult.getSuchThatClauses()[0];
         REQUIRE(parsingResult.getDeclaredSynonym("s") == "stmt");
         REQUIRE(parsingResult.getRequiredSynonyms()[0] == "s");
-        REQUIRE(suchThatClause.relationship.getType() == TokenType::ModifiesS);
-        REQUIRE(suchThatClause.relationship.getValue() == "Modifies");
-        REQUIRE(suchThatClause.firstParam.getType() == TokenType::IDENT);
-        REQUIRE(suchThatClause.firstParam.getValue() == "s");
-        REQUIRE(suchThatClause.secondParam.getType() == TokenType::QuoutIDENT);
-        REQUIRE(suchThatClause.secondParam.getValue() == "\"existentVar\"");
+        REQUIRE(suchThatClause.getRelationship().getType() == TokenType::ModifiesS);
+        REQUIRE(suchThatClause.getRelationship().getValue() == "Modifies");
+        REQUIRE(suchThatClause.getFirstParam().getType() == TokenType::IDENT);
+        REQUIRE(suchThatClause.getFirstParam().getValue() == "s");
+        REQUIRE(suchThatClause.getSecondParam().getType() == TokenType::QuoutIDENT);
+        REQUIRE(suchThatClause.getSecondParam().getValue() == "\"existentVar\"");
 
     }
 
@@ -73,12 +73,12 @@ TEST_CASE("src/qps/parser/ParsingResult") {
         auto suchThatClause = parsingResult.getSuchThatClauses()[0];
         REQUIRE(parsingResult.getDeclaredSynonym("v") == "variable");
         REQUIRE(parsingResult.getRequiredSynonyms()[0] == "v");
-        REQUIRE(suchThatClause.relationship.getType() == TokenType::ModifiesP);
-        REQUIRE(suchThatClause.relationship.getValue() == "Modifies");
-        REQUIRE(suchThatClause.firstParam.getType() == TokenType::IDENT);
-        REQUIRE(suchThatClause.firstParam.getValue() == "v");
-        REQUIRE(suchThatClause.secondParam.getType() == TokenType::QuoutIDENT);
-        REQUIRE(suchThatClause.secondParam.getValue() == "\"existentVar\"");
+        REQUIRE(suchThatClause.getRelationship().getType() == TokenType::ModifiesP);
+        REQUIRE(suchThatClause.getRelationship().getValue() == "Modifies");
+        REQUIRE(suchThatClause.getFirstParam().getType() == TokenType::IDENT);
+        REQUIRE(suchThatClause.getFirstParam().getValue() == "v");
+        REQUIRE(suchThatClause.getSecondParam().getType() == TokenType::QuoutIDENT);
+        REQUIRE(suchThatClause.getSecondParam().getValue() == "\"existentVar\"");
 
     }
 
@@ -129,12 +129,12 @@ TEST_CASE("src/qps/parser/ParsingResult") {
         auto suchThatClause = parsingResult.getSuchThatClauses()[0];
         REQUIRE(parsingResult.getDeclaredSynonym("s") == "stmt");
         REQUIRE(parsingResult.getRequiredSynonyms()[0] == "s");
-        REQUIRE(suchThatClause.relationship.getType() == TokenType::UsesS);
-        REQUIRE(suchThatClause.relationship.getValue() == "Uses");
-        REQUIRE(suchThatClause.firstParam.getType() == TokenType::IDENT);
-        REQUIRE(suchThatClause.firstParam.getValue() == "s");
-        REQUIRE(suchThatClause.secondParam.getType() == TokenType::QuoutIDENT);
-        REQUIRE(suchThatClause.secondParam.getValue() == "\"existentVar\"");
+        REQUIRE(suchThatClause.getRelationship().getType() == TokenType::UsesS);
+        REQUIRE(suchThatClause.getRelationship().getValue() == "Uses");
+        REQUIRE(suchThatClause.getFirstParam().getType() == TokenType::IDENT);
+        REQUIRE(suchThatClause.getFirstParam().getValue() == "s");
+        REQUIRE(suchThatClause.getSecondParam().getType() == TokenType::QuoutIDENT);
+        REQUIRE(suchThatClause.getSecondParam().getValue() == "\"existentVar\"");
 
     }
 
@@ -162,12 +162,12 @@ TEST_CASE("src/qps/parser/ParsingResult") {
         REQUIRE(parsingResult.getErrorMessage() == "");
         REQUIRE(parsingResult.getDeclaredSynonym("a") == "assign");
         REQUIRE(parsingResult.getRequiredSynonyms()[0] == "a");
-        REQUIRE(patternClause.relationship.getType() == TokenType::IDENT);
-        REQUIRE(patternClause.relationship.getValue() == "a");
-        REQUIRE(patternClause.firstParam.getType() == TokenType::QuoutIDENT);
-        REQUIRE(patternClause.firstParam.getValue() == "\"x\"");
-        REQUIRE(patternClause.secondParam.getType() == TokenType::ExpressionSpec);
-        REQUIRE(patternClause.secondParam.getValue() == "\"1\"");
+        REQUIRE(patternClause.getRelationship().getType() == TokenType::IDENT);
+        REQUIRE(patternClause.getRelationship().getValue() == "a");
+        REQUIRE(patternClause.getFirstParam().getType() == TokenType::QuoutIDENT);
+        REQUIRE(patternClause.getFirstParam().getValue() == "\"x\"");
+        REQUIRE(patternClause.getSecondParam().getType() == TokenType::ExpressionSpec);
+        REQUIRE(patternClause.getSecondParam().getValue() == "\"1\"");
     }
 
 
@@ -193,12 +193,12 @@ TEST_CASE("src/qps/parser/ParsingResult") {
         auto suchThatClause = parsingResult.getSuchThatClauses()[0];
         REQUIRE(parsingResult.getDeclaredSynonym("s") == "stmt");
         REQUIRE(parsingResult.getRequiredSynonyms()[0] == "s");
-        REQUIRE(suchThatClause.relationship.getType() == TokenType::Follows);
-        REQUIRE(suchThatClause.relationship.getValue() == "Follows");
-        REQUIRE(suchThatClause.firstParam.getType() == TokenType::IDENT);
-        REQUIRE(suchThatClause.firstParam.getValue() == "s");
-        REQUIRE(suchThatClause.secondParam.getType() == TokenType::Wildcard);
-        REQUIRE(suchThatClause.secondParam.getValue() == "_");
+        REQUIRE(suchThatClause.getRelationship().getType() == TokenType::Follows);
+        REQUIRE(suchThatClause.getRelationship().getValue() == "Follows");
+        REQUIRE(suchThatClause.getFirstParam().getType() == TokenType::IDENT);
+        REQUIRE(suchThatClause.getFirstParam().getValue() == "s");
+        REQUIRE(suchThatClause.getSecondParam().getType() == TokenType::Wildcard);
+        REQUIRE(suchThatClause.getSecondParam().getValue() == "_");
     }
 
     SECTION("Check Parsing Result of 'procedure p, q; Select <p.stmt#, q.procName> such that Calls (p, q)'") {
@@ -235,12 +235,12 @@ TEST_CASE("src/qps/parser/ParsingResult") {
         REQUIRE(parsingResult.getDeclaredSynonym("q") == "procedure");
         REQUIRE(parsingResult.getRequiredSynonyms()[0] == "p.stmt#");
         REQUIRE(parsingResult.getRequiredSynonyms()[1] == "q.procName");
-        REQUIRE(suchThatClause.relationship.getType() == TokenType::Calls);
-        REQUIRE(suchThatClause.relationship.getValue() == "Calls");
-        REQUIRE(suchThatClause.firstParam.getType() == TokenType::IDENT);
-        REQUIRE(suchThatClause.firstParam.getValue() == "p");
-        REQUIRE(suchThatClause.secondParam.getType() == TokenType::IDENT);
-        REQUIRE(suchThatClause.secondParam.getValue() == "q");
+        REQUIRE(suchThatClause.getRelationship().getType() == TokenType::Calls);
+        REQUIRE(suchThatClause.getRelationship().getValue() == "Calls");
+        REQUIRE(suchThatClause.getFirstParam().getType() == TokenType::IDENT);
+        REQUIRE(suchThatClause.getFirstParam().getValue() == "p");
+        REQUIRE(suchThatClause.getSecondParam().getType() == TokenType::IDENT);
+        REQUIRE(suchThatClause.getSecondParam().getValue() == "q");
     }
 
     SECTION("Check Parsing Result of 'assign a; while w; Select a pattern a(\"x\", _) such that Parent*(w, a) such that Next*(1, a)'") {
@@ -286,28 +286,28 @@ TEST_CASE("src/qps/parser/ParsingResult") {
         REQUIRE(parsingResult.getRequiredSynonyms()[0] == "a");
 
         auto patternClause = parsingResult.getPatternClauses()[0];
-        REQUIRE(patternClause.relationship.getType() == TokenType::IDENT);
-        REQUIRE(patternClause.relationship.getValue() == "a");
-        REQUIRE(patternClause.firstParam.getType() == TokenType::QuoutIDENT);
-        REQUIRE(patternClause.firstParam.getValue() == "\"x\"");
-        REQUIRE(patternClause.secondParam.getType() == TokenType::ExpressionSpec);
-        REQUIRE(patternClause.secondParam.getValue() == "_");
+        REQUIRE(patternClause.getRelationship().getType() == TokenType::IDENT);
+        REQUIRE(patternClause.getRelationship().getValue() == "a");
+        REQUIRE(patternClause.getFirstParam().getType() == TokenType::QuoutIDENT);
+        REQUIRE(patternClause.getFirstParam().getValue() == "\"x\"");
+        REQUIRE(patternClause.getSecondParam().getType() == TokenType::ExpressionSpec);
+        REQUIRE(patternClause.getSecondParam().getValue() == "_");
 
         auto suchThatClause = parsingResult.getSuchThatClauses()[0];
-        REQUIRE(suchThatClause.relationship.getType() == TokenType::ParentT);
-        REQUIRE(suchThatClause.relationship.getValue() == "Parent*");
-        REQUIRE(suchThatClause.firstParam.getType() == TokenType::IDENT);
-        REQUIRE(suchThatClause.firstParam.getValue() == "w");
-        REQUIRE(suchThatClause.secondParam.getType() == TokenType::IDENT);
-        REQUIRE(suchThatClause.secondParam.getValue() == "a");
+        REQUIRE(suchThatClause.getRelationship().getType() == TokenType::ParentT);
+        REQUIRE(suchThatClause.getRelationship().getValue() == "Parent*");
+        REQUIRE(suchThatClause.getFirstParam().getType() == TokenType::IDENT);
+        REQUIRE(suchThatClause.getFirstParam().getValue() == "w");
+        REQUIRE(suchThatClause.getSecondParam().getType() == TokenType::IDENT);
+        REQUIRE(suchThatClause.getSecondParam().getValue() == "a");
 
         auto suchThatClause2 = parsingResult.getSuchThatClauses()[1];
-        REQUIRE(suchThatClause2.relationship.getType() == TokenType::NextT);
-        REQUIRE(suchThatClause2.relationship.getValue() == "Next*");
-        REQUIRE(suchThatClause2.firstParam.getType() == TokenType::INTEGER);
-        REQUIRE(suchThatClause2.firstParam.getValue() == "1");
-        REQUIRE(suchThatClause2.secondParam.getType() == TokenType::IDENT);
-        REQUIRE(suchThatClause2.secondParam.getValue() == "a");
+        REQUIRE(suchThatClause2.getRelationship().getType() == TokenType::NextT);
+        REQUIRE(suchThatClause2.getRelationship().getValue() == "Next*");
+        REQUIRE(suchThatClause2.getFirstParam().getType() == TokenType::INTEGER);
+        REQUIRE(suchThatClause2.getFirstParam().getValue() == "1");
+        REQUIRE(suchThatClause2.getSecondParam().getType() == TokenType::IDENT);
+        REQUIRE(suchThatClause2.getSecondParam().getValue() == "a");
     }
 
     SECTION("Check Parsing Result of 'stmt s; Select BOOLEAN such that Follows(3, 4)'") {
@@ -332,12 +332,12 @@ TEST_CASE("src/qps/parser/ParsingResult") {
         auto suchThatClause = parsingResult.getSuchThatClauses()[0];
         REQUIRE(parsingResult.getDeclaredSynonym("s") == "stmt");
         REQUIRE(parsingResult.getRequiredSynonyms()[0] == "BOOLEAN");
-        REQUIRE(suchThatClause.relationship.getType() == TokenType::Follows);
-        REQUIRE(suchThatClause.relationship.getValue() == "Follows");
-        REQUIRE(suchThatClause.firstParam.getType() == TokenType::INTEGER);
-        REQUIRE(suchThatClause.firstParam.getValue() == "3");
-        REQUIRE(suchThatClause.secondParam.getType() == TokenType::INTEGER);
-        REQUIRE(suchThatClause.secondParam.getValue() == "4");
+        REQUIRE(suchThatClause.getRelationship().getType() == TokenType::Follows);
+        REQUIRE(suchThatClause.getRelationship().getValue() == "Follows");
+        REQUIRE(suchThatClause.getFirstParam().getType() == TokenType::INTEGER);
+        REQUIRE(suchThatClause.getFirstParam().getValue() == "3");
+        REQUIRE(suchThatClause.getSecondParam().getType() == TokenType::INTEGER);
+        REQUIRE(suchThatClause.getSecondParam().getValue() == "4");
     }
 
     SECTION("Check Parsing Result of 'procedure p, q; Select p such that Calls(p, q) with q.procName = \"Third\"'") {
@@ -372,20 +372,20 @@ TEST_CASE("src/qps/parser/ParsingResult") {
         REQUIRE(parsingResult.getRequiredSynonyms()[0] == "p");
 
         auto suchThatClause = parsingResult.getSuchThatClauses()[0];
-        REQUIRE(suchThatClause.relationship.getType() == TokenType::Calls);
-        REQUIRE(suchThatClause.relationship.getValue() == "Calls");
-        REQUIRE(suchThatClause.firstParam.getType() == TokenType::IDENT);
-        REQUIRE(suchThatClause.firstParam.getValue() == "p");
-        REQUIRE(suchThatClause.secondParam.getType() == TokenType::IDENT);
-        REQUIRE(suchThatClause.secondParam.getValue() == "q");
+        REQUIRE(suchThatClause.getRelationship().getType() == TokenType::Calls);
+        REQUIRE(suchThatClause.getRelationship().getValue() == "Calls");
+        REQUIRE(suchThatClause.getFirstParam().getType() == TokenType::IDENT);
+        REQUIRE(suchThatClause.getFirstParam().getValue() == "p");
+        REQUIRE(suchThatClause.getSecondParam().getType() == TokenType::IDENT);
+        REQUIRE(suchThatClause.getSecondParam().getValue() == "q");
 
         auto withClause = parsingResult.getWithClauses()[0];
-        REQUIRE(withClause.relationship.getType() == TokenType::WithKeyword);
-        REQUIRE(withClause.relationship.getValue() == "with");
-        REQUIRE(withClause.firstParam.getType() == TokenType::Ref);
-        REQUIRE(withClause.firstParam.getValue() == "q.procName");
-        REQUIRE(withClause.secondParam.getType() == TokenType::Ref);
-        REQUIRE(withClause.secondParam.getValue() == "\"Third\"");
+        REQUIRE(withClause.getRelationship().getType() == TokenType::WithKeyword);
+        REQUIRE(withClause.getRelationship().getValue() == "with");
+        REQUIRE(withClause.getFirstParam().getType() == TokenType::Ref);
+        REQUIRE(withClause.getFirstParam().getValue() == "q.procName");
+        REQUIRE(withClause.getSecondParam().getType() == TokenType::Ref);
+        REQUIRE(withClause.getSecondParam().getValue() == "\"Third\"");
     }
 }
 

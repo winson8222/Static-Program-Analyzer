@@ -18,9 +18,9 @@ std::shared_ptr<ResultTable> ParentStrategy::evaluateQuery(PKBReaderManager& pkb
     this->statementReader = pkbReaderManager.getStatementReader();
 
     const SuchThatClause* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
-    const Token& suchThatFirstParam = suchClause->firstParam;
-    const Token& suchThatSecondParam = suchClause->secondParam;
-    string variant = suchClause->relationship.getValue();
+    const Token& suchThatFirstParam = suchClause->getFirstParam();
+    const Token& suchThatSecondParam = suchClause->getSecondParam();
+    string variant = suchClause->getRelationship().getValue();
 
     if (suchThatFirstParam.getType() == TokenType::IDENT && suchThatSecondParam.getType() == TokenType::IDENT) {
         processSynonyms(suchThatFirstParam, suchThatSecondParam, variant, resultTable, parsingResult, pkbReaderManager);
