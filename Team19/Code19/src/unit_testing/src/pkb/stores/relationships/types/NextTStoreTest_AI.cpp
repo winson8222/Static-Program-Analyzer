@@ -4,19 +4,21 @@
 #include "pkb/stores/relationships/types/NextTStore.h"
 
 TEST_CASE("pkb/stores/relationships/types/NextTStore") {
-	// This whole test suite will run 10 times, and fail on the 10th time in the below line.
 	auto nextStore = std::make_shared<NextStore>();
 	auto nextTStore = std::make_shared<NextTStore>(nextStore);
 	nextStore->addRelationship(1, 2);
 	nextStore->addRelationship(2, 3);
 	nextStore->addRelationship(3, 4);
+
 	SECTION("populateAndGetPreviousT") {
 		REQUIRE(nextTStore->populateAndGetPreviousT(4, std::unordered_set<int>{}) == std::unordered_set<int>{3, 2, 1});
 		REQUIRE(nextTStore->getRelationshipsByValue(3) == std::unordered_set<int>{2, 1});
 		REQUIRE(nextTStore->getRelationshipsByValue(2) == std::unordered_set<int>{1});
 		REQUIRE(nextTStore->getRelationshipsByValue(1).empty());
 	}
+
 	nextStore->addRelationship(3, 2);
+
 	SECTION("populateAndGetPreviousT: Loop") {
 		REQUIRE(nextTStore->populateAndGetPreviousT(4, std::unordered_set<int>{}) == std::unordered_set<int>{3, 2, 1});
 		REQUIRE(nextTStore->getRelationshipsByValue(3) == std::unordered_set<int>{1, 2});
