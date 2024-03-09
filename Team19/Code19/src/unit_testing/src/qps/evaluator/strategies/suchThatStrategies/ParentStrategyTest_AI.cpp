@@ -8,19 +8,61 @@
 #include "pkb/PKBManager.h"
 #include "qps/evaluator/QueryEvaluator.h"
 
-ParsingResult createParsingResultForParent(int parentStmt, int childStmt, bool isTransitive = false) {
+ParsingResult createParsingResultForParent(int stmt1, int stmt2, bool isTransitive = false) {
     ParsingResult parsingResult;
     TokenType relationshipType = isTransitive ? TokenType::ParentT : TokenType::Parent;
-
     SuchThatClause clause;
     clause.setRelationship(Token(relationshipType, ""));
-    clause.setFirstParam(Token(TokenType::INTEGER, std::to_string(parentStmt)));
-    clause.setSecondParam(Token(TokenType::INTEGER, std::to_string(childStmt)));
+    clause.setFirstParam(Token(TokenType::INTEGER, std::to_string(stmt1)));
+    clause.setSecondParam(Token(TokenType::INTEGER, std::to_string(stmt2)));
     parsingResult.addSuchThatClause(clause);
     return parsingResult;
 }
 
-TEST_CASE("src/qps/evaluator/suchThatStrategies/ParentStrategy/") {
+TEST_CASE("src/qps/evaluator/suchThatStrategies/ParentStrategy/1") {
+    auto pkb = std::make_shared<PKB>();
+    auto ParentStore = pkb->getParentStore();
+    ParentStore->addRelationship(1, 2);
+    ParentStore->addRelationship(2, 3);
+    ParentStore->addRelationship(3, 4);
+    ParentStore->addRelationship(1, 3);
+    ParentStore->addRelationship(1, 4);
+
+    auto pkbReaderManager = std::make_shared<PKBReaderManager>(pkb);
+    ParentStrategy ParentStrategy;
+
+    SECTION("Direct Parent(1, 2) is true") {
+        auto parsingResult = createParsingResultForParent(1, 2);
+        auto result = ParentStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
+        REQUIRE(result->isTableTrue());
+    }
+
+    SECTION("Direct Parent(2, 3) is true") {
+        auto parsingResult = createParsingResultForParent(2, 3);
+        auto result = ParentStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
+        REQUIRE(result->isTableTrue());
+    }
+
+    SECTION("Transitive Parent*(1, 3) is true") {
+        auto parsingResult = createParsingResultForParent(1, 3, true);
+        auto result = ParentStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
+        REQUIRE(result->isTableTrue());
+    }
+
+    SECTION("Transitive Parent*(1, 4) is true") {
+        auto parsingResult = createParsingResultForParent(1, 4, true);
+        auto result = ParentStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
+        REQUIRE(result->isTableTrue());
+    }
+
+    SECTION("Transitive Parent*(1, 5) is false") {
+        auto parsingResult = createParsingResultForParent(1, 5, true);
+        auto result = ParentStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
+        REQUIRE_FALSE(result->isTableTrue()); // Expecting this to be false as no such relationship exists
+    }
+}
+
+TEST_CASE("src/qps/evaluator/suchThatStrategies/ParentStrategy/2") {
 std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
 std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();

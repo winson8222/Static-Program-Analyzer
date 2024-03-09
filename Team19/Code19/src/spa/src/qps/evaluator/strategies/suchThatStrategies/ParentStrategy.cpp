@@ -15,7 +15,6 @@ std::shared_ptr<ResultTable> ParentStrategy::evaluateQuery(PKBReaderManager& pkb
         requiredSynonym = parsingResult.getRequiredSynonyms()[0];
     } else {
         // Handle the case where there are no required synonyms
-        std::cout << "No required synonyms found." << std::endl;
     }
 
 
