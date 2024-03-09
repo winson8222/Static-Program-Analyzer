@@ -3,7 +3,7 @@
 // ai-gen start(copilot, 2, e)
 // prompt: used copilot
 
-NextTStore::NextTStore(std::shared_ptr<NextStore> nextStore) :nextStore(std::move(nextStore)){}
+NextTStore::NextTStore(std::shared_ptr<NextStore> nextStore) :nextStore(std::move(nextStore)) {}
 /**
  * Recursively populates and returns all previousT relationships for a given statement.
  * @param stmt The statement number to populate previousT relationships for.
@@ -16,7 +16,7 @@ std::unordered_set<int> NextTStore::populateAndGetPreviousT(int stmt, std::unord
 		return NextTStore::getRelationshipsByValue(stmt);
 	}
 	std::unordered_set<int> result;
-  	std::unordered_set<int> previousSet = nextStore->getRelationshipsByValue(stmt);
+	std::unordered_set<int> previousSet = nextStore->getRelationshipsByValue(stmt);
 	visited.insert(stmt);
 	for (int previous : previousSet) {
 		NextTStore::addRelationship(previous, stmt);
@@ -77,11 +77,15 @@ std::unordered_set<int> NextTStore::populateAndGetAllPreviousT() {
 	std::unordered_set<int> result;
 	for (int i : nextStore->getValues()) {
 		if (NextTStore::hasPreviousTPopulated(i)) {
-			result.insert(NextTStore::getRelationshipsByValue(i).begin(), NextTStore::getRelationshipsByValue(i).end());
+			for (int j : NextTStore::getRelationshipsByValue(i)) {
+				result.insert(j);
+			}
 			continue;
 		}
 		std::unordered_set<int> previousTSet = NextTStore::populateAndGetPreviousT(i, std::unordered_set<int>{});
-		result.insert(previousTSet.begin(), previousTSet.end());
+		for (int j : previousTSet) {
+			result.insert(j);
+		}
 		NextTStore::populatePreviousT(i);
 	}
 	return result;
@@ -96,11 +100,15 @@ std::unordered_set<int> NextTStore::populateAndGetAllNextT() {
 	std::unordered_set<int> result;
 	for (int i : nextStore->getKeys()) {
 		if (NextTStore::hasNextTPopulated(i)) {
-			result.insert(NextTStore::getRelationshipsByKey(i).begin(), NextTStore::getRelationshipsByKey(i).end());
+			for (int j : NextTStore::getRelationshipsByKey(i)) {
+				result.insert(j);
+			}
 			continue;
 		}
 		std::unordered_set<int> nextTSet = NextTStore::populateAndGetNextT(i, std::unordered_set<int>{});
-		result.insert(nextTSet.begin(), nextTSet.end());
+		for (int j : nextTSet) {
+			result.insert(j);
+		}
 		NextTStore::populateNextT(i);
 	}
 	return result;
