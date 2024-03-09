@@ -1,5 +1,6 @@
 #include "ParentStrategy.h"
 #include "qps/parser/Token.h" // Include the Token header
+#include <iostream>
 
 using namespace std;
 
@@ -9,8 +10,14 @@ using namespace std;
 
 std::shared_ptr<ResultTable> ParentStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) {
     auto resultTable = make_shared<ResultTable>();
-    string requiredSynonym = parsingResult.getRequiredSynonyms()[0];
-    
+    string requiredSynonym;
+    if (!parsingResult.getRequiredSynonyms().empty()) {
+        requiredSynonym = parsingResult.getRequiredSynonyms()[0];
+    } else {
+        // Handle the case where there are no required synonyms
+        std::cout << "No required synonyms found." << std::endl;
+    }
+
 
     // Obtain readers from PKBReaderManager
     this->parentReader = pkbReaderManager.getParentReader();
