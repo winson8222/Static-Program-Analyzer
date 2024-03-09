@@ -9,19 +9,62 @@
 #include "qps/evaluator/QueryEvaluator.h"
 #include "qps/parser/clauses/SuchThatClause.h"
 
-// Helper function for creating a ParsingResult tailored for Uses tests
 ParsingResult createParsingResultForUses(const std::string& entity, const std::string& variable, bool isProcedure) {
     ParsingResult parsingResult;
-    SuchThatClause usesClause;
-    usesClause.setRelationship(Token(TokenType::Uses, "Uses"));
-    usesClause.setFirstParam(Token(isProcedure ? TokenType::IDENT : TokenType::INTEGER, entity));
-    usesClause.setSecondParam(Token(TokenType::IDENT, variable));
-    parsingResult.addSuchThatClause(usesClause);
+    // Set the entity type appropriately
+    TokenType entityType = isProcedure ? TokenType::IDENT : TokenType::INTEGER;
+
+    SuchThatClause clause;
+    clause.setRelationship(Token(TokenType::Uses, "Uses"));
+    clause.setFirstParam(Token(entityType, entity));
+    clause.setSecondParam(Token(TokenType::IDENT, variable));
+    parsingResult.addSuchThatClause(clause);
     return parsingResult;
 }
 
+TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/1") {
+    auto pkb = std::make_shared<PKB>();
+    // Setup PKB with Uses relationships
+    pkb->getUsesPStore()->addRelationship("procedure1", "x");
+    pkb->getUsesSStore()->addRelationship(2, "y");
 
-TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy") {
+    auto pkbReaderManager = std::make_shared<PKBReaderManager>(pkb);
+    UsesStrategy UsesStrategy;
+
+    SECTION("UsesS(2, y) is true") {
+        auto parsingResult = createParsingResultForUses("2", "y", false); // false indicates statement
+        auto resultTable = UsesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
+        // Assertions to verify the outcome for UsesS
+        REQUIRE(resultTable->getRows().size() == 1); // Expecting exactly one row
+        REQUIRE(resultTable->getRows()[0]["y"] == "y"); // Verifying the content of the row
+    }
+
+    SECTION("UsesS with non-existing statement number is false") {
+        auto parsingResult = createParsingResultForUses("999", "y", false); // false indicates statement
+        auto resultTable = UsesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
+        // Expectation: The result should indicate that the relationship does not exist
+        REQUIRE(resultTable->getRows().empty());
+    }
+
+    SECTION("UsesS with wildcard for variable") {
+        auto parsingResult = createParsingResultForUses("2", "_", false); // Testing UsesS(2, _)
+        auto resultTable = UsesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
+        // Expectation: The result should indicate that statement 2 Uses any variable
+        REQUIRE_FALSE(resultTable->getRows().empty()); // More specific checks can be added based on your implementation
+    }
+
+        // Test for modification in nested statements
+    SECTION("UsesS in nested statements") {
+        // Assuming statement 4 is a container statement that contains statement 2
+        pkb->getUsesSStore()->addRelationship(4, "x");
+        auto parsingResult = createParsingResultForUses("4", "x", false);
+        auto resultTable = UsesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
+        REQUIRE_FALSE(resultTable->getRows().empty()); // Expecting the result to indicate modification
+        // Additional specific checks as needed
+    }
+}
+
+TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/2") {
     SECTION("Check Evaluation result of a simple select v for UseS") {
         std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
         std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
