@@ -5,12 +5,17 @@
 // prompt: used copilot
 class PKBCacheManager {
 private:
-	std::shared_ptr<PKB> pkb;
+    std::shared_ptr<PKB> pkb;
 public:
-	explicit PKBCacheManager(const std::shared_ptr<PKB>& pkb): pkb(pkb) {}
+    explicit PKBCacheManager(const std::shared_ptr<PKB>& pkb): pkb(pkb) {}
 
-	void clearCache() {
-		pkb->getNextTStore()->clear();
-	}
+    void populateCache() {
+        pkb->getNextTStore()->populateNextTStore();
+        pkb->getAffectsStore()->populateAffectsStore();
+    }
+    void clearCache() {
+        pkb->getNextTStore()->clear();
+        pkb->getAffectsStore()->clear();
+    }
 };
 // ai-gen end

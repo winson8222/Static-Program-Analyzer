@@ -1,4 +1,5 @@
 #include "TestWrapper.h"
+
 using namespace std;
 // implementation code of WrapperFactory - do NOT modify the next 5 lines
 AbstractWrapper* WrapperFactory::wrapper = 0;
@@ -35,6 +36,9 @@ void TestWrapper::parse(std::string filename) {
 
 // method to evaluating a query
 void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
+
+	// Populate cache before each query
+	pkbCacheManager->populateCache();
 
 	// call your evaluator to evaluate the query here
     // ...code to evaluate query...

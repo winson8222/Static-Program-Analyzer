@@ -4,64 +4,35 @@
 // ai-gen start (gpt, 2, e)
 // prompt: https://chat.openai.com/share/a181de60-e76f-496c-9bee-7ea80f2be651 and GitHub Copilot
 
-std::string ASTUtility::getASTNodeType(ASTNodeType t) {
-    switch (t) {
-        case ASTNodeType::PROGRAMS:
-            return "Program";
-        case ASTNodeType::PROCEDURE:
-            return "Procedure";
-        case ASTNodeType::STATEMENT_LIST:
-            return "StatementList";
-        case ASTNodeType::ASSIGN:
-            return "Assign";
-        case ASTNodeType::CALL:
-            return "Call";
-        case ASTNodeType::IF_ELSE_THEN:
-            return "IfElseThen";
-        case ASTNodeType::PRINT:
-            return "Print";
-        case ASTNodeType::READ:
-            return "Read";
-        case ASTNodeType::WHILE:
-            return "While";
-        case ASTNodeType::NOT:
-            return "!";
-        case ASTNodeType::AND:
-            return "&&";
-        case ASTNodeType::OR:
-            return "||";
-        case ASTNodeType::GREATER:
-            return ">";
-        case ASTNodeType::GREATER_OR_EQUAL:
-            return ">=";
-        case ASTNodeType::LESSER:
-            return "<";
-        case ASTNodeType::LESSER_OR_EQUAL:
-            return "<=";
-        case ASTNodeType::EQUAL:
-            return "==";
-        case ASTNodeType::NOT_EQUAL:
-            return "!=";
-        case ASTNodeType::ADD:
-            return "+";
-        case ASTNodeType::SUBTRACT:
-            return "-";
-        case ASTNodeType::MULTIPLY:
-            return "*";
-        case ASTNodeType::DIVIDE:
-            return "/";
-        case ASTNodeType::MODULO:
-            return "%";
-        case ASTNodeType::VARIABLE:
-            return "Variable";
-        case ASTNodeType::CONSTANT:
-            return "Constant";
-        case ASTNodeType::ERROR:
-            return "Error";
-        default:
-            throw "Error";
-    };
-}
+std::unordered_map<ASTNodeType, std::string> ASTUtility::getASTNodeType{
+	{ASTNodeType::PROGRAMS, "Program"},
+	{ASTNodeType::PROCEDURE, "procedure"},
+	{ASTNodeType::STATEMENT_LIST, "stmtLst"},
+	{ASTNodeType::ASSIGN, "assign"},
+	{ASTNodeType::CALL, "call"},
+	{ASTNodeType::IF_ELSE_THEN, "if"},
+	{ASTNodeType::PRINT, "print"},
+	{ASTNodeType::READ, "read"},
+	{ASTNodeType::WHILE, "while"},
+	{ASTNodeType::NOT, "!"},
+	{ASTNodeType::AND, "&&"},
+	{ASTNodeType::OR, "||"},
+	{ASTNodeType::GREATER, ">"},
+	{ASTNodeType::GREATER_OR_EQUAL, ">="},
+	{ASTNodeType::LESSER, "<"},
+	{ASTNodeType::LESSER_OR_EQUAL, "<="},
+	{ASTNodeType::EQUAL, "=="},
+	{ASTNodeType::NOT_EQUAL, "!="},
+	{ASTNodeType::ADD, "+"},
+	{ASTNodeType::SUBTRACT, "-"},
+	{ASTNodeType::MULTIPLY, "*"},
+	{ASTNodeType::DIVIDE, "/"},
+	{ASTNodeType::MODULO, "%"},
+	{ASTNodeType::VARIABLE, "Variable"},
+	{ASTNodeType::CONSTANT, "Constant"},
+	{ASTNodeType::ERROR, "Error"}
+};
+
 
 bool ASTUtility::nodeIsStatement(ASTNodeType t) {
     return t == ASTNodeType::ASSIGN || t == ASTNodeType::CALL 

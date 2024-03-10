@@ -25,5 +25,4 @@ public:
 
 	void visit() override;
 	void addContext(std::shared_ptr<ASTNode> node) override;
-	void setParents(listnode contexts, std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager) override;
 };
