@@ -1,6 +1,8 @@
 #include "SimpleParser.h"
 #include <stdexcept>
 #include <iostream>
+#include <unordered_map>
+#include <functional>
 
 // ai-gen start(gpt,2,e)
 // Prompt: https://platform.openai.com/playground/p/cJLjmmneCEs4z6ms7ZkBSxJB?model=gpt-4&mode=chat
@@ -146,8 +148,6 @@ std::shared_ptr<ASTNode> SimpleParser::parseProcedure() {
 		throw std::runtime_error("Error: SimpleParser::parseProcedure encounter empty statement.");
 	}
 
-
-
 	LexicalToken procedureKeyword = this->getNextToken();
 	this->assertToken(procedureKeyword, LexicalTokenType::KEYWORD_PROCEDURE);
 
@@ -192,6 +192,8 @@ std::shared_ptr<ASTNode> SimpleParser::parseStmtLst() {
 	return statementListTree;
 }
 
+// ai-gen start(gpt, 2, e)
+// Prompt: https://platform.openai.com/playground/p/f2k5TIcmcUShJEcyjSweZOMD?mode=chat
 /**
  * @brief Parse a statement in the program.
  *
@@ -211,31 +213,25 @@ std::shared_ptr<ASTNode> SimpleParser::parseStmt() {
 
 	LexicalToken firstToken = this->peekNextToken();
 
+	// Define the function map
+	std::unordered_map<LexicalTokenType, std::function<std::shared_ptr<ASTNode>()>> parseFunctions = {
+		{ LexicalTokenType::KEYWORD_CALL, [&]() { return this->parseCall(); } },
+		{ LexicalTokenType::KEYWORD_PRINT, [&]() { return this->parsePrint(); } },
+		{ LexicalTokenType::KEYWORD_READ, [&]() { return this->parseRead(); } },
+		{ LexicalTokenType::KEYWORD_IF, [&]() { return this->parseIf(); } },
+		{ LexicalTokenType::KEYWORD_WHILE, [&]() { return this->parseWhile(); } }
+	};
 
-	if (firstToken.isType(LexicalTokenType::KEYWORD_CALL)) {
-		return this->parseCall();
+	// Find the appropriate function and execute it
+	auto parseFunctionIt = parseFunctions.find(firstToken.getTokenType());
+	if (parseFunctionIt != parseFunctions.end()) {
+		return parseFunctionIt->second();
 	}
 
-	if (firstToken.isType(LexicalTokenType::KEYWORD_PRINT)) {
-		return this->parsePrint();
-	}
-
-	if (firstToken.isType(LexicalTokenType::KEYWORD_READ)) {
-		return this->parseRead();
-	}
-
-	if (firstToken.isType(LexicalTokenType::KEYWORD_IF)) {
-		return this->parseIf();
-	}
-
-	if (firstToken.isType(LexicalTokenType::KEYWORD_WHILE)) {
-		return this->parseWhile();
-	}
-
-
-	// If dont have keyword, this is an invalid statement.
-	throw std::runtime_error("Error: Tried to parse statement, but input statement is not Assign, Call ,Print, Read, If or While statement.");
+	// If no keyword is found, this is an invalid statement
+	throw std::runtime_error("Error: Tried to parse statement, but input statement is not Assign, Call, Print, Read, If, or While statement.");
 }
+// ai-gen end
 
 /**
  * @brief Parse a read statement in the program.
