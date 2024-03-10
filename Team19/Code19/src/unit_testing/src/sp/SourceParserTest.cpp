@@ -7,14 +7,18 @@
 #include <vector>
 
 TEST_CASE("Test header", "[SourceProcessor]") {
-    const std::string testFileName = "../../../../../tests/sp/ParserTest/Program1.txt";
-    const std::string testFileContent = "x = 1;";
-
-    std::string actualContent;
-    REQUIRE(std::filesystem::exists(testFileName));
+    std::string filename = "sample.txt";
+    std::string sampleProgram = "procedure main {\n"
+                                "\tread helloWorld;\n"
+                                "}";
+    std::ofstream file;
+    file.open(filename);
+    file << sampleProgram;
+    file.close();
+    REQUIRE(std::filesystem::exists(filename));
 
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-    SourceProcessor sp(testFileName, pkbManager);
+    SourceProcessor sp(filename, pkbManager);
 
     REQUIRE_NOTHROW(sp.parseSIMPLE());
     REQUIRE_NOTHROW(sp.extractAndPopulate());
@@ -22,4 +26,5 @@ TEST_CASE("Test header", "[SourceProcessor]") {
     std::shared_ptr<PKBReaderManager> pkbReaderManager = sp.pkbManager->getPKBReaderManager();
     auto variableReader = pkbReaderManager->getVariableReader();
     auto values1 = variableReader->getAllVariables();
+    std::filesystem::remove(filename);
 }

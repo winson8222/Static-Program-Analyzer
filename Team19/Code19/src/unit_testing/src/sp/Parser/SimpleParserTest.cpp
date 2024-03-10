@@ -2,69 +2,129 @@
 #include "sp/Parser/SimpleParserFacade.h"
 #include <iostream>
 #include <filesystem>
+#include <fstream>
 
 TEST_CASE("Program parsing throws an error for missing curly brace after procedure end.") {
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program_Invalid1.txt";
-	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParserFacade parser(testFileName);
-
+    std::string filename = "sample.txt";
+    std::string sampleProgram = "procedure proc1 {\n"
+                                "\tprint x;\n"
+                                "\n"
+                                "procedure proc2 \n"
+                                "\tcall y;\n"
+                                "}";
+    std::ofstream file;
+    file.open(filename);
+    file << sampleProgram;
+    file.close();
+    REQUIRE(std::filesystem::exists(filename));
+	SimpleParserFacade parser(filename);
 	CHECK_THROWS_AS(parser.parse(), std::runtime_error);
+    std::filesystem::remove(filename);
 }
 
 TEST_CASE("Program parsing throws an error for missing closing curly brace.") {
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program_Invalid2.txt";
-	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParserFacade parser(testFileName);
-
-	CHECK_THROWS_AS(parser.parse(), std::runtime_error);
-}
+    std::string filename = "sample.txt";
+    std::string sampleProgram = "procedure invalidProcedure {\n"
+                                "\tcall y;";
+    std::ofstream file;
+    file.open(filename);
+    file << sampleProgram;
+    file.close();
+    REQUIRE(std::filesystem::exists(filename));
+    SimpleParserFacade parser(filename);
+    CHECK_THROWS_AS(parser.parse(), std::runtime_error);
+    std::filesystem::remove(filename);}
 
 TEST_CASE("Program parsing throws an error for missing curly braces.") {
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program_Invalid3.txt";
-	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParserFacade parser(testFileName);
-
-	CHECK_THROWS_AS(parser.parse(), std::runtime_error);
+    std::string filename = "sample.txt";
+    std::string sampleProgram = "procedure invalidProcedure \n"
+                                "\tcall y;";
+    std::ofstream file;
+    file.open(filename);
+    file << sampleProgram;
+    file.close();
+    REQUIRE(std::filesystem::exists(filename));
+    SimpleParserFacade parser(filename);
+    CHECK_THROWS_AS(parser.parse(), std::runtime_error);
+    std::filesystem::remove(filename);
 }
 
 TEST_CASE("Program parsing throws an error for extra variable in print statement") {
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program_Invalid4.txt";
-	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParserFacade parser(testFileName);
-
-	CHECK_THROWS_AS(parser.parse(), std::runtime_error);
+    std::string filename = "sample.txt";
+    std::string sampleProgram = "procedure proc {\n"
+                                "\tcall variable123;\n"
+                                "\tprint xyz call;\n"
+                                "}";
+    std::ofstream file;
+    file.open(filename);
+    file << sampleProgram;
+    file.close();
+    REQUIRE(std::filesystem::exists(filename));
+    SimpleParserFacade parser(filename);
+    CHECK_THROWS_AS(parser.parse(), std::runtime_error);
+    std::filesystem::remove(filename);
 }
 
 TEST_CASE("Program parsing throws an error for missing parenthesis around !(cond_expr) with following && operator.") {
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program_Invalid5.txt";
-	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParserFacade parser(testFileName);
-
-	CHECK_THROWS_AS(parser.parse(), std::runtime_error);
+    std::string filename = "sample.txt";
+    std::string sampleProgram = "procedure procedure {\n"
+                                "\twhile (!(read != 11) && !(read == while)) {\n"
+                                "\t\tprint = 0;\n"
+                                "\t}\n"
+                                "}";
+    std::ofstream file;
+    file.open(filename);
+    file << sampleProgram;
+    file.close();
+    REQUIRE(std::filesystem::exists(filename));
+    SimpleParserFacade parser(filename);
+    CHECK_THROWS_AS(parser.parse(), std::runtime_error);
+    std::filesystem::remove(filename);
 }
 
 TEST_CASE("Program parsing throws an error for extra parenthesis around cond_expr.") {
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program_Invalid6.txt";
-	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParserFacade parser(testFileName);
-
-	CHECK_THROWS_AS(parser.parse(), std::runtime_error);
+    std::string filename = "sample.txt";
+    std::string sampleProgram = "procedure procedure {\n"
+                                "\twhile ((read != 11)) {\n"
+                                "\t\tprint = 0;\n"
+                                "\t}\n"
+                                "}";
+    std::ofstream file;
+    file.open(filename);
+    file << sampleProgram;
+    file.close();
+    REQUIRE(std::filesystem::exists(filename));
+    SimpleParserFacade parser(filename);
+    CHECK_THROWS_AS(parser.parse(), std::runtime_error);
+    std::filesystem::remove(filename);
 }
 
 TEST_CASE("Program parsing throws an error for invalid keyword.") {
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program_Invalid7.txt";
-	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParserFacade parser(testFileName);
-
-	CHECK_THROWS_AS(parser.parse(), std::runtime_error);
+    std::string filename = "sample.txt";
+    std::string sampleProgram = "procedure main {\n"
+                                "\twrite x;\n"
+                                "}";
+    std::ofstream file;
+    file.open(filename);
+    file << sampleProgram;
+    file.close();
+    REQUIRE(std::filesystem::exists(filename));
+    SimpleParserFacade parser(filename);
+    CHECK_THROWS_AS(parser.parse(), std::runtime_error);
+    std::filesystem::remove(filename);
 }
 
-
-
 TEST_CASE("Single procedure, with read statement") {
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program1.txt";
-	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParserFacade parser(testFileName);
+    std::string filename = "sample.txt";
+    std::string sampleProgram = "procedure main {\n"
+                                "\tread helloWorld;\n"
+                                "}";
+    std::ofstream file;
+    file.open(filename);
+    file << sampleProgram;
+    file.close();
+    REQUIRE(std::filesystem::exists(filename));
+    SimpleParserFacade parser(filename);
 	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
 
 	REQUIRE(tree_ptr->type == ASTNodeType::PROGRAMS);
@@ -81,12 +141,41 @@ TEST_CASE("Single procedure, with read statement") {
 	REQUIRE(statement->type == ASTNodeType::READ);
 	REQUIRE(statement->lineNumber == 1);
 	REQUIRE(statement->children[0]->value == "helloWorld");
+    std::filesystem::remove(filename);
 }
 
 TEST_CASE("Single procedure, all possible conditional expressions in while statements") {
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program2.txt";
-	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParserFacade parser(testFileName);
+    std::string filename = "sample.txt";
+    std::string sampleProgram = "procedure conditionalExpressions {\n"
+                                "\twhile(x == 2) {read x;}\n"
+                                "\twhile(x != 2) {read x;}\n"
+                                "\twhile(x < 2) {read x;}\n"
+                                "\twhile(x <= 2) {read x;}\n"
+                                "\twhile(x > 2) {read x;}\n"
+                                "\twhile(x >= 2) {read x;}\n"
+                                "\twhile(!(x == 2)) {read x;}\n"
+                                "\n"
+                                "\twhile(0 == 2147483647) {read x;}\n"
+                                "\twhile(0 != 2147483647) {read x;}\n"
+                                "\twhile(0 < 2147483647) {read x;}\n"
+                                "\twhile(0 <= 2147483647) {read x;}\n"
+                                "\twhile(0 > 2147483647) {read x;}\n"
+                                "\twhile(0 >= 2147483647) {read x;}\n"
+                                "\twhile(!(0 == 2147483647)) {read x;}\n"
+                                "\n"
+                                "\twhile((x == 2) && (x == 1)) {read x;}\n"
+                                "\twhile((x != 2) || (x != 2)) {read x;}\n"
+                                "\twhile((!(x == 2)) && (!(x == 1))) {read x;}\n"
+                                "\twhile( ((x == 2) && (x == 1)) || (x == 3)) {read x;}\n"
+                                "\twhile(!(!(!(!(!(!(!(!(!(!(x==3))))))))))) {read x;}\n"
+                                "\twhile(((x <= y) || (!(y == z))) && (!(z >= x))) {read x;}\n"
+                                "}";
+    std::ofstream file;
+    file.open(filename);
+    file << sampleProgram;
+    file.close();
+    REQUIRE(std::filesystem::exists(filename));
+    SimpleParserFacade parser(filename);
 	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
 	auto& procedure = (tree_ptr->children)[0];
 
@@ -106,13 +195,48 @@ TEST_CASE("Single procedure, all possible conditional expressions in while state
 		REQUIRE(contents->type == ASTNodeType::READ);
 		REQUIRE((contents->children)[0]->value == "x");
 	}
+    std::filesystem::remove(filename);
 }
 
 TEST_CASE("Multiple procedures, all names that may be potential keywords.") {
 	// Generate test file
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program3.txt";
-	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParserFacade parser(testFileName);
+    std::string filename = "sample.txt";
+    std::string sampleProgram = "procedure assign { read x; }\n"
+                                "procedure call { read x; }\n"
+                                "procedure constant { read x; }\n"
+                                "procedure while { read x; }\n"
+                                "procedure if { read x; }\n"
+                                "procedure else { read x; }\n"
+                                "procedure then { read x; }\n"
+                                "procedure print { read x; }\n"
+                                "procedure read { read x; }\n"
+                                "procedure stmtLst { read x; }\n"
+                                "procedure variable { read x; }\n"
+                                "procedure stmt { read x; }\n"
+                                "procedure procedure { read x; }\n"
+                                "procedure program { read x; }\n"
+                                "procedure Follows { read x; }\n"
+                                "procedure FollowsT { read x; }\n"
+                                "procedure Parent { read x; }\n"
+                                "procedure ParentT { read x; }\n"
+                                "procedure Uses { read x; }\n"
+                                "procedure UsesP { read x; }\n"
+                                "procedure UsesS { read x; }\n"
+                                "procedure Modifies { read x; }\n"
+                                "procedure ModifiesP { read x; }\n"
+                                "procedure ModifiesS { read x; }\n"
+                                "procedure Calls { read x; }\n"
+                                "procedure CallsT { read x; }\n"
+                                "procedure Next { read x; }\n"
+                                "procedure NextT { read x; }\n"
+                                "procedure Affects { read x; }\n"
+                                "procedure AffectsT { read x; }";
+    std::ofstream file;
+    file.open(filename);
+    file << sampleProgram;
+    file.close();
+    REQUIRE(std::filesystem::exists(filename));
+    SimpleParserFacade parser(filename);
 	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
 
 	REQUIRE(tree_ptr->type == ASTNodeType::PROGRAMS);
@@ -120,12 +244,34 @@ TEST_CASE("Multiple procedures, all names that may be potential keywords.") {
 	REQUIRE(tree_ptr->value == ASTUtility::getASTNodeType.find(ASTNodeType::PROGRAMS)->second);
 
 	REQUIRE(tree_ptr->children.size() == 30);
+    std::filesystem::remove(filename);
 }
 
 TEST_CASE("Parsing single program with all possible statements types.") {
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program4.txt";
-	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParserFacade parser(testFileName);
+    std::string filename = "sample.txt";
+    std::string sampleProgram = "procedure procedure {\n"
+                                "\twhile (!(read > procedure)) {\n"
+                                "\t\tif = if;\n"
+                                "\t} \n"
+                                "\n"
+                                "\tif (then < 2) then {\n"
+                                "\t\telse = else;\n"
+                                "\t} else {\n"
+                                "\t\twhile = then;\n"
+                                "\t}\n"
+                                "\n"
+                                "\tread = 1 + program;\n"
+                                "\n"
+                                "\tcall call;\n"
+                                "\tprint read;\n"
+                                "\tread print;\n"
+                                "}";
+    std::ofstream file;
+    file.open(filename);
+    file << sampleProgram;
+    file.close();
+    REQUIRE(std::filesystem::exists(filename));
+    SimpleParserFacade parser(filename);
 	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
 
 	auto& statements = (((tree_ptr->children)[0]->children)[0]->children);
@@ -323,12 +469,44 @@ TEST_CASE("Parsing single program with all possible statements types.") {
 			REQUIRE(children[0]->value == "print");
 		}
 	}
+    std::filesystem::remove(filename);
 }
 
 TEST_CASE("Calling parseProgram for complex procedure", "[parse][program]") {
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program5.txt";
-	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParserFacade parser(testFileName);
+    std::string filename = "sample.txt";
+    std::string sampleProgram = "procedure computeCentroid {\n"
+                                "\tcount = 0;\n"
+                                "\tcenX = 0;\n"
+                                "\tcenY = 0;\n"
+                                "\twhile ((x != 0) && (y != 0)) {\n"
+                                "\t\tcount = count + 1;\n"
+                                "\t\tcenX = cenX + x;\n"
+                                "\t\tcenY = cenY + y;\n"
+                                "\t\tcall readPoint;\n"
+                                "\t}\n"
+                                "\tif (count == 0) then {\n"
+                                "\t\tflag = 1;\n"
+                                "\t} else {\n"
+                                "\t\tcenX = cenX / count ;\n"
+                                "\t\tcenY = cenY / count ;\n"
+                                "\t}\n"
+                                "\tnormSq = cenX * cenX + cenY * cenY;\n"
+                                "}\n"
+                                "\n"
+                                "procedure procedure {\n"
+                                "\tprint k;\n"
+                                "}\n"
+                                "\n"
+                                "procedure readPoint {\n"
+                                "\tread x;\n"
+                                "\tread y;\n"
+                                "}";
+    std::ofstream file;
+    file.open(filename);
+    file << sampleProgram;
+    file.close();
+    REQUIRE(std::filesystem::exists(filename));
+    SimpleParserFacade parser(filename);
 	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
 
 	REQUIRE(tree_ptr->type == ASTNodeType::PROGRAMS);
@@ -382,12 +560,60 @@ TEST_CASE("Calling parseProgram for complex procedure", "[parse][program]") {
 	REQUIRE(lastExpr[0]->value == "cenY");
 	REQUIRE(lastExpr[1]->type == ASTNodeType::VARIABLE);
 	REQUIRE(lastExpr[1]->value == "cenY");
+    std::filesystem::remove(filename);
 }
 
 TEST_CASE("Parsing single procedure that contains 20 nested while loops.") {
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program6.txt";
-	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParserFacade parser(testFileName);
+    std::string filename = "sample.txt";
+    std::string sampleProgram = "procedure nestedWhile {\n"
+                                "\twhile (x == 2) {\n"
+                                "\t\twhile (x != 2) {\n"
+                                "\t\t\twhile (x < 2) {\n"
+                                "\t\t\t\twhile (x <= 2) {\n"
+                                "\t\t\t\t\twhile (x > 2) {\n"
+                                "\t\t\t\t\t\twhile (x >= 2) {\n"
+                                "\t\t\t\t\t\t\twhile (!(x == 2)) {\n"
+                                "\t\t\t\t\t\t\t\twhile (0 == 2147483647) {\n"
+                                "\t\t\t\t\t\t\t\t\twhile (0 != 2147483647) {\n"
+                                "\t\t\t\t\t\t\t\t\t\twhile (0 < 2147483647) {\n"
+                                "\t\t\t\t\t\t\t\t\t\t\twhile (0 <= 2147483647) {\n"
+                                "\t\t\t\t\t\t\t\t\t\t\t\twhile (0 > 2147483647) {\n"
+                                "\t\t\t\t\t\t\t\t\t\t\t\t\twhile (0 >= 2147483647) {\n"
+                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\twhile (!(0 == 2147483647)) {\n"
+                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhile ((x == 2) && (x == 1)) {\n"
+                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhile ((x != 2) || (x != 2)) {\n"
+                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhile ((!(x == 2)) && (!(x == 1))) {\n"
+                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhile (((x == 2) && (x == 1)) || (x == 3)) {\n"
+                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhile (!(!(!(!(!(!(!(!(!(!(x == 3))))))))))) {\n"
+                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhile (((x <= y) || (!(y == z))) && (!(z >= x))) {\n"
+                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tread x;\n"
+                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t}\n"
+                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t}\n"
+                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t}\n"
+                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t}\n"
+                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t}\n"
+                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t}\n"
+                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t}\n"
+                                "\t\t\t\t\t\t\t\t\t\t\t\t\t}\n"
+                                "\t\t\t\t\t\t\t\t\t\t\t\t}\n"
+                                "\t\t\t\t\t\t\t\t\t\t\t}\n"
+                                "\t\t\t\t\t\t\t\t\t\t}\n"
+                                "\t\t\t\t\t\t\t\t\t}\n"
+                                "\t\t\t\t\t\t\t\t}\n"
+                                "\t\t\t\t\t\t\t}\n"
+                                "\t\t\t\t\t\t}\n"
+                                "\t\t\t\t\t}\n"
+                                "\t\t\t\t}\n"
+                                "\t\t\t}\n"
+                                "\t\t}\n"
+                                "\t}\n"
+                                "}";
+    std::ofstream file;
+    file.open(filename);
+    file << sampleProgram;
+    file.close();
+    REQUIRE(std::filesystem::exists(filename));
+    SimpleParserFacade parser(filename);
 	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
 
 	auto& loop = ((tree_ptr->children)[0]->children)[0]->children[0];
@@ -402,12 +628,50 @@ TEST_CASE("Parsing single procedure that contains 20 nested while loops.") {
 
 	REQUIRE(loop->type == ASTNodeType::READ);
 	REQUIRE(loop->lineNumber == line);
+    std::filesystem::remove(filename);
 }
 
 TEST_CASE("Parsing single procedure with nested while and if.") {
-	const std::string testFileName = "../../../../../tests/sp/ParserTest/Program7.txt";
-	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParserFacade parser(testFileName);
+    std::string filename = "sample.txt";
+    std::string sampleProgram = "procedure nestedIfWhile {\n"
+                                "\twhile (x == y) {\n"
+                                "\t\tif (x == y) then {\n"
+                                "\t\t\twhile(x > y) {\n"
+                                "\t\t\t\tread x;\n"
+                                "\t\t\t}\n"
+                                "\n"
+                                "\t\t\twhile (y > x) {\n"
+                                "\t\t\t\tread y;\n"
+                                "\t\t\t}\n"
+                                "\t\t} else {\n"
+                                "\t\t\tif (x != y) then {\t\t\t\t\t\t\n"
+                                "\t\t\t\twhile(!(x == y)) {\n"
+                                "\t\t\t\t\tread y;\n"
+                                "\t\t\t\t}\n"
+                                "\t\t\t} else {\n"
+                                "\t\t\t\twhile (x >= y) {\n"
+                                "\t\t\t\t\tread y;\n"
+                                "\t\t\t\t}\n"
+                                "\t\t\t}\n"
+                                "\n"
+                                "\t\t\tif (x >= y) then {\n"
+                                "\t\t\t\twhile(x <= y) {\n"
+                                "\t\t\t\t\tread y;\n"
+                                "\t\t\t\t}\n"
+                                "\t\t\t} else {\n"
+                                "\t\t\t\twhile ((y > x) || (!(y == x))) {\n"
+                                "\t\t\t\t\tread y;\n"
+                                "\t\t\t\t}\n"
+                                "\t\t\t}\n"
+                                "\t\t}\n"
+                                "\t}\n"
+                                "}";
+    std::ofstream file;
+    file.open(filename);
+    file << sampleProgram;
+    file.close();
+    REQUIRE(std::filesystem::exists(filename));
+    SimpleParserFacade parser(filename);
 	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
 
 	auto& loop = ((tree_ptr->children)[0]->children)[0]->children[0];
@@ -460,5 +724,6 @@ TEST_CASE("Parsing single procedure with nested while and if.") {
 			REQUIRE(if2while2->type == ASTNodeType::WHILE);
 			REQUIRE(if2while2->lineNumber == 15);
 		}
-	}
+    }
+    std::filesystem::remove(filename);
 }

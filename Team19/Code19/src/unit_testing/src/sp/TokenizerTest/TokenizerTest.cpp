@@ -9,15 +9,21 @@
 #include <regex>
 
 TEST_CASE("Tokenizer::readFileToString", "[readFileToString]") {
-    const std::string testFileName = "../../../../../tests/sp/TokenizerTest/sourcefile1.txt";
+    std::string filename = "sample.txt";
+    std::string sampleProgram = "x = 1;";
+    std::ofstream file;
+    file.open(filename);
+    file << sampleProgram;
+    file.close();
+    REQUIRE(std::filesystem::exists(filename));
     const std::string testFileContent = "x = 1;";
-    REQUIRE(std::filesystem::exists(testFileName));
 
     std::string actualContent;
-    REQUIRE_NOTHROW(actualContent = FileProcessor::readFileToString(testFileName));
+    REQUIRE_NOTHROW(actualContent = FileProcessor::readFileToString(filename));
     REQUIRE(actualContent == testFileContent);
 
     SPTokenizer::tokenize(actualContent);
+    std::filesystem::remove(filename);
 }
 
 TEST_CASE("Test reading non-existent file", "[readFileToString]") {
@@ -26,12 +32,35 @@ TEST_CASE("Test reading non-existent file", "[readFileToString]") {
 }
 
 TEST_CASE("Test reading from an empty file", "[readFileToString]") {
-    REQUIRE(FileProcessor::readFileToString("../../../../../tests/sp/TokenizerTest/empty.txt") == "");
+    std::string filename = "sample.txt";
+    std::string sampleProgram = "";
+    std::ofstream file;
+    file.open(filename);
+    file << sampleProgram;
+    file.close();
+    REQUIRE(std::filesystem::exists(filename));
+    REQUIRE(FileProcessor::readFileToString(filename) == "");
+    std::filesystem::remove(filename);
 }
 
 TEST_CASE("Tokenizer::splitLine", "[splitLine]") {
-    const std::string testFileName = "../../../../../tests/sp/TokenizerTest/sourcefile2.txt";
-    REQUIRE(std::filesystem::exists(testFileName));
+    std::string filename = "sample.txt";
+    std::string sampleProgram = "procedure procedure {\n"
+                                "   x = 1;\n"
+                                "   read y12;\n"
+                                "   call abc;\n"
+                                "   if (x > y) then {\n"
+                                "\t  z = x - y;\n"
+                                "   } else {\n"
+                                "\t  z = y - x;\n"
+                                "   }\n"
+                                "}";
+    std::ofstream file;
+    file.open(filename);
+    file << sampleProgram;
+    file.close();
+    REQUIRE(std::filesystem::exists(filename));
+
     const std::vector<std::string> expectedOutput = {
         "procedure testproc {",
         "   x = 1;",
@@ -40,14 +69,21 @@ TEST_CASE("Tokenizer::splitLine", "[splitLine]") {
         "}"
     };
 
-    std::string actualContent = FileProcessor::readFileToString(testFileName);
+    std::string actualContent = FileProcessor::readFileToString(filename);
     std::vector<std::string> actualOutput = SPTokenizer::splitLine(actualContent);
+    std::filesystem::remove(filename);
+
 }
 
 TEST_CASE("Tokenize simple file without keywords", "[tokenize]") {
-    const std::string testFileName = "../../../../../tests/sp/TokenizerTest/sourcefile1.txt";
-    REQUIRE(std::filesystem::exists(testFileName));
-    std::string actualContent = FileProcessor::readFileToString(testFileName);
+    std::string filename = "sample.txt";
+    std::string sampleProgram = "x = 1;";
+    std::ofstream file;
+    file.open(filename);
+    file << sampleProgram;
+    file.close();
+    REQUIRE(std::filesystem::exists(filename));
+    std::string actualContent = FileProcessor::readFileToString(filename);
 
     auto actualOutput = SPTokenizer::tokenize(actualContent);
     REQUIRE(actualOutput.size() == 4);
@@ -55,6 +91,7 @@ TEST_CASE("Tokenize simple file without keywords", "[tokenize]") {
     REQUIRE(actualOutput[1].getTokenType() == LexicalTokenType::OPERATOR_ASSIGN);
     REQUIRE(actualOutput[2].getTokenType() == LexicalTokenType::INTEGER);
     REQUIRE(actualOutput[3].getTokenType() == LexicalTokenType::SYMBOL_SEMICOLON);
+    std::filesystem::remove(filename);
 }
 
 
@@ -104,8 +141,14 @@ TEST_CASE("Tokenizer throws runtime error for invalid syntax", "[tokenize]") {
 
 
 TEST_CASE("Tokenizer throws runtime error for invalid syntax", "[tokenize]") {
-    const std::string testFileName = "../../../../../tests/sp/TokenizerTest/sourcefile5.txt";
-    REQUIRE(std::filesystem::exists(testFileName));
-    std::string actualContent = FileProcessor::readFileToString(testFileName);
+    std::string filename = "sample.txt";
+    std::string sampleProgram = "000abc = 10+e;";
+    std::ofstream file;
+    file.open(filename);
+    file << sampleProgram;
+    file.close();
+    REQUIRE(std::filesystem::exists(filename));
+    std::string actualContent = FileProcessor::readFileToString(filename);
     REQUIRE_THROWS_WITH(SPTokenizer::tokenize(actualContent), "Error: Invalid SIMPLE syntax.");
+    std::filesystem::remove(filename);
 }
