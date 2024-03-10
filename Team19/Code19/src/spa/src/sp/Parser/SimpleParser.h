@@ -5,7 +5,6 @@
 #include "sp/AST/AST.h"
 #include "sp/AST/ASTNode.h"
 #include "sp/AST/ASTUtility.h"
-#include "sp/AST/ASTHelper.h"
 #include "sp/SPTokenizer/LexicalToken.h"
 #include "sp/Parser/SimpleLineManager.h"
 

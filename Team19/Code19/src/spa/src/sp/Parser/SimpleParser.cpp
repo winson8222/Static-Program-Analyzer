@@ -51,7 +51,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseProgram() {
 void SimpleParser::assertToken(LexicalToken token, LexicalTokenType type) const {
 	if (!token.isType(type)) {
 		throw std::runtime_error("Error: Expected " + LexicalTokenTypeMapper::printType(type) + " but got " + LexicalTokenTypeMapper::printType(token.getTokenType()) +
-			" At Line " + std::to_string(token.getLine()) + " Position " + std::to_string(token.getLinePosition()));
+			" At Program Line " + std::to_string(this->lineManager->getLine()));
 	}
 }
 
@@ -184,7 +184,6 @@ std::shared_ptr<ASTNode> SimpleParser::parseStmtLst() {
 		this->lineManager->nextLine();
 		statements.push_back(this->parseStmt());
 	}
-
 
 	for (auto& statement : statements) {
 		statementListTree->addChild(statement);
