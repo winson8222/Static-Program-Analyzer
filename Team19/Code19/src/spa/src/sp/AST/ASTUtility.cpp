@@ -82,4 +82,8 @@ bool ASTUtility::nodeIsStatementList(ASTNodeType t) {
 bool ASTUtility::nodeIsIfElse(ASTNodeType t) {
 	return t == ASTNodeType::IF_ELSE_THEN;
 }
+
+bool ASTUtility::nodeIsCall(ASTNodeType t) {
+	return t == ASTNodeType::CALL;
+}
 // ai-gen end

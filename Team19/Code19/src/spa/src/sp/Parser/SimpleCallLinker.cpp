@@ -1,5 +1,26 @@
 #include "SimpleCallLinker.h"
+#include <iostream>
+#include <stdexcept>
 
-void SimpleCallLinker::linkAllCallsToProcedure(std::shared_ptr<ASTNode> root) {
+SimpleCallLinker::SimpleCallLinker(std::shared_ptr<ASTNode> root) {
+	this->root = root;
+	for (auto child : root->children) {
+	 	procedureNameToProcedureNode[child->value] = child;
+	}
+}
 
+void SimpleCallLinker::linkAllCallsToProcedure() {
+	depthFirstSearch(root);
+}
+
+void SimpleCallLinker::depthFirstSearch(std::shared_ptr<ASTNode> node) {
+	if (ASTUtility::nodeIsCall(node->type)) {
+		std::string procName = node->children[0]->value;
+		if (procedureNameToProcedureNode.find(procName) != procedureNameToProcedureNode.end()) {
+			node->children[0] = procedureNameToProcedureNode[procName];
+		}
+	}
+	for (auto child : node->children) {
+		depthFirstSearch(child);
+	}
 }

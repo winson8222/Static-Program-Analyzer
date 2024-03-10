@@ -87,6 +87,13 @@ public:
     * @return true if AST node is an if-else statement, and false otherwise.
     */
     static bool nodeIsIfElse(ASTNodeType t);
+
+
+    /*
+    * @brief Check if accepting AST node is a call statement
+    * @return true if AST node is a call statement, and false otherwise.
+	*/
+    static bool nodeIsCall(ASTNodeType t);
 };
 
 // ai-gen end
