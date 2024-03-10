@@ -34,11 +34,8 @@ std::shared_ptr<ASTNode> SimpleParser::parseProgram() {
 		ASTNodeType::PROGRAMS, SimpleLineManager::getProgramLineNumber(), ASTUtility::getASTNodeType.find(ASTNodeType::PROGRAMS)->second
 	);
 
-	int maxLineNumber = 0;
 	for (auto& procedure : procedures) {
-		int temp = ASTTraverser::setLineNumbers(procedure, maxLineNumber);
 		root->addChild(procedure);
-		maxLineNumber = temp;
 	}
 
 	return root;
@@ -149,6 +146,8 @@ std::shared_ptr<ASTNode> SimpleParser::parseProcedure() {
 		throw std::runtime_error("Error: SimpleParser::parseProcedure encounter empty statement.");
 	}
 
+
+
 	LexicalToken procedureKeyword = this->getNextToken();
 	this->assertToken(procedureKeyword, LexicalTokenType::KEYWORD_PROCEDURE);
 
@@ -159,7 +158,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseProcedure() {
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_BRACE);
 
 	std::shared_ptr<ASTNode> procedureTree = std::make_shared<ASTNode>(
-		ASTNodeType::PROCEDURE, procedureKeyword.getLine(),
+		ASTNodeType::PROCEDURE, lineManager->getLine(),
 		procedureName->value
 	);
 
@@ -175,16 +174,18 @@ std::shared_ptr<ASTNode> SimpleParser::parseProcedure() {
  */
 std::shared_ptr<ASTNode> SimpleParser::parseStmtLst() {
 	std::vector<std::shared_ptr<ASTNode>> statements;
-	int firstLine = this->peekNextToken().getLine();
+	this->lineManager->nextLine();
+
+	std::shared_ptr<ASTNode> statementListTree = std::make_shared<ASTNode>(
+		ASTNodeType::STATEMENT_LIST, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::STATEMENT_LIST)->second
+	);
 
 	// Parse every statement until we see a closing bracket.
 	while (!this->peekNextToken().isType(LexicalTokenType::SYMBOL_CLOSE_BRACE)) {
 		statements.push_back(this->parseStmt());
+		this->lineManager->nextLine();
 	}
 
-	std::shared_ptr<ASTNode> statementListTree = std::make_shared<ASTNode>(
-		ASTNodeType::STATEMENT_LIST, firstLine, ASTUtility::getASTNodeType.find(ASTNodeType::STATEMENT_LIST)->second
-	);
 
 	for (auto& statement : statements) {
 		statementListTree->addChild(statement);
@@ -252,7 +253,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseRead() {
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_SEMICOLON);
 
 	std::shared_ptr<ASTNode> readTree = std::make_shared<ASTNode>(
-		ASTNodeType::READ, keyword.getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::READ)->second
+		ASTNodeType::READ, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::READ)->second
 	);
 
 	readTree->addChild(variable);
@@ -274,7 +275,7 @@ std::shared_ptr<ASTNode> SimpleParser::parsePrint() {
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_SEMICOLON);
 
 	std::shared_ptr<ASTNode> printTree = std::make_shared<ASTNode>(
-		ASTNodeType::PRINT, keyword.getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::PRINT)->second
+		ASTNodeType::PRINT, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::PRINT)->second
 	);
 
 	printTree->addChild(variable);
@@ -296,7 +297,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseCall() {
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_SEMICOLON);
 
 	std::shared_ptr<ASTNode> callTree = std::make_shared<ASTNode>(
-		ASTNodeType::CALL, keyword.getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::CALL)->second
+		ASTNodeType::CALL, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::CALL)->second
 	);
 
 	callTree->addChild(variable);
@@ -309,7 +310,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseCall() {
  * @brief Parse a while statement in the program.
  *
  * @details While statement can only take this form: 'while' '(' cond_expr ')' '{' stmtLst '}'
- * 
+ *
  * @return std::shared_ptr<ASTNode> A smart pointer pointing to the root of the parsed while node tree.
  */
 std::shared_ptr<ASTNode> SimpleParser::parseWhile() {
@@ -325,7 +326,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseWhile() {
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_BRACE);
 
 	std::shared_ptr<ASTNode> whileTree = std::make_shared<ASTNode>(
-		ASTNodeType::WHILE, keyword.getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::WHILE)->second
+		ASTNodeType::WHILE, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::WHILE)->second
 	);
 
 	whileTree->addChild(condExpr);
@@ -337,7 +338,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseWhile() {
 
 /**
  * @brief Parse a if statement in the program.
- * 
+ *
  * @details If statement can only take this form: 'if' '(' cond_expr ')' 'then' '{' stmtLst '}' 'else' '{' stmtLst '}'
  *
  * @return std::shared_ptr<ASTNode> A smart pointer pointing to the root of the parsed if node tree.
@@ -364,7 +365,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseIf() {
 
 	// Warning: If_ELSE_THEN ASTNodeType encountered. May need to seperate into IF, ELSE, THEN keywords.
 	std::shared_ptr<ASTNode> ifTree = std::make_shared<ASTNode>(
-		ASTNodeType::IF_ELSE_THEN, keyword.getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::IF_ELSE_THEN)->second
+		ASTNodeType::IF_ELSE_THEN, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::IF_ELSE_THEN)->second
 	);
 
 	ifTree->addChild(condExpr);
@@ -385,7 +386,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseAssign() {
 	LexicalToken assign = this->getNextToken();
 	this->assertToken(assign, LexicalTokenType::OPERATOR_ASSIGN);
 	std::shared_ptr<ASTNode> assignNode = std::make_shared<ASTNode>(
-		ASTNodeType::ASSIGN, assign.getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::ASSIGN)->second
+		ASTNodeType::ASSIGN, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::ASSIGN)->second
 	);
 
 	std::shared_ptr<ASTNode> expr = this->parseExpr();
@@ -400,9 +401,9 @@ std::shared_ptr<ASTNode> SimpleParser::parseAssign() {
 
 /**
  * @brief Parse a conditional expression in the program.
- * 
+ *
  * @details CondExpr can only take these forms: rel_expr | '!' '(' cond_expr ')' | '(' cond_expr ')' '&&' '(' cond_expr ')' | '(' cond_expr ')' '||' '(' cond_expr ')'
- * 
+ *
  * @return std::shared_ptr<ASTNode> A smart pointer pointing to the root of the parsed conditional expression node tree.
  */
 std::shared_ptr<ASTNode> SimpleParser::parseCondExpr() {
@@ -422,7 +423,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseCondExpr() {
 
 		this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_PAREN);
 
-		operationNode = std::make_shared<ASTNode>(ASTNodeType::NOT, firstToken.getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::NOT)->second);
+		operationNode = std::make_shared<ASTNode>(ASTNodeType::NOT, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::NOT)->second);
 		operationNode->addChild(condExpr);
 
 		return operationNode;
@@ -442,10 +443,10 @@ std::shared_ptr<ASTNode> SimpleParser::parseCondExpr() {
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_PAREN);
 
 	if (logicalOperator.isType(LexicalTokenType::OPERATOR_AND)) {
-		operationNode = std::make_shared<ASTNode>(ASTNodeType::AND, logicalOperator.getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::AND)->second);
+		operationNode = std::make_shared<ASTNode>(ASTNodeType::AND, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::AND)->second);
 	}
 	else if (logicalOperator.isType(LexicalTokenType::OPERATOR_OR)) {
-		operationNode = std::make_shared<ASTNode>(ASTNodeType::OR, logicalOperator.getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::OR)->second);
+		operationNode = std::make_shared<ASTNode>(ASTNodeType::OR, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::OR)->second);
 	}
 
 	operationNode->addChild(left);
@@ -470,22 +471,22 @@ std::shared_ptr<ASTNode> SimpleParser::parseRelExpr() {
 	std::shared_ptr<ASTNode> operationNode;
 
 	if (operatorToken.isType(LexicalTokenType::OPERATOR_GREATER)) {
-		operationNode = std::make_shared<ASTNode>(ASTNodeType::GREATER, operatorToken.getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::GREATER)->second);
+		operationNode = std::make_shared<ASTNode>(ASTNodeType::GREATER, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::GREATER)->second);
 	}
 	else if (operatorToken.isType(LexicalTokenType::OPERATOR_GREATER_EQUAL)) {
-		operationNode = std::make_shared<ASTNode>(ASTNodeType::GREATER_OR_EQUAL, operatorToken.getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::GREATER_OR_EQUAL)->second);
+		operationNode = std::make_shared<ASTNode>(ASTNodeType::GREATER_OR_EQUAL, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::GREATER_OR_EQUAL)->second);
 	}
 	else if (operatorToken.isType(LexicalTokenType::OPERATOR_LESS)) {
-		operationNode = std::make_shared<ASTNode>(ASTNodeType::LESSER, operatorToken.getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::LESSER)->second);
+		operationNode = std::make_shared<ASTNode>(ASTNodeType::LESSER, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::LESSER)->second);
 	}
 	else if (operatorToken.isType(LexicalTokenType::OPERATOR_LESS_EQUAL)) {
-		operationNode = std::make_shared<ASTNode>(ASTNodeType::LESSER_OR_EQUAL, operatorToken.getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::LESSER_OR_EQUAL)->second);
+		operationNode = std::make_shared<ASTNode>(ASTNodeType::LESSER_OR_EQUAL, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::LESSER_OR_EQUAL)->second);
 	}
 	else if (operatorToken.isType(LexicalTokenType::OPERATOR_IS_EQUAL)) {
-		operationNode = std::make_shared<ASTNode>(ASTNodeType::EQUAL, operatorToken.getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::EQUAL)->second);
+		operationNode = std::make_shared<ASTNode>(ASTNodeType::EQUAL, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::EQUAL)->second);
 	}
 	else if (operatorToken.isType(LexicalTokenType::OPERATOR_NOT_EQUAL)) {
-		operationNode = std::make_shared<ASTNode>(ASTNodeType::NOT_EQUAL, operatorToken.getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::NOT_EQUAL)->second);
+		operationNode = std::make_shared<ASTNode>(ASTNodeType::NOT_EQUAL, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::NOT_EQUAL)->second);
 	}
 
 	operationNode->addChild(left);
@@ -520,10 +521,10 @@ std::shared_ptr<ASTNode> SimpleParser::parseExpr() {
 
 		std::shared_ptr<ASTNode> operationNode;
 		if (operation.isType(LexicalTokenType::OPERATOR_PLUS)) {
-			operationNode = std::make_shared<ASTNode>(ASTNodeType::ADD, operation.getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::ADD)->second);
+			operationNode = std::make_shared<ASTNode>(ASTNodeType::ADD, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::ADD)->second);
 		}
 		else if (operation.isType(LexicalTokenType::OPERATOR_MINUS)) {
-			operationNode = std::make_shared<ASTNode>(ASTNodeType::SUBTRACT, operation.getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::SUBTRACT)->second);
+			operationNode = std::make_shared<ASTNode>(ASTNodeType::SUBTRACT, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::SUBTRACT)->second);
 		}
 
 		std::shared_ptr<ASTNode> right = parseTerm();
@@ -556,13 +557,13 @@ std::shared_ptr<ASTNode> SimpleParser::parseTerm() {
 		//		return std::make_shared<ASTNode>(ASTNodeType::CONSTANT, operation.getLine(), Utility::getASTNodeType(ASTNodeType::CONSTANT));
 		std::shared_ptr<ASTNode> operationNode;
 		if (operation.isType(LexicalTokenType::OPERATOR_MULTIPLY)) {
-			operationNode = std::make_shared<ASTNode>(ASTNodeType::MULTIPLY, operation.getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::MULTIPLY)->second);
+			operationNode = std::make_shared<ASTNode>(ASTNodeType::MULTIPLY, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::MULTIPLY)->second);
 		}
 		else if (operation.isType(LexicalTokenType::OPERATOR_DIVIDE)) {
-			operationNode = std::make_shared<ASTNode>(ASTNodeType::DIVIDE, operation.getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::DIVIDE)->second);
+			operationNode = std::make_shared<ASTNode>(ASTNodeType::DIVIDE, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::DIVIDE)->second);
 		}
 		else if (operation.isType(LexicalTokenType::OPERATOR_MODULO)) {
-			operationNode = std::make_shared<ASTNode>(ASTNodeType::MODULO, operation.getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::MODULO)->second);
+			operationNode = std::make_shared<ASTNode>(ASTNodeType::MODULO, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::MODULO)->second);
 		}
 		else {
 			throw std::runtime_error("Parsing Term but operator is not of the following: *, /, %");
@@ -597,11 +598,11 @@ std::shared_ptr<ASTNode> SimpleParser::parseFactor() {
 		this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_PAREN);
 		return expr;
 	}
-	
+
 	if (nextToken.isType(LexicalTokenType::NAME)) {
 		return this->parseVarName();
 	}
-	
+
 	if (nextToken.isType(LexicalTokenType::INTEGER)) {
 		return this->parseConstValue();
 	}
@@ -617,7 +618,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseFactor() {
 std::shared_ptr<ASTNode> SimpleParser::parseVarName() {
 	LexicalToken variable = this->getNextToken();
 	this->assertToken(variable, LexicalTokenType::NAME);
-	return std::make_shared<ASTNode>(ASTNodeType::VARIABLE, variable.getLine(), variable.getValue());
+	return std::make_shared<ASTNode>(ASTNodeType::VARIABLE, this->lineManager->getLine(), variable.getValue());
 }
 
 /**
@@ -628,7 +629,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseVarName() {
 std::shared_ptr<ASTNode> SimpleParser::parseProcName() {
 	LexicalToken procedureName = this->getNextToken();
 	this->assertToken(procedureName, LexicalTokenType::NAME);
-	return std::make_shared<ASTNode>(ASTNodeType::VARIABLE, procedureName.getLine(), procedureName.getValue());
+	return std::make_shared<ASTNode>(ASTNodeType::VARIABLE, this->lineManager->getLine(), procedureName.getValue());
 }
 
 /**
@@ -639,6 +640,6 @@ std::shared_ptr<ASTNode> SimpleParser::parseProcName() {
 std::shared_ptr<ASTNode> SimpleParser::parseConstValue() {
 	LexicalToken constant = this->getNextToken();
 	this->assertToken(constant, LexicalTokenType::INTEGER);
-	return std::make_shared<ASTNode>(ASTNodeType::CONSTANT, constant.getLine(), constant.getValue());
+	return std::make_shared<ASTNode>(ASTNodeType::CONSTANT, this->lineManager->getLine(), constant.getValue());
 }
 // ai-gen end

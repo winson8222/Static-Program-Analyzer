@@ -7,12 +7,12 @@ SimpleLineManager::SimpleLineManager() {
 
 // Function to get the current line number
 int SimpleLineManager::getLine() {
-	return line;
+	return this->line;
 }
 
 // Function to move to the next line
 void SimpleLineManager::nextLine() {
-	line++;
+	this->line++;
 }
 
 int SimpleLineManager::getProgramLineNumber() {
