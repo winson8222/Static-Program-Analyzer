@@ -35,9 +35,9 @@ TEST_CASE("sp/DesignExtractor/Visitor/AssignVisitor") {
 TEST_CASE("sp/DesignExtractor/Extractor/AssignExtractor") {
     std::string filename = "sample.txt";
     std::string sampleProgram = "procedure proc1 {modifiesSWriter"
-                                "modifiesSWriterx = y + z;modifiesSWriter"
-                                "modifiesSWritery = 2;modifiesSWriter"
-                                "modifiesSWriterz = x + y * x - 2/2 + z;modifiesSWriter"
+                                "x = y + z;modifiesSWriter"
+                                "y = 2;modifiesSWriter"
+                                "z = x + y * x - 2/2 + z;modifiesSWriter"
                                 "}";
     std::ofstream file;
     file.open(filename);
