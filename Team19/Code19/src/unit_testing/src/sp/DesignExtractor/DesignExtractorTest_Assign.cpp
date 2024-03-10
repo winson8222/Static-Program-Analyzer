@@ -33,9 +33,18 @@ TEST_CASE("sp/DesignExtractor/Visitor/AssignVisitor") {
 }
 
 TEST_CASE("sp/DesignExtractor/Extractor/AssignExtractor") {
-	const std::string testFileName = "../../../../../tests/sp/DesignExtractorTest/assign1.txt";
-	REQUIRE(std::filesystem::exists(testFileName));
-	SimpleParserFacade parser(testFileName);
+    std::string filename = "sample.txt";
+    std::string sampleProgram = "procedure proc1 {"
+                                "x = y + z;"
+                                "y = 2;"
+                                "z = x + y * x - 2/2 + z;"
+                                "}";
+    std::ofstream file;
+    file.open(filename);
+    file << sampleProgram;
+    file.close();
+    REQUIRE(std::filesystem::exists(filename));
+	SimpleParserFacade parser(filename);
 	std::shared_ptr<ASTNode> root = parser.parse();
 	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
@@ -51,4 +60,5 @@ TEST_CASE("sp/DesignExtractor/Extractor/AssignExtractor") {
 		std::unordered_set<std::string> expectedVars = { "x", "y", "z" };
 		REQUIRE(pkbReaderManager->getVariableReader()->getAllVariables() == expectedVars);
 	}
+    std::filesystem::remove(filename);
 }
