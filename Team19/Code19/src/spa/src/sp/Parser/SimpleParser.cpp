@@ -202,10 +202,6 @@ std::shared_ptr<ASTNode> SimpleParser::parseStmtLst() {
  * @throws Retrieves a runtime_error if parsing is unsuccessful.
  */
 std::shared_ptr<ASTNode> SimpleParser::parseStmt() {
-	if (!this->hasTokensLeft()) {
-		throw std::runtime_error("Error: SimpleParser::parseStmt encounter empty statement.");
-	}
-
 	// If next next token is '=', we are assigning. Call assign.
 	LexicalToken secondToken = this->peekNextNextToken();
 	if (secondToken.isType(LexicalTokenType::OPERATOR_ASSIGN)) {
