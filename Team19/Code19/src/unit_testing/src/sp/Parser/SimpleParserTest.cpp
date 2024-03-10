@@ -6,11 +6,11 @@
 
 TEST_CASE("Program parsing throws an error for missing curly brace after procedure end.") {
     std::string filename = "sample.txt";
-    std::string sampleProgram = "procedure proc1 {\n"
-                                "\tprint x;\n"
-                                "\n"
-                                "procedure proc2 \n"
-                                "\tcall y;\n"
+    std::string sampleProgram = "procedure proc1 {"
+                                "print x;"
+                                ""
+                                "procedure proc2 "
+                                "call y;"
                                 "}";
     std::ofstream file;
     file.open(filename);
@@ -24,8 +24,8 @@ TEST_CASE("Program parsing throws an error for missing curly brace after procedu
 
 TEST_CASE("Program parsing throws an error for missing closing curly brace.") {
     std::string filename = "sample.txt";
-    std::string sampleProgram = "procedure invalidProcedure {\n"
-                                "\tcall y;";
+    std::string sampleProgram = "procedure invalidProcedure {"
+                                "call y;";
     std::ofstream file;
     file.open(filename);
     file << sampleProgram;
@@ -37,8 +37,8 @@ TEST_CASE("Program parsing throws an error for missing closing curly brace.") {
 
 TEST_CASE("Program parsing throws an error for missing curly braces.") {
     std::string filename = "sample.txt";
-    std::string sampleProgram = "procedure invalidProcedure \n"
-                                "\tcall y;";
+    std::string sampleProgram = "procedure invalidProcedure "
+                                "call y;";
     std::ofstream file;
     file.open(filename);
     file << sampleProgram;
@@ -51,9 +51,9 @@ TEST_CASE("Program parsing throws an error for missing curly braces.") {
 
 TEST_CASE("Program parsing throws an error for extra variable in print statement") {
     std::string filename = "sample.txt";
-    std::string sampleProgram = "procedure proc {\n"
-                                "\tcall variable123;\n"
-                                "\tprint xyz call;\n"
+    std::string sampleProgram = "procedure proc {"
+                                "call variable123;"
+                                "print xyz call;"
                                 "}";
     std::ofstream file;
     file.open(filename);
@@ -67,10 +67,10 @@ TEST_CASE("Program parsing throws an error for extra variable in print statement
 
 TEST_CASE("Program parsing throws an error for missing parenthesis around !(cond_expr) with following && operator.") {
     std::string filename = "sample.txt";
-    std::string sampleProgram = "procedure procedure {\n"
-                                "\twhile (!(read != 11) && !(read == while)) {\n"
-                                "\t\tprint = 0;\n"
-                                "\t}\n"
+    std::string sampleProgram = "procedure procedure {"
+                                "while (!(read != 11) && !(read == while)) {"
+                                "print = 0;"
+                                "}"
                                 "}";
     std::ofstream file;
     file.open(filename);
@@ -84,10 +84,10 @@ TEST_CASE("Program parsing throws an error for missing parenthesis around !(cond
 
 TEST_CASE("Program parsing throws an error for extra parenthesis around cond_expr.") {
     std::string filename = "sample.txt";
-    std::string sampleProgram = "procedure procedure {\n"
-                                "\twhile ((read != 11)) {\n"
-                                "\t\tprint = 0;\n"
-                                "\t}\n"
+    std::string sampleProgram = "procedure procedure {"
+                                "while ((read != 11)) {"
+                                "print = 0;"
+                                "}"
                                 "}";
     std::ofstream file;
     file.open(filename);
@@ -101,8 +101,8 @@ TEST_CASE("Program parsing throws an error for extra parenthesis around cond_exp
 
 TEST_CASE("Program parsing throws an error for invalid keyword.") {
     std::string filename = "sample.txt";
-    std::string sampleProgram = "procedure main {\n"
-                                "\twrite x;\n"
+    std::string sampleProgram = "procedure main {"
+                                "write x;"
                                 "}";
     std::ofstream file;
     file.open(filename);
@@ -116,8 +116,8 @@ TEST_CASE("Program parsing throws an error for invalid keyword.") {
 
 TEST_CASE("Single procedure, with read statement") {
     std::string filename = "sample.txt";
-    std::string sampleProgram = "procedure main {\n"
-                                "\tread helloWorld;\n"
+    std::string sampleProgram = "procedure main {"
+                                "read helloWorld;"
                                 "}";
     std::ofstream file;
     file.open(filename);
@@ -146,29 +146,29 @@ TEST_CASE("Single procedure, with read statement") {
 
 TEST_CASE("Single procedure, all possible conditional expressions in while statements") {
     std::string filename = "sample.txt";
-    std::string sampleProgram = "procedure conditionalExpressions {\n"
-                                "\twhile(x == 2) {read x;}\n"
-                                "\twhile(x != 2) {read x;}\n"
-                                "\twhile(x < 2) {read x;}\n"
-                                "\twhile(x <= 2) {read x;}\n"
-                                "\twhile(x > 2) {read x;}\n"
-                                "\twhile(x >= 2) {read x;}\n"
-                                "\twhile(!(x == 2)) {read x;}\n"
-                                "\n"
-                                "\twhile(0 == 2147483647) {read x;}\n"
-                                "\twhile(0 != 2147483647) {read x;}\n"
-                                "\twhile(0 < 2147483647) {read x;}\n"
-                                "\twhile(0 <= 2147483647) {read x;}\n"
-                                "\twhile(0 > 2147483647) {read x;}\n"
-                                "\twhile(0 >= 2147483647) {read x;}\n"
-                                "\twhile(!(0 == 2147483647)) {read x;}\n"
-                                "\n"
-                                "\twhile((x == 2) && (x == 1)) {read x;}\n"
-                                "\twhile((x != 2) || (x != 2)) {read x;}\n"
-                                "\twhile((!(x == 2)) && (!(x == 1))) {read x;}\n"
-                                "\twhile( ((x == 2) && (x == 1)) || (x == 3)) {read x;}\n"
-                                "\twhile(!(!(!(!(!(!(!(!(!(!(x==3))))))))))) {read x;}\n"
-                                "\twhile(((x <= y) || (!(y == z))) && (!(z >= x))) {read x;}\n"
+    std::string sampleProgram = "procedure conditionalExpressions {"
+                                "while(x == 2) {read x;}"
+                                "while(x != 2) {read x;}"
+                                "while(x < 2) {read x;}"
+                                "while(x <= 2) {read x;}"
+                                "while(x > 2) {read x;}"
+                                "while(x >= 2) {read x;}"
+                                "while(!(x == 2)) {read x;}"
+                                ""
+                                "while(0 == 2147483647) {read x;}"
+                                "while(0 != 2147483647) {read x;}"
+                                "while(0 < 2147483647) {read x;}"
+                                "while(0 <= 2147483647) {read x;}"
+                                "while(0 > 2147483647) {read x;}"
+                                "while(0 >= 2147483647) {read x;}"
+                                "while(!(0 == 2147483647)) {read x;}"
+                                ""
+                                "while((x == 2) && (x == 1)) {read x;}"
+                                "while((x != 2) || (x != 2)) {read x;}"
+                                "while((!(x == 2)) && (!(x == 1))) {read x;}"
+                                "while( ((x == 2) && (x == 1)) || (x == 3)) {read x;}"
+                                "while(!(!(!(!(!(!(!(!(!(!(x==3))))))))))) {read x;}"
+                                "while(((x <= y) || (!(y == z))) && (!(z >= x))) {read x;}"
                                 "}";
     std::ofstream file;
     file.open(filename);
@@ -201,35 +201,35 @@ TEST_CASE("Single procedure, all possible conditional expressions in while state
 TEST_CASE("Multiple procedures, all names that may be potential keywords.") {
 	// Generate test file
     std::string filename = "sample.txt";
-    std::string sampleProgram = "procedure assign { read x; }\n"
-                                "procedure call { read x; }\n"
-                                "procedure constant { read x; }\n"
-                                "procedure while { read x; }\n"
-                                "procedure if { read x; }\n"
-                                "procedure else { read x; }\n"
-                                "procedure then { read x; }\n"
-                                "procedure print { read x; }\n"
-                                "procedure read { read x; }\n"
-                                "procedure stmtLst { read x; }\n"
-                                "procedure variable { read x; }\n"
-                                "procedure stmt { read x; }\n"
-                                "procedure procedure { read x; }\n"
-                                "procedure program { read x; }\n"
-                                "procedure Follows { read x; }\n"
-                                "procedure FollowsT { read x; }\n"
-                                "procedure Parent { read x; }\n"
-                                "procedure ParentT { read x; }\n"
-                                "procedure Uses { read x; }\n"
-                                "procedure UsesP { read x; }\n"
-                                "procedure UsesS { read x; }\n"
-                                "procedure Modifies { read x; }\n"
-                                "procedure ModifiesP { read x; }\n"
-                                "procedure ModifiesS { read x; }\n"
-                                "procedure Calls { read x; }\n"
-                                "procedure CallsT { read x; }\n"
-                                "procedure Next { read x; }\n"
-                                "procedure NextT { read x; }\n"
-                                "procedure Affects { read x; }\n"
+    std::string sampleProgram = "procedure assign { read x; }"
+                                "procedure call { read x; }"
+                                "procedure constant { read x; }"
+                                "procedure while { read x; }"
+                                "procedure if { read x; }"
+                                "procedure else { read x; }"
+                                "procedure then { read x; }"
+                                "procedure print { read x; }"
+                                "procedure read { read x; }"
+                                "procedure stmtLst { read x; }"
+                                "procedure variable { read x; }"
+                                "procedure stmt { read x; }"
+                                "procedure procedure { read x; }"
+                                "procedure program { read x; }"
+                                "procedure Follows { read x; }"
+                                "procedure FollowsT { read x; }"
+                                "procedure Parent { read x; }"
+                                "procedure ParentT { read x; }"
+                                "procedure Uses { read x; }"
+                                "procedure UsesP { read x; }"
+                                "procedure UsesS { read x; }"
+                                "procedure Modifies { read x; }"
+                                "procedure ModifiesP { read x; }"
+                                "procedure ModifiesS { read x; }"
+                                "procedure Calls { read x; }"
+                                "procedure CallsT { read x; }"
+                                "procedure Next { read x; }"
+                                "procedure NextT { read x; }"
+                                "procedure Affects { read x; }"
                                 "procedure AffectsT { read x; }";
     std::ofstream file;
     file.open(filename);
@@ -249,22 +249,22 @@ TEST_CASE("Multiple procedures, all names that may be potential keywords.") {
 
 TEST_CASE("Parsing single program with all possible statements types.") {
     std::string filename = "sample.txt";
-    std::string sampleProgram = "procedure procedure {\n"
-                                "\twhile (!(read > procedure)) {\n"
-                                "\t\tif = if;\n"
-                                "\t} \n"
-                                "\n"
-                                "\tif (then < 2) then {\n"
-                                "\t\telse = else;\n"
-                                "\t} else {\n"
-                                "\t\twhile = then;\n"
-                                "\t}\n"
-                                "\n"
-                                "\tread = 1 + program;\n"
-                                "\n"
-                                "\tcall call;\n"
-                                "\tprint read;\n"
-                                "\tread print;\n"
+    std::string sampleProgram = "procedure procedure {"
+                                "while (!(read > procedure)) {"
+                                "if = if;"
+                                "} "
+                                ""
+                                "if (then < 2) then {"
+                                "else = else;"
+                                "} else {"
+                                "while = then;"
+                                "}"
+                                ""
+                                "read = 1 + program;"
+                                ""
+                                "call call;"
+                                "print read;"
+                                "read print;"
                                 "}";
     std::ofstream file;
     file.open(filename);
@@ -474,32 +474,32 @@ TEST_CASE("Parsing single program with all possible statements types.") {
 
 TEST_CASE("Calling parseProgram for complex procedure", "[parse][program]") {
     std::string filename = "sample.txt";
-    std::string sampleProgram = "procedure computeCentroid {\n"
-                                "\tcount = 0;\n"
-                                "\tcenX = 0;\n"
-                                "\tcenY = 0;\n"
-                                "\twhile ((x != 0) && (y != 0)) {\n"
-                                "\t\tcount = count + 1;\n"
-                                "\t\tcenX = cenX + x;\n"
-                                "\t\tcenY = cenY + y;\n"
-                                "\t\tcall readPoint;\n"
-                                "\t}\n"
-                                "\tif (count == 0) then {\n"
-                                "\t\tflag = 1;\n"
-                                "\t} else {\n"
-                                "\t\tcenX = cenX / count ;\n"
-                                "\t\tcenY = cenY / count ;\n"
-                                "\t}\n"
-                                "\tnormSq = cenX * cenX + cenY * cenY;\n"
-                                "}\n"
-                                "\n"
-                                "procedure procedure {\n"
-                                "\tprint k;\n"
-                                "}\n"
-                                "\n"
-                                "procedure readPoint {\n"
-                                "\tread x;\n"
-                                "\tread y;\n"
+    std::string sampleProgram = "procedure computeCentroid {"
+                                "count = 0;"
+                                "cenX = 0;"
+                                "cenY = 0;"
+                                "while ((x != 0) && (y != 0)) {"
+                                "count = count + 1;"
+                                "cenX = cenX + x;"
+                                "cenY = cenY + y;"
+                                "call readPoint;"
+                                "}"
+                                "if (count == 0) then {"
+                                "flag = 1;"
+                                "} else {"
+                                "cenX = cenX / count ;"
+                                "cenY = cenY / count ;"
+                                "}"
+                                "normSq = cenX * cenX + cenY * cenY;"
+                                "}"
+                                ""
+                                "procedure procedure {"
+                                "print k;"
+                                "}"
+                                ""
+                                "procedure readPoint {"
+                                "read x;"
+                                "read y;"
                                 "}";
     std::ofstream file;
     file.open(filename);
@@ -565,48 +565,48 @@ TEST_CASE("Calling parseProgram for complex procedure", "[parse][program]") {
 
 TEST_CASE("Parsing single procedure that contains 20 nested while loops.") {
     std::string filename = "sample.txt";
-    std::string sampleProgram = "procedure nestedWhile {\n"
-                                "\twhile (x == 2) {\n"
-                                "\t\twhile (x != 2) {\n"
-                                "\t\t\twhile (x < 2) {\n"
-                                "\t\t\t\twhile (x <= 2) {\n"
-                                "\t\t\t\t\twhile (x > 2) {\n"
-                                "\t\t\t\t\t\twhile (x >= 2) {\n"
-                                "\t\t\t\t\t\t\twhile (!(x == 2)) {\n"
-                                "\t\t\t\t\t\t\t\twhile (0 == 2147483647) {\n"
-                                "\t\t\t\t\t\t\t\t\twhile (0 != 2147483647) {\n"
-                                "\t\t\t\t\t\t\t\t\t\twhile (0 < 2147483647) {\n"
-                                "\t\t\t\t\t\t\t\t\t\t\twhile (0 <= 2147483647) {\n"
-                                "\t\t\t\t\t\t\t\t\t\t\t\twhile (0 > 2147483647) {\n"
-                                "\t\t\t\t\t\t\t\t\t\t\t\t\twhile (0 >= 2147483647) {\n"
-                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\twhile (!(0 == 2147483647)) {\n"
-                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhile ((x == 2) && (x == 1)) {\n"
-                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhile ((x != 2) || (x != 2)) {\n"
-                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhile ((!(x == 2)) && (!(x == 1))) {\n"
-                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhile (((x == 2) && (x == 1)) || (x == 3)) {\n"
-                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhile (!(!(!(!(!(!(!(!(!(!(x == 3))))))))))) {\n"
-                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhile (((x <= y) || (!(y == z))) && (!(z >= x))) {\n"
-                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tread x;\n"
-                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t}\n"
-                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t}\n"
-                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t}\n"
-                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t}\n"
-                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t}\n"
-                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t}\n"
-                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t}\n"
-                                "\t\t\t\t\t\t\t\t\t\t\t\t\t}\n"
-                                "\t\t\t\t\t\t\t\t\t\t\t\t}\n"
-                                "\t\t\t\t\t\t\t\t\t\t\t}\n"
-                                "\t\t\t\t\t\t\t\t\t\t}\n"
-                                "\t\t\t\t\t\t\t\t\t}\n"
-                                "\t\t\t\t\t\t\t\t}\n"
-                                "\t\t\t\t\t\t\t}\n"
-                                "\t\t\t\t\t\t}\n"
-                                "\t\t\t\t\t}\n"
-                                "\t\t\t\t}\n"
-                                "\t\t\t}\n"
-                                "\t\t}\n"
-                                "\t}\n"
+    std::string sampleProgram = "procedure nestedWhile {"
+                                "while (x == 2) {"
+                                "while (x != 2) {"
+                                "while (x < 2) {"
+                                "while (x <= 2) {"
+                                "while (x > 2) {"
+                                "while (x >= 2) {"
+                                "while (!(x == 2)) {"
+                                "while (0 == 2147483647) {"
+                                "while (0 != 2147483647) {"
+                                "while (0 < 2147483647) {"
+                                "while (0 <= 2147483647) {"
+                                "while (0 > 2147483647) {"
+                                "while (0 >= 2147483647) {"
+                                "while (!(0 == 2147483647)) {"
+                                "while ((x == 2) && (x == 1)) {"
+                                "while ((x != 2) || (x != 2)) {"
+                                "while ((!(x == 2)) && (!(x == 1))) {"
+                                "while (((x == 2) && (x == 1)) || (x == 3)) {"
+                                "while (!(!(!(!(!(!(!(!(!(!(x == 3))))))))))) {"
+                                "while (((x <= y) || (!(y == z))) && (!(z >= x))) {"
+                                "read x;"
+                                "}"
+                                "}"
+                                "}"
+                                "}"
+                                "}"
+                                "}"
+                                "}"
+                                "}"
+                                "}"
+                                "}"
+                                "}"
+                                "}"
+                                "}"
+                                "}"
+                                "}"
+                                "}"
+                                "}"
+                                "}"
+                                "}"
+                                "}"
                                 "}";
     std::ofstream file;
     file.open(filename);
@@ -633,38 +633,38 @@ TEST_CASE("Parsing single procedure that contains 20 nested while loops.") {
 
 TEST_CASE("Parsing single procedure with nested while and if.") {
     std::string filename = "sample.txt";
-    std::string sampleProgram = "procedure nestedIfWhile {\n"
-                                "\twhile (x == y) {\n"
-                                "\t\tif (x == y) then {\n"
-                                "\t\t\twhile(x > y) {\n"
-                                "\t\t\t\tread x;\n"
-                                "\t\t\t}\n"
-                                "\n"
-                                "\t\t\twhile (y > x) {\n"
-                                "\t\t\t\tread y;\n"
-                                "\t\t\t}\n"
-                                "\t\t} else {\n"
-                                "\t\t\tif (x != y) then {\t\t\t\t\t\t\n"
-                                "\t\t\t\twhile(!(x == y)) {\n"
-                                "\t\t\t\t\tread y;\n"
-                                "\t\t\t\t}\n"
-                                "\t\t\t} else {\n"
-                                "\t\t\t\twhile (x >= y) {\n"
-                                "\t\t\t\t\tread y;\n"
-                                "\t\t\t\t}\n"
-                                "\t\t\t}\n"
-                                "\n"
-                                "\t\t\tif (x >= y) then {\n"
-                                "\t\t\t\twhile(x <= y) {\n"
-                                "\t\t\t\t\tread y;\n"
-                                "\t\t\t\t}\n"
-                                "\t\t\t} else {\n"
-                                "\t\t\t\twhile ((y > x) || (!(y == x))) {\n"
-                                "\t\t\t\t\tread y;\n"
-                                "\t\t\t\t}\n"
-                                "\t\t\t}\n"
-                                "\t\t}\n"
-                                "\t}\n"
+    std::string sampleProgram = "procedure nestedIfWhile {"
+                                "while (x == y) {"
+                                "if (x == y) then {"
+                                "while(x > y) {"
+                                "read x;"
+                                "}"
+                                ""
+                                "while (y > x) {"
+                                "read y;"
+                                "}"
+                                "} else {"
+                                "if (x != y) then {"
+                                "while(!(x == y)) {"
+                                "read y;"
+                                "}"
+                                "} else {"
+                                "while (x >= y) {"
+                                "read y;"
+                                "}"
+                                "}"
+                                ""
+                                "if (x >= y) then {"
+                                "while(x <= y) {"
+                                "read y;"
+                                "}"
+                                "} else {"
+                                "while ((y > x) || (!(y == x))) {"
+                                "read y;"
+                                "}"
+                                "}"
+                                "}"
+                                "}"
                                 "}";
     std::ofstream file;
     file.open(filename);

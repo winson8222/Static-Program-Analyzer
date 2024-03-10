@@ -45,15 +45,15 @@ TEST_CASE("Test reading from an empty file", "[readFileToString]") {
 
 TEST_CASE("Tokenizer::splitLine", "[splitLine]") {
     std::string filename = "sample.txt";
-    std::string sampleProgram = "procedure procedure {\n"
-                                "   x = 1;\n"
-                                "   read y12;\n"
-                                "   call abc;\n"
-                                "   if (x > y) then {\n"
-                                "\t  z = x - y;\n"
-                                "   } else {\n"
-                                "\t  z = y - x;\n"
-                                "   }\n"
+    std::string sampleProgram = "procedure procedure {"
+                                "   x = 1;"
+                                "   read y12;"
+                                "   call abc;"
+                                "   if (x > y) then {"
+                                "  z = x - y;"
+                                "   } else {"
+                                "  z = y - x;"
+                                "   }"
                                 "}";
     std::ofstream file;
     file.open(filename);

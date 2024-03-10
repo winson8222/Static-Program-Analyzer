@@ -10,9 +10,9 @@
 
 TEST_CASE("Tokenizer invalid cases", "[readFileToString]") {
     std::string filename = "sample.txt";
-    std::string sampleProgram = "procedure procedure {}\n"
-                                "call call;\n"
-                                "read read;\n"
+    std::string sampleProgram = "procedure procedure {}"
+                                "call call;"
+                                "read read;"
                                 "print print;";
     std::ofstream file;
     file.open(filename);

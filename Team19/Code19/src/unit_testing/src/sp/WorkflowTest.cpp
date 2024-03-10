@@ -8,8 +8,8 @@
 
 TEST_CASE("Test parser of SP on multipgole procedures", "[SourceProcessor]") {
     std::string filename = "sample.txt";
-    std::string sampleProgram = "procedure main {\n"
-                                "\tread helloWorld;\n"
+    std::string sampleProgram = "procedure main {"
+                                "read helloWorld;"
                                 "}";
     std::ofstream file;
     file.open(filename);
@@ -40,22 +40,22 @@ TEST_CASE("Test parser of SP on multipgole procedures", "[SourceProcessor]") {
 
 TEST_CASE("Test parser of SP on one procedures and multiple statements", "[SourceProcessor]") {
     std::string filename = "sample.txt";
-    std::string sampleProgram = "procedure procedure {\n"
-                                "\twhile (!(read > procedure)) {\n"
-                                "\t\tif = if;\n"
-                                "\t} \n"
-                                "\n"
-                                "\tif (then < 2) then {\n"
-                                "\t\telse = else;\n"
-                                "\t} else {\n"
-                                "\t\twhile = then;\n"
-                                "\t}\n"
-                                "\n"
-                                "\tread = 1 + program;\n"
-                                "\n"
-                                "\tcall call;\n"
-                                "\tprint read;\n"
-                                "\tread print;\n"
+    std::string sampleProgram = "procedure procedure {"
+                                "while (!(read > procedure)) {"
+                                "if = if;"
+                                "} "
+                                ""
+                                "if (then < 2) then {"
+                                "else = else;"
+                                "} else {"
+                                "while = then;"
+                                "}"
+                                ""
+                                "read = 1 + program;"
+                                ""
+                                "call call;"
+                                "print read;"
+                                "read print;"
                                 "}";
     std::ofstream file;
     file.open(filename);

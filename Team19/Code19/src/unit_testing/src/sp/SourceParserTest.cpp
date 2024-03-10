@@ -8,8 +8,8 @@
 
 TEST_CASE("Test header", "[SourceProcessor]") {
     std::string filename = "sample.txt";
-    std::string sampleProgram = "procedure main {\n"
-                                "\tread helloWorld;\n"
+    std::string sampleProgram = "procedure main {"
+                                "read helloWorld;"
                                 "}";
     std::ofstream file;
     file.open(filename);
