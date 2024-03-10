@@ -13,7 +13,16 @@
 // Prompt: https://platform.openai.com/playground/p/cJLjmmneCEs4z6ms7ZkBSxJB?model=gpt-4&mode=chat
 class SimpleParser {
 public:
+	/**
+	* @brief The constructor for the Simple Parser.
+	*/
 	SimpleParser(std::vector<LexicalToken> tokenStream);
+
+	/**
+	* @brief Parses the SIMPLE program based on a token stream as given.
+	* 
+	* @return The AST representation of the input SIMPLE program.
+	*/
 	std::shared_ptr<ASTNode> parseProgram();
 
 private:

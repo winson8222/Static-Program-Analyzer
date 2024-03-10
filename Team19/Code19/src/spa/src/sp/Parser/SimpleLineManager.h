@@ -13,7 +13,8 @@ public:
 	SimpleLineManager();
 
 	/**
-	* @brief Gets the current Simple program line number
+	* @brief Gets the current line in the Simple program representation.
+	* @return The current Simple program line number
 	*/
 	int getLine();
 
