@@ -17,8 +17,10 @@ std::shared_ptr<ResultTable> ModifiesPStrategy::evaluateQuery(PKBReaderManager& 
     } else if (suchThatSecondParam.getType() == TokenType::IDENT) {
         this->processSecondParam(suchThatFirstParam, suchThatSecondParam, parsingResult, resultTable, pkbReaderManager);
     } else {
-        t
+        this->processBothConstants(suchThatFirstParam, suchThatSecondParam, parsingResult, resultTable, pkbReaderManager);
     }
+
+    return resultTable;
 }
 
 void ModifiesPStrategy::processBothSynonyms(const Token &firstParam, const Token &secondParam,

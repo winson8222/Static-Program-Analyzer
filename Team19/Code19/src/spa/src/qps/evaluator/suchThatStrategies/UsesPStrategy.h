@@ -1,14 +1,26 @@
-//
-// Created by Winson Zheng on 11/3/24.
-//
+#pragma once
 
-#ifndef SPA_USESPSTRATEGY_H
-#define SPA_USESPSTRATEGY_H
+#include "qps/evaluator/suchThatStrategies/EntEntStrategy.h"
 
 
-class UsesPStrategy {
+using namespace std;
+
+class UsesPStrategy : public EntEntStrategy {
+private:
+    std::shared_ptr<UsesPReader> usesPReader;
+
+
+
+public:
+    std::shared_ptr<ResultTable> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult) override;
+    void processBothSynonyms(const Token& firstParam, const Token& secondParam, const ParsingResult& parsingResult
+            ,std::shared_ptr<ResultTable> resultTable, PKBReaderManager& pkbReaderManager) override;
+    void processFirstParam(const Token& firstParam, const Token& secondParam, const ParsingResult& parsingResult
+            ,std::shared_ptr<ResultTable> resultTable, PKBReaderManager& pkbReaderManager) override ;
+    void processSecondParam(const Token& firstParam, const Token& secondParam, const ParsingResult& parsingResult
+            ,std::shared_ptr<ResultTable> resultTable, PKBReaderManager& pkbReaderManager) override;
+    void processBothConstants(const Token& firstParam, const Token& secondParam, const ParsingResult& parsingResult
+            ,std::shared_ptr<ResultTable> resultTable, PKBReaderManager& pkbReaderManager) override;
+
 
 };
-
-
-#endif //SPA_USESPSTRATEGY_H
