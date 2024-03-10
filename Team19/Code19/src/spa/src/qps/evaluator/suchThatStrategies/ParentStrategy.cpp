@@ -19,7 +19,7 @@ std::shared_ptr<ResultTable> ParentStrategy::evaluateQuery(PKBReaderManager& pkb
 
     const Token& suchThatFirstParam = parsingResult.getSuchThatClauseFirstParam();
     const Token& suchThatSecondParam = parsingResult.getSuchThatClauseSecondParam();
-    if (suchThatFirstParam.getType() == TokenType::IDENT && suchThatSecondParam.getType() == TokenType::IDENT) {
+    if (isBothParamsSynonym(suchThatFirstParam, suchThatSecondParam)) {
         processSynonyms(suchThatFirstParam, suchThatSecondParam, variant, resultTable, parsingResult, pkbReaderManager);
     }
     else if (suchThatFirstParam.getType() == TokenType::IDENT) {

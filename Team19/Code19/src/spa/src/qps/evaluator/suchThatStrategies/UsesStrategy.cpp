@@ -9,7 +9,7 @@ std::shared_ptr<ResultTable> UsesStrategy::evaluateQuery(PKBReaderManager& pkbRe
     const Token& suchThatFirstParam = parsingResult.getSuchThatClauseFirstParam();
     const Token& suchThatSecondParam = parsingResult.getSuchThatClauseSecondParam();
 
-    if (suchThatFirstParam.getType() == TokenType::IDENT && suchThatSecondParam.getType() == TokenType::IDENT) {
+    if (isBothParamsSynonym(suchThatFirstParam, suchThatSecondParam)) {
         processBothSynonyms(suchThatFirstParam, suchThatSecondParam, parsingResult, resultTable, pkbReaderManager);
     } else if (suchThatFirstParam.getType() == TokenType::IDENT) {
         processFirstParam(suchThatFirstParam, suchThatSecondParam, parsingResult, resultTable, pkbReaderManager);

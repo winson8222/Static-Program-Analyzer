@@ -73,6 +73,12 @@ unordered_set<int> QueryEvaluationStrategy::getFilteredStmtsNumByType(unordered_
     return filteredResult;
 }
 
+void QueryEvaluationStrategy::insertSingleColToTable(const Token token,std::shared_ptr<ResultTable> resultTable) {
+    std::string colName = token.getValue();
+    resultTable->insertAllColumns({colName});
+
+}
+
 void QueryEvaluationStrategy::insertColsToTable(const Token firstToken, const Token secondToken, std::shared_ptr<ResultTable> resultTable) {
     std::string colName1 = firstToken.getValue();
     std::string colName2 = secondToken.getValue();
@@ -101,4 +107,14 @@ void QueryEvaluationStrategy::insertRowToTable(const pair<string,string> col1Pai
         row[colName2] = stmt2;
         resultTable->insertNewRow(row);
     }
+}
+
+void QueryEvaluationStrategy::insertSingleColRowToTable(const pair<string,string> col1Pair, std::shared_ptr<ResultTable> resultTable) {
+    std::string colName1 = col1Pair.first;
+    std::string stmt1 = col1Pair.second;
+    resultTable->insertNewRow({{colName1, stmt1}});
+}
+
+bool QueryEvaluationStrategy::isBothParamsSynonym(const Token& firstParam, const Token& secondParam) {
+    return firstParam.getType() == TokenType::IDENT && secondParam.getType() == TokenType::IDENT;
 }

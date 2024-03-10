@@ -25,7 +25,7 @@ std::shared_ptr<ResultTable> FollowsStrategy::evaluateQuery(PKBReaderManager& pk
     std::string variant = parsingResult.getSuchThatClauseRelationship().getValue();
 
     // Handling different parameter types for the Follows relationship
-    if (firstParam.getType() == TokenType::IDENT && secondParam.getType() == TokenType::IDENT) {
+    if (isBothParamsSynonym(firstParam, secondParam)) {
         processSynonyms(firstParam, secondParam, variant, resultTable, parsingResult, pkbReaderManager);
     } else if (firstParam.getType() == TokenType::IDENT) {
         processFirstParam(firstParam, secondParam, variant, resultTable, parsingResult, pkbReaderManager);
