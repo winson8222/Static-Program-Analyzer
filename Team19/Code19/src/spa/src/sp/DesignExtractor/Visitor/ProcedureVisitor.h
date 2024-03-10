@@ -19,4 +19,8 @@ class ProcedureVisitor : public IVisitor {
 public:
 	ProcedureVisitor(std::shared_ptr<ASTNode> node, std::shared_ptr<PKBWriterManager> pkbWriterManager);
 	void visit() override;
+	void setIsVisited();
+
+private:
+	bool wasVisited;
 };

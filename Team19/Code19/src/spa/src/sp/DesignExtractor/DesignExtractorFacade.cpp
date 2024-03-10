@@ -21,5 +21,6 @@ void DesignExtractorFacade::extractAll() {
 		}
 		ProcedureVisitor procedureVisitor(procs, pkbWriterManager);
 		procedureVisitor.visit();
+		procedureVisitor.setIsVisited();
 	}
 }

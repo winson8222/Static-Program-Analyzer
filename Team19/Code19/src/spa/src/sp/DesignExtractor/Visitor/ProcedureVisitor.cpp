@@ -6,6 +6,7 @@ ProcedureVisitor::ProcedureVisitor(std::shared_ptr<ASTNode> node, std::shared_pt
 		throw std::invalid_argument("ProcedureVisitor - input node type must be of type PROCEDURE");
 	}
 	this->contexts = std::vector<std::shared_ptr<ASTNode>>();
+	this->wasVisited = false;
 }
 
 void ProcedureVisitor::visit() {
@@ -26,4 +27,8 @@ void ProcedureVisitor::visit() {
 	statementListVisitor.setContext(contexts, root);
 	
 	statementListVisitor.visit();
+}
+
+void ProcedureVisitor::setIsVisited() {
+	this->wasVisited = true;
 }
