@@ -74,6 +74,12 @@ TEST_CASE("sp/DesignExtractor/Visitor/IfElseThenExtractor") {
 		REQUIRE(pkbReaderManager->getStatementReader()->getAllStatements() == expectedStatements);
 
 	}
+
+	SECTION("Test valid Uses retrieve") {
+		std::unordered_set<std::string> expectedUses = { "x", "y" };
+		REQUIRE(pkbReaderManager->getUsesSReader()->getAllVariablesUsedByAnyStmt() == expectedUses);
+
+	}
 }
 
 TEST_CASE("sp/DesignExtractor/Visitor/IfElseThenVisitor") {
