@@ -271,3 +271,92 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/2") {
         REQUIRE(res == std::unordered_set<string>{"x", "y", "z"});
     }
 }
+
+// M1 Test Fix for Uses
+TEST_CASE("UsesStrategy - Comprehensive Test with Various Scenarios") {
+    auto pkb = std::make_shared<PKB>();
+    auto pkbReaderManager = std::make_shared<PKBReaderManager>(pkb);
+    auto pkbWriterManager = std::make_shared<PKBWriterManager>(pkb);
+
+    auto statementWriter = pkbWriterManager->getStatementWriter();
+    auto usesWriter = pkbWriterManager->getUsesSWriter();
+    auto procWriter = pkbWriterManager->getProcedureWriter();
+    auto callWriter = pkbWriterManager->getCallWriter();
+
+    // Insert statements and their uses relationships
+    statementWriter->insertStatement(1);
+    usesWriter->addUsesS(1, "iter"); // Assign statement
+
+    statementWriter->insertStatement(2);
+    usesWriter->addUsesS(2, "iter"); // Print statement
+
+    statementWriter->insertStatement(3);
+    usesWriter->addUsesS(3, "iter"); // While statement
+
+    statementWriter->insertStatement(4);
+    usesWriter->addUsesS(4, "iter"); // Nested statement in a while loop
+
+    statementWriter->insertStatement(5);
+    usesWriter->addUsesS(5, "iter"); // If statement
+
+    statementWriter->insertStatement(6);
+    usesWriter->addUsesS(6, "iter"); // Nested statement in an if statement
+
+    statementWriter->insertStatement(7);
+    usesWriter->addUsesS(7, "iter"); // Statement nested in a while loop
+    pkbWriterManager->getParentWriter()->addParent(3, 7); // Statement 3 is a while loop that contains statement 7
+
+    // Insert a nested statement within a while loop within an if statement
+    statementWriter->insertStatement(8);
+    usesWriter->addUsesS(8, "iter"); // Deeply nested statement
+    pkbWriterManager->getParentWriter()->addParent(5, 3); // if statement 5 contains while statement 3
+    pkbWriterManager->getParentWriter()->addParent(3, 8); // while statement 3 contains statement 8
+
+    statementWriter->insertStatement(9);
+    statementWriter->insertStatement(10);
+    usesWriter->addUsesS(10, "iter"); // Innermost nested statement in a nested while loop
+    pkbWriterManager->getParentWriter()->addParent(8, 9); // Statement 8 is a while loop that contains statement 9
+    pkbWriterManager->getParentWriter()->addParent(9, 10); // Statement 9 is a while loop that contains statement 10
+
+    // Additional setup for nested if within while where if does not have direct use
+    statementWriter->insertStatement(11);
+    statementWriter->insertStatement(12);
+    usesWriter->addUsesS(12, "iter"); // Innermost nested statement in an if within a while loop
+    pkbWriterManager->getParentWriter()->addParent(4, 11); // Statement 4 is a while loop that contains if statement 11
+    pkbWriterManager->getParentWriter()->addParent(11, 12); // If statement 11 contains statement 12
+    // For UsesP
+    //    statementWriter->insertStatement(7);
+    //    procWriter->insertProcedure("computeCentroid");
+    //    usesWriter->addUsesP("computeCentroid", "iter"); // Call statement, direct procedure uses
+
+    // Set up the query to evaluate
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "stmt"),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Uses, "Uses"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::IDENT, "s"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::QuoutIDENT, "\"iter\""),
+            Token(TokenType::Rparenthesis, ")")
+    };
+
+    // Parse and evaluate the query
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    auto res = evaluator.evaluateQuery();
+
+    // Verify that all necessary statements are returned
+    std::unordered_set<std::string> expected{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
+    REQUIRE(res == expected);
+}
+
+
+
+
