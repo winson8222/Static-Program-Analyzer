@@ -34,7 +34,7 @@ private:
 	LexicalToken peekNextToken();
 	LexicalToken getNextToken();
 	LexicalToken peekNextNextToken();
-	std::shared_ptr<ASTNode> createKeywordNode(ASTNodeType type, int lineNumber, std::string nodeValue = "");
+	std::shared_ptr<ASTNode> createNode(ASTNodeType type, int lineNumber, std::string nodeValue = "");
 	std::shared_ptr<ASTNode> parseProcedure();
 	std::shared_ptr<ASTNode> parseStmtLst();
 	std::shared_ptr<ASTNode> parseStmt();
