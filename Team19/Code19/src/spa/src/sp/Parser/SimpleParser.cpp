@@ -288,7 +288,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseCall() {
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_SEMICOLON);
 
 	std::shared_ptr<ASTNode> callTree = this->createNode(ASTNodeType::CALL, this->lineManager->getLine());
-		
+
 	callTree->addChild(variable);
 
 	return callTree;
@@ -426,12 +426,8 @@ std::shared_ptr<ASTNode> SimpleParser::parseCondExpr() {
 	std::shared_ptr<ASTNode> right = this->parseCondExpr();
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_PAREN);
 
-	if (logicalOperator.isType(LexicalTokenType::OPERATOR_AND)) {
-		operationNode = this->createNode(ASTNodeType::AND, this->lineManager->getLine());
-	}
-	else if (logicalOperator.isType(LexicalTokenType::OPERATOR_OR)) {
-		operationNode = this->createNode(ASTNodeType::OR, this->lineManager->getLine());
-	}
+	ASTNodeType astType = LexicalTokenTypeMapper::lexicalToAstMap.at(logicalOperator.getTokenType());
+	operationNode = this->createNode(astType, this->lineManager->getLine());
 
 	operationNode->addChild(left);
 	operationNode->addChild(right);
@@ -452,26 +448,8 @@ std::shared_ptr<ASTNode> SimpleParser::parseRelExpr() {
 
 	std::shared_ptr<ASTNode> right = this->parseRelFactor();
 
-	std::shared_ptr<ASTNode> operationNode;
-
-	if (operatorToken.isType(LexicalTokenType::OPERATOR_GREATER)) {
-		operationNode = std::make_shared<ASTNode>(ASTNodeType::GREATER, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::GREATER)->second);
-	}
-	else if (operatorToken.isType(LexicalTokenType::OPERATOR_GREATER_EQUAL)) {
-		operationNode = std::make_shared<ASTNode>(ASTNodeType::GREATER_OR_EQUAL, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::GREATER_OR_EQUAL)->second);
-	}
-	else if (operatorToken.isType(LexicalTokenType::OPERATOR_LESS)) {
-		operationNode = std::make_shared<ASTNode>(ASTNodeType::LESSER, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::LESSER)->second);
-	}
-	else if (operatorToken.isType(LexicalTokenType::OPERATOR_LESS_EQUAL)) {
-		operationNode = std::make_shared<ASTNode>(ASTNodeType::LESSER_OR_EQUAL, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::LESSER_OR_EQUAL)->second);
-	}
-	else if (operatorToken.isType(LexicalTokenType::OPERATOR_IS_EQUAL)) {
-		operationNode = std::make_shared<ASTNode>(ASTNodeType::EQUAL, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::EQUAL)->second);
-	}
-	else if (operatorToken.isType(LexicalTokenType::OPERATOR_NOT_EQUAL)) {
-		operationNode = std::make_shared<ASTNode>(ASTNodeType::NOT_EQUAL, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::NOT_EQUAL)->second);
-	}
+	ASTNodeType astType = LexicalTokenTypeMapper::lexicalToAstMap.at(operatorToken.getTokenType());
+	std::shared_ptr<ASTNode> operationNode = this->createNode(astType, this->lineManager->getLine());
 
 	operationNode->addChild(left);
 	operationNode->addChild(right);
@@ -503,13 +481,8 @@ std::shared_ptr<ASTNode> SimpleParser::parseExpr() {
 	while (operation.isType(LexicalTokenType::OPERATOR_EXPR)) {
 		this->getNextToken(); //consume operation token		
 
-		std::shared_ptr<ASTNode> operationNode;
-		if (operation.isType(LexicalTokenType::OPERATOR_PLUS)) {
-			operationNode = std::make_shared<ASTNode>(ASTNodeType::ADD, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::ADD)->second);
-		}
-		else if (operation.isType(LexicalTokenType::OPERATOR_MINUS)) {
-			operationNode = std::make_shared<ASTNode>(ASTNodeType::SUBTRACT, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::SUBTRACT)->second);
-		}
+		ASTNodeType astType = LexicalTokenTypeMapper::lexicalToAstMap.at(operation.getTokenType());
+		std::shared_ptr<ASTNode> operationNode = this->createNode(astType, this->lineManager->getLine());
 
 		std::shared_ptr<ASTNode> right = parseTerm();
 
@@ -538,17 +511,8 @@ std::shared_ptr<ASTNode> SimpleParser::parseTerm() {
 	while (operation.isType(LexicalTokenType::OPERATOR_TERM)) {
 		this->getNextToken(); //consume operation token
 
-		//		return std::make_shared<ASTNode>(ASTNodeType::CONSTANT, operation.getLine(), Utility::getASTNodeType(ASTNodeType::CONSTANT));
-		std::shared_ptr<ASTNode> operationNode;
-		if (operation.isType(LexicalTokenType::OPERATOR_MULTIPLY)) {
-			operationNode = std::make_shared<ASTNode>(ASTNodeType::MULTIPLY, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::MULTIPLY)->second);
-		}
-		else if (operation.isType(LexicalTokenType::OPERATOR_DIVIDE)) {
-			operationNode = std::make_shared<ASTNode>(ASTNodeType::DIVIDE, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::DIVIDE)->second);
-		}
-		else if (operation.isType(LexicalTokenType::OPERATOR_MODULO)) {
-			operationNode = std::make_shared<ASTNode>(ASTNodeType::MODULO, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::MODULO)->second);
-		}
+		ASTNodeType astType = LexicalTokenTypeMapper::lexicalToAstMap.at(operation.getTokenType());
+		std::shared_ptr<ASTNode> operationNode = this->createNode(astType, this->lineManager->getLine());
 
 		std::shared_ptr<ASTNode> right = parseFactor();
 

@@ -55,13 +55,11 @@ enum class LexicalTokenType {
     NULL_TOKEN
 };
 
-
 /**
 * @brief a static utility class that maps back and forward token to string rerpesentation
 */
 class LexicalTokenTypeMapper {
 public:
-
     /**
     * @brief Convert a LexicalTokenType to ASTNodeType
     */
