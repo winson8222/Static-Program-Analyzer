@@ -52,7 +52,7 @@ std::unordered_set<int> NextTReader::getPreviousT(int stmt) {
 	} else {
 		// NextTStore not populated for previousT
 		std::unordered_set<int> result = nextTStore->populateAndGetPreviousT(stmt, {});
-		nextTStore->populatePreviousT(stmt);
+		nextTStore->logPreviousTAdded(stmt);
 		return result;
 	}
 }
@@ -64,7 +64,7 @@ std::unordered_set<int> NextTReader::getNextT(int stmt) {
 	} else {
 		// NextTStore not populated for nextT
 		std::unordered_set<int> result = nextTStore->populateAndGetNextT(stmt, {});
-		nextTStore->populateNextT(stmt);
+		nextTStore->logNextTAdded(stmt);
 		return result;
 	}
 }

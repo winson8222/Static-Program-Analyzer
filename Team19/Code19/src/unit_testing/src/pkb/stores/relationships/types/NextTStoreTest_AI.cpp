@@ -143,10 +143,40 @@ TEST_CASE("pkb/stores/relationships/types/NextTStore") {
 		REQUIRE(nextTStore->getAllNextT() == std::unordered_set<int>{2, 3, 4});
 	}
 
+    SECTION("populateNextT") {
+        nextTStore->populateNextT(1, std::unordered_set<int>{});
+        REQUIRE(nextTStore->getRelationshipsByKey(1) == std::unordered_set<int>{2, 3, 4});
+        REQUIRE(nextTStore->getRelationshipsByKey(2) == std::unordered_set<int>{3, 4});
+        REQUIRE(nextTStore->getRelationshipsByKey(3) == std::unordered_set<int>{2, 4});
+        REQUIRE(nextTStore->getRelationshipsByKey(4).empty());
+    }
+
+    SECTION("populatePreviousT") {
+        nextTStore->populatePreviousT(4, std::unordered_set<int>{});
+        REQUIRE(nextTStore->getRelationshipsByValue(3) == std::unordered_set<int>{1, 2});
+        REQUIRE(nextTStore->getRelationshipsByValue(2) == std::unordered_set<int>{1, 3});
+        REQUIRE(nextTStore->getRelationshipsByValue(1).empty());
+    }
+
+    SECTION("populateAllNextT") {
+        nextTStore->populateAllNextT();
+        REQUIRE(nextTStore->getRelationshipsByKey(1) == std::unordered_set<int>{2, 3, 4});
+        REQUIRE(nextTStore->getRelationshipsByKey(2) == std::unordered_set<int>{3, 4});
+        REQUIRE(nextTStore->getRelationshipsByKey(3) == std::unordered_set<int>{2, 4});
+        REQUIRE(nextTStore->getRelationshipsByKey(4).empty());
+    }
+
+    SECTION("populateAllPreviousT") {
+        nextTStore->populateAllPreviousT();
+        REQUIRE(nextTStore->getRelationshipsByValue(3) == std::unordered_set<int>{1, 2});
+        REQUIRE(nextTStore->getRelationshipsByValue(2) == std::unordered_set<int>{1, 3});
+        REQUIRE(nextTStore->getRelationshipsByValue(1).empty());
+    }
+
 	SECTION("clear") {
 		nextTStore->addRelationship(1, 2);
-		nextTStore->populateNextT(1);
-		nextTStore->populatePreviousT(4);
+		nextTStore->logNextTAdded(1);
+		nextTStore->logPreviousTAdded(4);
 		REQUIRE_FALSE(nextTStore->getRelationshipsByKey(1).empty());
 		REQUIRE_FALSE(nextTStore->getRelationshipsByValue(2).empty());
 		REQUIRE(nextTStore->hasNextTPopulated(1));
