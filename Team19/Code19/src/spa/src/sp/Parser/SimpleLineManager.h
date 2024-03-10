@@ -14,12 +14,13 @@ public:
 
 	/**
 	* @brief Gets the current line in the Simple program representation.
-	* @return The current Simple program line number
+	* 
+	* @return The current Simple program line number.
 	*/
 	int getLine();
 
 	/**
-	* @brief Set to the next line of Simple program
+	* @brief Set to the next line of Simple program.
 	*/
 	void nextLine();
 
