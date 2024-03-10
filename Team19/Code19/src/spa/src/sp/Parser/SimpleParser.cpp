@@ -15,6 +15,7 @@
 SimpleParser::SimpleParser(std::vector<LexicalToken> tokenStream) {
 	this->tokenStream = tokenStream;
 	this->tokenIndex = 0;
+	this->lineManager = std::make_unique<SimpleLineManager>();
 }
 
 /**
@@ -24,17 +25,15 @@ SimpleParser::SimpleParser(std::vector<LexicalToken> tokenStream) {
  */
 std::shared_ptr<ASTNode> SimpleParser::parseProgram() {
 	std::vector<std::shared_ptr<ASTNode>> procedures;
-	const int START_OF_PROGRAM = 1;
 
 	while (this->hasTokensLeft()) {
 		procedures.push_back(this->parseProcedure());
 	}
 
 	std::shared_ptr<ASTNode> root = std::make_shared<ASTNode>(
-		ASTNodeType::PROGRAMS, START_OF_PROGRAM, ASTUtility::getASTNodeType.find(ASTNodeType::PROGRAMS)->second
+		ASTNodeType::PROGRAMS, SimpleLineManager::getProgramLineNumber(), ASTUtility::getASTNodeType.find(ASTNodeType::PROGRAMS)->second
 	);
 
-	root->lineNumber = PROGRAM_LINE_NUMBER;
 	int maxLineNumber = 0;
 	for (auto& procedure : procedures) {
 		int temp = ASTTraverser::setLineNumbers(procedure, maxLineNumber);

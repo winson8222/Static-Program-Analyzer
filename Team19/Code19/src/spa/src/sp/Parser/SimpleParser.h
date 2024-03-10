@@ -7,9 +7,8 @@
 #include "sp/AST/ASTUtility.h"
 #include "sp/AST/ASTHelper.h"
 #include "sp/SPTokenizer/LexicalToken.h"
+#include "sp/Parser/SimpleLineManager.h"
 
-
-static int PROGRAM_LINE_NUMBER = -1;
 
 // ai-gen start(gpt,2,e)
 // Prompt: https://platform.openai.com/playground/p/cJLjmmneCEs4z6ms7ZkBSxJB?model=gpt-4&mode=chat
@@ -19,6 +18,7 @@ public:
 	std::shared_ptr<ASTNode> parseProgram();
 
 private:
+	std::unique_ptr<SimpleLineManager> lineManager;
 	std::vector<LexicalToken> tokenStream;
 	int tokenIndex;
 	void assertToken(LexicalToken token, LexicalTokenType type) const;

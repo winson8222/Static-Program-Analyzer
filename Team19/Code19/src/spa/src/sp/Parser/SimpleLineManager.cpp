@@ -1,4 +1,4 @@
-#include "SimpleLineTracker.h"
+#include "SimpleLineManager.h"
 
 // Default constructor definition
 SimpleLineManager::SimpleLineManager() {
@@ -15,6 +15,6 @@ void SimpleLineManager::nextLine() {
 	line++;
 }
 
-static int SimpleLineManager::getProgramLineNumber() {
-	return PROGRAM_LINE_NUMBER;
+int SimpleLineManager::getProgramLineNumber() {
+	return SimpleLineManager::PROGRAM_LINE_NUMBER;
 }
