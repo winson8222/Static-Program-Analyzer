@@ -38,6 +38,8 @@ std::shared_ptr<ASTNode> SimpleParser::parseProgram() {
 		root->addChild(procedure);
 	}
 
+	SimpleCallLinker::linkAllCallsToProcedure(root);
+
 	return root;
 }
 

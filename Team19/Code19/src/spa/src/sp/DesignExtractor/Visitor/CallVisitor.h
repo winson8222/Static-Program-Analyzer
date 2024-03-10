@@ -15,7 +15,7 @@ public:
 		std::shared_ptr<PKBWriterManager> pkbWriterManager);
 
 	void visit() override;
-	void addContext(std::shared_ptr<ASTNode> context) override;
+	void addContext(std::shared_ptr<ASTNode> context);
 };
 
 // ai-gen ends

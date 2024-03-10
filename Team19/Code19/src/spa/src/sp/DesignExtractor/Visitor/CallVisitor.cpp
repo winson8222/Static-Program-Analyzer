@@ -20,4 +20,5 @@ void CallVisitor::visit() {
 
 void CallVisitor::addContext(std::shared_ptr<ASTNode> context) {
 	// do nothing
+	// to set context of previous procedure call later by iterating through the list
 }

@@ -32,3 +32,7 @@ void ProcedureVisitor::visit() {
 void ProcedureVisitor::setIsVisited() {
 	this->wasVisited = true;
 }
+
+bool ProcedureVisitor::checkIfVisited() {
+	return this->wasVisited;
+}

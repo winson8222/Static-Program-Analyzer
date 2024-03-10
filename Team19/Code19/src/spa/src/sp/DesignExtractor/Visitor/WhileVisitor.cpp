@@ -33,7 +33,3 @@ void WhileVisitor::visit() {
 
 	setParents(this->contexts, this->root, this->pkbWriterManager);
 }
-
-void WhileVisitor::addContext(std::shared_ptr<ASTNode> context) {
-	
-}

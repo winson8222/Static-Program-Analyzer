@@ -69,11 +69,6 @@ public:
     virtual void visit() = 0;
 
     /*
-    * The method to add a context to the list of contexts
-    */
-    virtual void addContext(std::shared_ptr<ASTNode> context) = 0;
-
-    /*
     * The method to set the parents of the contexts, which takes in
     * a list of context, the current nodes, and a PKBWriterManager,
     * commonly then recursively traverses the AST to set the parents of the contexts if

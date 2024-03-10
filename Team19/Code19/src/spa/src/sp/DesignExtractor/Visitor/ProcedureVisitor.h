@@ -20,6 +20,7 @@ public:
 	ProcedureVisitor(std::shared_ptr<ASTNode> node, std::shared_ptr<PKBWriterManager> pkbWriterManager);
 	void visit() override;
 	void setIsVisited();
+	bool checkIfVisited();
 
 private:
 	bool wasVisited;
