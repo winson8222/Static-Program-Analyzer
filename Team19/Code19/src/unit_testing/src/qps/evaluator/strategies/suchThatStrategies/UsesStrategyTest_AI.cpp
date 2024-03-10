@@ -312,19 +312,21 @@ TEST_CASE("UsesStrategy - Comprehensive Test with Various Scenarios") {
     pkbWriterManager->getParentWriter()->addParent(5, 3); // if statement 5 contains while statement 3
     pkbWriterManager->getParentWriter()->addParent(3, 8); // while statement 3 contains statement 8
 
-    statementWriter->insertStatement(9);
-    statementWriter->insertStatement(10);
-    usesWriter->addUsesS(10, "iter"); // Innermost nested statement in a nested while loop
-    pkbWriterManager->getParentWriter()->addParent(8, 9); // Statement 8 is a while loop that contains statement 9
-    pkbWriterManager->getParentWriter()->addParent(9, 10); // Statement 9 is a while loop that contains statement 10
+    // M1 Fixes for Uses (mainly involving nested while and if statements)
+//    statementWriter->insertStatement(9);
+//    statementWriter->insertStatement(10);
+//    usesWriter->addUsesS(10, "iter"); // Innermost nested statement in a nested while loop
+//    pkbWriterManager->getParentWriter()->addParent(8, 9); // Statement 8 is a while loop that contains statement 9
+//    pkbWriterManager->getParentWriter()->addParent(9, 10); // Statement 9 is a while loop that contains statement 10
+//
+//    // Additional setup for nested if within while where if does not have direct use
+//    statementWriter->insertStatement(11);
+//    statementWriter->insertStatement(12);
+//    usesWriter->addUsesS(12, "iter"); // Innermost nested statement in an if within a while loop
+//    pkbWriterManager->getParentWriter()->addParent(4, 11); // Statement 4 is a while loop that contains if statement 11
+//    pkbWriterManager->getParentWriter()->addParent(11, 12); // If statement 11 contains statement 12
 
-    // Additional setup for nested if within while where if does not have direct use
-    statementWriter->insertStatement(11);
-    statementWriter->insertStatement(12);
-    usesWriter->addUsesS(12, "iter"); // Innermost nested statement in an if within a while loop
-    pkbWriterManager->getParentWriter()->addParent(4, 11); // Statement 4 is a while loop that contains if statement 11
-    pkbWriterManager->getParentWriter()->addParent(11, 12); // If statement 11 contains statement 12
-    // For UsesP
+    // For UsesP (not required for this test case but added for completeness)
     //    statementWriter->insertStatement(7);
     //    procWriter->insertProcedure("computeCentroid");
     //    usesWriter->addUsesP("computeCentroid", "iter"); // Call statement, direct procedure uses

@@ -295,4 +295,209 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrate
         REQUIRE(res == std::unordered_set<string>{"11"});
 
     }
+
+//    SECTION("Check Evaluation result of nested assign with partial pattern match and transitive Uses") {
+//        statementWriter->insertStatement(10);
+//        statementWriter->insertStatement(11);
+//        statementWriter->insertStatement(12);
+//        statementWriter->insertStatement(13);
+//        whileWriter->insertWhile(10);
+//        ifWriter->insertIf(11);
+//        assignWriter->insertAssign(12);
+//        assignWriter->insertAssign(13);
+//
+//        assignPatternWriter->addAssignPattern(12, "x", "'y'"); // Directly uses 'y'
+//        assignPatternWriter->addAssignPattern(13, "x", "'z' + 'y'"); // Directly uses 'y'
+//        parentTWriter->addParentT(10, 11);
+//        parentTWriter->addParentT(11, 12);
+//        parentTWriter->addParentT(11, 13);
+//
+//        std::vector<Token> tokens = {
+//                Token(TokenType::DesignEntity, "assign"),
+//                Token(TokenType::IDENT, "a"),
+//                Token(TokenType::Semicolon, ";"),
+//                Token(TokenType::SelectKeyword, "Select"),
+//                Token(TokenType::IDENT, "a"),
+//                Token(TokenType::SuchKeyword, "such"),
+//                Token(TokenType::ThatKeyword, "that"),
+//                Token(TokenType::Uses, "Uses"),
+//                Token(TokenType::Lparenthesis, "("),
+//                Token(TokenType::IDENT, "a"),
+//                Token(TokenType::Comma, ","),
+//                Token(TokenType::QuoutIDENT, "'y'"),
+//                Token(TokenType::Rparenthesis, ")"),
+//                Token(TokenType::PatternKeyword, "pattern"),
+//                Token(TokenType::IDENT, "a"),
+//                Token(TokenType::Lparenthesis, "("),
+//                Token(TokenType::QuoutIDENT, "'x'"),
+//                Token(TokenType::Comma, ","),
+//                Token(TokenType::Wildcard, "_"),
+//                Token(TokenType::QuoutConst, "'y'"),
+//                Token(TokenType::Wildcard, "_"),
+//                Token(TokenType::Rparenthesis, ")")
+//        };
+//
+//
+//        QueryParser parser(tokens);
+//        auto parsingResult = parser.parse();
+//        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+//        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
+//        std::unordered_set<string> expectedResults = {"12", "13"}; // Both statements should match
+//        REQUIRE(actualResults == expectedResults);
+//    }
+
+
+    // Nested Assignments Within While Loops Modifying 'count'
+    SECTION("Nested Assignments Within While Loops Modifying 'count'") {
+        statementWriter->insertStatement(10); // while
+        assignWriter->insertAssign(11); // assign directly nested
+        ifWriter->insertIf(12);
+        assignWriter->insertAssign(13); // assign indirectly nested
+        whileWriter->insertWhile(10);
+        assignPatternWriter->addAssignPattern(11, "count", "_");
+        assignPatternWriter->addAssignPattern(13, "count", "_");
+        parentTWriter->addParentT(10, 11);
+        parentTWriter->addParentT(10, 12);
+        parentTWriter->addParentT(12, 13);
+
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "assign"),
+                Token(TokenType::IDENT, "a"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::DesignEntity, "while"),
+                Token(TokenType::IDENT, "w"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::IDENT, "a"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::ParentT, "Parent*"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::IDENT, "w"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::IDENT, "a"),
+                Token(TokenType::Rparenthesis, ")"),
+                Token(TokenType::PatternKeyword, "pattern"),
+                Token(TokenType::IDENT, "a"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::QuoutIDENT, "\"count\""),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::Wildcard, "_"),
+                Token(TokenType::Rparenthesis, ")")
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        auto actualResults = evaluator.evaluateQuery();
+        std::unordered_set<std::string> expectedResults = {"11", "13"}; // Both assignments modify "count"
+        REQUIRE(actualResults == expectedResults);
+    }
+
+
+// Q12: Assignments Using and Modifying the Same Variable
+//    SECTION("Assignments Using and Modifying the Same Variable") {
+//        statementWriter->insertStatement(6);
+//        statementWriter->insertStatement(7);
+//        statementWriter->insertStatement(8);
+//        statementWriter->insertStatement(12);
+//        statementWriter->insertStatement(13);
+//        auto usesWriter = pkbWriterManager->getUsesSWriter();
+//
+//        // Setup statements with Uses relationships
+//        usesWriter->addUsesS(6, "x");
+//        usesWriter->addUsesS(7, "x");
+//        usesWriter->addUsesS(8, "x");
+//        usesWriter->addUsesS(12, "x");
+//        usesWriter->addUsesS(13, "x");
+//
+//        assignPatternWriter->addAssignPattern(6, "x", "_");
+//        assignPatternWriter->addAssignPattern(7, "x", "_");
+//        assignPatternWriter->addAssignPattern(8, "x", "_");
+//        assignPatternWriter->addAssignPattern(12, "x", "_");
+//        assignPatternWriter->addAssignPattern(13, "x", "_");
+//
+//        std::vector<Token> tokens = {
+//                Token(TokenType::DesignEntity, "assign"),
+//                Token(TokenType::IDENT, "a"),
+//                Token(TokenType::Semicolon, ";"),
+//                Token(TokenType::DesignEntity, "variable"),
+//                Token(TokenType::IDENT, "v"),
+//                Token(TokenType::Semicolon, ";"),
+//                Token(TokenType::SelectKeyword, "Select"),
+//                Token(TokenType::IDENT, "a"),
+//                Token(TokenType::SuchKeyword, "such"),
+//                Token(TokenType::ThatKeyword, "that"),
+//                Token(TokenType::Uses, "Uses"),
+//                Token(TokenType::Lparenthesis, "("),
+//                Token(TokenType::IDENT, "a"),
+//                Token(TokenType::Comma, ","),
+//                Token(TokenType::IDENT, "v"),
+//                Token(TokenType::Rparenthesis, ")"),
+//                Token(TokenType::PatternKeyword, "pattern"),
+//                Token(TokenType::IDENT, "a"),
+//                Token(TokenType::Lparenthesis, "("),
+//                Token(TokenType::IDENT, "v"),
+//                Token(TokenType::Comma, ","),
+//                Token(TokenType::Wildcard, "_"),
+//                Token(TokenType::Rparenthesis, ")")
+//        };
+//
+//        // Parse and evaluate the query
+//        QueryParser parser(tokens);
+//        auto parsingResult = parser.parse();
+//        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+//        auto actualResults = evaluator.evaluateQuery();
+//        std::unordered_set<std::string> expectedResults = {"6", "7", "8", "12", "13"};
+//        REQUIRE(actualResults == expectedResults);
+//    }
+
+// Q13: Assignments Using and Modifying "x"
+    SECTION("Assignments Using and Modifying 'x'") {
+        // Assuming that the necessary setup with PKB has been completed
+        statementWriter->insertStatement(14);
+        statementWriter->insertStatement(15);
+        auto usesWriter = pkbWriterManager->getUsesSWriter(); // Assuming this is the correct method to access UsesWriter
+
+        // Setup statements with Uses relationships where "x" is not on the LHS
+        usesWriter->addUsesS(14, "x");
+        // Assuming '14' uses 'x' but does not assign to 'x'
+        // Assuming '15' does not use 'x' at all
+
+        assignPatternWriter->addAssignPattern(15, "y", "'x' + 1"); // '15' assigns 'y', not 'x'
+        // No pattern added for '14' because it does not assign to 'x'
+
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "assign"),
+                Token(TokenType::IDENT, "a"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::IDENT, "a"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Uses, "Uses"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::IDENT, "a"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::QuoutIDENT, "\"x\""),
+                Token(TokenType::Rparenthesis, ")"),
+                Token(TokenType::PatternKeyword, "pattern"),
+                Token(TokenType::IDENT, "a"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::QuoutIDENT, "\"x\""),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::Wildcard, "_"),
+                Token(TokenType::Rparenthesis, ")")
+        };
+
+        // Parse and evaluate the query
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        auto actualResults = evaluator.evaluateQuery();
+        std::unordered_set<std::string> expectedResults; // No assignments modify and use "x" directly
+        REQUIRE(actualResults == expectedResults);
+    }
+
 }
+
