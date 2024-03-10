@@ -174,7 +174,6 @@ std::shared_ptr<ASTNode> SimpleParser::parseProcedure() {
  */
 std::shared_ptr<ASTNode> SimpleParser::parseStmtLst() {
 	std::vector<std::shared_ptr<ASTNode>> statements;
-	this->lineManager->nextLine();
 
 	std::shared_ptr<ASTNode> statementListTree = std::make_shared<ASTNode>(
 		ASTNodeType::STATEMENT_LIST, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::STATEMENT_LIST)->second
@@ -182,8 +181,8 @@ std::shared_ptr<ASTNode> SimpleParser::parseStmtLst() {
 
 	// Parse every statement until we see a closing bracket.
 	while (!this->peekNextToken().isType(LexicalTokenType::SYMBOL_CLOSE_BRACE)) {
-		statements.push_back(this->parseStmt());
 		this->lineManager->nextLine();
+		statements.push_back(this->parseStmt());
 	}
 
 
