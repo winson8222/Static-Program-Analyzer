@@ -317,6 +317,10 @@ std::shared_ptr<ASTNode> SimpleParser::parseWhile() {
 	LexicalToken keyword = this->getNextToken();
 	this->assertToken(keyword, LexicalTokenType::KEYWORD_WHILE);
 
+	std::shared_ptr<ASTNode> whileTree = std::make_shared<ASTNode>(
+		ASTNodeType::WHILE, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::WHILE)->second
+	);
+
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_OPEN_PAREN);
 	std::shared_ptr<ASTNode> condExpr = this->parseCondExpr();
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_PAREN);
@@ -325,9 +329,6 @@ std::shared_ptr<ASTNode> SimpleParser::parseWhile() {
 	std::shared_ptr<ASTNode> stmtLst = this->parseStmtLst();
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_BRACE);
 
-	std::shared_ptr<ASTNode> whileTree = std::make_shared<ASTNode>(
-		ASTNodeType::WHILE, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::WHILE)->second
-	);
 
 	whileTree->addChild(condExpr);
 	whileTree->addChild(stmtLst);
@@ -347,6 +348,10 @@ std::shared_ptr<ASTNode> SimpleParser::parseIf() {
 	LexicalToken keyword = this->getNextToken();
 	this->assertToken(keyword, LexicalTokenType::KEYWORD_IF);
 
+	std::shared_ptr<ASTNode> ifTree = std::make_shared<ASTNode>(
+		ASTNodeType::IF_ELSE_THEN, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::IF_ELSE_THEN)->second
+	);
+
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_OPEN_PAREN);
 	std::shared_ptr<ASTNode> condExpr = this->parseCondExpr();
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_PAREN);
@@ -362,11 +367,6 @@ std::shared_ptr<ASTNode> SimpleParser::parseIf() {
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_OPEN_BRACE);
 	std::shared_ptr<ASTNode> elseStmtLst = this->parseStmtLst();
 	this->assertToken(this->getNextToken(), LexicalTokenType::SYMBOL_CLOSE_BRACE);
-
-	// Warning: If_ELSE_THEN ASTNodeType encountered. May need to seperate into IF, ELSE, THEN keywords.
-	std::shared_ptr<ASTNode> ifTree = std::make_shared<ASTNode>(
-		ASTNodeType::IF_ELSE_THEN, this->lineManager->getLine(), ASTUtility::getASTNodeType.find(ASTNodeType::IF_ELSE_THEN)->second
-	);
 
 	ifTree->addChild(condExpr);
 	ifTree->addChild(thenStmtLst);
