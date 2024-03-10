@@ -20,7 +20,7 @@ public:
 
 	/**
 	* @brief Parses the SIMPLE program based on a token stream as given.
-	* 
+	*
 	* @return The AST representation of the input SIMPLE program.
 	*/
 	std::shared_ptr<ASTNode> parseProgram();
@@ -34,6 +34,7 @@ private:
 	LexicalToken peekNextToken();
 	LexicalToken getNextToken();
 	LexicalToken peekNextNextToken();
+	std::shared_ptr<ASTNode> createKeywordNode(ASTNodeType type, int lineNumber, std::string nodeValue = "");
 	std::shared_ptr<ASTNode> parseProcedure();
 	std::shared_ptr<ASTNode> parseStmtLst();
 	std::shared_ptr<ASTNode> parseStmt();

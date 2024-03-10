@@ -32,9 +32,10 @@ std::shared_ptr<ASTNode> SimpleParser::parseProgram() {
 		procedures.push_back(this->parseProcedure());
 	}
 
-	std::shared_ptr<ASTNode> root = std::make_shared<ASTNode>(
-		ASTNodeType::PROGRAMS, SimpleLineManager::getProgramLineNumber(), ASTUtility::getASTNodeType.find(ASTNodeType::PROGRAMS)->second
-	);
+	std::shared_ptr<ASTNode> root = this->createKeywordNode(ASTNodeType::PROGRAMS, SimpleLineManager::getProgramLineNumber());
+	//	std::make_shared<ASTNode>(
+	//	ASTNodeType::PROGRAMS, SimpleLineManager::getProgramLineNumber(), ASTUtility::getASTNodeType.find(ASTNodeType::PROGRAMS)->second
+	//);
 
 	for (auto& procedure : procedures) {
 		root->addChild(procedure);
@@ -136,6 +137,13 @@ LexicalToken SimpleParser::peekNextNextToken() {
 	return nextToken;
 }
 // ai-gen end
+
+std::shared_ptr<ASTNode> SimpleParser::createKeywordNode(ASTNodeType type, int lineNumber, std::string nodeValue) {
+	if (nodeValue.empty()) {
+		nodeValue = ASTUtility::getASTNodeType.find(type)->second;
+	}
+	return std::make_shared<ASTNode>(type, lineNumber, nodeValue);
+}
 
 /**
  * @brief Parse a procedure in the program.
