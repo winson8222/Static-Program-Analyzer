@@ -229,44 +229,44 @@ TEST_CASE("ModifiesP Strategy - Evaluating procedure-variable modification relat
 
     SECTION("ModifiesP for specific procedure and variable") {
         auto parsingResult = createParsingResultForModifies("UpdateScore", "score", true);
-        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
         REQUIRE(resultTable->getRows().size() == 1); // Expecting a match
     }
 
     SECTION("ModifiesP for procedure with wildcard variable") {
         auto parsingResult = createParsingResultForModifies("ResetGame", "_", true);
-        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
         REQUIRE_FALSE(resultTable->getRows().empty()); // Expecting a match as ResetGame modifies any variable
     }
 
     SECTION("ModifiesP for wildcard procedure and specific variable") {
         auto parsingResult = createParsingResultForModifies("_", "volume", true);
-        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
         REQUIRE(resultTable->getRows().size() == 1); // Expecting a match for LoadSettings
     }
 
     SECTION("ModifiesP with non-existing procedure") {
         auto parsingResult = createParsingResultForModifies("NonExistentProc", "score", true);
-        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
         REQUIRE(resultTable->getRows().empty()); // No match expected
     }
 
     SECTION("ModifiesP with non-existing variable") {
         auto parsingResult = createParsingResultForModifies("UpdateScore", "nonExistentVar", true);
-        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
         REQUIRE(resultTable->getRows().empty()); // No match expected
     }
 
     SECTION("ModifiesP through indirect procedure call") {
         auto parsingResult = createParsingResultForModifies("Main", "score", true);
-        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
         // Expecting a match since Main indirectly modifies "score" through UpdateScore
         REQUIRE(resultTable->getRows().size() == 1);
     }
 
     SECTION("ModifiesP with wildcard procedure and wildcard variable") {
         auto parsingResult = createParsingResultForModifies("_", "_", true);
-        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
         // Expecting matches since query checks if there are any modifications at all
         REQUIRE_FALSE(resultTable->getRows().empty());
     }
@@ -276,7 +276,7 @@ TEST_CASE("ModifiesP Strategy - Evaluating procedure-variable modification relat
         pkb->getModifiesPStore()->addRelationship("MultiVarModProc", "var1");
         pkb->getModifiesPStore()->addRelationship("MultiVarModProc", "var2");
         auto parsingResult = createParsingResultForModifies("MultiVarModProc", "_", true);
-        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
         // Expecting matches for both variables modified by 'MultiVarModProc'
         REQUIRE(resultTable->getRows().size() >= 2);
     }
@@ -286,7 +286,7 @@ TEST_CASE("ModifiesP Strategy - Evaluating procedure-variable modification relat
         pkb->getModifiesPStore()->addRelationship("Proc1", "sharedVar");
         pkb->getModifiesPStore()->addRelationship("Proc2", "sharedVar");
         auto parsingResult = createParsingResultForModifies("_", "sharedVar", true);
-        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
         // Expecting matches for both 'Proc1' and 'Proc2'
         REQUIRE(resultTable->getRows().size() >= 2);
     }
@@ -295,7 +295,7 @@ TEST_CASE("ModifiesP Strategy - Evaluating procedure-variable modification relat
         // Assuming 'EmptyProc' calls 'NestedEmptyProc' but neither modifies any variable
         pkb->getCallsStore()->addRelationship("EmptyProc", "NestedEmptyProc");
         auto parsingResult = createParsingResultForModifies("EmptyProc", "_", true);
-        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
         // No modifications expected from 'EmptyProc' or its nested procedures
         REQUIRE(resultTable->getRows().empty());
     }
