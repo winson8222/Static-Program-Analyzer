@@ -8,32 +8,32 @@
 
 class SimpleTokenStream {
 public:
-    /**
-     * Constructor takes an array of tokens
-     */
-    SimpleTokenStream(const std::shared_ptr<std::vector<LexicalToken>> token_ptr);
+	/**
+	 * @brief Constructor takes a shared pointer to an array of tokens
+	 */
+	SimpleTokenStream(const std::shared_ptr<std::vector<LexicalToken>> token_ptr);
 
-    /**
-     * Returns the next token from the token stream
-     */
-    LexicalToken getNextToken();
+	/**
+	 * @brief Gets the token from the stream and advances the index by 1.
+	 *
+	 * @return LexicalToken The next token in the stream. Returns LexicalTokenType::NULL_TOKEN if there is no more tokens left.
+	 */
+	LexicalToken getNextToken();
 
-    /**
-     * Returns the next token from the token stream without removing it
-     */
-    LexicalToken peekNextToken();
+	/**
+	 * @brief Gets the token after the lookahead amount of token in the stream.
+	 * @param lookahead An optional input specifying lookahead amount. Default is 1.
+	 *
+	 * @return LexicalToken The token that is lookahead steps ahead in the stream.
+	 */
+	LexicalToken peekToken(int lookahead = 1);
 
-    /**
-     * Returns the token that is 'lookahead' tokens from the start of the token stream
-     */
-    LexicalToken peekToken(int lookahead);
-
-    /**
-     * Checks whether there are still tokens left in the stream
-     */
-    bool hasNextToken();
+	/**
+	 * Checks whether there are still tokens left in the stream
+	 */
+	bool hasTokensLeft();
 
 private:
-    std::vector<LexicalToken> tokens;
-    int tokenIndex;
+	std::vector<LexicalToken> tokens;
+	int tokenIndex;
 };
