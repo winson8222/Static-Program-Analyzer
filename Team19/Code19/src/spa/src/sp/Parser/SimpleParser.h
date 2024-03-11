@@ -7,7 +7,7 @@
 #include "sp/AST/ASTUtility.h"
 #include "sp/SPTokenizer/LexicalToken.h"
 #include "sp/Parser/SimpleLineManager.h"
-
+#include "sp/Parser/SimpleTokenStream.h"
 
 // ai-gen start(gpt,2,e)
 // Prompt: https://platform.openai.com/playground/p/cJLjmmneCEs4z6ms7ZkBSxJB?model=gpt-4&mode=chat
@@ -16,7 +16,7 @@ public:
 	/**
 	* @brief The constructor for the Simple Parser.
 	*/
-	SimpleParser(std::vector<LexicalToken> tokenStream);
+	SimpleParser(std::shared_ptr<std::vector<LexicalToken>> tokens);
 
 	/**
 	* @brief Parses the SIMPLE program based on a token stream as given.
@@ -27,8 +27,7 @@ public:
 
 private:
 	std::unique_ptr<SimpleLineManager> lineManager;
-	std::vector<LexicalToken> tokenStream;
-	int tokenIndex;
+	std::unique_ptr<SimpleTokenStream> tokenStream;
 	void assertToken(LexicalToken token, LexicalTokenType type) const;
 	bool hasTokensLeft() const;
 	LexicalToken peekNextToken();

@@ -11,7 +11,7 @@ public:
     /**
      * Constructor takes an array of tokens
      */
-    SimpleTokenStream(const std::vector<LexicalToken>& tokens);
+    SimpleTokenStream(const std::shared_ptr<std::vector<LexicalToken>> token_ptr);
 
     /**
      * Returns the next token from the token stream
