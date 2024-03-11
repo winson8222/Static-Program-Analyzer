@@ -29,7 +29,7 @@ LexicalToken SimpleTokenStream::getNextToken() {
  * Returns the token that is 'lookahead' tokens from the start of the token stream
  */
 LexicalToken SimpleTokenStream::peekToken(int lookahead) {
-	if (lookahead < 0) {
+	if (lookahead <= 0) {
 		throw std::runtime_error("Error: PeekToken cannot have negative lookahead value");
 	}
 
