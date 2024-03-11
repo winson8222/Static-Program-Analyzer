@@ -1,3 +1,5 @@
+#include "CFGNode.h"
+
 CFGNode::CFGNode(ASTNodeType type, int lineNumber, std::string value){};
 
 /**
