@@ -1,5 +1,3 @@
-
-
 procedure nestedIfWhile {
 	while (x == y) {
 		if (x == y) then {

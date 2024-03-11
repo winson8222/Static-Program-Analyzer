@@ -65,7 +65,7 @@ TEST_CASE("Program parsing throws an error for extra variable in print statement
     std::filesystem::remove(filename);
 }
 
-TEST_CASE("Program parsing throws an error for missing parenthesis around !(cond_expr) with following && operator.") {
+TEST_CASE("Program parsing throws an error for missing parenthesis around !(cond_expr)") {
     std::string filename = "sample.txt";
     std::string sampleProgram = "procedure procedure {"
                                 "while (!(read != 11) && !(read == while)) {"

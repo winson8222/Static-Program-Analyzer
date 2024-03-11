@@ -1,6 +1,33 @@
 #include "LexicalTokenType.h"
 #include <regex>
 
+const std::unordered_map<LexicalTokenType, ASTNodeType> LexicalTokenTypeMapper::lexicalToAstMap = {
+	{ LexicalTokenType::OPERATOR_ASSIGN, ASTNodeType::ASSIGN },
+	{ LexicalTokenType::OPERATOR_NOT, ASTNodeType::NOT },
+	{ LexicalTokenType::OPERATOR_AND, ASTNodeType::AND },
+	{ LexicalTokenType::OPERATOR_OR, ASTNodeType::OR },
+	{ LexicalTokenType::OPERATOR_GREATER, ASTNodeType::GREATER },
+	{ LexicalTokenType::OPERATOR_GREATER_EQUAL, ASTNodeType::GREATER_OR_EQUAL },
+	{ LexicalTokenType::OPERATOR_LESS, ASTNodeType::LESSER },
+	{ LexicalTokenType::OPERATOR_LESS_EQUAL, ASTNodeType::LESSER_OR_EQUAL },
+	{ LexicalTokenType::OPERATOR_IS_EQUAL, ASTNodeType::EQUAL },
+	{ LexicalTokenType::OPERATOR_NOT_EQUAL, ASTNodeType::NOT_EQUAL },
+	{ LexicalTokenType::OPERATOR_PLUS, ASTNodeType::ADD },
+	{ LexicalTokenType::OPERATOR_MINUS, ASTNodeType::SUBTRACT },
+	{ LexicalTokenType::OPERATOR_MULTIPLY, ASTNodeType::MULTIPLY },
+	{ LexicalTokenType::OPERATOR_DIVIDE, ASTNodeType::DIVIDE },
+	{ LexicalTokenType::OPERATOR_MODULO, ASTNodeType::MODULO },
+	{ LexicalTokenType::KEYWORD_PROCEDURE, ASTNodeType::PROCEDURE },
+	{ LexicalTokenType::KEYWORD_WHILE, ASTNodeType::WHILE },
+	{ LexicalTokenType::KEYWORD_IF, ASTNodeType::IF_ELSE_THEN },
+	{ LexicalTokenType::KEYWORD_READ, ASTNodeType::READ },
+	{ LexicalTokenType::KEYWORD_CALL, ASTNodeType::CALL },
+	{ LexicalTokenType::KEYWORD_PRINT, ASTNodeType::PRINT },
+	{ LexicalTokenType::INTEGER, ASTNodeType::CONSTANT },
+	{ LexicalTokenType::NAME, ASTNodeType::VARIABLE },
+	{ LexicalTokenType::ERROR, ASTNodeType::ERROR }
+};
+
 const std::unordered_map<std::string, LexicalTokenType> LexicalTokenTypeMapper::stringToTokenMap = {
 	// Symbols
 	{"{", LexicalTokenType::SYMBOL_OPEN_BRACE},
@@ -111,7 +138,7 @@ const std::vector<std::pair<LexicalTokenType, std::string>> LexicalTokenTypeMapp
 	{LexicalTokenType::OPERATOR_OR, "^(\\|\\|)"},
 	{LexicalTokenType::OPERATOR_GREATER, "^(>)"},
 	{LexicalTokenType::OPERATOR_LESS, "^(<)"},
-	
+
 	{LexicalTokenType::OPERATOR_PLUS, "^(\\+)"},
 	{LexicalTokenType::OPERATOR_MINUS, "^(-)"},
 	{LexicalTokenType::OPERATOR_MULTIPLY, "^(\\*)"},

@@ -2,7 +2,7 @@
 
 #include <unordered_map>
 #include <string>
-
+#include "sp/AST/ASTNode.h"
 
 /*
 * @brief Enum class for the different types of tokens, which includes
@@ -55,12 +55,16 @@ enum class LexicalTokenType {
     NULL_TOKEN
 };
 
-
 /**
 * @brief a static utility class that maps back and forward token to string rerpesentation
 */
 class LexicalTokenTypeMapper {
 public:
+    /**
+    * @brief Convert a LexicalTokenType to ASTNodeType
+    */
+    static const std::unordered_map<LexicalTokenType, ASTNodeType> lexicalToAstMap;
+
     /**
     * @brief Returns the type of token (default)
     */
