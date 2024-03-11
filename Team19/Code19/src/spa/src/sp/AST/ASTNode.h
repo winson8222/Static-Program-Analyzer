@@ -97,6 +97,36 @@ public:
 	*/
     bool getVisited();
 
+    /*
+    * @brief Get the type of the AST node.
+    */
+    ASTNodeType getType();
+
+    /*
+    * @brief Get the value of the AST node.
+    */
+    std::string getValue();
+
+    /*
+    * @brief Get the line number of the AST node.
+    */
+    int getLineNumber();
+
+    /*
+    * @brief Get the children of the AST node.
+    */
+    std::vector<std::shared_ptr<ASTNode>> getChildren();
+
+    /*
+    * @brief Get the specific child of the AST node.
+    */
+    std::shared_ptr<ASTNode> getChildByIndex(int index);
+
+    /*
+    * @brief Set the children of the AST node.
+    */
+    void setChildByIndex(int index, std::shared_ptr<ASTNode> child);
+
     // To be set as private in future, probably milestone 2
     ASTNodeType type;
     std::vector<std::shared_ptr<ASTNode>> children;

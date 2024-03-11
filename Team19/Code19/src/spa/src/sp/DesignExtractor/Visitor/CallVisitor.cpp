@@ -12,7 +12,7 @@ void CallVisitor::visit() {
 	CallExtractor callExtractor(this->root, this->pkbWriterManager);
 	callExtractor.extract();
 
-	ProcedureVisitor procedureVisitor(this->root->children[0], this->pkbWriterManager);
+	ProcedureVisitor procedureVisitor(this->root->getChildByIndex(0), this->pkbWriterManager);
 	procedureVisitor.addContexts(getProcedureContexts());
 	procedureVisitor.visit();
 	procedureVisitor.setIsVisited();
@@ -24,7 +24,7 @@ std::vector<std::shared_ptr<ASTNode>> CallVisitor::getProcedureContexts() {
 	// to set context of previous procedure call later by iterating through the list
 	std::vector<std::shared_ptr<ASTNode>> procedureContexts;
 	for (auto value : this->contexts) {
-		if (ASTUtility::nodeIsProcedure(value->type)) {
+		if (ASTUtility::nodeIsProcedure(value->getType())) {
 			procedureContexts.push_back(value);
 		}
 	}

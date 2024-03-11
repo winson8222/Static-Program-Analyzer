@@ -20,6 +20,7 @@ public:
 	void linkAllCallsToProcedure();
 
 private:
+	std::string getProcedureVariableName(std::shared_ptr<ASTNode> node);
 	/*
 	* Depth first search to link all calls to procedures to the procedure node
 	*/

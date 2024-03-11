@@ -86,4 +86,8 @@ bool ASTUtility::nodeIsIfElse(ASTNodeType t) {
 bool ASTUtility::nodeIsCall(ASTNodeType t) {
 	return t == ASTNodeType::CALL;
 }
+
+bool ASTUtility::nodeIsTarget(ASTNodeType t1, ASTNodeType t2) {
+	return t1 == t2;
+}
 // ai-gen end

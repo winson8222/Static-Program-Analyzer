@@ -90,3 +90,27 @@ void ASTNode::setVisited() {
 bool ASTNode::getVisited() {
 	return this->visited;
 }
+
+std::vector<std::shared_ptr<ASTNode>> ASTNode::getChildren() {
+	return this->children;
+}
+
+ASTNodeType ASTNode::getType() {
+	return this->type;
+}
+
+std::string ASTNode::getValue() {
+	return this->value;
+}
+
+int ASTNode::getLineNumber() {
+	return this->lineNumber;
+}
+
+std::shared_ptr<ASTNode> ASTNode::getChildByIndex(int index) {
+	return this->children[index];
+}
+
+void ASTNode::setChildByIndex(int index, std::shared_ptr<ASTNode> child) {
+	this->children[index] = child;
+}

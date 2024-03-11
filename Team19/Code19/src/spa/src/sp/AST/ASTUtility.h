@@ -94,6 +94,11 @@ public:
     * @return true if AST node is a call statement, and false otherwise.
 	*/
     static bool nodeIsCall(ASTNodeType t);
+
+    /*
+    * Method to compare two AST node types together
+    */
+    static bool nodeIsTarget(ASTNodeType t1, ASTNodeType t2);
 };
 
 // ai-gen end

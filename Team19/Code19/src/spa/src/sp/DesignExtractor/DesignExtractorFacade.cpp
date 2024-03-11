@@ -6,7 +6,7 @@ DesignExtractorFacade::DesignExtractorFacade(std::shared_ptr<ASTNode> root,
 	if (pkbWriterManager == nullptr) {
 		throw std::runtime_error("ERROR: PKBWriterManager is null!");
 	}
-	if (root->type != ASTNodeType::PROGRAMS) {
+	if (root->getType() != ASTNodeType::PROGRAMS) {
 		throw std::runtime_error("ERROR: This is not the start node!");
 	}
 }
@@ -15,8 +15,8 @@ DesignExtractorFacade::DesignExtractorFacade(std::shared_ptr<ASTNode> root,
 // this error is expected from the requirements of SPA
 void DesignExtractorFacade::extractAll() {
 	std::vector<ProcedureVisitor> listOfProcedure;
-	for (auto& procs : root->children) {
-		if (procs->type != ASTNodeType::PROCEDURE) {
+	for (auto& procs : root->getChildren()) {
+		if (procs->getType() != ASTNodeType::PROCEDURE) {
 			throw std::runtime_error("ERROR: This is not a procedure node!");
 		}	
 		ProcedureVisitor procedureVisitor(procs, pkbWriterManager);
