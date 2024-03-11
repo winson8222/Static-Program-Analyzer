@@ -1,5 +1,4 @@
 #include "sp/DesignExtractor/Visitor/CallVisitor.h"
-#include <iostream>
 
 CallVisitor::CallVisitor(std::shared_ptr<ASTNode> root,
 	listnode context,

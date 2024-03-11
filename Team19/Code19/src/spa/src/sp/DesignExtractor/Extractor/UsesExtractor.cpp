@@ -1,5 +1,4 @@
 #include "sp/DesignExtractor/Extractor/UsesExtractor.h"
-#include <iostream>
 
 void UsesExtractor::extract() {
 	switch (ast1->type) {

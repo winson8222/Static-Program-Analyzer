@@ -1,5 +1,4 @@
 #include "SimpleCallLinker.h"
-#include <iostream>
 #include <stdexcept>
 
 SimpleCallLinker::SimpleCallLinker(std::shared_ptr<ASTNode> root) {
