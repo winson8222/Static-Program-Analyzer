@@ -29,10 +29,6 @@ private:
 	std::unique_ptr<SimpleLineManager> lineManager;
 	std::unique_ptr<SimpleTokenStream> tokenStream;
 	void assertToken(LexicalToken token, LexicalTokenType type) const;
-	bool hasTokensLeft() const;
-	LexicalToken peekNextToken();
-	LexicalToken getNextToken();
-	LexicalToken peekNextNextToken();
 	std::shared_ptr<ASTNode> createNode(ASTNodeType type, int lineNumber, std::string nodeValue = "");
 	std::shared_ptr<ASTNode> parseProcedure();
 	std::shared_ptr<ASTNode> parseStmtLst();
