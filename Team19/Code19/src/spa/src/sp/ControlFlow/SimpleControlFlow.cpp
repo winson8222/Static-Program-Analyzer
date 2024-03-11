@@ -54,8 +54,18 @@ std::shared_ptr<CFGNode> SimpleControlFlow::generateFromStatement(std::shared_pt
 }
 
 std::shared_ptr<CFGNode> SimpleControlFlow::generateFromIfElseThen(std::shared_ptr<ASTNode> statementNode, std::shared_ptr<CFGNode> nextNode) {
-	// TODO
-	return nextNode;
+	int lineNumber = statementNode->getLineNumber();
+	std::shared_ptr<CFGNode> node = std::make_shared<CFGNode>(lineNumber);
+
+	std::shared_ptr<ASTNode> ifNode = this->getStatementList(statementNode, IF_STATEMENT_LIST_INDEX);
+	std::shared_ptr<CFGNode> ifBlockNode = this->generateFromStatementList(ifNode, nextNode);
+	node->addChild(ifBlockNode);
+
+	std::shared_ptr<ASTNode> elseNode = this->getStatementList(statementNode, ELSE_STATEMENT_LIST_INDEX);
+	std::shared_ptr<CFGNode> elseBlockNode = this->generateFromStatementList(elseNode, nextNode);
+	node->addChild(elseBlockNode);
+
+	return node;
 }
 
 std::shared_ptr<CFGNode> SimpleControlFlow::generateFromWhile(std::shared_ptr<ASTNode> statementNode, std::shared_ptr<CFGNode> nextNode) {
@@ -64,8 +74,8 @@ std::shared_ptr<CFGNode> SimpleControlFlow::generateFromWhile(std::shared_ptr<AS
 	node->addChild(nextNode);
 
 	std::shared_ptr<ASTNode> statementListNode = this->getStatementList(statementNode, WHILE_STATEMENT_LIST_INDEX);
-	std::shared_ptr<CFGNode> whileLoopNode = this->generateFromStatementList(statementListNode, node);
-	node->addChild(whileLoopNode);
+	std::shared_ptr<CFGNode> whileBlockNode = this->generateFromStatementList(statementListNode, node);
+	node->addChild(whileBlockNode);
 
 	return node;
 }
