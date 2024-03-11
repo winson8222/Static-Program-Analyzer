@@ -1,4 +1,5 @@
 #include "sp/DesignExtractor/Extractor/UsesExtractor.h"
+#include <iostream>
 
 void UsesExtractor::extract() {
 	switch (ast1->type) {
@@ -53,6 +54,6 @@ void UsesExtractor::getProcedureUses() {
 }
 
 void UsesExtractor::getCallUses() {
-	// Do nothing for now
-	// will need to handle later in M2
+	// Add uses for Calls
+	this->pkbWriterManager->getUsesSWriter()->addUsesS(ast1->lineNumber, ast2->value);
 }

@@ -69,10 +69,16 @@ TEST_CASE("sp/SourceProcessor: Uses(unit)") {
 			REQUIRE(!usesSReader->doesStmtUseVariable(7, "x"));
         }
 
-        // To add: test call
+        SECTION("Test call") {
+			std::shared_ptr<ASTNode> ast13 = std::make_shared<ASTNode>(ASTNodeType::CALL, 8, "call");
+			std::shared_ptr<ASTNode> ast14 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 8, "x");
+			UsesExtractor usesExtractor8(ast13, ast14, pkbWriterManager);
+			usesExtractor8.extract();
+			REQUIRE(usesSReader->doesStmtUseVariable(8, "x"));
+        }
     }
 
-    SECTION("Advanced ModifiesS") {
+    SECTION("Advanced Uses") {
         std::shared_ptr<ASTNode> ast1 = std::make_shared<ASTNode>(ASTNodeType::PROCEDURE, 0, "proc");
         std::shared_ptr<ASTNode> ast2 = std::make_shared<ASTNode>(ASTNodeType::IF_ELSE_THEN, 1, "ifs");
         std::shared_ptr<ASTNode> ast3 = std::make_shared<ASTNode>(ASTNodeType::WHILE, 2, "while");
@@ -92,5 +98,21 @@ TEST_CASE("sp/SourceProcessor: Uses(unit)") {
         std::unordered_set<int> expected = usesSReader->getAllStmtsThatUseVariable("x");
         std::unordered_set<int> actual = { 1, 2, 3 };
         REQUIRE(expected == actual);
+    }
+
+    SECTION("Advanced Uses (call and procedure)") {
+        std::shared_ptr<ASTNode> ast0 = std::make_shared<ASTNode>(ASTNodeType::PROCEDURE, 0, "proc1");
+		std::shared_ptr<ASTNode> ast1 = std::make_shared<ASTNode>(ASTNodeType::PROCEDURE, 0, "proc2");
+		std::shared_ptr<ASTNode> ast2 = std::make_shared<ASTNode>(ASTNodeType::CALL, 1, "call");
+		std::shared_ptr<ASTNode> ast3 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "x");
+		std::vector<std::shared_ptr<ASTNode>> asts = { ast0, ast1, ast2 };
+
+		VariableVisitor variableVisitor(ast3, pkbWriterManager);
+		variableVisitor.setUsedContext(asts, ast3);
+		variableVisitor.visit();
+
+		REQUIRE(usesPPReader->doesProcUseVariable("proc1", "x"));
+        REQUIRE(usesPPReader->doesProcUseVariable("proc2", "x"));
+		REQUIRE(usesSReader->doesStmtUseVariable(1, "x"));
     }
 }

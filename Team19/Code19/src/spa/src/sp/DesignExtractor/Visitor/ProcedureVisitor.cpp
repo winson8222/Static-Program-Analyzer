@@ -30,9 +30,13 @@ void ProcedureVisitor::visit() {
 }
 
 void ProcedureVisitor::setIsVisited() {
-	this->wasVisited = true;
+	this->root->setVisited();
 }
 
 bool ProcedureVisitor::checkIfVisited() {
-	return this->wasVisited;
+	return this->root->getVisited();
+}
+
+void ProcedureVisitor::addContexts(std::vector<std::shared_ptr<ASTNode>> contexts) {
+	this->contexts.insert(this->contexts.end(), contexts.begin(), contexts.end());
 }

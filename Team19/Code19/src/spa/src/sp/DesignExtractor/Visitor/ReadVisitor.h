@@ -7,7 +7,6 @@
 #include "sp/DesignExtractor/Extractor/ParentExtractor.h"
 
 #include <stdexcept>
-#include <iostream>
 
 /*
 * A visitor for the read statement which should

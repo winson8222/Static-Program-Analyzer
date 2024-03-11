@@ -18,6 +18,8 @@ void SimpleCallLinker::depthFirstSearch(std::shared_ptr<ASTNode> node) {
 		std::string procName = node->children[0]->value;
 		if (procedureNameToProcedureNode.find(procName) != procedureNameToProcedureNode.end()) {
 			node->children[0] = procedureNameToProcedureNode[procName];
+		} else {
+			throw std::runtime_error("Procedure " + procName + " not found");
 		}
 	}
 	for (auto child : node->children) {

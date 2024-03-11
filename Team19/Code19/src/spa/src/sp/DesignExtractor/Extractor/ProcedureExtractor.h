@@ -1,7 +1,6 @@
 #pragma once
 
 #include "sp/DesignExtractor/Extractor/IExtractor.h"
-#include <iostream>
 
 /*
 * Extracts all the procedures from the AST and writes them to the PKB.

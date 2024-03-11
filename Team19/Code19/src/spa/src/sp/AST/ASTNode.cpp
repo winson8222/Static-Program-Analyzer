@@ -10,12 +10,14 @@ ASTNode::ASTNode() {
 	this->type = ASTNodeType::PROGRAMS;
 	this->lineNumber = 0;
 	this->value = "default";
+    this->visited = false;
 }
 
 ASTNode::ASTNode(ASTNodeType type, int lineNumber, std::string value) {
     this->type = type;
     this->lineNumber = lineNumber;
     this->value = value;
+    this->visited = false;
 }
 
 void ASTNode::addChild(std::shared_ptr<ASTNode> child) {
@@ -79,4 +81,12 @@ std::string ASTNode::getRPNForm() {
 	}
     result = result + "'" + value + "'";
     return result;
+}
+
+void ASTNode::setVisited() {
+    this->visited = true;
+}
+
+bool ASTNode::getVisited() {
+	return this->visited;
 }

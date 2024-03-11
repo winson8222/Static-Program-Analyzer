@@ -24,7 +24,7 @@ void DesignExtractorFacade::extractAll() {
 	}
 
 	for (auto& procedureVisitor : listOfProcedure) {
-		if (procedureVisitor.checkIfVisited()) continue;
+		// if (procedureVisitor.checkIfVisited()) continue;
 		procedureVisitor.visit();
 		procedureVisitor.setIsVisited();
 	}

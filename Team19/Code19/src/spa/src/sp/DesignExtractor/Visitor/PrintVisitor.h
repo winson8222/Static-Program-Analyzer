@@ -5,8 +5,6 @@
 
 #include "sp/DesignExtractor/Extractor/PrintExtractor.h"
 #include "sp/DesignExtractor/Extractor/ParentExtractor.h"
-#include <iostream>
-#include <stdexcept>
 
 /*
 * A visitor for the while statement which should

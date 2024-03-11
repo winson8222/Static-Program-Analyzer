@@ -1,4 +1,5 @@
 #include "sp/DesignExtractor/Visitor/CallVisitor.h"
+#include <iostream>
 
 CallVisitor::CallVisitor(std::shared_ptr<ASTNode> root,
 	listnode context,
@@ -12,13 +13,22 @@ void CallVisitor::visit() {
 	CallExtractor callExtractor(this->root, this->pkbWriterManager);
 	callExtractor.extract();
 
-	ProcedureExtractor procExt(this->root->children[0], this->pkbWriterManager);
-	procExt.extract();
+	ProcedureVisitor procedureVisitor(this->root->children[0], this->pkbWriterManager);
+	procedureVisitor.addContexts(getProcedureContexts());
+	procedureVisitor.visit();
+	procedureVisitor.setIsVisited();
 
 	setParents(this->contexts, this->root, this->pkbWriterManager);
 }
 
-void CallVisitor::addContext(std::shared_ptr<ASTNode> context) {
-	// do nothing
+std::vector<std::shared_ptr<ASTNode>> CallVisitor::getProcedureContexts() {
 	// to set context of previous procedure call later by iterating through the list
+	std::vector<std::shared_ptr<ASTNode>> procedureContexts;
+	for (auto value : this->contexts) {
+		if (ASTUtility::nodeIsProcedure(value->type)) {
+			procedureContexts.push_back(value);
+		}
+	}
+	procedureContexts.push_back(this->root);
+	return procedureContexts;
 }

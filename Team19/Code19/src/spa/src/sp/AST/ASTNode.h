@@ -87,12 +87,22 @@ public:
     */
     std::string getRPNForm();
 
+    /**
+	 * @brief Sets visited field to true
+	 */
+    void setVisited();
+
+    /**
+    * @brief gets visited field
+	*/
+    bool getVisited();
+
     // To be set as private in future, probably milestone 2
     ASTNodeType type;
     std::vector<std::shared_ptr<ASTNode>> children;
     int lineNumber;
     std::string value;
-
+    bool visited;
 
 private:
     std::shared_ptr<ASTNode> root;

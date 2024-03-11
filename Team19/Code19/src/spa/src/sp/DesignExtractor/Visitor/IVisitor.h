@@ -2,7 +2,6 @@
 
 #include <memory>
 #include <vector>
-#include <iostream>
 #include "sp/AST/ASTNode.h" 
 #include "sp/AST/ASTUtility.h"
 #include "sp/DesignExtractor/Extractor/ParentExtractor.h"

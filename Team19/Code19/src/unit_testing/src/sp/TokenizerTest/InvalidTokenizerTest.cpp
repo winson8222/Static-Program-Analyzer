@@ -3,7 +3,6 @@
 #include "sp/SPTokenizer/FileProcessor.h"
 #include "catch.hpp"
 #include <fstream>
-#include <iostream>
 #include <filesystem>
 #include <vector>
 #include <regex>

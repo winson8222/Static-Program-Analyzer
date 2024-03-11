@@ -62,7 +62,13 @@ TEST_CASE("sp/SourceProcessor: Modifies(unit)") {
 			REQUIRE(!modifiesSReader->doesStmtModifyVariable(7, "z"));
         }
 
-        // To add: test call
+        SECTION("Test call") {
+            std::shared_ptr<ASTNode> ast13 = std::make_shared<ASTNode>(ASTNodeType::CALL, 8, "call");
+            std::shared_ptr<ASTNode> ast14 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 8, "z");
+            ModifiesExtractor modifiesExtractor7(ast13, ast14, pkbWriterManager);
+            modifiesExtractor7.extract();
+            REQUIRE(modifiesSReader->doesStmtModifyVariable(8, "z"));
+        }
     }
 
     SECTION("Advanced ModifiesS") {
@@ -85,5 +91,21 @@ TEST_CASE("sp/SourceProcessor: Modifies(unit)") {
         std::unordered_set<int> expected = modifiesSReader->getAllStmtsThatModifyVariable("x");
         std::unordered_set<int> actual = {1, 2, 3};
         REQUIRE(expected == actual);
+    }
+
+    SECTION("Advanced Modifies with Call and Procedure") {
+        std::shared_ptr<ASTNode> ast0 = std::make_shared<ASTNode>(ASTNodeType::PROCEDURE, 0, "proc1");
+		std::shared_ptr<ASTNode> ast1 = std::make_shared<ASTNode>(ASTNodeType::PROCEDURE, 0, "proc2");
+		std::shared_ptr<ASTNode> ast2 = std::make_shared<ASTNode>(ASTNodeType::CALL, 1, "call");
+		std::shared_ptr<ASTNode> ast3 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "x");
+		std::vector<std::shared_ptr<ASTNode>> asts = {ast0, ast1, ast2};
+		
+		VariableVisitor variableVisitor(ast3, pkbWriterManager);
+		variableVisitor.setModifiedContext(asts, ast3);
+		variableVisitor.visit();
+
+		REQUIRE(modifiesPReader->doesProcModifyVariable("proc1", "x"));
+        REQUIRE(modifiesPReader->doesProcModifyVariable("proc2", "x"));
+		REQUIRE(modifiesSReader->doesStmtModifyVariable(1, "x"));
     }
 }

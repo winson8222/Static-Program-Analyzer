@@ -3,6 +3,7 @@
 #include "sp/DesignExtractor/Visitor/IVisitor.h"
 #include "sp/DesignExtractor/Extractor/CallExtractor.h"
 #include "sp/DesignExtractor/Extractor/ProcedureExtractor.h"
+#include "sp/DesignExtractor/Visitor/ProcedureVisitor.h"
 #include "sp/DesignExtractor/Extractor/ParentExtractor.h"
 
 // ai-gen starts
@@ -15,7 +16,7 @@ public:
 		std::shared_ptr<PKBWriterManager> pkbWriterManager);
 
 	void visit() override;
-	void addContext(std::shared_ptr<ASTNode> context);
+	std::vector<std::shared_ptr<ASTNode>> getProcedureContexts();
 };
 
 // ai-gen ends
