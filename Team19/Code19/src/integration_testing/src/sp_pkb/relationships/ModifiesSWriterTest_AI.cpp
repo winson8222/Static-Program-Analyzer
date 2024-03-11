@@ -71,5 +71,4 @@ SECTION("Basic ModifiesS") {
                 std::unordered_set<int>({1, 2, 4, 5, 10, 11}));
 
     }
-
 }

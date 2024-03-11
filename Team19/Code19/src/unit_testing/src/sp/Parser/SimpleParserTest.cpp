@@ -65,7 +65,7 @@ TEST_CASE("Program parsing throws an error for extra variable in print statement
     std::filesystem::remove(filename);
 }
 
-TEST_CASE("Program parsing throws an error for missing parenthesis around !(cond_expr) with following && operator.") {
+TEST_CASE("Program parsing throws an error for missing parenthesis around !(cond_expr)") {
     std::string filename = "sample.txt";
     std::string sampleProgram = "procedure procedure {"
                                 "while (!(read != 11) && !(read == while)) {"
@@ -265,7 +265,9 @@ TEST_CASE("Parsing single program with all possible statements types.") {
                                 "call call;"
                                 "print read;"
                                 "read print;"
-                                "}";
+                                "}"
+                                "procedure call { print k; }"
+                                ;
     std::ofstream file;
     file.open(filename);
     file << sampleProgram;
@@ -434,9 +436,7 @@ TEST_CASE("Parsing single program with all possible statements types.") {
 		SECTION("Testing tree child node") {
 			const auto& children = callStatement->children;
 			REQUIRE(children.size() == 1);
-			REQUIRE(children[0]->type == ASTNodeType::VARIABLE);
-			REQUIRE(children[0]->lineNumber == 7);
-			REQUIRE(children[0]->value == "call");
+			REQUIRE(children[0]->type == ASTNodeType::PROCEDURE);
 		}
 	}
 

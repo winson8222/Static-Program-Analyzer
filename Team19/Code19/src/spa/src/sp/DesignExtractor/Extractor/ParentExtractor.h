@@ -1,7 +1,6 @@
 #pragma once
 
 #include "sp/DesignExtractor/Extractor/IExtractor.h"
-#include <iostream>
 
 /*
 * This class is used to extract the Parent relationship from the AST

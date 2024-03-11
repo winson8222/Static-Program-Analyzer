@@ -5,8 +5,6 @@
 #include "sp/DesignExtractor/Extractor/VariableExtractor.h"
 #include "sp/DesignExtractor/Extractor/ConstantExtractor.h"
 #include "sp/AST/ASTUtility.h"
-
-#include <iostream>
 #include <stdexcept>
 
 
