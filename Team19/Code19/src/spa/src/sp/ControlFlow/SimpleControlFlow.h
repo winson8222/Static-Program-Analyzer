@@ -22,9 +22,12 @@ public:
 	std::shared_ptr<std::vector<std::shared_ptr<CFGNode>>> createControlFlowGraphs();
 
 private:
-	static const int STATEMENT_LIST_INDEX = 0;
+	static const int PROCEDURE_STATEMENT_LIST_INDEX = 0;
+	static const int WHILE_STATEMENT_LIST_INDEX = 1;
+	static const int IF_STATEMENT_LIST_INDEX = 1;
+	static const int ELSE_STATEMENT_LIST_INDEX = 2;
 	std::shared_ptr<ASTNode> root;
-	std::shared_ptr<ASTNode> getStatementList(std::shared_ptr<ASTNode> node);
+	std::shared_ptr<ASTNode> getStatementList(std::shared_ptr<ASTNode> node, int index);
 	std::shared_ptr<CFGNode> generateFromProcedure(std::shared_ptr<ASTNode> procedureNode);
 	std::shared_ptr<CFGNode> generateFromStatementList(std::shared_ptr<ASTNode> statementListNode, std::shared_ptr<CFGNode> nextNode);
 	std::shared_ptr<CFGNode> generateFromStatement(std::shared_ptr<ASTNode> statementNode, std::shared_ptr<CFGNode> nextNode);

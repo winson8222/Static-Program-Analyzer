@@ -14,12 +14,14 @@ std::shared_ptr<std::vector<std::shared_ptr<CFGNode>>> SimpleControlFlow::create
 	return controlFlowGraphs;
 };
 
-std::shared_ptr<ASTNode> SimpleControlFlow::getStatementList(std::shared_ptr<ASTNode> node) {
-	return node->getChildByIndex(STATEMENT_LIST_INDEX);
+std::shared_ptr<ASTNode> SimpleControlFlow::getStatementList(std::shared_ptr<ASTNode> node, int index) {
+	return node->getChildByIndex(index);
 };
 
 std::shared_ptr<CFGNode> SimpleControlFlow::generateFromProcedure(std::shared_ptr<ASTNode> procedureNode) {
-	return this->generateFromStatementList(getStatementList(procedureNode), CFGNode::getDummyNode());
+	std::shared_ptr<ASTNode> statementListNode = this->getStatementList(procedureNode, PROCEDURE_STATEMENT_LIST_INDEX);
+	std::shared_ptr<CFGNode> endOfProcedureDummyNode = CFGNode::getDummyNode()
+	return this->generateFromStatementList(statementListNode, endOfProcedureDummyNode);
 }
 
 std::shared_ptr<CFGNode> SimpleControlFlow::generateFromStatementList(std::shared_ptr<ASTNode> statementListNode, std::shared_ptr<CFGNode> nextNode) {
@@ -38,10 +40,10 @@ std::shared_ptr<CFGNode> SimpleControlFlow::generateFromStatement(std::shared_pt
 	ASTNodeType nodeType = statementNode->getType();
 
 	if (ASTUtility::nodeIsTarget(nodeType, ASTNodeType::IF_ELSE_THEN)) {	
-		return generateFromIfElseThen(statementNode, nextNode);
+		return this->generateFromIfElseThen(statementNode, nextNode);
 	}
 	else if (ASTUtility::nodeIsTarget(nodeType, ASTNodeType::WHILE)) {
-		return generateFromWhile(statementNode, nextNode);
+		return this->generateFromWhile(statementNode, nextNode);
 	}
 
 	int lineNumber = statementNode->getLineNumber();
@@ -57,6 +59,13 @@ std::shared_ptr<CFGNode> SimpleControlFlow::generateFromIfElseThen(std::shared_p
 }
 
 std::shared_ptr<CFGNode> SimpleControlFlow::generateFromWhile(std::shared_ptr<ASTNode> statementNode, std::shared_ptr<CFGNode> nextNode) {
-	// TODO
-	return nextNode;
+	int lineNumber = statementNode->getLineNumber();
+	std::shared_ptr<CFGNode> node = std::make_shared<CFGNode>(lineNumber);
+	node->addChild(nextNode);
+
+	std::shared_ptr<ASTNode> statementListNode = this->getStatementList(statementNode, WHILE_STATEMENT_LIST_INDEX);
+	std::shared_ptr<CFGNode> whileLoopNode = this->generateFromStatementList(statementListNode, node);
+	node->addChild(whileLoopNode);
+
+	return node;
 }
