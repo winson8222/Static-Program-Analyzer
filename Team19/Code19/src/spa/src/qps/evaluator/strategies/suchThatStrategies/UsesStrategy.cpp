@@ -65,7 +65,7 @@ void UsesStrategy::processFirstParam(const Token& firstParam, const Token& secon
     // filter the statements that modifies the variable based on the stmt type
     std::unordered_set<int> allFilteredModifiesStmts;
     allFilteredModifiesStmts = getFilteredStmtsNumByType(allModifiesStmts,statementType, pkbReaderManager);
-
+    // need to be changed, now is just any call statements not filtered by the proc used
 
     // get all filtered statements that modifies the variable
     resultTable->insertColumn(firstParam.getValue());
