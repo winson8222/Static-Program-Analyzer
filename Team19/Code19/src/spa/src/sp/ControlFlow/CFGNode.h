@@ -9,24 +9,40 @@
  */
 class CFGNode {
 public:
-    /**
-     * @brief Default constructor for ASTNode.
-     */
-    CFGNode() = default;
+	/**
+	 * @brief Default constructor for CFGNode.
+	 */
+	CFGNode() = default;
 
-    /**
-     * @brief Constructor for creating an ASTNode with specified type, line number, and value.
-     *
-     * @param type The type of the AST node.
-     * @param lineNumber The line number associated with the AST node.
-     * @param value The value associated with the AST node.
-     */
-    CFGNode(ASTNodeType type, int lineNumber, std::string value);
+	/**
+	 * @brief Constructor for creating an CFGNode with specified line number.
+	 *
+	 * @param lineNumber The line number associated with the AST node.
+	 */
+	CFGNode(int lineNumber);
 
-    /**
-     * @brief Adds a child node to the current AST node.
-     *
-     * @param child A shared pointer to the child AST node to be added.
-     */
-    void addFlow(std::shared_ptr<CFGNode> child);
+	/**
+	 * @brief Adds a child node to the current CFG node.
+	 *
+	 * @param child A shared pointer to the child CFG node to be added.
+	 */
+	void addChild(std::shared_ptr<CFGNode> child);
+
+	/**
+	 * @brief Returns the line number this CFGNode is representing.
+	 *
+	 * @return The respective line number.
+	 */
+	int getLineNumber();
+
+	/**
+	 * @brief Returns all possible CFGNodes that this CFGNode links to.
+	 *
+	 * @return A vector of pointers to all CFGNodes.
+	 */
+	vector<std::shared_ptr<CFGNode>> getChildren();
+
+private:
+	int lineNumber;
+	vector<std::shared_ptr<CFGNode>> children;
 }
