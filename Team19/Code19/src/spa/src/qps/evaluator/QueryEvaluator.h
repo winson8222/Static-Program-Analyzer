@@ -9,6 +9,8 @@
 #include "qps/evaluator/strategies/suchThatStrategies/ParentStrategy.h" // Include ParentStrategy
 #include "qps/evaluator/strategies/suchThatStrategies/ModifiesStrategy.h" // Include ModifiesStrategy
 #include "qps/evaluator/strategies/suchThatStrategies/UsesStrategy.h" // Include UsesStrategy
+#include "qps/evaluator/strategies/suchThatStrategies/UsesPStrategy.h" // Include UsesPStrategy
+#include "qps/evaluator/strategies/suchThatStrategies/ModifiesPStrategy.h" // Include ModifiesPStrategy
 #include <variant>
 
 

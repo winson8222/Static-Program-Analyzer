@@ -56,18 +56,20 @@ void ModifiesPStrategy::processFirstParam(const Token &firstParam, const Token &
                                           PKBReaderManager &pkbReaderManager) {
     string colName = firstParam.getValue();
     insertSingleColToTable(firstParam, resultTable);
-    if (secondParam.getType() == TokenType::IDENT) {
-        string secondParamValue = secondParam.getValue();
+    if (secondParam.getType() == TokenType::QuoutIDENT) {
+        string secondParamValue = extractQuotedExpression(secondParam);
+
         std::unordered_set<std::string> allProcs = pkbReaderManager.getModifiesPReader()->getAllProcsThatModifyVariable(secondParamValue);
         for (string proc : allProcs) {
-            pair<string, string> colPair = make_pair<string, string>(std::move(colName), std::move(proc));
+            pair<string, string> colPair = make_pair(colName, std::move(proc));
             insertSingleColRowToTable(colPair, resultTable);
         }
     } else {
         // it is a wildcard
         std::unordered_set<std::string> allProcs = pkbReaderManager.getModifiesPReader()->getAllProcsThatModifyAnyVariable();
         for (string proc : allProcs) {
-            pair<string, string> colPair = make_pair<string, string>(std::move(colName), std::move(proc));
+
+            pair<string, string> colPair = make_pair(colName, std::move(proc));
             insertSingleColRowToTable(colPair, resultTable);
         }
 
@@ -78,18 +80,19 @@ void ModifiesPStrategy::processSecondParam(const Token &firstParam, const Token 
                                            const ParsingResult &parsingResult, std::shared_ptr<ResultTable> resultTable,
                                            PKBReaderManager &pkbReaderManager) {
     string colName = secondParam.getValue();
-    if (firstParam.getType() == TokenType::IDENT) {
-        string firstParamValue = firstParam.getValue();
+    insertSingleColToTable(secondParam, resultTable);
+    if (firstParam.getType() == TokenType::QuoutIDENT) {
+        string firstParamValue = extractQuotedExpression(firstParam);
         std::unordered_set<std::string> allVars = pkbReaderManager.getModifiesPReader()->getAllVariablesModifiedByProc(firstParamValue);
         for (string var : allVars) {
-            pair<string, string> colPair = make_pair<string, string>(std::move(colName), std::move(var));
+            pair<string, string> colPair = make_pair(colName, std::move(var));
             insertSingleColRowToTable(colPair, resultTable);
         }
     } else {
         // it is a wildcard
         std::unordered_set<std::string> allVars = pkbReaderManager.getModifiesPReader()->getAllVariablesModifiedByAnyProc();
         for (string var : allVars) {
-            pair<string, string> colPair = make_pair<string, string>(std::move(colName), std::move(var));
+            pair<string, string> colPair = make_pair(colName, std::move(var));
             insertSingleColRowToTable(colPair, resultTable);
         }
     }
@@ -103,18 +106,19 @@ void ModifiesPStrategy::processBothConstants(const Token &firstParam, const Toke
             resultTable->setAsTruthTable();
         }
     } else if (firstParam.getType() == TokenType::Wildcard) {
-        string secondParamValue = secondParam.getValue();
+        string secondParamValue = extractQuotedExpression(secondParam);
         if (!pkbReaderManager.getModifiesPReader()->getRelationshipsByValue(secondParamValue).empty()) {
             resultTable->setAsTruthTable();
         }
     } else if (secondParam.getType() == TokenType::Wildcard) {
-        string firstParamValue = firstParam.getValue();
+        string firstParamValue = extractQuotedExpression(firstParam);
         if (!pkbReaderManager.getModifiesPReader()->getRelationshipsByKey(firstParamValue).empty()) {
             resultTable->setAsTruthTable();
         }
     } else {
-        string firstParamValue = firstParam.getValue();
-        string secondParamValue = secondParam.getValue();
+        string firstParamValue = extractQuotedExpression(firstParam);
+        string secondParamValue = extractQuotedExpression(secondParam);
+
         if (pkbReaderManager.getModifiesPReader()->hasRelationship(firstParamValue, secondParamValue)) {
             resultTable->setAsTruthTable();
         }

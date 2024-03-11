@@ -67,7 +67,6 @@ unordered_set<int> QueryEvaluationStrategy::getFilteredStmtsNumByType(unordered_
         std::unordered_set<int> allPrintStmts = printReader->getAllPrints();
         filteredResult = combineFoundStatements(allStatements, allPrintStmts);
     } else if (statementType == "call") {
-
         std::shared_ptr<CallReader> callReader = pkbReaderManager.getCallReader();
         std::unordered_set<int> allCallStmts = callReader->getAllCalls();
         filteredResult = combineFoundStatements(allStatements, allCallStmts);
