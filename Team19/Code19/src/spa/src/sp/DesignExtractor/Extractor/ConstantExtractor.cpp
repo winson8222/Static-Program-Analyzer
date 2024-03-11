@@ -3,9 +3,17 @@
 // ai-gen start
 // prompt: https://chat.openai.com/share/46f838f3-8c53-484f-8bf6-d22f90191973
 
+ConstantExtractor::ConstantExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<ConstantWriter> constantWriter)
+    : IExtractor(root) {
+    if (!root->equalType(ASTNodeType::CONSTANT)) {
+        throw std::invalid_argument("VariableExtractor: root is not of type VARIABLE");
+    }
+    this->constantWriter = constantWriter;
+}
+
 void ConstantExtractor::extract() {
 	// Extract all the constant values
-    this->pkbWriterManager->getConstantWriter()->insertConstant(stringToInt(root->value));
+    this->constantWriter->insertConstant(stringToInt(root->getValue()));
 }
 
 int ConstantExtractor::stringToInt(const std::string& str) {

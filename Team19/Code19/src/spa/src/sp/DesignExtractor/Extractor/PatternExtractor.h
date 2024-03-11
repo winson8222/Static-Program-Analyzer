@@ -8,11 +8,16 @@
 * This class implements the IExtractor interface. The methods are documented
 * from the base class at IExtractor.h
 */
-class AssignExtractor : public IExtractor {
+class AssignPatternExtractor : public IRelationshipExtractor {
 public:
-	AssignExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<AssignWriter> assignWriter);
+	AssignPatternExtractor(
+		std::shared_ptr<ASTNode> root,
+		std::shared_ptr<ASTNode> left,
+		std::shared_ptr<ASTNode> right,
+		std::shared_ptr<AssignPatternWriter> assignWriter);
 
 	void extract() override;
 private:
-	std::shared_ptr<AssignWriter> assignWriter;
+	std::shared_ptr<AssignPatternWriter> patternWriter;
+	std::shared_ptr<ASTNode> root;
 };

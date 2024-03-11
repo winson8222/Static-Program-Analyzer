@@ -10,12 +10,10 @@
 */
 class VariableExtractor : public IExtractor {
 public:
-	explicit VariableExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
-		: IExtractor(root, pkbWriterManager) {
-		if (root->type != ASTNodeType::VARIABLE) {
-			throw std::invalid_argument("VariableExtractor: root is not of type VARIABLE");
-		}
-	}
+	VariableExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<VariableWriter> variableWriter);
 
 	void extract() override;
+
+private:
+	std::shared_ptr<VariableWriter> variableWriter;
 };

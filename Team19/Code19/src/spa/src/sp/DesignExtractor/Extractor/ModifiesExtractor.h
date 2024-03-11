@@ -1,6 +1,7 @@
 #pragma once
 
 #include "sp/DesignExtractor/Extractor/IExtractor.h"
+#include "sp/AST/ASTUtility.h"
 #include <stdexcept>
 
 /*
@@ -8,49 +9,26 @@
 * This class implements the IRelationshipExtractor interface, so most
 * of the methods are overridden with documentations from IRelationshipExtractor.h
 */
-class ModifiesExtractor : public IRelationshipExtractor {
+class ModifiesSExtractor : public IRelationshipExtractor {
 public:
-	ModifiesExtractor(std::shared_ptr<ASTNode> ast1,
+	ModifiesSExtractor(std::shared_ptr<ASTNode> ast1,
 		std::shared_ptr<ASTNode> ast2,
-		std::shared_ptr<PKBWriterManager> pkbWriterManager)
-		: IRelationshipExtractor(ast1, ast2, pkbWriterManager) {}
+		std::shared_ptr<ModifiesSWriter> modifiesSWriter);
 
 	void extract() override;
 
 private:
-	/*
-	* Extracts the modifies relationship between an assignment statement and a variable
-	* then writes the relationship to PKB
-	*/
-	void getAssignModifies();
+	std::shared_ptr<ModifiesSWriter> modifiesSWriter;
+};
 
-	/*
-	* Extracts the modifies relationship between a read statement and a variable
-	* then writes the relationship to PKB
-	*/
-	void getReadModifies();
+class ModifiesPExtractor : public IRelationshipExtractor {
+public:
+	ModifiesPExtractor(std::shared_ptr<ASTNode> ast1,
+		std::shared_ptr<ASTNode> ast2,
+		std::shared_ptr<ModifiesPWriter> modifiesPWriter);
 
-	/*
-	* Extracts the modifies relationship between a if statement and a variable
-	* then writes the relationship to PKB
-	*/ 
-	void getIfModifies();
+	void extract() override;
 
-	/*
-	* Extracts the modifies relationship between a while statement and a variable
-	* then writes the relationship to PKB
-	*/
-	void getWhileModifies();
-
-	/*
-	* Extracts the modifies relationship between a procedure and a variable
-	* then writes the relationship to PKB
-	*/ 
-	void getProcedureModifies();
-
-	/*
-	* Extracts the modifies relationship between a call statement and a variable
-	* then writes the relationship to PKB
-	*/
-	void getCallModifies();
+private:
+	std::shared_ptr<ModifiesPWriter> modifiesPWriter;
 };

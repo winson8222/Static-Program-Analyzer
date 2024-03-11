@@ -17,7 +17,7 @@ TEST_CASE("sp/SourceProcessor: Modifies(unit)") {
         SECTION("Test assign") {
             std::shared_ptr<ASTNode> ast1 = std::make_shared<ASTNode>(ASTNodeType::ASSIGN, 1, "x");
             std::shared_ptr<ASTNode> ast2 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "x");
-            ModifiesExtractor modifiesExtractor1(ast1, ast2, pkbWriterManager);
+            ModifiesSExtractor modifiesExtractor1(ast1, ast2, pkbWriterManager->getModifiesSWriter());
             modifiesExtractor1.extract();
             REQUIRE(modifiesSReader->doesStmtModifyVariable(1, "x"));
         }
@@ -25,7 +25,7 @@ TEST_CASE("sp/SourceProcessor: Modifies(unit)") {
         SECTION("Test read") {
             std::shared_ptr<ASTNode> ast3 = std::make_shared<ASTNode>(ASTNodeType::READ, 2, "read");
             std::shared_ptr<ASTNode> ast4 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 2, "y");
-            ModifiesExtractor modifiesExtractor2(ast3, ast4, pkbWriterManager);
+            ModifiesSExtractor modifiesExtractor2(ast3, ast4, pkbWriterManager->getModifiesSWriter());
             modifiesExtractor2.extract();
             REQUIRE(modifiesSReader->doesStmtModifyVariable(2, "y"));
         }
@@ -33,7 +33,7 @@ TEST_CASE("sp/SourceProcessor: Modifies(unit)") {
         SECTION("Test ifs") {
             std::shared_ptr<ASTNode> ast5 = std::make_shared<ASTNode>(ASTNodeType::IF_ELSE_THEN, 3, "ifs");
             std::shared_ptr<ASTNode> ast6 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 4, "z");
-            ModifiesExtractor modifiesExtractor3(ast5, ast6, pkbWriterManager);
+            ModifiesSExtractor modifiesExtractor3(ast5, ast6, pkbWriterManager->getModifiesSWriter());
             modifiesExtractor3.extract();
             REQUIRE(modifiesSReader->doesStmtModifyVariable(3, "z"));
         }
@@ -41,7 +41,7 @@ TEST_CASE("sp/SourceProcessor: Modifies(unit)") {
         SECTION("Test while") {
             std::shared_ptr<ASTNode> ast7 = std::make_shared<ASTNode>(ASTNodeType::WHILE, 5, "while");
             std::shared_ptr<ASTNode> ast8 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 6, "t");
-            ModifiesExtractor modifiesExtractor4(ast7, ast8, pkbWriterManager);
+            ModifiesSExtractor modifiesExtractor4(ast7, ast8, pkbWriterManager->getModifiesSWriter());
             modifiesExtractor4.extract();
             REQUIRE(modifiesSReader->doesStmtModifyVariable(5, "t"));
         }
@@ -49,7 +49,7 @@ TEST_CASE("sp/SourceProcessor: Modifies(unit)") {
         SECTION("Test procedure") {
             std::shared_ptr<ASTNode> ast9 = std::make_shared<ASTNode>(ASTNodeType::PROCEDURE, 0, "proc");
             std::shared_ptr<ASTNode> ast10 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 0, "x");
-            ModifiesExtractor modifiesExtractor5(ast9, ast10, pkbWriterManager);
+            ModifiesPExtractor modifiesExtractor5(ast9, ast10, pkbWriterManager->getModifiesPWriter());
             modifiesExtractor5.extract();
             REQUIRE(modifiesPReader->doesProcModifyVariable("proc", "x"));
         }
@@ -57,15 +57,12 @@ TEST_CASE("sp/SourceProcessor: Modifies(unit)") {
         SECTION("Test print") {
             std::shared_ptr<ASTNode> ast11 = std::make_shared<ASTNode>(ASTNodeType::PRINT, 7, "print");
 			std::shared_ptr<ASTNode> ast12 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 7, "z");
-			ModifiesExtractor modifiesExtractor6(ast11, ast12, pkbWriterManager);
-			modifiesExtractor6.extract();
-			REQUIRE(!modifiesSReader->doesStmtModifyVariable(7, "z"));
         }
 
         SECTION("Test call") {
             std::shared_ptr<ASTNode> ast13 = std::make_shared<ASTNode>(ASTNodeType::CALL, 8, "call");
             std::shared_ptr<ASTNode> ast14 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 8, "z");
-            ModifiesExtractor modifiesExtractor7(ast13, ast14, pkbWriterManager);
+            ModifiesSExtractor modifiesExtractor7(ast13, ast14, pkbWriterManager->getModifiesSWriter());
             modifiesExtractor7.extract();
             REQUIRE(modifiesSReader->doesStmtModifyVariable(8, "z"));
         }

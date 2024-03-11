@@ -9,7 +9,7 @@ CallVisitor::CallVisitor(std::shared_ptr<ASTNode> root,
 
 void CallVisitor::visit() {
 	// TODO
-	CallExtractor callExtractor(this->root, this->pkbWriterManager);
+	CallExtractor callExtractor(this->root, this->pkbWriterManager->getCallWriter());
 	callExtractor.extract();
 
 	ProcedureVisitor procedureVisitor(this->root->getChildByIndex(0), this->pkbWriterManager);

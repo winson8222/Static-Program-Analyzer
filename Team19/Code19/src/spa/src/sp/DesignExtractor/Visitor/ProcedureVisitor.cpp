@@ -10,20 +10,22 @@ ProcedureVisitor::ProcedureVisitor(std::shared_ptr<ASTNode> node, std::shared_pt
 }
 
 void ProcedureVisitor::visit() {
-	ProcedureExtractor extractor(this->root, this->pkbWriterManager);
+	ProcedureExtractor extractor(this->root, this->pkbWriterManager->getProcedureWriter());
 	extractor.extract();
+
+	std::vector<std::shared_ptr<ASTNode>> child = this->root->getChildren();
 	// extract information of the procedure nodes: Done
-	if (this->root->children.size() == 0) {
+	if (child.size() == 0) {
 		return;
+	} else if (child.size() > 1) {
+		throw std::runtime_error("Procedure node does not have exactly 1 child");
 	}
+	std::shared_ptr<ASTNode> target = this->root->getChildByIndex(0);
 	// TODO: Recursively visit the statement list node, then later recursively visit all statements
-	if (this->root->children[0]->type != ASTNodeType::STATEMENT_LIST) {
+	if (target->getType() != ASTNodeType::STATEMENT_LIST) {
 		throw std::runtime_error("Procedure node does not have a statement list node");
 	}
-	if (this->root->children.size() != 1) {
-		throw std::runtime_error("Procedure node has more than 1 child");
-	}
-	StatementListVisitor statementListVisitor(this->root->children[0], this->pkbWriterManager);
+	StatementListVisitor statementListVisitor(target, this->pkbWriterManager);
 	statementListVisitor.setContext(contexts, root);
 	
 	statementListVisitor.visit();

@@ -4,23 +4,18 @@ WhileVisitor::WhileVisitor(std::shared_ptr<ASTNode> root,
 	listnode context,
 	std::shared_ptr<PKBWriterManager> pkbWriterManager)
 	: StatementVisitor(root, context, pkbWriterManager) {
-	if (root->type != ASTNodeType::WHILE) {
+	if (!root->equalType(ASTNodeType::WHILE)) {
 		throw std::runtime_error("ERROR: Cannot initialized a non-WHILE node");
 	}
-
-	if (root->children.size() != 2) {
-		throw std::runtime_error("ERROR: While node is not correct");
-	}
-
 	this->contexts = listnode(context.begin(), context.end());
 }
 
 void WhileVisitor::visit() {
 	// do nothing
-	std::shared_ptr<ASTNode> expression = root->children[0];
-	std::shared_ptr<ASTNode> statementList = root->children[1];
+	std::shared_ptr<ASTNode> expression = root->getChildByIndex(0);
+	std::shared_ptr<ASTNode> statementList = root->getChildByIndex(1);
 
-	WhileExtractor whileExtractor(root, pkbWriterManager);
+	WhileExtractor whileExtractor(root, pkbWriterManager->getWhileWriter());
 	whileExtractor.extract();
 
 	ExpressionVisitor expressionVisitor(expression, pkbWriterManager);

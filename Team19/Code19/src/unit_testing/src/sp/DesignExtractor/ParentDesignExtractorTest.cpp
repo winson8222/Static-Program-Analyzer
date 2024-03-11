@@ -19,7 +19,7 @@ TEST_CASE("sp/SourceProcessor: Parent(unit)") {
         SECTION("Test Parent") {
 			std::shared_ptr<ASTNode> ast1 = std::make_shared<ASTNode>(ASTNodeType::IF_ELSE_THEN, 1, "ifs");
 			std::shared_ptr<ASTNode> ast2 = std::make_shared<ASTNode>(ASTNodeType::ASSIGN, 2, "x");
-			ParentExtractor parentExtractor1(ast1, ast2, pkbWriterManager);
+			ParentExtractor parentExtractor1(ast1, ast2, pkbWriterManager->getParentWriter());
 			parentExtractor1.extract();
 			std::unordered_set<int> expected = {1};
 			REQUIRE(parentReader->getAllParents() == expected);
@@ -29,7 +29,7 @@ TEST_CASE("sp/SourceProcessor: Parent(unit)") {
 		SECTION("Test ParentT") {
 			std::shared_ptr<ASTNode> ast3 = std::make_shared<ASTNode>(ASTNodeType::IF_ELSE_THEN, 3, "ifs");
 			std::shared_ptr<ASTNode> ast4 = std::make_shared<ASTNode>(ASTNodeType::PRINT, 6, "print");
-			ParentTExtractor parentExtractor2(ast3, ast4, pkbWriterManager);
+			ParentTExtractor parentExtractor2(ast3, ast4, pkbWriterManager->getParentTWriter());
 			parentExtractor2.extract();
 			std::unordered_set<int> expected = { 3 };
 			REQUIRE(parentTReader->getAllParentTs() == expected);

@@ -85,11 +85,6 @@ TEST_CASE("sp/DesignExtractor/Visitor/WhileVisitor") {
 	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
 
-	SECTION("Invalid start while initializations") {
-		REQUIRE_THROWS_WITH(WhileVisitor(whileNode, children, pkbWriterManager),
-			"ERROR: While node is not correct");
-	}
-
 	SECTION("Invalid while initializations") {
 		std::shared_ptr<ASTNode> relExprNode = std::make_shared<ASTNode>(ASTNode(ASTNodeType::LESSER, 2, "<"));
 		REQUIRE_THROWS_WITH(WhileVisitor(relExprNode, children, pkbWriterManager),

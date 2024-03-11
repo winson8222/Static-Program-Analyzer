@@ -16,13 +16,13 @@ TEST_CASE("sp/DesignExtractor/Visitor/ReadVisitor") {
 	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
 	SECTION("Valid read initializations") {
-		REQUIRE_NOTHROW(PrintExtractor(read1, pkbWriterManager));
+		REQUIRE_NOTHROW(ReadExtractor(read1, pkbWriterManager->getReadWriter()));
 	}
 
 	SECTION("Invalid print statement") {
 		std::shared_ptr<ASTNode> read2 = std::make_shared<ASTNode>(ASTNode(ASTNodeType::PRINT, 2, "read"));
 		auto context = std::vector<std::shared_ptr<ASTNode>>{ read2 };
-		REQUIRE_THROWS(PrintVisitor(read2, context, pkbWriterManager));
+		REQUIRE_THROWS(ReadVisitor(read2, context, pkbWriterManager));
 	}
 }
 

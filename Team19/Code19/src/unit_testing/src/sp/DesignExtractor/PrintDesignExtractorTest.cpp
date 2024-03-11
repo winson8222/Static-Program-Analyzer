@@ -16,7 +16,7 @@ TEST_CASE("sp/DesignExtractor/Extractor/PrintExtractor") {
 	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
 	SECTION("Valid print initializations") {
-		REQUIRE_NOTHROW(PrintExtractor(print1, pkbWriterManager));
+		REQUIRE_NOTHROW(PrintExtractor(print1, pkbWriterManager->getPrintWriter()));
 	}
 
 	SECTION("Invalid print statement") {

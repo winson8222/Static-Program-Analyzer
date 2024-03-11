@@ -60,6 +60,16 @@ TEST_CASE("sp/DesignExtractor/Extractor/StatementExtractor") {
 		REQUIRE(expected == actual);
 	}
 
+	SECTION("Test Follows") {
+		auto followsReader = pkb->getPKBReaderManager()->getFollowsReader();
+		auto followsTReader = pkb->getPKBReaderManager()->getFollowsTReader();
+
+		std::unordered_set<int> expected1 = { 3 };
+		REQUIRE(followsReader->getPostFollows(2) == expected1);
+		std::unordered_set<int> expected2 = { 3, 4, 5 };
+		REQUIRE(followsTReader->getPostFollowsT(2) == expected2);
+	}
+
 	SECTION("Invalid statements") {
 		std::shared_ptr<ASTNode> root = std::make_shared<ASTNode>(ASTNode());
 		std::shared_ptr<ASTNode> proc1 = std::make_shared<ASTNode>(ASTNode(ASTNodeType::PROCEDURE, 1, "proc1"));
@@ -71,7 +81,16 @@ TEST_CASE("sp/DesignExtractor/Extractor/StatementExtractor") {
 		std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
 		DesignExtractorFacade fde(root, pkbWriterManager);
 
-
 		REQUIRE_THROWS_WITH(fde.extractAll(), "ERROR: Not a statement!");
+	}
+
+	SECTION("Extract a statement") {
+		std::shared_ptr<ASTNode> assign = std::make_shared<ASTNode>(ASTNode(ASTNodeType::ASSIGN, 6, "assign"));
+		StatementExtractor statementExtractor(assign, pkbWriterManager->getStatementWriter());
+		statementExtractor.extract();
+
+		std::unordered_set<int> expected = { 2, 3, 4, 5, 6 };
+		std::unordered_set<int> actual = reader->getAllStatements();
+		REQUIRE(expected == actual);
 	}
 }

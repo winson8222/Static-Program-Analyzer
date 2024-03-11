@@ -19,10 +19,10 @@ void ExpressionVisitor::depthFirstSearch(std::shared_ptr<ASTNode> node) {
 		variableVisitor.visit();
 	}
 	else if (node->type == ASTNodeType::CONSTANT) {
-		ConstantExtractor constantExtractor(node, pkbWriterManager);
+		ConstantExtractor constantExtractor(node, pkbWriterManager->getConstantWriter());
 		constantExtractor.extract();
 	}
-	for (auto& child : node->children) {
+	for (auto& child : node->getChildren()) {
 		depthFirstSearch(child);
 	}
 }

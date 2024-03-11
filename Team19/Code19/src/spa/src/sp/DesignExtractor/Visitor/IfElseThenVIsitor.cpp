@@ -18,12 +18,12 @@ IfElseThenVisitor::IfElseThenVisitor(std::shared_ptr<ASTNode> root,
 
 void IfElseThenVisitor::visit() {
 	// Extract if-then-else
-	IfThenElseExtractor ifThenElseExtractor(root, pkbWriterManager);
+	IfThenElseExtractor ifThenElseExtractor(root, pkbWriterManager->getIfWriter());
 	ifThenElseExtractor.extract();
 
-	std::shared_ptr<ASTNode> condition = root->children[0];
-	std::shared_ptr<ASTNode> thenStatementList = root->children[1];
-	std::shared_ptr<ASTNode> elseStatementList = root->children[2];
+	std::shared_ptr<ASTNode> condition = root->getChildByIndex(0);
+	std::shared_ptr<ASTNode> thenStatementList = root->getChildByIndex(1);
+	std::shared_ptr<ASTNode> elseStatementList = root->getChildByIndex(2);
 
 	// Visit all expressions
 	ExpressionVisitor expressionVisitor(condition, pkbWriterManager);

@@ -3,6 +3,7 @@
 #include "sp/DesignExtractor/Visitor/IVisitor.h"
 #include "sp/DesignExtractor/Visitor/VisitoryFactory.h"
 #include "sp/DesignExtractor/Extractor/FollowsExtractor.h"
+#include "sp/DesignExtractor/Extractor/StatementExtractor.h"
 #include "sp/AST/ASTUtility.h"
 #include <stdexcept>
 #include <vector>
@@ -29,4 +30,7 @@ public:
 	void setContext(std::vector<std::shared_ptr<ASTNode>> contexts, std::shared_ptr<ASTNode> parent);
 
 	std::vector<std::shared_ptr<ASTNode>> contexts;
+
+private:
+	void handleFollows();
 };

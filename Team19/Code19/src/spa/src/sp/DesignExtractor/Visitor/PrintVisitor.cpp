@@ -20,10 +20,10 @@ void PrintVisitor::visit() {
 		throw std::runtime_error("This is not a print node!");
 	}
 
-	PrintExtractor printExtractor(this->root, this->pkbWriterManager);
+	PrintExtractor printExtractor(this->root, this->pkbWriterManager->getPrintWriter());
 	printExtractor.extract();
 
-	VariableVisitor variableVisitor(this->root->children[0], this->pkbWriterManager);
+	VariableVisitor variableVisitor(this->root->getChildByIndex(0), this->pkbWriterManager);
 	variableVisitor.setUsedContext(contexts, root);
 	variableVisitor.visit();
 

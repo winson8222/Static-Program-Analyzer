@@ -9,7 +9,7 @@ StatementListVisitor::StatementListVisitor(std::shared_ptr<ASTNode> root,
 }
 
 void StatementListVisitor::visit() {
-	auto statementLists = this->root->children;
+	std::vector<std::shared_ptr<ASTNode>> statementLists = this->root->getChildren();
 	StatementFactory statementFactory;
 
 	// Logic: for each statement, create the visitor and set context to the parent nodes
@@ -18,29 +18,39 @@ void StatementListVisitor::visit() {
 		std::shared_ptr<StatementVisitor> statementVisitor = 
 			statementFactory.createVisitor(statement, this->contexts, this->pkbWriterManager);
 		statementVisitor->visit();
+		StatementExtractor statementExtractor(statement, this->pkbWriterManager->getStatementWriter());
+		statementExtractor.extract();
 	}
 
-	// extract follows and follows* relationship
-	// this can only be done on the StatementList visitor
-	// current time complexity is O(n^2), due to the nested for loop
-	// in milestone 3 we try to optimize this to at least O(nlogn)
-	int size = statementLists.size();
-	for (int i = 0; i < size - 1; i++) {
-		std::shared_ptr<ASTNode> ast1 = statementLists[i];
-		std::shared_ptr<ASTNode> ast2 = statementLists[i + 1];
-
-		FollowsExtractor followsExtractor(ast1, ast2, this->pkbWriterManager);
-		followsExtractor.extract();
-
-		for (int j = i + 1; j < size; j++) {
-			std::shared_ptr<ASTNode> ast3 = statementLists[j];
-			FollowsTExtractor followsExtractor(ast1, ast3, this->pkbWriterManager);
-			followsExtractor.extract();
-		}
-	}
+	handleFollows();
 }
 
 void StatementListVisitor::setContext(std::vector<std::shared_ptr<ASTNode>> contexts, std::shared_ptr<ASTNode> parent) {
 	this->contexts = std::vector<std::shared_ptr<ASTNode>>(contexts.begin(), contexts.end());
 	this->contexts.push_back(parent);
+}
+
+
+// extract follows and follows* relationship
+// this can only be done on the StatementList visitor
+// current time complexity is O(n^2), due to the nested for loop
+// in milestone 3 we try to optimize this to at least O(nlogn)
+
+void StatementListVisitor::handleFollows() {
+	std::vector<std::shared_ptr<ASTNode>> statementLists = this->root->getChildren();
+	int size = statementLists.size();
+
+	for (int i = 0; i < size - 1; i++) {
+		std::shared_ptr<ASTNode> ast1 = root->getChildByIndex(i);
+		std::shared_ptr<ASTNode> ast2 = root->getChildByIndex(i + 1);
+
+		FollowsExtractor followsExtractor(ast1, ast2, this->pkbWriterManager->getFollowsWriter());
+		followsExtractor.extract();
+
+		for (int j = i + 1; j < size; j++) {
+			std::shared_ptr<ASTNode> ast3 = root->getChildByIndex(j);
+			FollowsTExtractor followsExtractor(ast1, ast3, this->pkbWriterManager->getFollowsTWriter());
+			followsExtractor.extract();
+		}
+	}
 }

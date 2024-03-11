@@ -3,26 +3,35 @@
 VariableVisitor::VariableVisitor(std::shared_ptr<ASTNode> root,
 	std::shared_ptr<PKBWriterManager> pkbWriterManager)
 	: IVisitor(root, pkbWriterManager) {
-	if (root->type != ASTNodeType::VARIABLE) {
+	if (!root->equalType(ASTNodeType::VARIABLE)) {
 		throw std::invalid_argument("ERROR: VARIABLE NOT SUPPORTED");
-	}
-	if (root->children.size() != 0) {
-		throw std::invalid_argument("ERROR: VARIABLE HAVE LEAFS");
 	}
 }
 
 void VariableVisitor::visit() {
-	VariableExtractor variableExtractor(root, this->pkbWriterManager);
+	VariableExtractor variableExtractor(root, this->pkbWriterManager->getVariableWriter());
 	variableExtractor.extract();
 
 	for (std::shared_ptr<ASTNode> context : usedContexts) {
-		UsesExtractor usesExtractor(context, root, this->pkbWriterManager);
-		usesExtractor.extract();
+		if (context->equalType(ASTNodeType::PROCEDURE)) {
+			UsesPExtractor usesPExtractor(context, root, this->pkbWriterManager->getUsesPWriter());
+			usesPExtractor.extract();
+		}
+		else {
+			UsesSExtractor usesExtractor(context, root, this->pkbWriterManager->getUsesSWriter());
+			usesExtractor.extract();
+		}
 	}
 	
 	for (std::shared_ptr<ASTNode> context : modifiedContexts) {
-		ModifiesExtractor modifiesExtractor(context, root, this->pkbWriterManager);
-		modifiesExtractor.extract();
+		if (context->equalType(ASTNodeType::PROCEDURE)) {
+			ModifiesPExtractor modifiesPExtractor(context, root, this->pkbWriterManager->getModifiesPWriter());
+			modifiesPExtractor.extract();
+		}
+		else {
+			ModifiesSExtractor modifiesExtractor(context, root, this->pkbWriterManager->getModifiesSWriter());
+			modifiesExtractor.extract();
+		}
 	}
 }
 
