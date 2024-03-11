@@ -1,21 +1,24 @@
 
 #include "catch.hpp"
-#include "qps/evaluator/suchThatStrategies/ModifiesStrategy.h"
+#include "qps/evaluator/strategies/suchThatStrategies/ModifiesStrategy.h"
 #include "pkb/PKBReaderManager.h"
 #include "pkb/PKB.h"
 #include "qps/parser/ParsingResult.h"
-#include "../../spa/src/qps/parser/QueryParser.h"
-#include "../../spa/src/pkb/PKBManager.h"
-#include "../../spa/src/qps/evaluator/QueryEvaluator.h"
+#include "qps/parser/QueryParser.h"
+#include "pkb/PKBManager.h"
+#include "qps/evaluator/QueryEvaluator.h"
 
 // Helper function for creating a ParsingResult tailored for Modifies tests
 ParsingResult createParsingResultForModifies(const std::string& entity, const std::string& variable, bool isProcedure) {
     ParsingResult parsingResult;
-    parsingResult.setSuchThatClauseRelationship(Token(TokenType::ModifiesS, "Modifies"));
     // Set the entity type appropriately
     TokenType entityType = isProcedure ? TokenType::IDENT : TokenType::INTEGER;
-    parsingResult.setSuchThatClauseFirstParam(Token(entityType, entity));
-    parsingResult.setSuchThatClauseSecondParam(Token(TokenType::IDENT, variable));
+    
+    SuchThatClause clause;
+    clause.setRelationship(Token(TokenType::Modifies, "Modifies"));
+    clause.setFirstParam(Token(entityType, entity));
+    clause.setSecondParam(Token(TokenType::IDENT, variable));
+    parsingResult.addSuchThatClause(clause);
     return parsingResult;
 }
 
@@ -30,7 +33,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/1") {
 
     SECTION("ModifiesS(2, y) is true") {
         auto parsingResult = createParsingResultForModifies("2", "y", false); // false indicates statement
-        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
         // Assertions to verify the outcome for ModifiesS
         REQUIRE(resultTable->getRows().size() == 1); // Expecting exactly one row
         REQUIRE(resultTable->getRows()[0]["y"] == "y"); // Verifying the content of the row
@@ -38,14 +41,14 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/1") {
 
     SECTION("ModifiesS with non-existing statement number is false") {
         auto parsingResult = createParsingResultForModifies("999", "y", false); // false indicates statement
-        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
         // Expectation: The result should indicate that the relationship does not exist
         REQUIRE(resultTable->getRows().empty());
     }
 
     SECTION("ModifiesS with wildcard for variable") {
         auto parsingResult = createParsingResultForModifies("2", "_", false); // Testing ModifiesS(2, _)
-        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
         // Expectation: The result should indicate that statement 2 modifies any variable
         REQUIRE_FALSE(resultTable->getRows().empty()); // More specific checks can be added based on your implementation
     }
@@ -55,7 +58,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/1") {
         // Assuming statement 4 is a container statement that contains statement 2
         pkb->getModifiesSStore()->addRelationship(4, "x");
         auto parsingResult = createParsingResultForModifies("4", "x", false);
-        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
         REQUIRE_FALSE(resultTable->getRows().empty()); // Expecting the result to indicate modification
         // Additional specific checks as needed
     }
@@ -136,10 +139,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/3") {
     REQUIRE(res == std::unordered_set<string>{ "SemanticError" });
 }
 
-
-
-
-
 TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/4") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
@@ -176,7 +175,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/4") {
     std::unordered_set<string> res = evaluator.evaluateQuery();
     REQUIRE((res == std::unordered_set<string>{ "1", "2", "3" } || res == std::unordered_set<string>{"2", "3", "1"} || res == std::unordered_set<string>{"3", "2", "1"}));
 }
-
 
 TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/5") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
@@ -216,3 +214,90 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/5") {
     std::unordered_set<string> res = evaluator.evaluateQuery();
     REQUIRE(res == std::unordered_set<string>{"y"});
 }
+
+TEST_CASE("ModifiesP Strategy - Evaluating procedure-variable modification relationships") {
+    auto pkb = std::make_shared<PKB>();
+    auto pkbReaderManager = std::make_shared<PKBReaderManager>(pkb);
+    // Assume ModifiesP relationships are added to PKB
+    pkb->getModifiesPStore()->addRelationship("UpdateScore", "score");
+    pkb->getModifiesPStore()->addRelationship("ResetGame", "gameState");
+    pkb->getModifiesPStore()->addRelationship("LoadSettings", "volume");
+    pkb->getCallsStore()->addRelationship("Main", "UpdateScore");
+    pkb->getCallsStore()->addRelationship("Main", "ResetGame");
+
+    ModifiesStrategy modifiesStrategy;
+
+    SECTION("ModifiesP for specific procedure and variable") {
+        auto parsingResult = createParsingResultForModifies("UpdateScore", "score", true);
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
+        REQUIRE(resultTable->getRows().size() == 1); // Expecting a match
+    }
+
+    SECTION("ModifiesP for procedure with wildcard variable") {
+        auto parsingResult = createParsingResultForModifies("ResetGame", "_", true);
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
+        REQUIRE_FALSE(resultTable->getRows().empty()); // Expecting a match as ResetGame modifies any variable
+    }
+
+    SECTION("ModifiesP for wildcard procedure and specific variable") {
+        auto parsingResult = createParsingResultForModifies("_", "volume", true);
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
+        REQUIRE(resultTable->getRows().size() == 1); // Expecting a match for LoadSettings
+    }
+
+    SECTION("ModifiesP with non-existing procedure") {
+        auto parsingResult = createParsingResultForModifies("NonExistentProc", "score", true);
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
+        REQUIRE(resultTable->getRows().empty()); // No match expected
+    }
+
+    SECTION("ModifiesP with non-existing variable") {
+        auto parsingResult = createParsingResultForModifies("UpdateScore", "nonExistentVar", true);
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
+        REQUIRE(resultTable->getRows().empty()); // No match expected
+    }
+
+    SECTION("ModifiesP through indirect procedure call") {
+        auto parsingResult = createParsingResultForModifies("Main", "score", true);
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
+        // Expecting a match since Main indirectly modifies "score" through UpdateScore
+        REQUIRE(resultTable->getRows().size() == 1);
+    }
+
+    SECTION("ModifiesP with wildcard procedure and wildcard variable") {
+        auto parsingResult = createParsingResultForModifies("_", "_", true);
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
+        // Expecting matches since query checks if there are any modifications at all
+        REQUIRE_FALSE(resultTable->getRows().empty());
+    }
+
+    SECTION("ModifiesP for procedure modifying multiple variables") {
+        // Assuming 'MultiVarModProc' modifies both 'var1' and 'var2'
+        pkb->getModifiesPStore()->addRelationship("MultiVarModProc", "var1");
+        pkb->getModifiesPStore()->addRelationship("MultiVarModProc", "var2");
+        auto parsingResult = createParsingResultForModifies("MultiVarModProc", "_", true);
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
+        // Expecting matches for both variables modified by 'MultiVarModProc'
+        REQUIRE(resultTable->getRows().size() >= 2);
+    }
+
+    SECTION("ModifiesP for specific variable modified by multiple procedures") {
+        // Assuming both 'Proc1' and 'Proc2' modify 'sharedVar'
+        pkb->getModifiesPStore()->addRelationship("Proc1", "sharedVar");
+        pkb->getModifiesPStore()->addRelationship("Proc2", "sharedVar");
+        auto parsingResult = createParsingResultForModifies("_", "sharedVar", true);
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
+        // Expecting matches for both 'Proc1' and 'Proc2'
+        REQUIRE(resultTable->getRows().size() >= 2);
+    }
+
+    SECTION("ModifiesP with nested procedures not modifying any variable") {
+        // Assuming 'EmptyProc' calls 'NestedEmptyProc' but neither modifies any variable
+        pkb->getCallsStore()->addRelationship("EmptyProc", "NestedEmptyProc");
+        auto parsingResult = createParsingResultForModifies("EmptyProc", "_", true);
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
+        // No modifications expected from 'EmptyProc' or its nested procedures
+        REQUIRE(resultTable->getRows().empty());
+    }
+}
+

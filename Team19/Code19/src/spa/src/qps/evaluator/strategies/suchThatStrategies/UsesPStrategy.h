@@ -1,19 +1,18 @@
 #pragma once
-#define USESSTRATEGY_H
 
-#include "qps/evaluator/suchThatStrategies/StmtEntStrategy.h"
+#include "qps/evaluator/strategies/suchThatStrategies/EntEntStrategy.h"
 
 
 using namespace std;
 
-class UsesStrategy : public StmtEntStrategy {
+class UsesPStrategy : public EntEntStrategy {
 private:
-    std::shared_ptr<UsesSReader> usesSReader;
+    std::shared_ptr<UsesPReader> usesPReader;
 
 
 
 public:
-    std::shared_ptr<ResultTable> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult) override;
+    std::shared_ptr<ResultTable> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) override;
     void processBothSynonyms(const Token& firstParam, const Token& secondParam, const ParsingResult& parsingResult
             ,std::shared_ptr<ResultTable> resultTable, PKBReaderManager& pkbReaderManager) override;
     void processFirstParam(const Token& firstParam, const Token& secondParam, const ParsingResult& parsingResult
@@ -21,9 +20,7 @@ public:
     void processSecondParam(const Token& firstParam, const Token& secondParam, const ParsingResult& parsingResult
             ,std::shared_ptr<ResultTable> resultTable, PKBReaderManager& pkbReaderManager) override;
     void processBothConstants(const Token& firstParam, const Token& secondParam, const ParsingResult& parsingResult
-            ,std::shared_ptr<ResultTable> resultTable) override;
-    void processWildCards(const Token& firstParam, const Token& secondParam, std::shared_ptr<ResultTable> resultTable) override;
+            ,std::shared_ptr<ResultTable> resultTable, PKBReaderManager& pkbReaderManager) override;
 
 
 };
-

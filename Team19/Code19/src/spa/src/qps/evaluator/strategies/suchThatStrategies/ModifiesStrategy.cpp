@@ -1,15 +1,16 @@
 #include "ModifiesStrategy.h"
 
-std::shared_ptr<ResultTable> ModifiesStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult)
+std::shared_ptr<ResultTable> ModifiesStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause)
 {
     auto resultTable = make_shared<ResultTable>();
     this->modifiesSReader= pkbReaderManager.getModifiesSReader();
 
 
-    const Token& suchThatFirstParam = parsingResult.getSuchThatClauseFirstParam();
-    const Token& suchThatSecondParam = parsingResult.getSuchThatClauseSecondParam();
+    const SuchThatClause* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
+    const Token& suchThatFirstParam = suchClause->getFirstParam();
+    const Token& suchThatSecondParam = suchClause->getSecondParam();
 
-    if (suchThatFirstParam.getType() == TokenType::IDENT && suchThatSecondParam.getType() == TokenType::IDENT) {
+    if (isBothParamsSynonym(suchThatFirstParam, suchThatSecondParam)) {
         processBothSynonyms(suchThatFirstParam, suchThatSecondParam, parsingResult, resultTable, pkbReaderManager);
     } else if (suchThatFirstParam.getType() == TokenType::IDENT) {
         processFirstParam(suchThatFirstParam, suchThatSecondParam, parsingResult, resultTable, pkbReaderManager);
@@ -68,7 +69,7 @@ void ModifiesStrategy::processFirstParam(const Token& firstParam, const Token& s
     // filter the statements that modifies the variable based on the stmt type
     std::unordered_set<int> allFilteredModifiesStmts;
     allFilteredModifiesStmts = getFilteredStmtsNumByType(allModifiesStmts, statementType, pkbReaderManager);
-
+    // need to be changed, now is just any call statements not filtered by the proc used
 
     // get all filtered statements that modifies the variable
     resultTable->insertColumn(firstParam.getValue());

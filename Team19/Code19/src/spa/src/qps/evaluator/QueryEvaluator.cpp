@@ -1,5 +1,5 @@
 #include "QueryEvaluator.h"
-#include "PatternStrategy.h"
+#include "qps/evaluator/strategies/PatternStrategy.h"
 #include "qps/evaluator/ResultTable.h"
 #include <variant>
 
@@ -31,24 +31,43 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
         error.insert(parsingResult.getErrorMessage());
         return error;
     }
-    
+    vector<SuchThatClause> suchThatClauses = parsingResult.getSuchThatClauses();
     // Add such-that-strategies based on the relationship specified in the query.
-    TokenType suchThatRelationship = parsingResult.getSuchThatClauseRelationship().getType();
-    auto it = strategyFactory.find(suchThatRelationship);
-    if (it != strategyFactory.end()) {
-        addStrategy(it->second());
+    for (auto clause : suchThatClauses) {
+        TokenType suchThatRelationship = clause.getRelationship().getType();
+        auto it = strategyFactory.find(suchThatRelationship);
+        if (it != strategyFactory.end()) {
+            addStrategy(it->second());
+        }
     }
 
+    vector<PatternClause> patternClauses = parsingResult.getPatternClauses();
     // Add PatternStrategy if pattern clause exists in the query.
-    if (!parsingResult.getPatternClauseRelationship().getValue().empty()) {
+    for (auto clause : patternClauses) {
         addStrategy(std::make_unique<PatternStrategy>());
     }
 
+    /*vector<WithClause> withClauses = parsingResult.getWithClauses();
+    for (auto cluase : withClauses) {
+
+    }*/
+
     // Evaluate the query using the strategies and compile the results.
     bool isFirstStrategy = true;
+    int suchThatCounter = 0;
+    int patternCounter = 0;
     for (auto& strategy : strategies) {
+        if (suchThatCounter < suchThatClauses.size()) {
+            result = strategy->evaluateQuery(*pkbReaderManager, parsingResult, suchThatClauses[suchThatCounter]);
+            suchThatCounter++;
+        }
+        else if (patternCounter < patternClauses.size()) {
+            result = strategy->evaluateQuery(*pkbReaderManager, parsingResult, patternClauses[patternCounter]);
+            patternCounter++;
+        }
         if (isFirstStrategy) {
-            result = strategy->evaluateQuery(*pkbReaderManager, parsingResult);
+
+
             if (result->isEmpty() && !result->isTableTrue()) {
                 return {};
             }
@@ -59,24 +78,31 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
             }
         }
         else {
-            result = result->joinOnColumns(strategy->evaluateQuery(*pkbReaderManager, parsingResult));
+            result = result->joinOnColumns(result);
         }
     }
 
     // Retrieve and return the results based on the required synonym.
-    std::string requiredSynonym = parsingResult.getRequiredSynonym();
-    std::string requiredType = parsingResult.getRequiredSynonymType();
+    std::vector<std::string> requiredSynonyms = parsingResult.getRequiredSynonyms();
+    std::unordered_set<std::string> finalSet;
+    for (auto requiredSynonym : requiredSynonyms) {
+        std::string requiredType = parsingResult.getRequiredSynonymType(requiredSynonym);
 
-    if (result->hasColumn(requiredSynonym)) {
-        return result->getColumnValues(requiredSynonym);
-    }
-    else {
-        //return all statement/variables/whatever
-        if (result->isTableTrue() || !result->isEmpty() || isFirstStrategy) {
-            return getAllEntities(requiredType);
+        if (result->hasColumn(requiredSynonym)) {
+            unordered_set<string> currentResult = result->getColumnValues(requiredSynonym);
+            finalSet.insert(currentResult.begin(), currentResult.end());
         }
-        return {};
-	}
+        else {
+            //return all statement/variables/whatever
+            if (result->isTableTrue() || !result->isEmpty() || isFirstStrategy) {
+                unordered_set<string> currentResult = getAllEntities(requiredType);;
+                finalSet.insert(currentResult.begin(), currentResult.end());
+            }
+
+        }
+    }
+    return finalSet;
+
  
 }
 
