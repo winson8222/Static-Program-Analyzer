@@ -5,8 +5,8 @@
 SimpleParserFacade::SimpleParserFacade(const std::string& filename) {
 	std::string fileContent = FileProcessor::readFileToString(filename);
 	std::vector<LexicalToken> tokens = SPTokenizer::tokenize(fileContent);
-	auto& token_ptr = std::make_shared<std::vector<LexicalToken>>(tokens);
-	parser = std::make_unique<SimpleParser>(token_ptr);
+	std::shared_ptr<std::vector<LexicalToken>> token_ptr = std::make_shared<std::vector<LexicalToken>>(tokens);
+	parser = std::make_unique<SimpleParser>(std::make_shared<std::vector<LexicalToken>>(tokens));
 }
 
 std::shared_ptr<ASTNode> SimpleParserFacade::parse() {
