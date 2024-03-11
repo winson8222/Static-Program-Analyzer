@@ -54,5 +54,6 @@ void UsesExtractor::getProcedureUses() {
 
 void UsesExtractor::getCallUses() {
 	// Add uses for Calls
-	this->pkbWriterManager->getUsesSWriter()->addUsesS(ast1->lineNumber, ast2->value);
+	auto usesWriter = this->pkbWriterManager->getUsesSWriter();
+	usesWriter->addUsesS(ast1->lineNumber, ast2->value);
 }

@@ -55,5 +55,6 @@ void ModifiesExtractor::getProcedureModifies() {
 void ModifiesExtractor::getCallModifies() {
 	// Do nothing for now
 	// ideas: will need to modify pointers/variables in the future
-	this->pkbWriterManager->getModifiesSWriter()->addModifiesS(ast1->lineNumber, ast2->value);
+	auto modifiesWriter = this->pkbWriterManager->getModifiesSWriter();
+	modifiesWriter->addModifiesS(ast1->lineNumber, ast2->value);
 }
