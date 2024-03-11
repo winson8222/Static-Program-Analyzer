@@ -1,13 +1,14 @@
-#include "ModifiesStrategy.h"
+#include "UsesStrategy.h"
 
-std::shared_ptr<ResultTable> ModifiesStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult)
+std::shared_ptr<ResultTable> UsesStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause)
 {
     auto resultTable = make_shared<ResultTable>();
-    this->modifiesSReader= pkbReaderManager.getModifiesSReader();
+    this->usesSReader = pkbReaderManager.getUsesSReader();
 
+    const SuchThatClause* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
+    const Token& suchThatFirstParam = suchClause->getFirstParam();
+    const Token& suchThatSecondParam = suchClause->getSecondParam();
 
-    const Token& suchThatFirstParam = parsingResult.getSuchThatClauseFirstParam();
-    const Token& suchThatSecondParam = parsingResult.getSuchThatClauseSecondParam();
 
     if (isBothParamsSynonym(suchThatFirstParam, suchThatSecondParam)) {
         processBothSynonyms(suchThatFirstParam, suchThatSecondParam, parsingResult, resultTable, pkbReaderManager);
@@ -25,22 +26,20 @@ std::shared_ptr<ResultTable> ModifiesStrategy::evaluateQuery(PKBReaderManager& p
     return resultTable;
 }
 
-void ModifiesStrategy::processBothSynonyms(const Token& firstParam, const Token& secondParam, const ParsingResult& parsingResult
-                                           ,std::shared_ptr<ResultTable> resultTable, PKBReaderManager& pkbReaderManager) {
+void UsesStrategy::processBothSynonyms(const Token& firstParam, const Token& secondParam, const ParsingResult& parsingResult
+        ,std::shared_ptr<ResultTable> resultTable,PKBReaderManager& pkbReaderManager) {
     // get all statements that modifies a variable
-    std::unordered_set<int> allModifiesStmts = modifiesSReader
-            ->getAllStmtsThatModifyAnyVariable();
+    std::unordered_set<int> allModifiesStmts = usesSReader->getAllStmtsThatUseAnyVariable();
     // check what type of statement is the firstParam
     string statementType = parsingResult.getDeclaredSynonym(firstParam.getValue());
     // filter the statements that modifies the variable based on the stmt type
     std::unordered_set<int> allFilteredModifiesStmts;
-    allFilteredModifiesStmts = getFilteredStmtsNumByType(allModifiesStmts, statementType, pkbReaderManager);
+    allFilteredModifiesStmts = getFilteredStmtsNumByType(allModifiesStmts,statementType, pkbReaderManager);
 
     // get all variables that are modified by a statement
     resultTable->addColumnsSet({firstParam.getValue(), secondParam.getValue()});
     for (int stmt: allFilteredModifiesStmts) {
-        std::unordered_set<std::string> allModifiedVars = modifiesSReader
-                ->getAllVariablesModifiedByStmt(stmt);
+        std::unordered_set<std::string> allModifiedVars = usesSReader->getAllVariablesUsedByStmt(stmt);
         for (const std::string &var: allModifiedVars) {
             std::unordered_map<std::string, std::string> row;
             row[firstParam.getValue()] = std::to_string(stmt);
@@ -50,24 +49,22 @@ void ModifiesStrategy::processBothSynonyms(const Token& firstParam, const Token&
     }
 }
 
-void ModifiesStrategy::processFirstParam(const Token& firstParam, const Token& secondParam, const ParsingResult& parsingResult
-                                         ,std::shared_ptr<ResultTable> resultTable, PKBReaderManager& pkbReaderManager) {
+void UsesStrategy::processFirstParam(const Token& firstParam, const Token& secondParam, const ParsingResult& parsingResult
+        ,std::shared_ptr<ResultTable> resultTable, PKBReaderManager& pkbReaderManager) {
     // get all statements that modifies a variable
     std::unordered_set<int> allModifiesStmts;
     if (secondParam.getType() == TokenType::Wildcard) {
-        allModifiesStmts = modifiesSReader
-                ->getAllStmtsThatModifyAnyVariable();
+        allModifiesStmts = usesSReader->getAllStmtsThatUseAnyVariable();
     } else {
-
-        allModifiesStmts = modifiesSReader
-                ->getAllStmtsThatModifyVariable(extractQuotedExpression(secondParam));
+        string unquotedValue = extractQuotedExpression(secondParam);
+        allModifiesStmts = usesSReader->getAllStmtsThatUseVariable(unquotedValue);
     }
 
     // check what type of statement is the firstParam
     string statementType = parsingResult.getDeclaredSynonym(firstParam.getValue());
     // filter the statements that modifies the variable based on the stmt type
     std::unordered_set<int> allFilteredModifiesStmts;
-    allFilteredModifiesStmts = getFilteredStmtsNumByType(allModifiesStmts, statementType, pkbReaderManager);
+    allFilteredModifiesStmts = getFilteredStmtsNumByType(allModifiesStmts,statementType, pkbReaderManager);
 
 
     // get all filtered statements that modifies the variable
@@ -80,18 +77,19 @@ void ModifiesStrategy::processFirstParam(const Token& firstParam, const Token& s
 }
 
 
-void ModifiesStrategy::processSecondParam(const Token &firstParam, const Token &secondParam,
+void UsesStrategy::processSecondParam(const Token &firstParam, const Token &secondParam,
                                           const ParsingResult &parsingResult,
                                           std::shared_ptr<ResultTable> resultTable, PKBReaderManager& pkbReaderManager) {
     // get all variables that are modified by a statement
     std::unordered_set<std::string> allModifiedVars;
     if (firstParam.getType() == TokenType::Wildcard) {
-        allModifiedVars = modifiesSReader
-                ->getAllVariablesModifiedByAnyStmt();
+        allModifiedVars = usesSReader->getAllVariablesUsedByAnyStmt();
+
     } else {
-        allModifiedVars = modifiesSReader
-                ->getAllVariablesModifiedByStmt(stoi(firstParam.getValue()));
+        allModifiedVars = usesSReader->getAllVariablesUsedByStmt(
+                stoi(firstParam.getValue()));
     }
+
     // add to result
     resultTable->insertColumn(secondParam.getValue());
     for (const std::string &var: allModifiedVars) {
@@ -101,36 +99,32 @@ void ModifiesStrategy::processSecondParam(const Token &firstParam, const Token &
     }
 }
 
-void ModifiesStrategy::processBothConstants(const Token &firstParam, const Token &secondParam,
+void UsesStrategy::processBothConstants(const Token &firstParam, const Token &secondParam,
                                             const ParsingResult &parsingResult,
                                             std::shared_ptr<ResultTable> resultTable) {
     // check if the statement modifies the variable
     string extractedVar = extractQuotedExpression(secondParam);
-    bool modifies = modifiesSReader
-            ->doesStmtModifyVariable(stoi(firstParam.getValue()), extractedVar);
+    bool modifies = usesSReader->doesStmtUseVariable(stoi(firstParam.getValue()), extractedVar);
     if (modifies) {
         resultTable->setAsTruthTable();
     }
 }
 
-void ModifiesStrategy::processWildCards(const Token& firstParam, const Token& secondParam, std::shared_ptr<ResultTable> resultTable) {
+void UsesStrategy::processWildCards(const Token& firstParam, const Token& secondParam, std::shared_ptr<ResultTable> resultTable) {
     // check if there is any statement that modifies a variable
     if (firstParam.getType() == TokenType::Wildcard && secondParam.getType() == TokenType::Wildcard) {
-        std::unordered_set<int> allModifiesStmts = modifiesSReader
-                ->getAllStmtsThatModifyAnyVariable();
-        if (!allModifiesStmts.empty()) {
+        std::unordered_set<int> allUsesStmts = usesSReader->getAllStmtsThatUseAnyVariable();
+        if (!allUsesStmts.empty()) {
             resultTable->setAsTruthTable();
         }
     } else if (firstParam.getType() == TokenType::Wildcard) {
-        std::unordered_set<int> allModifiesStmts = modifiesSReader
-                ->getAllStmtsThatModifyVariable(
+        std::unordered_set<int> allModifiesStmts = usesSReader->getAllStmtsThatUseVariable(
                 extractQuotedExpression(secondParam));
         if (!allModifiesStmts.empty()) {
             resultTable->setAsTruthTable();
         }
     } else if (secondParam.getType() == TokenType::Wildcard) {
-        std::unordered_set<std::string> allModifiedVars = modifiesSReader
-                ->getAllVariablesModifiedByStmt(
+        std::unordered_set<std::string> allModifiedVars = usesSReader->getAllVariablesUsedByStmt(
                 stoi(firstParam.getValue()));
         if (!allModifiedVars.empty()) {
             resultTable->setAsTruthTable();

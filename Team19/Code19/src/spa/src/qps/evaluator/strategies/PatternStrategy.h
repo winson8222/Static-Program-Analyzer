@@ -1,7 +1,7 @@
 #pragma
 #define PATTERNSTRATEGY_H
 
-#include "qps/evaluator/suchThatStrategies/StmtStmtStrategy.h"
+#include "qps/evaluator/strategies/suchThatStrategies/StmtStmtStrategy.h"
 
 
 using namespace std;
@@ -16,7 +16,7 @@ private:
 
 
 public:
-    std::shared_ptr<ResultTable> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult) override;
+    std::shared_ptr<ResultTable> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) override;
 
     void getMatchedStmtsWithVariable(const Token& firstParam, string secondParamValue, string assignSynonym, std::shared_ptr<ResultTable> result, bool partialMatch);
     void getStatementsByIdent(const string& colName, const Token& firstParam,

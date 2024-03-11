@@ -5,10 +5,10 @@
 #include "QueryEvaluationStrategy.h" // Include the strategy interface
 #include "qps/evaluator/ResultTable.h"
 #include "qps/parser/Token.h"
-#include "qps/evaluator/suchThatStrategies/FollowsStrategy.h" // Include FollowsStrategy
-#include "qps/evaluator/suchThatStrategies/ParentStrategy.h" // Include ParentStrategy
-#include "qps/evaluator/suchThatStrategies/ModifiesStrategy.h" // Include ModifiesStrategy
-#include "qps/evaluator/suchThatStrategies/UsesStrategy.h" // Include UsesStrategy
+#include "qps/evaluator/strategies/suchThatStrategies/FollowsStrategy.h" // Include FollowsStrategy
+#include "qps/evaluator/strategies/suchThatStrategies/ParentStrategy.h" // Include ParentStrategy
+#include "qps/evaluator/strategies/suchThatStrategies/ModifiesStrategy.h" // Include ModifiesStrategy
+#include "qps/evaluator/strategies/suchThatStrategies/UsesStrategy.h" // Include UsesStrategy
 #include <variant>
 
 
@@ -20,6 +20,8 @@ private:
     std::vector<std::unique_ptr<QueryEvaluationStrategy>> strategies; // Store multiple strategies
     std::map<std::string, std::function<std::unique_ptr<QueryEvaluationStrategy>()>> strategyFactory; // Map of strategy factory
     std::map<std::string, std::function<std::variant<std::unordered_set<int>, std::unordered_set<std::string>>()>> entityFactory;
+    std::vector<std::pair<std::unique_ptr<QueryEvaluationStrategy>, const Clause*>> strategyAndClausePairs;
+
 
 public:
     QueryEvaluator(std::shared_ptr<PKBReaderManager> pkbReaderManager, ParsingResult& parsingResult);

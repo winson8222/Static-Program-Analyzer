@@ -1,21 +1,24 @@
 
 #include "catch.hpp"
-#include "qps/evaluator/suchThatStrategies/ModifiesStrategy.h"
+#include "qps/evaluator/strategies/suchThatStrategies/ModifiesStrategy.h"
 #include "pkb/PKBReaderManager.h"
 #include "pkb/PKB.h"
 #include "qps/parser/ParsingResult.h"
-#include "../../spa/src/qps/parser/QueryParser.h"
-#include "../../spa/src/pkb/PKBManager.h"
-#include "../../spa/src/qps/evaluator/QueryEvaluator.h"
+#include "qps/parser/QueryParser.h"
+#include "pkb/PKBManager.h"
+#include "qps/evaluator/QueryEvaluator.h"
 
 // Helper function for creating a ParsingResult tailored for Modifies tests
 ParsingResult createParsingResultForModifies(const std::string& entity, const std::string& variable, bool isProcedure) {
     ParsingResult parsingResult;
-    parsingResult.setSuchThatClauseRelationship(Token(TokenType::Modifies, "Modifies"));
     // Set the entity type appropriately
     TokenType entityType = isProcedure ? TokenType::IDENT : TokenType::INTEGER;
-    parsingResult.setSuchThatClauseFirstParam(Token(entityType, entity));
-    parsingResult.setSuchThatClauseSecondParam(Token(TokenType::IDENT, variable));
+    
+    SuchThatClause clause;
+    clause.setRelationship(Token(TokenType::Modifies, "Modifies"));
+    clause.setFirstParam(Token(entityType, entity));
+    clause.setSecondParam(Token(TokenType::IDENT, variable));
+    parsingResult.addSuchThatClause(clause);
     return parsingResult;
 }
 
@@ -30,7 +33,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/1") {
 
     SECTION("ModifiesS(2, y) is true") {
         auto parsingResult = createParsingResultForModifies("2", "y", false); // false indicates statement
-        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
         // Assertions to verify the outcome for ModifiesS
         REQUIRE(resultTable->getRows().size() == 1); // Expecting exactly one row
         REQUIRE(resultTable->getRows()[0]["y"] == "y"); // Verifying the content of the row
@@ -38,14 +41,14 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/1") {
 
     SECTION("ModifiesS with non-existing statement number is false") {
         auto parsingResult = createParsingResultForModifies("999", "y", false); // false indicates statement
-        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
         // Expectation: The result should indicate that the relationship does not exist
         REQUIRE(resultTable->getRows().empty());
     }
 
     SECTION("ModifiesS with wildcard for variable") {
         auto parsingResult = createParsingResultForModifies("2", "_", false); // Testing ModifiesS(2, _)
-        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
         // Expectation: The result should indicate that statement 2 modifies any variable
         REQUIRE_FALSE(resultTable->getRows().empty()); // More specific checks can be added based on your implementation
     }
@@ -55,7 +58,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/1") {
         // Assuming statement 4 is a container statement that contains statement 2
         pkb->getModifiesSStore()->addRelationship(4, "x");
         auto parsingResult = createParsingResultForModifies("4", "x", false);
-        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult);
+        auto resultTable = modifiesStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
         REQUIRE_FALSE(resultTable->getRows().empty()); // Expecting the result to indicate modification
         // Additional specific checks as needed
     }
