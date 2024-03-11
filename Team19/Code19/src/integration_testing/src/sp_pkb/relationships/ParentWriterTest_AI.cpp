@@ -1,6 +1,4 @@
 #include "catch.hpp"
-
-#include <iostream>
 #include <filesystem>
 #include <fstream>
 #include <memory>

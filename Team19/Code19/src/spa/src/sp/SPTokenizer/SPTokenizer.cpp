@@ -1,6 +1,5 @@
 #include "sp/SPTokenizer/SPTokenizer.h"
 #include "LexicalToken.h"
-#include <iostream>
 #include <fstream>
 #include <sstream>
 #include <regex>
