@@ -88,7 +88,6 @@ public:
     */
     static bool nodeIsIfElse(ASTNodeType t);
 
-
     /*
     * @brief Check if accepting AST node is a call statement
     * @return true if AST node is a call statement, and false otherwise.

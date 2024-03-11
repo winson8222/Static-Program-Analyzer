@@ -21,6 +21,8 @@ public:
 	 */
 	CFGNode(int lineNumber);
 
+	static const int PROCEDURE_END_LINE_NUMBER = -1;
+
 	/**
 	 * @brief Adds a child node to the current CFG node.
 	 *
@@ -53,8 +55,6 @@ public:
 	bool isEndOfProcedure();
 
 private:
-	static const int PROCEDURE_END_LINE_NUMBER = -1;
-
 	int lineNumber;
 	std::vector<std::shared_ptr<CFGNode>> children;
 };
