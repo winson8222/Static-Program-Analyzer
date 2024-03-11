@@ -358,6 +358,52 @@ TEST_CASE("UsesStrategy - Comprehensive Test with Various Scenarios") {
     REQUIRE(res == expected);
 }
 
+TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesPStrategy") {
+    auto pkb = std::make_shared<PKB>();
+    // Setup PKB with UsesP relationships
+    pkb->getUsesPStore()->addRelationship("Main", "count");
+    pkb->getUsesPStore()->addRelationship("Initialize", "config");
+
+    auto pkbReaderManager = std::make_shared<PKBReaderManager>(pkb);
+    UsesStrategy usesPStrategy;
+
+    SECTION("UsesP for a procedure and variable directly") {
+        auto parsingResult = createParsingResultForUses("Main", "count", true);
+        auto resultTable = usesPStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
+        // Verify that Main directly uses "count"
+        REQUIRE(resultTable->getRows().size() == 1);
+        REQUIRE(resultTable->getRows()[0]["count"] == "count");
+    }
+
+    SECTION("UsesP with a procedure that does not use the variable") {
+        auto parsingResult = createParsingResultForUses("Main", "nonExistentVar", true);
+        auto resultTable = usesPStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
+        // Expectation: No relationship between Main and nonExistentVar
+        REQUIRE(resultTable->getRows().empty());
+    }
+
+    SECTION("UsesP for a procedure using any variable (wildcard variable)") {
+        auto parsingResult = createParsingResultForUses("Initialize", "_", true);
+        auto resultTable = usesPStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
+        // Expectation: Initialize uses at least one variable
+        REQUIRE_FALSE(resultTable->getRows().empty());
+    }
+
+    SECTION("UsesP with non-existing procedure") {
+        auto parsingResult = createParsingResultForUses("NonExistentProc", "config", true);
+        auto resultTable = usesPStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
+        // Expectation: The result should indicate that the relationship does not exist
+        REQUIRE(resultTable->getRows().empty());
+    }
+
+    SECTION("UsesP for any procedure using a specific variable") {
+        auto parsingResult = createParsingResultForUses("_", "config", true);
+        auto resultTable = usesPStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
+        // Verify that some procedure directly uses "config"
+        REQUIRE_FALSE(resultTable->getRows().empty());
+        REQUIRE(resultTable->getRows()[0]["config"] == "config");
+    }
 
 
+}
 
