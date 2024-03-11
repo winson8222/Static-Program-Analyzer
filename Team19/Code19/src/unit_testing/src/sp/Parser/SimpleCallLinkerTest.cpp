@@ -23,6 +23,6 @@ TEST_CASE("Testing SimpleCallLinker class", "[SimpleLineManager]") {
 	root->addChild(proc2);
 	SimpleCallLinker linker(root);
 	REQUIRE_NOTHROW(linker.linkAllCallsToProcedure());
-	REQUIRE(call->children[0]->type == ASTNodeType::PROCEDURE);
-	REQUIRE(call->children[0] == proc1);
+	REQUIRE(call->getChildByIndex(0)->getType() == ASTNodeType::PROCEDURE);
+	REQUIRE(call->getChildByIndex(0) == proc1);
 }

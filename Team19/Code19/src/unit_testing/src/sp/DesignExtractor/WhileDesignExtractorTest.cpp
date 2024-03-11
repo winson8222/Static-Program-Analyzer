@@ -10,6 +10,21 @@
 #include <unordered_set>
 #include <vector>
 
+TEST_CASE("While extract singular") {
+	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
+	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
+	std::shared_ptr<PKBReaderManager> pkbReaderManager = pkb->getPKBReaderManager();
+
+	std::shared_ptr<ASTNode> whileNode = std::make_shared<ASTNode>(ASTNode(ASTNodeType::WHILE, 2, "while"));
+	WhileExtractor whileExtractor(whileNode, pkbWriterManager->getWhileWriter());
+	whileExtractor.extract();
+	std::unordered_set<int> expectedWhiles = { 2 };
+
+	SECTION("Extract while") {
+		auto whiles = pkbReaderManager->getWhileReader()->getAllWhiles();
+		REQUIRE(whiles == expectedWhiles);
+	}
+}
 
 TEST_CASE("sp/DesignExtractor/Extractor/WhileExtract") {
 	/*

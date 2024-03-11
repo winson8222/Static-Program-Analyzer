@@ -24,6 +24,14 @@ TEST_CASE("sp/DesignExtractor/Extractor/PrintExtractor") {
 		auto context = std::vector<std::shared_ptr<ASTNode>>{ print2 };
 		REQUIRE_THROWS(PrintVisitor(print2, context, pkbWriterManager));
 	}
+
+	SECTION("Valid Print extraction") {
+		PrintExtractor printExtractor(print1, pkbWriterManager->getPrintWriter());
+		REQUIRE_NOTHROW(printExtractor.extract());
+		auto actualPrints = pkb->getPKBReaderManager()->getPrintReader()->getAllPrints();
+		std::unordered_set<int> expectedPrints = { 2 };
+		REQUIRE(expectedPrints == actualPrints);
+	}
 }
 
 TEST_CASE("sp/DesignExtractor/Visitor/PrintExtractor") {

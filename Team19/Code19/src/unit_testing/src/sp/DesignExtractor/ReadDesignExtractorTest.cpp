@@ -15,6 +15,7 @@ TEST_CASE("sp/DesignExtractor/Visitor/ReadVisitor") {
 
 	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
+	std::shared_ptr<PKBReaderManager> pkbReaderManager = pkb->getPKBReaderManager();
 	SECTION("Valid read initializations") {
 		REQUIRE_NOTHROW(ReadExtractor(read1, pkbWriterManager->getReadWriter()));
 	}
@@ -23,6 +24,13 @@ TEST_CASE("sp/DesignExtractor/Visitor/ReadVisitor") {
 		std::shared_ptr<ASTNode> read2 = std::make_shared<ASTNode>(ASTNode(ASTNodeType::PRINT, 2, "read"));
 		auto context = std::vector<std::shared_ptr<ASTNode>>{ read2 };
 		REQUIRE_THROWS(ReadVisitor(read2, context, pkbWriterManager));
+	}
+
+	SECTION("Valid read extract") {
+		ReadExtractor readExtractor(read1, pkbWriterManager->getReadWriter());
+		readExtractor.extract();
+		std::unordered_set<int> expectedReads = { 2 };
+		REQUIRE(pkbReaderManager->getReadReader()->getAllReads() == expectedReads);
 	}
 }
 

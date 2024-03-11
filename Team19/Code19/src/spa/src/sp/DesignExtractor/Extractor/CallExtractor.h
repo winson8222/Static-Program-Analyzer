@@ -16,6 +16,12 @@ private:
 	std::shared_ptr<CallWriter> callWriter;
 };
 
+
+/*
+* Extracts the relation of procedure calling another directly from the AST and writes the information to the PKB.
+* This class implements the IExtractor interface. The methods are documented
+* from the base class at IExtractor.h
+*/
 class CallsPExtractor : public IRelationshipExtractor {
 public:
 	CallsPExtractor(std::shared_ptr<ASTNode> ast1, 
@@ -27,6 +33,13 @@ private:
 	std::shared_ptr<CallsWriter> callWriter;
 };
 
+
+/*
+* Extracts the relations of procedure calling transitively on each other 
+* from the AST and writes the information to the PKB.
+* This class implements the IExtractor interface. The methods are documented
+* from the base class at IExtractor.h
+*/
 class CallsTExtractor : public IRelationshipExtractor {
 public:
 	CallsTExtractor(std::shared_ptr<ASTNode> ast1,
