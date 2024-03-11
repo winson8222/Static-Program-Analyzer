@@ -11,7 +11,6 @@
 // Helper function for creating a ParsingResult tailored for Modifies tests
 ParsingResult createParsingResultForModifies(const std::string& entity, const std::string& variable, bool isProcedure) {
     ParsingResult parsingResult;
-    parsingResult.setSuchThatClauseRelationship(Token(TokenType::Modifies, "Modifies"));
     // Set the entity type appropriately
     TokenType entityType = isProcedure ? TokenType::IDENT : TokenType::INTEGER;
     
