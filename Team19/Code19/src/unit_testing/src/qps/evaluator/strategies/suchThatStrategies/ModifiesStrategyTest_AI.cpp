@@ -276,7 +276,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/6") {
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
     std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{"y", "3", "2", "4", "1"});
+    REQUIRE(res == std::unordered_set<string>{ "y", "1 2 3 4", "2 3 4" });
 }
 
 TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/7") {

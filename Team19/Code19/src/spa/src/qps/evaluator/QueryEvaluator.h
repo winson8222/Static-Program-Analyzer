@@ -34,4 +34,5 @@ public:
 
     void initializeStrategyFactory(); // Method to initialize the strategy factory
     void initializeEntityFactory(); // Method to initialize the entity factory
+    string join(const unordered_set<string>& elements, const string& delimiter);
 };
