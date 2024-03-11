@@ -501,3 +501,94 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrate
 
 }
 
+TEST_CASE("Pattern partial match with semi-string") {
+
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+
+    std::string filename = "./sample.txt";
+    std::string sampleProgram = "procedure proc1 {"
+                                "   read x;"
+                                "   while (y > 1) {"
+                                "       y = y + 1; }" // 3
+                                "   read x;"
+                                "   while (y > 5) {"
+                                "       z = z + 1; }}" // 6
+                                "procedure proc2 {"
+                                "   read x;"
+                                "   while (y > 1) {"
+                                "       y = y + 5; }" // 9
+                                "   read x; "
+                                "   y = 55;"
+                                "}";
+    std::ofstream file;
+    file.open(filename);
+    file << sampleProgram;
+    file.close();
+
+
+
+    REQUIRE(std::filesystem::exists(filename));
+    SourceProcessor sp = SourceProcessor(filename, pkbManager);
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    std::shared_ptr<AssignPatternWriter> assignPatternWriter = pkbWriterManager->getAssignPatternWriter();
+    assignPatternWriter->clear();
+
+    sp.parseSIMPLE();
+    sp.extractAndPopulate();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+
+    std::shared_ptr<AssignPatternReader> assignPatternReader = pkbReaderManager->getAssignPatternReader();
+    std:shared_ptr<AssignReader> assignReader = pkbReaderManager->getAssignReader();
+    std::unordered_set<int> shome = assignPatternReader->getStatementNumbersWithPartialRHS("1");
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "assign"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::PatternKeyword, "pattern"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::QuoutConst, "\"55\""),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Rparenthesis, ")")
+    };
+
+
+
+//    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+//    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+//    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+//
+//    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+//    std::shared_ptr<AssignPatternWriter> assignPatternWriter = pkbWriterManager->getAssignPatternWriter();
+//    std::shared_ptr<AssignWriter> assignWriter = pkbWriterManager->getAssignWriter();
+//    statementWriter->insertStatement(1);
+//    statementWriter->insertStatement(2);
+//    statementWriter->insertStatement(3);
+//    statementWriter->insertStatement(4);
+//    statementWriter->insertStatement(5);
+//    assignPatternWriter->addAssignPattern(1, "y", "x + 1");
+//    assignPatternWriter->addAssignPattern(2, "z", "11 + y");
+//    assignPatternWriter->addAssignPattern(3, "x", "111 + x");
+//    assignPatternWriter->addAssignPattern(4, "w", "1111");
+//    assignPatternWriter->addAssignPattern(5, "x", "y + 5 + v");
+//    assignWriter->insertAssign(1);
+//    assignWriter->insertAssign(2);
+//    assignWriter->insertAssign(3);
+//    assignWriter->insertAssign(4);
+//    assignWriter->insertAssign(5);
+
+    std::shared_ptr<AssignPatternReader> dddd = pkbReaderManager->getAssignPatternReader();
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ "11" });
+
+}

@@ -1,6 +1,7 @@
 
 #include "catch.hpp"
 #include "qps/evaluator/strategies/suchThatStrategies/ModifiesStrategy.h"
+#include "qps/evaluator/strategies/suchThatStrategies/ModifiesPStrategy.h"
 #include "pkb/PKBReaderManager.h"
 #include "pkb/PKB.h"
 #include "qps/parser/ParsingResult.h"
@@ -219,6 +220,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/5") {
     std::unordered_set<string> res = evaluator.evaluateQuery();
     REQUIRE(res == std::unordered_set<string>{"y"});
 }
+
+
 
 TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/6") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();

@@ -145,7 +145,9 @@ void QueryEvaluator::initializeStrategyFactory() {
             {TokenType::Parent, []() { return std::make_unique<ParentStrategy>(); }},
             {TokenType::ParentT, []() { return std::make_unique<ParentStrategy>(); }},
             {TokenType::UsesS, []() { return std::make_unique<UsesStrategy>(); }},
-            {TokenType::ModifiesS, []() { return std::make_unique<ModifiesStrategy>(); }}
+            {TokenType::ModifiesS, []() { return std::make_unique<ModifiesStrategy>(); }},
+            {TokenType::ModifiesP, []() { return std::make_unique<ModifiesPStrategy>(); }},
+            {TokenType::UsesP, []() { return std::make_unique<UsesPStrategy>(); }},
             // Additional strategies can be added here as needed.
     };
 }

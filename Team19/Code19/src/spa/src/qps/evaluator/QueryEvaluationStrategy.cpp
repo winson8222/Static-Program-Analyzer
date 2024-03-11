@@ -41,7 +41,7 @@ std::unordered_set<int> QueryEvaluationStrategy::combineFoundStatements(const un
     return combinedResult;
 }
 
-
+// Get the statements numbers based on the type of statement
 unordered_set<int> QueryEvaluationStrategy::getFilteredStmtsNumByType(unordered_set<int> allStatements, string statementType, PKBReaderManager pkbReaderManager) {
     unordered_set<int> filteredResult;
     if (statementType == "stmt") {
@@ -66,11 +66,19 @@ unordered_set<int> QueryEvaluationStrategy::getFilteredStmtsNumByType(unordered_
         std::shared_ptr<PrintReader> printReader = pkbReaderManager.getPrintReader();
         std::unordered_set<int> allPrintStmts = printReader->getAllPrints();
         filteredResult = combineFoundStatements(allStatements, allPrintStmts);
-    } else {
-        throw "Invalid Query!";
+    } else if (statementType == "call") {
+        std::shared_ptr<CallReader> callReader = pkbReaderManager.getCallReader();
+        std::unordered_set<int> allCallStmts = callReader->getAllCalls();
+        filteredResult = combineFoundStatements(allStatements, allCallStmts);
     }
 
     return filteredResult;
+}
+
+void QueryEvaluationStrategy::insertSingleColToTable(const Token token,std::shared_ptr<ResultTable> resultTable) {
+    std::string colName = token.getValue();
+    resultTable->insertAllColumns({colName});
+
 }
 
 void QueryEvaluationStrategy::insertColsToTable(const Token firstToken, const Token secondToken, std::shared_ptr<ResultTable> resultTable) {
@@ -101,4 +109,14 @@ void QueryEvaluationStrategy::insertRowToTable(const pair<string,string> col1Pai
         row[colName2] = stmt2;
         resultTable->insertNewRow(row);
     }
+}
+
+void QueryEvaluationStrategy::insertSingleColRowToTable(const pair<string,string> col1Pair, std::shared_ptr<ResultTable> resultTable) {
+    std::string colName1 = col1Pair.first;
+    std::string stmt1 = col1Pair.second;
+    resultTable->insertNewRow({{colName1, stmt1}});
+}
+
+bool QueryEvaluationStrategy::isBothParamsSynonym(const Token& firstParam, const Token& secondParam) {
+    return firstParam.getType() == TokenType::IDENT && secondParam.getType() == TokenType::IDENT;
 }

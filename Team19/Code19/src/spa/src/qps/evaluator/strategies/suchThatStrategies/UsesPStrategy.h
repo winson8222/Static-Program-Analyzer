@@ -5,9 +5,9 @@
 
 using namespace std;
 
-class ModifiesPStrategy : public EntEntStrategy {
+class UsesPStrategy : public EntEntStrategy {
 private:
-    std::shared_ptr<ModifiesPReader> modifiesPReader;
+    std::shared_ptr<UsesPReader> usesPReader;
 
 
 
@@ -24,5 +24,3 @@ public:
 
 
 };
-
-
