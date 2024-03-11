@@ -5,7 +5,6 @@
 #include "sp/DesignExtractor/Extractor/FollowsExtractor.h"
 #include "sp/AST/ASTUtility.h"
 #include <stdexcept>
-#include <iostream>
 #include <vector>
 
 /*

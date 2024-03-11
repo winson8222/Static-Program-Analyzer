@@ -7,7 +7,6 @@
 #include "sp/DesignExtractor/Extractor/ParentExtractor.h"
 
 #include <stdexcept>
-#include <iostream>
 
 /*
 * A visitor for the read statement which should
@@ -24,5 +23,4 @@ public:
 		std::shared_ptr<PKBWriterManager> pkbWriterManager);
 
 	void visit() override;
-	void addContext(std::shared_ptr<ASTNode> node) override;
 };

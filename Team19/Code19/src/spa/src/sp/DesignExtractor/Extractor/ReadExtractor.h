@@ -1,7 +1,6 @@
 #pragma once
 
 #include "sp/DesignExtractor/Extractor/IExtractor.h"
-#include <iostream>
 
 /*
 * Extracts the read statement from the AST and writes the information to the PKB.

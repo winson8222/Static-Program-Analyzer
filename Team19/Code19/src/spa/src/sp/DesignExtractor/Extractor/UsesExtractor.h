@@ -3,7 +3,6 @@
 #include "sp/DesignExtractor/Extractor/IExtractor.h"
 #include "sp/AST/ASTUtility.h"
 #include <stdexcept>
-#include <iostream>
 
 /*
 * Extracts the Uses relationship between an entity and a variable
