@@ -1,14 +1,15 @@
 #pragma once
 #include "UsesPStrategy.h"
 
-std::shared_ptr<ResultTable> UsesPStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult)
+std::shared_ptr<ResultTable> UsesPStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause)
 {
     auto resultTable = make_shared<ResultTable>();
     this->usesPReader = pkbReaderManager.getUsesPReader();
 
 
-    const Token& suchThatFirstParam = parsingResult.getSuchThatClauseFirstParam();
-    const Token& suchThatSecondParam = parsingResult.getSuchThatClauseSecondParam();
+    const SuchThatClause* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
+    const Token& suchThatFirstParam = suchClause->getFirstParam();
+    const Token& suchThatSecondParam = suchClause->getSecondParam();
 
     if (isBothParamsSynonym(suchThatFirstParam, suchThatSecondParam)) {
         this->processBothSynonyms(suchThatFirstParam, suchThatSecondParam, parsingResult, resultTable, pkbReaderManager);
@@ -32,7 +33,7 @@ void UsesPStrategy::processBothSynonyms(const Token &firstParam, const Token &se
     string secondParamType = parsingResult.getDeclaredSynonym(secondParam.getValue());
     insertColsToTable(firstParam, secondParam, resultTable);
 
-    if (firstParamType == "procedure" || firstParamType == "call") {
+    if (firstParamType == "procedure") {
         std::unordered_set<std::string> allProcs =
                 pkbReaderManager.getUsesPReader()->getAllProcsThatUseAnyVariable();
         for (string proc : allProcs) {

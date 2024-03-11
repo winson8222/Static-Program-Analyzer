@@ -41,7 +41,7 @@ std::unordered_set<int> QueryEvaluationStrategy::combineFoundStatements(const un
     return combinedResult;
 }
 
-
+// Get the statements numbers based on the type of statement
 unordered_set<int> QueryEvaluationStrategy::getFilteredStmtsNumByType(unordered_set<int> allStatements, string statementType, PKBReaderManager pkbReaderManager) {
     unordered_set<int> filteredResult;
     if (statementType == "stmt") {
@@ -66,8 +66,10 @@ unordered_set<int> QueryEvaluationStrategy::getFilteredStmtsNumByType(unordered_
         std::shared_ptr<PrintReader> printReader = pkbReaderManager.getPrintReader();
         std::unordered_set<int> allPrintStmts = printReader->getAllPrints();
         filteredResult = combineFoundStatements(allStatements, allPrintStmts);
-    } else {
-        throw "Invalid Query!";
+    } else if (statementType == "call") {
+        std::shared_ptr<CallReader> callReader = pkbReaderManager.getCallReader();
+        std::unordered_set<int> allCallStmts = callReader->getAllCalls();
+        filteredResult = combineFoundStatements(allStatements, allCallStmts);
     }
 
     return filteredResult;

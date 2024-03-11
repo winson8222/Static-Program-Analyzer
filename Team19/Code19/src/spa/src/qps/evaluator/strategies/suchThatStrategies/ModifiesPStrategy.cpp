@@ -1,14 +1,15 @@
 #pragma once
 #include "qps/evaluator/strategies/suchThatStrategies/ModifiesPStrategy.h"
 
-std::shared_ptr<ResultTable> ModifiesPStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult)
+std::shared_ptr<ResultTable> ModifiesPStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause)
 {
     auto resultTable = make_shared<ResultTable>();
     this->modifiesPReader = pkbReaderManager.getModifiesPReader();
 
 
-    const Token& suchThatFirstParam = parsingResult.getSuchThatClauseFirstParam();
-    const Token& suchThatSecondParam = parsingResult.getSuchThatClauseSecondParam();
+    const SuchThatClause* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
+    const Token& suchThatFirstParam = suchClause->getFirstParam();
+    const Token& suchThatSecondParam = suchClause->getSecondParam();
 
     if (isBothParamsSynonym(suchThatFirstParam, suchThatSecondParam)) {
         this->processBothSynonyms(suchThatFirstParam, suchThatSecondParam, parsingResult, resultTable, pkbReaderManager);
@@ -32,7 +33,7 @@ void ModifiesPStrategy::processBothSynonyms(const Token &firstParam, const Token
     string secondParamType = parsingResult.getDeclaredSynonym(secondParam.getValue());
     insertColsToTable(firstParam, secondParam, resultTable);
 
-    if (firstParamType == "procedure" || firstParamType == "call") {
+    if (firstParamType == "procedure") {
         std::unordered_set<std::string> allProcs =
                 pkbReaderManager.getModifiesPReader()->getAllProcsThatModifyAnyVariable();
         for (string proc : allProcs) {

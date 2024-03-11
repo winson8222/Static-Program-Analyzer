@@ -361,4 +361,49 @@ TEST_CASE("UsesStrategy - Comprehensive Test with Various Scenarios") {
 
 
 
+TEST_CASE("UsesStrategy - Select Call statement") {
+    auto pkb = std::make_shared<PKB>();
+    auto pkbReaderManager = std::make_shared<PKBReaderManager>(pkb);
+    auto pkbWriterManager = std::make_shared<PKBWriterManager>(pkb);
 
+    auto statementWriter = pkbWriterManager->getStatementWriter();
+    auto usesSWriter = pkbWriterManager->getUsesSWriter();
+    auto usesPWriter = pkbWriterManager->getUsesPWriter();
+
+    auto procWriter = pkbWriterManager->getProcedureWriter();
+    auto callWriter = pkbWriterManager->getCallWriter();
+
+    // Insert statements and their uses relationships
+    statementWriter->insertStatement(1);
+    usesSWriter->addUsesS(1, "proc1"); // Assign statement
+    usesPWriter->addUsesP("proc1", "x");
+    callWriter->insertCall(1);
+
+
+    // Set up the query to evaluate
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "call"),
+            Token(TokenType::IDENT, "c"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "c"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Uses, "Uses"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::IDENT, "c"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::QuoutIDENT, "\"x\""),
+            Token(TokenType::Rparenthesis, ")")
+    };
+
+    // Parse and evaluate the query
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    auto res = evaluator.evaluateQuery();
+
+    // Verify that all necessary statements are returned
+    std::unordered_set<std::string> expected{"1"};
+    REQUIRE(res == expected);
+}
