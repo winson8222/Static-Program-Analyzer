@@ -15,7 +15,7 @@ ParsingResult createParsingResultForUses(const std::string& entity, const std::s
     TokenType entityType = isProcedure ? TokenType::IDENT : TokenType::INTEGER;
 
     SuchThatClause clause;
-    clause.setRelationship(Token(TokenType::Uses, "Uses"));
+    clause.setRelationship(Token(TokenType::UsesS, "Uses"));
     clause.setFirstParam(Token(entityType, entity));
     clause.setSecondParam(Token(TokenType::IDENT, variable));
     parsingResult.addSuchThatClause(clause);

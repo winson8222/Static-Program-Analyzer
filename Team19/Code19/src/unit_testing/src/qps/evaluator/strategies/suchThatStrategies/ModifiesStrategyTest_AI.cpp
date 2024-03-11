@@ -15,7 +15,7 @@ ParsingResult createParsingResultForModifies(const std::string& entity, const st
     TokenType entityType = isProcedure ? TokenType::IDENT : TokenType::INTEGER;
     
     SuchThatClause clause;
-    clause.setRelationship(Token(TokenType::Modifies, "Modifies"));
+    clause.setRelationship(Token(TokenType::ModifiesS, "Modifies"));
     clause.setFirstParam(Token(entityType, entity));
     clause.setSecondParam(Token(TokenType::IDENT, variable));
     parsingResult.addSuchThatClause(clause);
