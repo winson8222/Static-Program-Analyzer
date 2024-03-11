@@ -33,7 +33,7 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
     }
     
     // Add such-that-strategies based on the relationship specified in the query.
-    std::string suchThatRelationship = parsingResult.getSuchThatClauseRelationship().getValue();
+    TokenType suchThatRelationship = parsingResult.getSuchThatClauseRelationship().getType();
     auto it = strategyFactory.find(suchThatRelationship);
     if (it != strategyFactory.end()) {
         addStrategy(it->second());
@@ -114,12 +114,12 @@ void QueryEvaluator::initializeStrategyFactory() {
 
     // Mapping of query types to their corresponding strategies.
     QueryEvaluator::strategyFactory = {
-        {"Follows", []() { return std::make_unique<FollowsStrategy>(); }},
-        {"Follows*", []() { return std::make_unique<FollowsStrategy>(); }},
-        {"Parent", []() { return std::make_unique<ParentStrategy>(); }},
-        {"Parent*", []() { return std::make_unique<ParentStrategy>(); }},
-        {"Uses", []() { return std::make_unique<UsesStrategy>(); }},
-        {"Modifies", []() { return std::make_unique<ModifiesStrategy>(); }}
+        {TokenType::Follows, []() { return std::make_unique<FollowsStrategy>(); }},
+        {TokenType::FollowsT, []() { return std::make_unique<FollowsStrategy>(); }},
+        {TokenType::Parent, []() { return std::make_unique<ParentStrategy>(); }},
+        {TokenType::ParentT, []() { return std::make_unique<ParentStrategy>(); }},
+        {TokenType::UsesS, []() { return std::make_unique<UsesStrategy>(); }},
+        {TokenType::ModifiesS, []() { return std::make_unique<ModifiesStrategy>(); }}
         // Additional strategies can be added here as needed.
     };
 }

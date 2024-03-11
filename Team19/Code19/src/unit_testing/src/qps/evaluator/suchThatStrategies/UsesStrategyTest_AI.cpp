@@ -11,7 +11,7 @@
 // Helper function for creating a ParsingResult tailored for Uses tests
 ParsingResult createParsingResultForUses(const std::string& entity, const std::string& variable, bool isProcedure) {
     ParsingResult parsingResult;
-    parsingResult.setSuchThatClauseRelationship(Token(TokenType::Uses, "Uses"));
+    parsingResult.setSuchThatClauseRelationship(Token(TokenType::UsesS, "Uses"));
     TokenType entityType = isProcedure ? TokenType::IDENT : TokenType::INTEGER;
     parsingResult.setSuchThatClauseFirstParam(Token(entityType, entity));
     parsingResult.setSuchThatClauseSecondParam(Token(TokenType::IDENT, variable));
