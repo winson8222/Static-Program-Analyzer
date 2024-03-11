@@ -829,3 +829,57 @@ TEST_CASE("stmt s; Select BOOLEAN such that Follows(3, 4)") {
     REQUIRE(tokens[12].getType() == TokenType::Rparenthesis);
     REQUIRE(tokens[12].getValue() == ")");
 }
+
+TEST_CASE("procedure p, q;Select p such that Calls(p, q) with q.procName = 'Third'") {
+    // Initialize tokenizer with the input string
+    Tokenizer tokenizer("procedure p, q; Select p such that Calls(p, q) with q.procName = \"Third\"");
+    vector<Token> tokens = tokenizer.tokenize();
+
+    // Check the total number of tokens
+    REQUIRE(tokens.size() == 21);  // Expecting 22 tokens
+
+    // Validate each token against the expected output
+    REQUIRE(tokens[0].getType() == TokenType::DesignEntity);
+    REQUIRE(tokens[0].getValue() == "procedure");
+    REQUIRE(tokens[1].getType() == TokenType::IDENT);
+    REQUIRE(tokens[1].getValue() == "p");
+    REQUIRE(tokens[2].getType() == TokenType::Comma);
+    REQUIRE(tokens[2].getValue() == ",");
+    REQUIRE(tokens[3].getType() == TokenType::IDENT);
+    REQUIRE(tokens[3].getValue() == "q");
+    REQUIRE(tokens[4].getType() == TokenType::Semicolon);
+    REQUIRE(tokens[4].getValue() == ";");
+    REQUIRE(tokens[5].getType() == TokenType::SelectKeyword);
+    REQUIRE(tokens[5].getValue() == "Select");
+    REQUIRE(tokens[6].getType() == TokenType::IDENT);
+    REQUIRE(tokens[6].getValue() == "p");
+    REQUIRE(tokens[7].getType() == TokenType::SuchKeyword);
+    REQUIRE(tokens[7].getValue() == "such");
+    REQUIRE(tokens[8].getType() == TokenType::ThatKeyword);
+    REQUIRE(tokens[8].getValue() == "that");
+    REQUIRE(tokens[9].getType() == TokenType::Calls);
+    REQUIRE(tokens[9].getValue() == "Calls");
+    REQUIRE(tokens[10].getType() == TokenType::Lparenthesis);
+    REQUIRE(tokens[10].getValue() == "(");
+    REQUIRE(tokens[11].getType() == TokenType::IDENT);
+    REQUIRE(tokens[11].getValue() == "p");
+    REQUIRE(tokens[12].getType() == TokenType::Comma);
+    REQUIRE(tokens[12].getValue() == ",");
+    REQUIRE(tokens[13].getType() == TokenType::IDENT);
+    REQUIRE(tokens[13].getValue() == "q");
+    REQUIRE(tokens[14].getType() == TokenType::Rparenthesis);
+    REQUIRE(tokens[14].getValue() == ")");
+    REQUIRE(tokens[15].getType() == TokenType::WithKeyword);
+    REQUIRE(tokens[15].getValue() == "with");
+    REQUIRE(tokens[16].getType() == TokenType::IDENT);
+    REQUIRE(tokens[16].getValue() == "q");
+    REQUIRE(tokens[17].getType() == TokenType::Dot);
+    REQUIRE(tokens[17].getValue() == ".");
+    REQUIRE(tokens[18].getType() == TokenType::AttrName);
+    REQUIRE(tokens[18].getValue() == "procName");
+    REQUIRE(tokens[19].getType() == TokenType::Equal);
+    REQUIRE(tokens[19].getValue() == "=");
+    REQUIRE(tokens[20].getType() == TokenType::QuoutIDENT);
+    REQUIRE(tokens[20].getValue() == "\"Third\"");
+    
+}

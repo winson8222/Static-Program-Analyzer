@@ -4,6 +4,7 @@
 // Standard library dependencies
 #include <string>
 #include <unordered_set>
+#include <iostream>
 
 /**
  * Evaluates Follows or Follows* queries between two statements.
@@ -13,16 +14,16 @@
  * @param parsingResult Contains the parsed query details.
  * @return A shared pointer to the populated result table.
  */
-std::shared_ptr<ResultTable> FollowsStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult) {
+std::shared_ptr<ResultTable> FollowsStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) {
     auto resultTable = std::make_shared<ResultTable>();
 
     // Initializing PKB readers for Follows relationships
     followsReader = pkbReaderManager.getFollowsReader();
     followsTReader = pkbReaderManager.getFollowsTReader();
-
-    const Token& firstParam = parsingResult.getSuchThatClauseFirstParam();
-    const Token& secondParam = parsingResult.getSuchThatClauseSecondParam();
-    std::string variant = parsingResult.getSuchThatClauseRelationship().getValue();
+    const SuchThatClause* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
+    const Token& firstParam = suchClause->getFirstParam();
+    const Token& secondParam = suchClause->getSecondParam();
+    string variant = suchClause->getRelationship().getValue();
 
     // Handling different parameter types for the Follows relationship
     if (firstParam.getType() == TokenType::IDENT && secondParam.getType() == TokenType::IDENT) {

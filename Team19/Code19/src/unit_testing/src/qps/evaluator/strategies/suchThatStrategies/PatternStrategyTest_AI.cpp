@@ -1,9 +1,9 @@
 #include "catch.hpp"
 #include "pkb/PKBReaderManager.h"
 #include "qps/parser/ParsingResult.h"
-#include "../../spa/src/qps/parser/QueryParser.h"
-#include "../../spa/src/pkb/PKBManager.h"
-#include "../../spa/src/qps/evaluator/QueryEvaluator.h"
+#include "qps/parser/QueryParser.h"
+#include "pkb/PKBManager.h"
+#include "qps/evaluator/QueryEvaluator.h"
 
 TEST_CASE("Check Evaluation result of true clause for Pattern and select assignments") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();

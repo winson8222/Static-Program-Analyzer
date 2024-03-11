@@ -5,6 +5,9 @@
 #include <unordered_map>
 #include <utility>
 #include "Token.h"
+#include "clauses/SuchThatClause.h"
+#include "clauses/PatternClause.h"
+#include "clauses/WithClause.h"
 
 using namespace std;
 
@@ -22,41 +25,31 @@ public:
     void addDeclaredSynonym(const std::string& key, const std::string& value);
     void setRequiredSynonym(const string& synonym);
 
-    // Methods for setting individual parts of SuchThatClause
-    void setSuchThatClauseRelationship(const Token& relationship);
-    void setSuchThatClauseFirstParam(const Token& firstParam);
-    void setSuchThatClauseSecondParam(const Token& secondParam);
-
-    // Methods for setting individual parts of PatternClause
-    void setPatternClauseRelationship(const Token& relationship);
-    void setPatternClauseFirstParam(const Token& firstParam);
-    void setPatternClauseSecondParam(const Token& secondParam);;
+    // New methods for adding clauses
+    void addSuchThatClause(const SuchThatClause& clause);
+    void addPatternClause(const PatternClause& clause);
+    void addWithClause(const WithClause& clause);
 
 
     // Getters
-    const string getPatternClauseRelationshipType() const;
     const unordered_map<string, string>& getDeclaredSynonyms() const;
     const string& getDeclaredSynonym(const string& key) const;
-    const string& getRequiredSynonym() const;
-    const string& getRequiredSynonymType() const;
-    const Token& getSuchThatClauseRelationship() const;
-    const Token& getSuchThatClauseFirstParam() const;
-    const Token& getSuchThatClauseSecondParam() const;
-    const Token& getPatternClauseRelationship() const;
-    const Token& getPatternClauseFirstParam() const;
-    const Token& getPatternClauseSecondParam() const;
+    const vector<string>& getRequiredSynonyms() const;
+    const string& getRequiredSynonymType(const string& requiredSynonym) const;
+
+    // New methods to get clause by index
+    const vector<SuchThatClause>& getSuchThatClauses() const;
+    const vector<PatternClause>& getPatternClauses() const;
+    const vector<WithClause>& getWithClauses() const;
 
 private:
     unordered_map<string, string> declaredSynonyms;
-    string requiredSynonym;
+    vector<string> requiredSynonyms;
 
-    Token suchThatClauseRelationship;
-    Token suchThatClauseFirstParam;
-    Token suchThatClauseSecondParam;
-    
-    Token patternRelationship;
-    Token patternFirstParam;
-    Token patternSecondParam;
+    // Use vectors of clause structs
+    vector<SuchThatClause> suchThatClauses;
+    vector<PatternClause> patternClauses;
+    vector<WithClause> withClauses;
 
     string errorMessage;
 };
