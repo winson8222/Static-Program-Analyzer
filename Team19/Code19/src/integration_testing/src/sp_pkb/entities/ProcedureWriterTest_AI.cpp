@@ -95,8 +95,7 @@ TEST_CASE("sp/SourceProcessor: Procedures") {
         file.close();
         REQUIRE(std::filesystem::exists(filename));
         SourceProcessor sp = SourceProcessor(filename, pkbManager);
-        REQUIRE_THROWS_WITH(sp.parseSIMPLE(), "Error: SimpleParser::parseStmt encounter empty statement.");
+        REQUIRE_THROWS_WITH(sp.parseSIMPLE(), "Error: Tried to parse statement, but input statement is not Assign, Call, Print, Read, If, or While statement.");
         std::filesystem::remove(filename);
     }
-
 }
