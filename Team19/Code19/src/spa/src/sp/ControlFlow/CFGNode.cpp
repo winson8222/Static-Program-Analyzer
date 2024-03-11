@@ -21,6 +21,5 @@ int CFGNode::getLineNumber() {
 }
 
 std::vector<std::shared_ptr<CFGNode>> CFGNode::getChildren() {
-	//TODO
 	return this->children;
 }

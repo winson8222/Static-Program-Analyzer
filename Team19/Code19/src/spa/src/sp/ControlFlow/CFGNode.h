@@ -5,21 +5,19 @@
 #include <string>
 
 /**
- * @brief Represents a node in the Abstract Syntax Tree (AST).
+ * @brief Represents a node in the Control Flow Graph (CFG).
  */
 class CFGNode {
 public:
 	/**
 	 * @brief Constructor for creating an CFGNode with no specified line number.
-	 *
-	 * @param lineNumber The line number associated with the AST node.
 	 */
 	CFGNode();
 
 	/**
 	 * @brief Constructor for creating an CFGNode with specified line number.
 	 *
-	 * @param lineNumber The line number associated with the AST node.
+	 * @param lineNumber The line number associated with the CFG node.
 	 */
 	CFGNode(int lineNumber);
 
