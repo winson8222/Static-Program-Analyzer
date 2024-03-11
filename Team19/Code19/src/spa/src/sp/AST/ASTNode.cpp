@@ -29,7 +29,7 @@ void ASTNode::setValue(std::string value) {
 std::size_t ASTNode::hash() const {
     // Concatenate the properties of ASTNode
     std::stringstream ss;
-    ss << ASTUtility::getASTNodeType(type) << lineNumber << value;
+    ss << ASTUtility::getASTNodeType.find(type)->second << lineNumber << value;
 
     // Hash the concatenated string
     std::hash<std::string> hasher;
@@ -46,7 +46,7 @@ std::string ASTNode::recursiveString(int tabs) const {
     // to tab a tree representing the children - each tab represents a level of the tree
     for (int i = 0; i < tabs; ++i)
         stringStream << "  ";
-    stringStream << "Type: " << ASTUtility::getASTNodeType(type) << ", Line Number: " << lineNumber << ", Value: " << value << "\n";
+    stringStream << "Type: " << ASTUtility::getASTNodeType.find(type)->second << ", Line Number: " << lineNumber << ", Value: " << value << "\n";
     // depth-first search to print the children recursively
     for (const auto& child : children) {
         stringStream << child->recursiveString(tabs + 1);

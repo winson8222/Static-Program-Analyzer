@@ -3,6 +3,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <unordered_map>
 
 #include "sp/AST/ASTNode.h"
 
@@ -23,7 +24,7 @@ public:
      * @param accepting an enum object of AST Node
      * @return the string representation of the AST Node type
      */
-    static std::string getASTNodeType(ASTNodeType t);
+    static std::unordered_map<ASTNodeType, std::string> getASTNodeType;
 
     /**
      * @brief Check if accepting AST node is a statement

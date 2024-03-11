@@ -10,6 +10,12 @@
 #include "pkb/stores/relationships/types/ParentTStore.h"
 #include "pkb/stores/relationships/types/ModifiesPStore.h"
 #include "pkb/stores/relationships/types/ModifiesSStore.h"
+#include "pkb/stores/relationships/types/CallsStore.h"
+#include "pkb/stores/relationships/types/CallsTStore.h"
+#include "pkb/stores/relationships/types/NextStore.h"
+#include "pkb/stores/relationships/types/NextTStore.h"
+#include "pkb/stores/relationships/types/AffectsStore.h"
+
 #include "pkb/stores/entities/types/StatementStore.h"
 #include "pkb/stores/entities/types/ReadStore.h"
 #include "pkb/stores/entities/types/PrintStore.h"
@@ -20,6 +26,7 @@
 #include "pkb/stores/entities/types/VariableStore.h"
 #include "pkb/stores/entities/types/ConstantStore.h"
 #include "pkb/stores/entities/types/ProcedureStore.h"
+
 #include "pkb/stores/patterns/assign/AssignPatternStore.h"
 #include "pkb/stores/patterns/control/IfPatternStore.h"
 #include "pkb/stores/patterns/control/WhilePatternStore.h"
@@ -38,6 +45,11 @@ private:
     std::shared_ptr<UsesSStore> usesSStore;
     std::shared_ptr<ModifiesPStore> modifiesPStore;
     std::shared_ptr<ModifiesSStore> modifiesSStore;
+    std::shared_ptr<CallsStore> callsStore;
+    std::shared_ptr<CallsTStore> callsTStore;
+    std::shared_ptr<NextStore> nextStore;
+    std::shared_ptr<NextTStore> nextTStore;
+	std::shared_ptr<AffectsStore> affectsStore;
 
     // Entity stores
     std::shared_ptr<StatementStore> statementStore;
@@ -57,17 +69,7 @@ private:
     std::shared_ptr<WhilePatternStore> whilePatternStore;
 public:
     PKB() {
-        // Initialise all relationship stores
-        followsTStore = std::make_shared<FollowsTStore>();
-        followsStore = std::make_shared<FollowsStore>();
-        parentStore = std::make_shared<ParentStore>();
-        parentTStore = std::make_shared<ParentTStore>();
-        usesPStore = std::make_shared<UsesPStore>();
-        usesSStore = std::make_shared<UsesSStore>();
-        modifiesPStore = std::make_shared<ModifiesPStore>();
-        modifiesSStore = std::make_shared<ModifiesSStore>();
-
-        // Initialize all entities stores
+		// Initialize all entities stores
         statementStore = std::make_shared<StatementStore>();
         readStore = std::make_shared<ReadStore>();
         printStore = std::make_shared<PrintStore>();
@@ -78,6 +80,21 @@ public:
         variableStore = std::make_shared<VariableStore>();
         constantStore = std::make_shared<ConstantStore>();
         procedureStore = std::make_shared<ProcedureStore>();
+
+        // Initialise all relationship stores
+        followsTStore = std::make_shared<FollowsTStore>();
+        followsStore = std::make_shared<FollowsStore>();
+        parentStore = std::make_shared<ParentStore>();
+        parentTStore = std::make_shared<ParentTStore>();
+        usesPStore = std::make_shared<UsesPStore>();
+        usesSStore = std::make_shared<UsesSStore>();
+        modifiesPStore = std::make_shared<ModifiesPStore>();
+        modifiesSStore = std::make_shared<ModifiesSStore>();
+        callsStore = std::make_shared<CallsStore>();
+        callsTStore = std::make_shared<CallsTStore>();
+        nextStore = std::make_shared<NextStore>();
+        nextTStore = std::make_shared<NextTStore>(nextStore);
+        affectsStore = std::make_shared<AffectsStore>(assignStore, nextStore, usesSStore, modifiesSStore);
 
         // Initialize all pattern stores
         assignPatternStore = std::make_shared<AssignPatternStore>();
@@ -94,6 +111,11 @@ public:
     std::shared_ptr<UsesSStore> getUsesSStore() { return usesSStore; }
     std::shared_ptr<ModifiesPStore> getModifiesPStore() { return modifiesPStore; }
     std::shared_ptr<ModifiesSStore> getModifiesSStore() { return modifiesSStore; }
+    std::shared_ptr<CallsStore> getCallsStore() { return callsStore; }
+    std::shared_ptr<CallsTStore> getCallsTStore() { return callsTStore; }
+    std::shared_ptr<NextStore> getNextStore() { return nextStore; }
+    std::shared_ptr<NextTStore> getNextTStore() { return nextTStore; }
+    std::shared_ptr<AffectsStore> getAffectsStore() { return affectsStore; }
 
     // Entity Getters
     std::shared_ptr<StatementStore> getStatementStore() { return statementStore; }

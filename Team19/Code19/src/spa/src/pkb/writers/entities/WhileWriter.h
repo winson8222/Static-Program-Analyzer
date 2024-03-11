@@ -8,25 +8,19 @@
 // prompt: used copilot
 class WhileWriter: public IEntityWriter<int> {
 private:
-    std::shared_ptr<WhileStore> whileStore;
+	std::shared_ptr<WhileStore> whileStore;
 public:
-    explicit WhileWriter(std::shared_ptr<WhileStore> ws) : whileStore(std::move(ws)) {}
+	WhileWriter(std::shared_ptr<WhileStore> as);
 
-    bool addEntity(int entity) override {
-      return insertWhile(entity);
-    }
+	bool addEntity(int entity) override;
 
-    void clear() override {
-      whileStore->clear();
-    }
+	void clear() override;
 
-    /**
-     * @brief Inserts a while statement into the PKB.
-     * @param stmtNum The statement number of the while statement.
-     * @return True if the while statement is successfully inserted, false otherwise.
-     */
-    bool insertWhile(int stmtNum) {
-      return whileStore->addEntity(stmtNum);
-    }
+	/**
+	 * @brief Inserts an "While" statement into the store.
+	 * @param stmtNum The statement number of the while statement.
+	 * @return True while the while statement is successfully inserted, false otherwise.
+	 */
+	bool insertWhile(int stmtNum);
 };
 // ai-gen end

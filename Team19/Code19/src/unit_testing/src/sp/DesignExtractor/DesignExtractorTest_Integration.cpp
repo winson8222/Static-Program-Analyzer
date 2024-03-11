@@ -11,21 +11,78 @@
 #include <vector>
 
 TEST_CASE("Test integrating PKB to SP") {
-    const std::string testFileName = "../../../../../tests/sp/DesignExtractorTest/int1.txt";
-    REQUIRE(std::filesystem::exists(testFileName));
-    SimpleParserFacade parser(testFileName);
+    std::string filename = "sample.txt";
+    std::string sampleProgram = "procedure procedure {"
+                                "    print print;"
+                                "    read read;"
+                                "    read = 5;"
+                                "    print = read;"
+                                "    add = read * print;"
+                                "    minus = print - read;"
+                                "    procedure = read + print / read;"
+                                "   "
+                                "    while (read < 10) {"
+                                "       if (!(print > 0)) then {"
+                                "          print print;"
+                                "       } else {"
+                                "          print read;"
+                                "          procedure = add % minus;  "
+                                "          if (procedure < 0) then {"
+                                "              while = print + read;"
+                                "              print while;"
+                                "           } else {"
+                                "  print procedure;"
+                                "   }"
+                                "      }"
+                                "      }"
+                                "    while (print != read) {"
+                                "        procedure = procedure -1;"
+                                "        print = print + 1;"
+                                "    }"
+                                "    if = add + minus / procedure * read - print;"
+                                "    print if;"
+                                "}";
+    std::ofstream file;
+    file.open(filename);
+    file << sampleProgram;
+    file.close();
+    REQUIRE(std::filesystem::exists(filename));
+    SimpleParserFacade parser(filename);
     std::shared_ptr<ASTNode> tree_ptr = parser.parse();
 
     std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
     DesignExtractorFacade fde(tree_ptr, pkbWriterManager);
     REQUIRE_NOTHROW(fde.extractAll());
+    std::filesystem::remove(filename);
 }
 
 TEST_CASE("Test Parser-Visitor-Extractor-PKB integration") {
-    const std::string testFileName = "../../../../../tests/sp/DesignExtractorTest/Integration.txt";
-    REQUIRE(std::filesystem::exists(testFileName));
-    SimpleParserFacade parser(testFileName);
+    std::string filename = "sample.txt";
+    std::string sampleProgram = "procedure proc1 {"
+                                "if (z < 0) then {"
+                                "print x;"
+                                "} else {"
+                                "read y;"
+                                "while (x < y) {"
+                                "z = z + 1;"
+                                "}"
+                                "}"
+                                "while (x < y) {"
+                                "z = z + 1;"
+                                "}"
+                                "call p;"
+                                "}"
+                                ""
+                                "procedure p{"
+                                "x = y + z;"
+                                "}";
+    std::ofstream file;
+    file.open(filename);
+    file << sampleProgram;
+    file.close();
+    REQUIRE(std::filesystem::exists(filename));
+    SimpleParserFacade parser(filename);
     std::shared_ptr<ASTNode> tree_ptr = parser.parse();
 
     std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
@@ -90,4 +147,5 @@ TEST_CASE("Test Parser-Visitor-Extractor-PKB integration") {
     std::unordered_set<int> n = pkbReader->getAssignReader()->getAllAssigns();
     std::unordered_set<int> expectedAssigns = { 5, 7, 9 };
     REQUIRE(n == expectedAssigns);
+    std::filesystem::remove(filename);
 }

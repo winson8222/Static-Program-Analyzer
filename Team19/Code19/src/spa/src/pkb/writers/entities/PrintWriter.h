@@ -8,24 +8,19 @@
 // prompt: used copilot
 class PrintWriter: public IEntityWriter<int> {
 private:
-    std::shared_ptr<PrintStore> printStore;
+	std::shared_ptr<PrintStore> printStore;
 public:
-    explicit PrintWriter(std::shared_ptr<PrintStore> ps) : printStore(std::move(ps)) {}
+	PrintWriter(std::shared_ptr<PrintStore> as);
 
-    bool addEntity(int entity) override {
-      return insertPrint(entity);
-    }
+	bool addEntity(int entity) override;
 
-    void clear() override {
-      printStore->clear();
-    }
+	void clear() override;
 
-    /**
-     * @brief Inserts a "Print" statement into the store.
-     * @param stmtNum The statement number of the print statement.
-     * @return True if the print statement is successfully inserted, false otherwise.
-     */
-    bool insertPrint(int stmtNum) {
-      return printStore->addEntity(stmtNum);
-    }
+	/**
+	 * @brief Inserts an "Print" statement into the store.
+	 * @param stmtNum The statement number of the print statement.
+	 * @return True print the print statement is successfully inserted, false otherwise.
+	 */
+	bool insertPrint(int stmtNum);
 };
+// ai-gen end

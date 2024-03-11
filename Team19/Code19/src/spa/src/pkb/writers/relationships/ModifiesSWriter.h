@@ -1,8 +1,9 @@
 #pragma once
 
+#include <memory>
+
 #include "pkb/stores/relationships/IRelationshipWriter.h"
 #include "pkb/stores/relationships/types/ModifiesSStore.h"
-#include <memory>
 
 // ai-gen start(copilot, 2, e)
 // prompt: used copilot
@@ -11,15 +12,11 @@ private:
     std::shared_ptr<ModifiesSStore> modifiesSStore;
 
 public:
-    explicit ModifiesSWriter(std::shared_ptr<ModifiesSStore> store) : modifiesSStore(std::move(store)) {}
+    ModifiesSWriter(std::shared_ptr<ModifiesSStore> store);
 
-    void addRelationship(int stmtNum, std::string var) override {
-      addModifiesS(stmtNum, var);
-    }
+    void addRelationship(int stmtNum, std::string var) override;
 
-    void clear() override {
-      modifiesSStore->clear();
-    }
+    void clear() override;
 
     // Custom methods
     /**
@@ -27,9 +24,6 @@ public:
      * @param stmtNum The statement number of the statement that modifies the variable.
      * @param var The variable that is modified by the statement.
      */
-    void addModifiesS(int stmtNum, std::string var) {
-
-      modifiesSStore->addRelationship(stmtNum, var);
-    }
+    void addModifiesS(int stmtNum, std::string var);
 };
 // ai-gen end

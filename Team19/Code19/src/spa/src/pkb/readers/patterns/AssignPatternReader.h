@@ -11,55 +11,31 @@ class AssignPatternReader : public IAssignPatternReader {
 private:
     std::shared_ptr<AssignPatternStore> assignPatternStore;
 public:
-    explicit AssignPatternReader(std::shared_ptr<AssignPatternStore> store) : assignPatternStore(std::move(store)) {}
+    AssignPatternReader(std::shared_ptr<AssignPatternStore> store);
 
     // Inherited methods
-    bool isEmpty() override {
-        return assignPatternStore->isEmpty();
-    }
+    bool isEmpty() override;
 
-    std::string getLHS(int statementNumber) override {
-        return assignPatternStore->getLHS(statementNumber);
-    }
+    std::string getLHS(int statementNumber) override;
 
-    std::string getRHS(int statementNumber) override {
-        return assignPatternStore->getRHS(statementNumber);
-    }
+    std::string getRHS(int statementNumber) override;
 
-    std::unordered_map<int, std::pair<std::string, std::string>> getAllPatterns() override {
-        return assignPatternStore->getAllPatterns();
-    }
+    std::unordered_map<int, std::pair<std::string, std::string>> getAllPatterns() override;
 
-    std::pair<std::string, std::string> getPattern(int statementNumber) override {
-        return assignPatternStore->getPattern(statementNumber);
-    }
+    std::pair<std::string, std::string> getPattern(int statementNumber) override;
 
-    bool contains(int statementNumber) override {
-        return assignPatternStore->contains(statementNumber);
-    }
+    bool contains(int statementNumber) override;
 
-    std::unordered_set<int> getAllStatementNumbers() override {
-        return assignPatternStore->getAllStatementNumbers();
-    }
+    std::unordered_set<int> getAllStatementNumbers() override;
 
-    std::unordered_set<int> getStatementNumbersWithLHS(const std::string& LHS) override {
-        return assignPatternStore->getStatementNumbersWithLHS(LHS);
-    }
+    std::unordered_set<int> getStatementNumbersWithLHS(const std::string& LHS) override;
 
-    std::unordered_set<int> getStatementNumbersWithRHS(const std::string& RHS) override {
-        return assignPatternStore->getStatementNumbersWithRHS(RHS);
-    }
+    std::unordered_set<int> getStatementNumbersWithRHS(const std::string& RHS) override;
 
-    std::unordered_set<int> getStatementNumbersWithPartialRHS(const std::string& partialRHS) override {
-        return assignPatternStore->getStatementNumbersWithPartialRHS(partialRHS);
-    }
+    std::unordered_set<int> getStatementNumbersWithPartialRHS(const std::string& partialRHS) override;
 
-    std::unordered_set<int> getStatementNumbersWithLHSRHS (const std::string& LHS, const std::string& RHS) override {
-        return assignPatternStore->getStatementNumbersWithLHSRHS(LHS, RHS);
-    }
+    std::unordered_set<int> getStatementNumbersWithLHSRHS (const std::string& LHS, const std::string& RHS) override;
 
-    std::unordered_set<int> getStatementNumbersWithLHSPartialRHS (const std::string& LHS, const std::string& partialRHS) override {
-        return assignPatternStore->getStatementNumbersWithLHSPartialRHS(LHS, partialRHS);
-    }
+    std::unordered_set<int> getStatementNumbersWithLHSPartialRHS (const std::string& LHS, const std::string& partialRHS) override;
 };
 // ai-gen end

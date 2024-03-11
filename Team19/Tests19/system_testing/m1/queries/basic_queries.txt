@@ -19,14 +19,14 @@ Select s such that Follows (s, s)
 none
 5000
 5 - Keyword while
-stmt stmt; assign a;
-Select stmt such that Follows (stmt, a)
-1
+stmt stmt; while w;
+Select stmt such that Follows (stmt, w)
+
 5000
-6 - Find procedures
+6 - Find read
 read read;
 Select read
-3
+4
 5000
 7 - Pattern
 assign a, a1; variable v; stmt s;
@@ -36,10 +36,15 @@ Select a such that Follows (a, a1) pattern a(v, _)
 8 - Variables
 variable v;
 Select v
-x, y, read
+x, y, read, z
 5000
 9 - comment
 stmt s; variable v;
 Select v such that Modifies(s, v)
 x, y, read
+5000
+10 - comment
+if s; variable v;
+Select v such that Uses(s, v)
+z
 5000

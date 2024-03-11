@@ -1,27 +1,30 @@
 #include "ShuntingYard.h"
 
-#include <stack>
-
 // ai-gen start(copilot, 1, e)
 // prompt: used copilot
 std::string ShuntingYard::convertToPostfix(const std::string& infixExpression) {
   return infixToPostfix(infixExpression);
 }
 
-int ShuntingYard::precedence(char c) {
+Precedence ShuntingYard::getPrecedence(char c) {
   if (c == '+' || c == '-') {
-    return 1;
-  } else if (c == '*' || c == '/') {
-    return 2;
-  } else if (c == '^') {
-    return 3;
+    return Precedence::LOW;
+  } else if (c == '*' || c == '/' || c == '%') {
+    return Precedence::HIGH;
   } else {
-    return -1;
+    return Precedence::INVALID;
   }
 }
 
+std::string ShuntingYard::makeQuoted(char s) {
+    std::string result = "'";
+    result += s;
+    result += "'";
+    return result;
+}
+
 bool ShuntingYard::isOperator(char c) {
-  return c == '+' || c == '-' || c == '*' || c == '/' || c == '^';
+  return c == '+' || c == '-' || c == '*' || c == '/' || c == '%';
 }
 
 bool ShuntingYard::isOperand(char c) {
@@ -36,43 +39,73 @@ bool ShuntingYard::isRightParenthesis(char c) {
   return c == ')';
 }
 
+void ShuntingYard::handleOperand(Shunt& shunt, char c) {
+  if (!shunt.getPrevOperand()) {
+      shunt.addStringToPostfixExpression("'");
+  }
+  shunt.setPrevOperand(true);
+  shunt.addCharToPostfixExpression(c);
+}
+
+void ShuntingYard::handleOperator(Shunt& shunt, char c) {
+  if (shunt.getPrevOperand()) {
+    shunt.addStringToPostfixExpression("'");
+    shunt.setPrevOperand(false);
+  }
+  while (!shunt.getStack().empty() && isOperator(shunt.getStack().top()) && (getPrecedence(c) <= getPrecedence(shunt.getStack().top()))) {
+      shunt.addStringToPostfixExpression(makeQuoted(shunt.popFromStack()));
+  }
+  shunt.addToStack(c);
+}
+
+void ShuntingYard::handleLeftParenthesis(Shunt& shunt, char c) {
+    if (shunt.getPrevOperand()) {
+        shunt.addStringToPostfixExpression("'");
+        shunt.setPrevOperand(false);
+    }
+    shunt.addToStack(c);
+}
+
+void ShuntingYard::handleRightParenthesis(Shunt& shunt) {
+    if (shunt.getPrevOperand()) {
+        shunt.addStringToPostfixExpression("'");
+        shunt.setPrevOperand(false);
+    }
+    while (!shunt.getStack().empty() && !isLeftParenthesis(shunt.getStack().top())) {
+        shunt.addStringToPostfixExpression(makeQuoted(shunt.popFromStack()));
+    }
+    shunt.popFromStack();
+}
+
+void ShuntingYard::cleanUpStack(Shunt& shunt) {
+    while (!shunt.getStack().empty()) {
+        if (shunt.getPrevOperand()) {
+            shunt.addStringToPostfixExpression("'");
+            shunt.setPrevOperand(false);
+        }
+        shunt.addStringToPostfixExpression(makeQuoted(shunt.popFromStack()));
+    }
+}
+
+void ShuntingYard::handleNextCharacter(Shunt& shunt, char c) {
+    if (isOperand(c)) {
+        handleOperand(shunt, c);
+    } else if (isOperator(c)) {
+        handleOperator(shunt, c);
+    } else if (isLeftParenthesis(c)) {
+        handleLeftParenthesis(shunt, c);
+    } else if (isRightParenthesis(c)) {
+        handleRightParenthesis(shunt);
+    }
+}
+
 std::string ShuntingYard::infixToPostfix(const std::string& infixExpression) {
-    std::string postfixExpression;
-    std::stack<char> stack;
+    Shunt shunt = Shunt();
     for (char c : infixExpression) {
-        if (c == ' ') {
-        continue;
-        }
-        if (isOperand(c)) {
-            postfixExpression += "'";
-            postfixExpression += c;
-            postfixExpression += "'";
-        } else if (isOperator(c)) {
-            while (!stack.empty() && isOperator(stack.top()) && ( precedence(c) <= precedence(stack.top()))) {
-                postfixExpression += "'";
-                postfixExpression += stack.top();
-                postfixExpression += "'";
-                stack.pop();
-            }
-            stack.push(c);
-        } else if (isLeftParenthesis(c)) {
-            stack.push(c);
-        } else if (isRightParenthesis(c)) {
-            while (!stack.empty() && !isLeftParenthesis(stack.top())) {
-                postfixExpression += "'";
-                postfixExpression += stack.top();
-                postfixExpression += "'";
-                stack.pop();
-            }
-            stack.pop();
-        }
+        if (c == ' ') continue;
+        handleNextCharacter(shunt, c);
     }
-    while (!stack.empty()) {
-        postfixExpression += "'";
-        postfixExpression += stack.top();
-        postfixExpression += "'";
-        stack.pop();
-    }
-    return postfixExpression;
+    cleanUpStack(shunt);
+    return shunt.getPostfixExpression();
 }
 // ai-gen end

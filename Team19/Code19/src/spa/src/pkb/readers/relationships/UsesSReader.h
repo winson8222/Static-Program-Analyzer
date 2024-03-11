@@ -12,7 +12,7 @@ private:
     std::shared_ptr<UsesSStore> store; // Store for Uses relationships involving statements.
 
 public:
-    explicit UsesSReader(std::shared_ptr<UsesSStore> store) : store(std::move(store)) {}
+    UsesSReader(std::shared_ptr<UsesSStore> store);
 
     // Custom methods
     /**
@@ -20,18 +20,14 @@ public:
      * @param stmtNum The statement number to query.
      * @return unordered_set<string>: The set of variables used by the given statement.
      */
-    std::unordered_set<std::string> getAllVariablesUsedByStmt(int stmtNum) {
-      return store->getRelationshipsByKey(stmtNum);
-    }
+    std::unordered_set<std::string> getAllVariablesUsedByStmt(int stmtNum);
 
     /**
      * @brief Gets all the statements that use a given variable.
      * @param varName The variable name to query.
      * @return unordered_set<int>: The set of statement numbers that use the given variable.
      */
-    std::unordered_set<int> getAllStmtsThatUseVariable(const std::string& varName) {
-      return store->getRelationshipsByValue(varName);
-    }
+    std::unordered_set<int> getAllStmtsThatUseVariable(const std::string& varName);
 
     /**
      * @brief Checks if a given statement uses a given variable.
@@ -39,56 +35,27 @@ public:
      * @param varName The variable name to query.
      * @return bool: True if the statement uses the variable, false otherwise.
      */
-    bool doesStmtUseVariable(int stmtNum, const std::string& varName) {
-      return store->hasRelationship(stmtNum, varName);
-    }
+    bool doesStmtUseVariable(int stmtNum, const std::string& varName);
 
     /**
      * @brief Gets all the statements that use any variable.
      * @return unordered_set<int>: The set of all statement numbers that use any variable.
      */
-    std::unordered_set<int> getAllStmtsThatUseAnyVariable() {
-      return store->getKeys();
-    }
+    std::unordered_set<int> getAllStmtsThatUseAnyVariable();
 
     /**
      * @brief Gets all the variables used by any statement.
      * @return unordered_set<string>: The set of all variables used by any statement.
      */
-    std::unordered_set<std::string> getAllVariablesUsedByAnyStmt() {
-      return store->getValues();
-    }
+    std::unordered_set<std::string> getAllVariablesUsedByAnyStmt();
 
     // Inherited methods
-    bool isEmpty() override {
-        return store->isEmpty();
-    }
-
-    std::unordered_map<int, std::unordered_set<std::string>> getKeyValueRelationships() override {
-        return store->getKeyValueRelationships();
-    }
-
-    std::unordered_map<std::string, std::unordered_set<int>> getValueKeyRelationships() override {
-        return store->getValueKeyRelationships();
-    }
-
-    std::unordered_set<std::string> getRelationshipsByKey(int key) override {
-        return store->getRelationshipsByKey(key);
-    }
-
-    std::unordered_set<int> getRelationshipsByValue(std::string value) override {
-        return store->getRelationshipsByValue(value);
-    }
-
-    bool hasRelationship(int key, std::string value) override {
-        return store->hasRelationship(key, value);
-    }
-
-    std::unordered_set<int> getKeys() override {
-        return store->getKeys();
-    }
-
-    std::unordered_set<std::string> getValues() override {
-        return store->getValues();
-    }
+    bool isEmpty() override;
+    std::unordered_map<int, std::unordered_set<std::string>> getKeyValueRelationships() override;
+    std::unordered_map<std::string, std::unordered_set<int>> getValueKeyRelationships() override;
+    std::unordered_set<std::string> getRelationshipsByKey(int key) override;
+    std::unordered_set<int> getRelationshipsByValue(std::string value) override;
+    bool hasRelationship(int key, std::string value) override;
+    std::unordered_set<int> getKeys() override;
+    std::unordered_set<std::string> getValues() override;
 };

@@ -52,15 +52,7 @@ std::shared_ptr<ResultTable> FollowsStrategy::evaluateQuery(PKBReaderManager& pk
  */
 void FollowsStrategy::processSynonyms(const Token& firstParam, const Token& secondParam, const std::string& variant, std::shared_ptr<ResultTable> resultTable,
                                       const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
-    std::string col1 = firstParam.getValue();
-    std::string col2 = secondParam.getValue();
-
-    // check if the same synonym is being referred to
-    if (col1 == col2) {
-        resultTable->insertAllColumns({col1});
-    } else {
-        resultTable->insertAllColumns({col1, col2});
-    }
+    insertColsToTable(firstParam, secondParam, resultTable);
 
     string firstStatementType = parsingResult.getDeclaredSynonym(firstParam.getValue());
     string secondStatementType = parsingResult.getDeclaredSynonym(secondParam.getValue());
@@ -74,17 +66,9 @@ void FollowsStrategy::processSynonyms(const Token& firstParam, const Token& seco
         filteredPostFollows = getFilteredStmtsNumByType(postFollows, secondStatementType, pkbReaderManager);
         for (int stmt2 : filteredPostFollows) {
             // if the two synonyms are the same, add only one col and the 2 value must be the same
-            if (col1 == col2) {
-                if (stmt1 == stmt2) {
-                    resultTable->insertNewRow({{col1, std::to_string(stmt1)}});
-                }
-            } else {
-                unordered_map<string, string> row;
-                row[col1] = to_string(stmt1);
-                row[col2] = to_string(stmt2);
-                resultTable->insertNewRow(row);
-            }
-
+            pair<string, string> col1Pair = make_pair<string, string>(firstParam.getValue(), to_string(stmt1));
+            pair<string, string> col2Pair = make_pair<string, string>(secondParam.getValue(), to_string(stmt2));
+            insertRowToTable(col1Pair, col2Pair, resultTable);
         }
     }
 }
