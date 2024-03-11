@@ -95,7 +95,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/2") {
                 Token(TokenType::Comma, ","),
                 Token(TokenType::QuoutIDENT, "\"x\""),
                 Token(TokenType::Rparenthesis, ")")
-
         };
 
         QueryParser parser(tokens);
