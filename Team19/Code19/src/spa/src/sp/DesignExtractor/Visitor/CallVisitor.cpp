@@ -24,7 +24,7 @@ std::vector<std::shared_ptr<ASTNode>> CallVisitor::getProcedureContexts() {
 	// to set context of previous procedure call later by iterating through the list
 	std::vector<std::shared_ptr<ASTNode>> procedureContexts;
 	for (auto value : this->contexts) {
-		if (ASTUtility::nodeIsProcedure(value->getType())) {
+		if (ASTUtility::nodeIsProcedure(value->getType()) || ASTUtility::nodeIsCall(value->getType())) {
 			procedureContexts.push_back(value);
 		}
 	}

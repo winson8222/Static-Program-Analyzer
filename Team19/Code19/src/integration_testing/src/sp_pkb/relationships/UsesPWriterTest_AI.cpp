@@ -45,6 +45,6 @@ TEST_CASE("sp/SourceProcessor: UsesP") {
         REQUIRE(usesPReader->getAllVariablesUsedByProc("proc2") == std::unordered_set<std::string>({ "u", "x", "p", "y", "i" }));
         REQUIRE(usesPReader->getAllVariablesUsedByProc("proc3") == std::unordered_set<std::string>({ "meme", "u", "x", "p", "y", "i" }));
         REQUIRE(usesReader->getAllVariablesUsedByStmt(13) == std::unordered_set<std::string>({ "u", "x", "p", "y", "i" }));
-        REQUIRE(usesReader->getAllVariablesUsedByStmt(15) == std::unordered_set<std::string>({ "meme", "u", "x", "p", "y", "i" }));
+        REQUIRE(usesReader->getAllVariablesUsedByStmt(15) == std::unordered_set<std::string>({ "u", "x", "p", "y", "i" }));
     }
 }
