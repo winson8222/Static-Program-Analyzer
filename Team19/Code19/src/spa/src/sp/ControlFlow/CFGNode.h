@@ -10,9 +10,11 @@
 class CFGNode {
 public:
 	/**
-	 * @brief Default constructor for CFGNode.
+	 * @brief Constructor for creating an CFGNode with no specified line number.
+	 *
+	 * @param lineNumber The line number associated with the AST node.
 	 */
-	CFGNode() = default;
+	CFGNode();
 
 	/**
 	 * @brief Constructor for creating an CFGNode with specified line number.
@@ -40,9 +42,21 @@ public:
 	 *
 	 * @return A vector of pointers to all CFGNodes.
 	 */
-	vector<std::shared_ptr<CFGNode>> getChildren();
+	std::vector<std::shared_ptr<CFGNode>> getChildren();
+
+	/**
+	* @brief Gets a dummy node signifying the end of the procedure.
+	*/
+	static std::shared_ptr<CFGNode> getDummyNode();
+
+	/**
+	* @brief Checks if a node represents the dummy node for end of procedure.
+	*/
+	bool isEndOfProcedure();
 
 private:
+	static const int PROCEDURE_END_LINE_NUMBER = -1;
+
 	int lineNumber;
-	vector<std::shared_ptr<CFGNode>> children;
-}
+	std::vector<std::shared_ptr<CFGNode>> children;
+};
