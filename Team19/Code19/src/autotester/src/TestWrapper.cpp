@@ -46,9 +46,25 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
 	auto parsingResult = parser.parse();
 	QueryEvaluator evaluator(pkbReaderManager, parsingResult);
 	std::unordered_set<string> res = evaluator.evaluateQuery();
-	for (auto & re : res) {
-		results.push_back(re);
-	}
+    int synCount = parsingResult.getRequiredSynonyms().size();
+
+    if (synCount == 1) {
+        for (auto & re : res) {
+            results.push_back(re);
+        }
+        return;
+    } else {
+        int resCount = 0;
+        for (auto & re : res) {
+            if (resCount != res.size() - 1 && !re.empty()) {
+                results.push_back(re + ",");
+                resCount++;
+            } else {
+                results.push_back(re);
+            }
+        }
+    }
+
 	// store the answers to the query in the results list (it is initially empty)
 	// each result must be a string.
 
