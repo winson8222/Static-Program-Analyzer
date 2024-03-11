@@ -72,3 +72,33 @@ unordered_set<int> QueryEvaluationStrategy::getFilteredStmtsNumByType(unordered_
 
     return filteredResult;
 }
+
+void QueryEvaluationStrategy::insertColsToTable(const Token firstToken, const Token secondToken, std::shared_ptr<ResultTable> resultTable) {
+    std::string colName1 = firstToken.getValue();
+    std::string colName2 = secondToken.getValue();
+
+    // check if the same synonym is being referred to
+    if (colName1 == colName2) {
+        resultTable->insertAllColumns({colName1});
+    } else {
+        resultTable->insertAllColumns({colName1, colName2});
+    }
+}
+
+void QueryEvaluationStrategy::insertRowToTable(const pair<string,string> col1Pair, const pair<string,string> col2Pair, std::shared_ptr<ResultTable> resultTable) {
+    std::string colName1 = col1Pair.first;
+    std::string colName2 = col2Pair.first;
+    std::string stmt1 = col1Pair.second;
+    std::string stmt2 = col2Pair.second;
+
+    if (colName1 == colName2) {
+        if (stmt1 == stmt2) {
+            resultTable->insertNewRow({{colName1, stmt1}});
+        }
+    } else {
+        unordered_map<string, string> row;
+        row[colName1] = stmt1;
+        row[colName2] = stmt2;
+        resultTable->insertNewRow(row);
+    }
+}

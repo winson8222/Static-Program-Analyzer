@@ -1,7 +1,6 @@
 #pragma once
 
-#include <utility>
-
+#include <memory>
 #include "pkb/stores/entities/types/VariableStore.h"
 #include "pkb/stores/entities/IEntityWriter.h"
 
@@ -9,27 +8,19 @@
 // prompt: used copilot
 class VariableWriter: public IEntityWriter<std::string> {
 private:
-    std::shared_ptr<VariableStore> variableStore;
+	std::shared_ptr<VariableStore> variableStore;
 public:
-  explicit VariableWriter(std::shared_ptr<VariableStore> vs) {
-    variableStore = std::move(vs);
-  }
+	VariableWriter(std::shared_ptr<VariableStore> as);
 
-  bool addEntity(std::string entity) override {
-    return insertVariable(entity);
-  }
+	bool addEntity(std::string entity) override;
 
-  void clear() override {
-    variableStore->clear();
-  }
+	void clear() override;
 
-  /**
-   * @brief Inserts a variable into the store.
-   * @param variable The variable to be inserted.
-   * @return True if the variable is successfully inserted, false otherwise.
-   */
-  bool insertVariable (std::string &variable) {
-    return variableStore->addEntity(variable);
-  }
+	/**
+	 * @brief Inserts a variable into the store.
+	 * @param variable The variable being stored.
+	 * @return True if the variable is successfully inserted, false otherwise.
+	 */
+	bool insertVariable(std::string variable);
 };
 // ai-gen end

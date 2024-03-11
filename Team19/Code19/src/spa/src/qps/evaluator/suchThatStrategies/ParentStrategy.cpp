@@ -44,15 +44,10 @@ void ParentStrategy::processSynonyms(const Token& firstParam, const Token& secon
                                      const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager)
 {
     // Implementation for processing when both parameters are synonyms
-    string col1 = firstParam.getValue();
-    string col2 = secondParam.getValue();
-    string firstStatementType = parsingResult.getDeclaredSynonyms().at(col1);
-    string secondStatementType = parsingResult.getDeclaredSynonyms().at(col2);
-    if (col1 == col2) {
-        resultTable->insertAllColumns({col1});
-    } else {
-        resultTable->insertAllColumns({col1, col2});
-    }
+    insertColsToTable(firstParam, secondParam, resultTable);
+    string firstStatementType = parsingResult.getDeclaredSynonyms().at(firstParam.getValue());
+    string secondStatementType = parsingResult.getDeclaredSynonyms().at(secondParam.getValue());
+
     // Retrieve the relationships
     unordered_set<int> filteredParents;
     const unordered_set<int>& parents = (variant == "Parent") ?
@@ -70,16 +65,9 @@ void ParentStrategy::processSynonyms(const Token& firstParam, const Token& secon
         filteredChildren = getFilteredStmtsNumByType(children, secondStatementType, pkbReaderManager);
         // For each stmt1, iterate through all its postFollows
         for (int stmt2 : filteredChildren) {
-            if (col1 == col2) {
-                if (stmt1 == stmt2) {
-                    resultTable->insertNewRow({{col1, std::to_string(stmt1)}});
-                }
-            } else {
-                unordered_map<string, string> row;
-                row[col1] = to_string(stmt1);
-                row[col2] = to_string(stmt2);
-                resultTable->insertNewRow(row);
-            }
+            pair<string, string> col1Pair = make_pair<string, string>(firstParam.getValue(), to_string(stmt1));
+            pair<string, string> col2Pair = make_pair<string, string>(secondParam.getValue(), to_string(stmt2));
+            insertRowToTable(col1Pair, col2Pair, resultTable);
 
         }
     }

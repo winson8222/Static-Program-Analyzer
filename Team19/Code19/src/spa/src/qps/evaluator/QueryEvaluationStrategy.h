@@ -20,6 +20,8 @@ protected:
     static bool isBothParamsWildcard(const Token& firstParam, const Token& secondParam);
     static unordered_set<int> combineFoundStatements(const unordered_set<int>& newResult, const unordered_set<int>& result);
     static unordered_set<int> getFilteredStmtsNumByType(unordered_set<int> allStatements, string stmtType, PKBReaderManager pkbReaderManager);
+    static void insertColsToTable(const Token firstToken, const Token secondToken, std::shared_ptr<ResultTable> resultTable);
+    static void insertRowToTable(const pair<string,string> col1Pair, const pair<string,string> col2Pair, std::shared_ptr<ResultTable> resultTable);
 
 };
 

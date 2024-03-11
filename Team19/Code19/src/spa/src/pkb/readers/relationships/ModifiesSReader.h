@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "pkb/stores/relationships/IRelationshipReader.h"
 #include "pkb/stores/relationships/types/ModifiesSStore.h"
 
@@ -17,30 +19,23 @@ private:
     std::shared_ptr<ModifiesSStore> store;
 
 public:
-    explicit ModifiesSReader(std::shared_ptr<ModifiesSStore> store) : store(std::move(store)) {}
+	ModifiesSReader(std::shared_ptr<ModifiesSStore> store);
 
-    bool isEmpty() override {
-        return store->isEmpty();
-    }
-
+    bool isEmpty() override;
     // Custom methods
     /**
      * @brief Gets all the variables modified by a given statement.
      * @param stmtNum The statement number to query.
      * @return unordered_set<string>: The set of variables modified by the given statement.
      */
-    std::unordered_set<std::string> getAllVariablesModifiedByStmt(int stmtNum) {
-        return store->getRelationshipsByKey(stmtNum);
-    }
+    std::unordered_set<std::string> getAllVariablesModifiedByStmt(int stmtNum);
 
     /**
      * @brief Gets all the statements that modify a given variable.
      * @param varName The variable name to query.
      * @return unordered_set<int>: The set of statement numbers that modify the given variable.
      */
-    std::unordered_set<int> getAllStmtsThatModifyVariable(const std::string& varName) {
-        return store->getRelationshipsByValue(varName);
-    }
+    std::unordered_set<int> getAllStmtsThatModifyVariable(const std::string& varName);
 
     /**
      * @brief Checks if a given statement modifies a given variable.
@@ -48,52 +43,32 @@ public:
      * @param varName The variable name to query.
      * @return bool: True if the statement modifies the variable, false otherwise.
      */
-    bool doesStmtModifyVariable(int stmtNum, const std::string& varName) {
-        return store->hasRelationship(stmtNum, varName);
-    }
+    bool doesStmtModifyVariable(int stmtNum, const std::string& varName);
 
     /**
      * @brief Gets all the statements that modify any variable.
      * @return unordered_set<int>: The set of all statement numbers that modify any variable.
      */
-    std::unordered_set<int> getAllStmtsThatModifyAnyVariable() {
-        return store->getKeys();
-    }
+    std::unordered_set<int> getAllStmtsThatModifyAnyVariable();
 
     /**
      * @brief Gets all the variables modified by any statement.
      * @return unordered_set<string>: The set of all variables modified by any statement.
      */
-    std::unordered_set<std::string> getAllVariablesModifiedByAnyStmt() {
-        return store->getValues();
-    }
+    std::unordered_set<std::string> getAllVariablesModifiedByAnyStmt();
 
     // Inherited methods
-    std::unordered_map<int, std::unordered_set<std::string>> getKeyValueRelationships() override {
-        return store->getKeyValueRelationships();
-    }
+    std::unordered_map<int, std::unordered_set<std::string>> getKeyValueRelationships() override;
 
-    std::unordered_map<std::string, std::unordered_set<int>> getValueKeyRelationships() override {
-        return store->getValueKeyRelationships();
-    }
+    std::unordered_map<std::string, std::unordered_set<int>> getValueKeyRelationships() override;
 
-    std::unordered_set<std::string> getRelationshipsByKey(int key) override {
-        return store->getRelationshipsByKey(key);
-    }
+    std::unordered_set<std::string> getRelationshipsByKey(int key) override;
 
-    std::unordered_set<int> getRelationshipsByValue(std::string value) override {
-        return store->getRelationshipsByValue(value);
-    }
+    std::unordered_set<int> getRelationshipsByValue(std::string value) override;
 
-    bool hasRelationship(int key, std::string value) override {
-        return store->hasRelationship(key, value);
-    }
+    bool hasRelationship(int key, std::string value) override;
 
-    std::unordered_set<int> getKeys() override {
-        return store->getKeys();
-    }
+    std::unordered_set<int> getKeys() override;
 
-    std::unordered_set<std::string> getValues() override {
-        return store->getValues();
-    }
+    std::unordered_set<std::string> getValues() override;
 };

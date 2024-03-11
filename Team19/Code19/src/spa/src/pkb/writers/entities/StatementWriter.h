@@ -8,25 +8,19 @@
 // prompt: used copilot
 class StatementWriter: public IEntityWriter<int> {
 private:
-    std::shared_ptr<StatementStore> statementStore;
+	std::shared_ptr<StatementStore> statementStore;
 public:
-    explicit StatementWriter(std::shared_ptr<StatementStore> ss) : statementStore(std::move(ss)) {}
+	StatementWriter(std::shared_ptr<StatementStore> as);
 
-    bool addEntity(int entity) override {
-      return insertStatement(entity);
-    }
+	bool addEntity(int entity) override;
 
-    void clear() override {
-      statementStore->clear();
-    }
+	void clear() override;
 
-    /**
-     * @brief Inserts a statement into the store.
-     * @param stmtNum The statement number to be inserted.
-     * @return True if the statement is successfully inserted, false otherwise.
-     */
-    bool insertStatement(int stmtNum) {
-      return statementStore->addEntity(stmtNum);
-    }
+	/**
+	 * @brief Inserts a statement into the store.
+	 * @param statement The statement being stored.
+	 * @return True if the statement is successfully inserted, false otherwise.
+	 */
+	bool insertStatement(int statement);
 };
 // ai-gen end

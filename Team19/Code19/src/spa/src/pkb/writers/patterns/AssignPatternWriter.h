@@ -11,7 +11,7 @@ class AssignPatternWriter : public IAssignPatternWriter {
 private:
     std::shared_ptr<AssignPatternStore> assignPatternStore;
 public:
-    explicit AssignPatternWriter(std::shared_ptr<AssignPatternStore> store) : assignPatternStore(std::move(store)) {}
+    AssignPatternWriter(std::shared_ptr<AssignPatternStore> store);
 
     /**
      * @brief Adds an "Assign" pattern to the store.
@@ -19,13 +19,9 @@ public:
      * @param LHS The left hand side of the assignment statement.
      * @param RHS The right hand side of the assignment statement.
      */
-    void addAssignPattern(int statementNumber, std::string LHS, std::string RHS) override {
-      assignPatternStore->addAssignPattern(statementNumber, LHS, RHS);
-    }
+    void addAssignPattern(int statementNumber, std::string LHS, std::string RHS) override;
 
     // Clears all assign patterns from the store.
-    void clear() override {
-      assignPatternStore->clear();
-    }
+    void clear() override;
 };
 // ai-gen end

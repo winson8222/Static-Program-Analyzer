@@ -2,6 +2,7 @@
 
 #include <unordered_map>
 #include <unordered_set>
+#include <string>
 
 // ai-gen start(copilot, 2, e)
 // prompt: used copilot

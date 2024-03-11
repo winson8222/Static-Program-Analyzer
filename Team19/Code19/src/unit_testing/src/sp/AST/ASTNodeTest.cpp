@@ -11,11 +11,11 @@
 
 TEST_CASE("sp/ast/ASTNode") {
     SECTION("Check Type") {
-        ASTNode astAdd = ASTNode(ASTNodeType::ADD, 1, ASTUtility::getASTNodeType(ASTNodeType::ADD));
-        ASTNode astSubtract = ASTNode(ASTNodeType::SUBTRACT, 1, ASTUtility::getASTNodeType(ASTNodeType::SUBTRACT));
-        ASTNode astMultiply = ASTNode(ASTNodeType::MULTIPLY, 1, ASTUtility::getASTNodeType(ASTNodeType::MULTIPLY));
-        ASTNode astDivide = ASTNode(ASTNodeType::DIVIDE, 1, ASTUtility::getASTNodeType(ASTNodeType::DIVIDE));
-        ASTNode astModulo = ASTNode(ASTNodeType::MODULO, 1, ASTUtility::getASTNodeType(ASTNodeType::MODULO));
+        ASTNode astAdd = ASTNode(ASTNodeType::ADD, 1, ASTUtility::getASTNodeType.find(ASTNodeType::ADD)->second);
+        ASTNode astSubtract = ASTNode(ASTNodeType::SUBTRACT, 1, ASTUtility::getASTNodeType.find(ASTNodeType::SUBTRACT)->second);
+        ASTNode astMultiply = ASTNode(ASTNodeType::MULTIPLY, 1, ASTUtility::getASTNodeType.find(ASTNodeType::MULTIPLY)->second);
+        ASTNode astDivide = ASTNode(ASTNodeType::DIVIDE, 1, ASTUtility::getASTNodeType.find(ASTNodeType::DIVIDE)->second);
+        ASTNode astModulo = ASTNode(ASTNodeType::MODULO, 1, ASTUtility::getASTNodeType.find(ASTNodeType::MODULO)->second);
         ASTNode astVariable = ASTNode(ASTNodeType::VARIABLE, 3, "x");
 
         SECTION("ASTNodeType::Add") {
@@ -68,8 +68,8 @@ TEST_CASE("sp/ast/ASTNode") {
     }
 
     SECTION("hash") {
-        auto ast1 = std::make_shared<ASTNode>(ASTNodeType::ADD, 1, ASTUtility::getASTNodeType(ASTNodeType::ADD));
-        auto ast2 = std::make_shared<ASTNode>(ASTNodeType::ADD, 1, ASTUtility::getASTNodeType(ASTNodeType::ADD));
+        auto ast1 = std::make_shared<ASTNode>(ASTNodeType::ADD, 1, ASTUtility::getASTNodeType.find(ASTNodeType::ADD)->second);
+        auto ast2 = std::make_shared<ASTNode>(ASTNodeType::ADD, 1, ASTUtility::getASTNodeType.find(ASTNodeType::ADD)->second);
         REQUIRE(ast1->hash() == ast2->hash());
     }
 
@@ -81,21 +81,21 @@ TEST_CASE("sp/ast/ASTNode") {
         }
         */
         // Initialize the ASTs
-        ASTNode ast1 = ASTNode(ASTNodeType::STATEMENT_LIST, 1, ASTUtility::getASTNodeType(ASTNodeType::STATEMENT_LIST));
+        ASTNode ast1 = ASTNode(ASTNodeType::STATEMENT_LIST, 1, ASTUtility::getASTNodeType.find(ASTNodeType::STATEMENT_LIST)->second);
 
         auto ast2 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "i");
-        auto ast3 = std::make_shared<ASTNode>(ASTNodeType::ASSIGN, 1, ASTUtility::getASTNodeType(ASTNodeType::ASSIGN));
+        auto ast3 = std::make_shared<ASTNode>(ASTNodeType::ASSIGN, 1, ASTUtility::getASTNodeType.find(ASTNodeType::ASSIGN)->second);
         auto ast4 = std::make_shared<ASTNode>(ASTNodeType::CONSTANT, 1, "1");
 
-        auto ast5 = std::make_shared<ASTNode>(ASTNodeType::WHILE, 2, ASTUtility::getASTNodeType(ASTNodeType::WHILE));
+        auto ast5 = std::make_shared<ASTNode>(ASTNodeType::WHILE, 2, ASTUtility::getASTNodeType.find(ASTNodeType::WHILE)->second);
         auto ast6 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 2, "i");
-        auto ast7 = std::make_shared<ASTNode>(ASTNodeType::LESSER, 2, ASTUtility::getASTNodeType(ASTNodeType::LESSER));
+        auto ast7 = std::make_shared<ASTNode>(ASTNodeType::LESSER, 2, ASTUtility::getASTNodeType.find(ASTNodeType::LESSER)->second);
         auto ast8 = std::make_shared<ASTNode>(ASTNodeType::CONSTANT, 2, "3");
 
         auto ast9 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 3, "i");
-        auto ast10 = std::make_shared<ASTNode>(ASTNodeType::ASSIGN, 3, ASTUtility::getASTNodeType(ASTNodeType::ASSIGN));
+        auto ast10 = std::make_shared<ASTNode>(ASTNodeType::ASSIGN, 3, ASTUtility::getASTNodeType.find(ASTNodeType::ASSIGN)->second);
         auto ast11 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 3, "i");
-        auto ast12 = std::make_shared<ASTNode>(ASTNodeType::ADD, 3, ASTUtility::getASTNodeType(ASTNodeType::ADD));
+        auto ast12 = std::make_shared<ASTNode>(ASTNodeType::ADD, 3, ASTUtility::getASTNodeType.find(ASTNodeType::ADD)->second);
         auto ast13 = std::make_shared<ASTNode>(ASTNodeType::CONSTANT, 3, "1");
 
         ast12->addChild(std::move(ast11));
@@ -135,30 +135,30 @@ TEST_CASE("sp/ast/ASTNode") {
 
     SECTION("getRPNForm") {
         // representing x + 1
-        std::shared_ptr<ASTNode> ast1 = std::make_shared<ASTNode>(ASTNodeType::ADD, 1, ASTUtility::getASTNodeType(ASTNodeType::ADD));
+        std::shared_ptr<ASTNode> ast1 = std::make_shared<ASTNode>(ASTNodeType::ADD, 1, ASTUtility::getASTNodeType.find(ASTNodeType::ADD)->second);
         ast1->addChild(std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "x"));
         ast1->addChild(std::make_shared<ASTNode>(ASTNodeType::CONSTANT, 1, "1"));
 
         REQUIRE(ast1->getRPNForm() == "'x''1''+'");
 
         // representing (x + 1) * y
-        std::shared_ptr<ASTNode> ast2 = std::make_shared<ASTNode>(ASTNodeType::MULTIPLY, 1, ASTUtility::getASTNodeType(ASTNodeType::MULTIPLY));
+        std::shared_ptr<ASTNode> ast2 = std::make_shared<ASTNode>(ASTNodeType::MULTIPLY, 1, ASTUtility::getASTNodeType.find(ASTNodeType::MULTIPLY)->second);
         ast2->addChild(ast1);
         ast2->addChild(std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "y"));
 
         REQUIRE(ast2->getRPNForm() == "'x''1''+''y''*'");
 
         // representing (x + 1) * y + 2
-        std::shared_ptr<ASTNode> ast3 = std::make_shared<ASTNode>(ASTNodeType::ADD, 1, ASTUtility::getASTNodeType(ASTNodeType::ADD));
+        std::shared_ptr<ASTNode> ast3 = std::make_shared<ASTNode>(ASTNodeType::ADD, 1, ASTUtility::getASTNodeType.find(ASTNodeType::ADD)->second);
         ast3->addChild(ast2);
         ast3->addChild(std::make_shared<ASTNode>(ASTNodeType::CONSTANT, 1, "2"));
 
         REQUIRE(ast3->getRPNForm() == "'x''1''+''y''*''2''+'");
 
         // representing (x + 1) * (y / 2)
-        std::shared_ptr<ASTNode> ast4 = std::make_shared<ASTNode>(ASTNodeType::MULTIPLY, 1, ASTUtility::getASTNodeType(ASTNodeType::MULTIPLY));
+        std::shared_ptr<ASTNode> ast4 = std::make_shared<ASTNode>(ASTNodeType::MULTIPLY, 1, ASTUtility::getASTNodeType.find(ASTNodeType::MULTIPLY)->second);
         ast4->addChild(ast1);
-        std::shared_ptr<ASTNode> ast5 = std::make_shared<ASTNode>(ASTNodeType::DIVIDE, 1, ASTUtility::getASTNodeType(ASTNodeType::DIVIDE));
+        std::shared_ptr<ASTNode> ast5 = std::make_shared<ASTNode>(ASTNodeType::DIVIDE, 1, ASTUtility::getASTNodeType.find(ASTNodeType::DIVIDE)->second);
         ast5->addChild(std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "y"));
         ast5->addChild(std::make_shared<ASTNode>(ASTNodeType::CONSTANT, 1, "2"));
         ast4->addChild(ast5);
@@ -166,10 +166,10 @@ TEST_CASE("sp/ast/ASTNode") {
         REQUIRE(ast4->getRPNForm() == "'x''1''+''y''2''/''*'");
 
         // representing (x + 1) * ((y - 6) * 2)
-        std::shared_ptr<ASTNode> ast6 = std::make_shared<ASTNode>(ASTNodeType::MULTIPLY, 1, ASTUtility::getASTNodeType(ASTNodeType::MULTIPLY));
+        std::shared_ptr<ASTNode> ast6 = std::make_shared<ASTNode>(ASTNodeType::MULTIPLY, 1, ASTUtility::getASTNodeType.find(ASTNodeType::MULTIPLY)->second);
         ast6->addChild(ast1);
-        std::shared_ptr<ASTNode> ast7 = std::make_shared<ASTNode>(ASTNodeType::MULTIPLY, 1, ASTUtility::getASTNodeType(ASTNodeType::MULTIPLY));
-        std::shared_ptr<ASTNode> ast8 = std::make_shared<ASTNode>(ASTNodeType::SUBTRACT, 1, ASTUtility::getASTNodeType(ASTNodeType::SUBTRACT));
+        std::shared_ptr<ASTNode> ast7 = std::make_shared<ASTNode>(ASTNodeType::MULTIPLY, 1, ASTUtility::getASTNodeType.find(ASTNodeType::MULTIPLY)->second);
+        std::shared_ptr<ASTNode> ast8 = std::make_shared<ASTNode>(ASTNodeType::SUBTRACT, 1, ASTUtility::getASTNodeType.find(ASTNodeType::SUBTRACT)->second);
         ast8->addChild(std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "y"));
         ast8->addChild(std::make_shared<ASTNode>(ASTNodeType::CONSTANT, 1, "6"));
         ast7->addChild(ast8);
@@ -179,17 +179,17 @@ TEST_CASE("sp/ast/ASTNode") {
         REQUIRE(ast6->getRPNForm() == "'x''1''+''y''6''-''2''*''*'");
 
         // representing (a + b) * ((c / d) - (e * f))
-        std::shared_ptr<ASTNode> ast9 = std::make_shared<ASTNode>(ASTNodeType::MULTIPLY, 1, ASTUtility::getASTNodeType(ASTNodeType::MULTIPLY));
-        std::shared_ptr<ASTNode> ast10 = std::make_shared<ASTNode>(ASTNodeType::ADD, 1, ASTUtility::getASTNodeType(ASTNodeType::ADD));
+        std::shared_ptr<ASTNode> ast9 = std::make_shared<ASTNode>(ASTNodeType::MULTIPLY, 1, ASTUtility::getASTNodeType.find(ASTNodeType::MULTIPLY)->second);
+        std::shared_ptr<ASTNode> ast10 = std::make_shared<ASTNode>(ASTNodeType::ADD, 1, ASTUtility::getASTNodeType.find(ASTNodeType::ADD)->second);
         ast10->addChild(std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "a"));
         ast10->addChild(std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "b"));
         ast9->addChild(ast10);
-        std::shared_ptr<ASTNode> ast11 = std::make_shared<ASTNode>(ASTNodeType::SUBTRACT, 1, ASTUtility::getASTNodeType(ASTNodeType::SUBTRACT));
-        std::shared_ptr<ASTNode> ast12 = std::make_shared<ASTNode>(ASTNodeType::DIVIDE, 1, ASTUtility::getASTNodeType(ASTNodeType::DIVIDE));
+        std::shared_ptr<ASTNode> ast11 = std::make_shared<ASTNode>(ASTNodeType::SUBTRACT, 1, ASTUtility::getASTNodeType.find(ASTNodeType::SUBTRACT)->second);
+        std::shared_ptr<ASTNode> ast12 = std::make_shared<ASTNode>(ASTNodeType::DIVIDE, 1, ASTUtility::getASTNodeType.find(ASTNodeType::DIVIDE)->second);
         ast12->addChild(std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "c"));
         ast12->addChild(std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "d"));
         ast11->addChild(ast12);
-        std::shared_ptr<ASTNode> ast13 = std::make_shared<ASTNode>(ASTNodeType::MULTIPLY, 1, ASTUtility::getASTNodeType(ASTNodeType::MULTIPLY));
+        std::shared_ptr<ASTNode> ast13 = std::make_shared<ASTNode>(ASTNodeType::MULTIPLY, 1, ASTUtility::getASTNodeType.find(ASTNodeType::MULTIPLY)->second);
         ast13->addChild(std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "e"));
         ast13->addChild(std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "f"));
         ast11->addChild(ast13);
