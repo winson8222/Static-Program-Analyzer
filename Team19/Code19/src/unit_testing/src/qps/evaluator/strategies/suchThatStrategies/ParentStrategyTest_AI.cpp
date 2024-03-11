@@ -221,5 +221,35 @@ std::shared_ptr<ParentWriter> parentWriter = pkbWriterManager->getParentWriter()
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res.empty());
     }
+
+    SECTION("Selecting tuple of parents") {
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "stmt"),
+                Token(TokenType::IDENT, "s1"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::IDENT, "s2"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::LeftAngleBracket, "<"),
+                Token(TokenType::IDENT, "s1"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::IDENT, "s2"),
+                Token(TokenType::RightAngleBracket, ">"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Parent, "Parent"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::IDENT, "s1"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::IDENT, "s2"),
+                Token(TokenType::Rparenthesis, ")")
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{ "1", "2", "3" });
+    }
 }
 
