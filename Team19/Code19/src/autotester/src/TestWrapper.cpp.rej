@@ -1,0 +1,7 @@
+diff a/Team19/Code19/src/autotester/src/TestWrapper.cpp b/Team19/Code19/src/autotester/src/TestWrapper.cpp	(rejected hunks)
+@@ -1,4 +1,5 @@
+ #include "TestWrapper.h"
++
+ using namespace std;
+ // implementation code of WrapperFactory - do NOT modify the next 5 lines
+ AbstractWrapper* WrapperFactory::wrapper = 0;
