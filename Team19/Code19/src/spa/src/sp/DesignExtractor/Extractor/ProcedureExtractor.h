@@ -9,7 +9,10 @@
 */
 class ProcedureExtractor : public IExtractor {
 public:
-	ProcedureExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager);
+	ProcedureExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<ProcedureWriter> procedureWriter);
 
 	void extract() override;
+
+private:
+	std::shared_ptr<ProcedureWriter> procedureWriter;
 };

@@ -1,16 +1,14 @@
 #include "sp/DesignExtractor/Extractor/AssignExtractor.h"
 
+AssignExtractor::AssignExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<AssignWriter> assignWriter)
+	: IExtractor(root) {
+	if (!root->equalType(ASTNodeType::ASSIGN)) {
+		throw std::runtime_error("ERROR: AssignExtractor root node type not supported");
+	}
+	this->assignWriter = assignWriter;
+}
+
 void AssignExtractor::extract() {
 	// Extract all the assign statements
-	this->pkbWriterManager->getAssignWriter()->insertAssign(this->root->lineNumber);
-
-	// Extract the assign patterns (all sub-patterns are extracted within PKB API)
-	this->pkbWriterManager->getAssignPatternWriter()->addAssignPattern(
-		this->root->lineNumber, 
-		this->root->children[0]->value, 
-		this->root->children[1]->getRPNForm()
-	);
-
-	// Extract the assign statement
-	this->pkbWriterManager->getStatementWriter()->insertStatement(this->root->lineNumber);
+	this->assignWriter->insertAssign(this->root->getLineNumber());
 }

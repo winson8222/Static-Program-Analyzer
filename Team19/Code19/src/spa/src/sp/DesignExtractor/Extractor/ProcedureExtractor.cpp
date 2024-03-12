@@ -1,14 +1,15 @@
 #include "sp/DesignExtractor/Extractor/ProcedureExtractor.h"
 #include "sp/AST/ASTUtility.h"
 
-ProcedureExtractor::ProcedureExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
-	: IExtractor(root, pkbWriterManager) {
-	if (!ASTUtility::nodeIsTarget(root->getType(), ASTNodeType::PROCEDURE)) {
+ProcedureExtractor::ProcedureExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<ProcedureWriter> procedureWriter)
+	: IExtractor(root) {
+	if (!root->equalType(ASTNodeType::PROCEDURE)) {
 		throw std::runtime_error("ProcedureExtractor::ProcedureExtractor: root is not of type PROCEDURE");
 	}
+	this->procedureWriter = procedureWriter;
 }
 
 void ProcedureExtractor::extract() {
 	// Insert procedures into PKB
-	this->pkbWriterManager->getProcedureWriter()->insertProcedure(root->value);
+	this->procedureWriter->insertProcedure(root->getValue());
 }

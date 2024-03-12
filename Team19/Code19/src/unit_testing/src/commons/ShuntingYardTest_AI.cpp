@@ -50,8 +50,7 @@ TEST_CASE("commons/ShuntingYard") {
         std::string postfixExpression = ShuntingYard::convertToPostfix(infixExpression);
         REQUIRE(postfixExpression == "'100''100''procedure''2''%''*''+'");
     }
-
-
+    
     SECTION("convertToPostfix: 1") {
         std::string infixExpression = "1";
         std::string postfixExpression = ShuntingYard::convertToPostfix(infixExpression);

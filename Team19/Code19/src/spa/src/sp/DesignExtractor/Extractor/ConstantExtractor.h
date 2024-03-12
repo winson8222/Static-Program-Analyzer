@@ -10,12 +10,7 @@
 */
 class ConstantExtractor : public IExtractor {
 public:
-	explicit ConstantExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
-		: IExtractor(root, pkbWriterManager) {
-		if (root->type != ASTNodeType::CONSTANT) {
-			throw std::invalid_argument("VariableExtractor: root is not of type VARIABLE");
-		}
-	}
+	ConstantExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<ConstantWriter> constantWriter);
 
 	void extract() override;
 
@@ -26,4 +21,6 @@ private:
 	* the given value to integer - this is also a good sanity check for parsing errors.
 	*/
 	int stringToInt(const std::string& str);
+
+	std::shared_ptr<ConstantWriter> constantWriter;
 };

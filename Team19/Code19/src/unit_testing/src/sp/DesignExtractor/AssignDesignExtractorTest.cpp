@@ -61,4 +61,26 @@ TEST_CASE("sp/DesignExtractor/Extractor/AssignExtractor") {
 		REQUIRE(pkbReaderManager->getVariableReader()->getAllVariables() == expectedVars);
 	}
     std::filesystem::remove(filename);
+
+	SECTION("Test assign extractor modular") {
+		std::shared_ptr<ASTNode> variable = std::make_shared<ASTNode>(ASTNode(ASTNodeType::VARIABLE, 1, "x"));
+		REQUIRE_THROWS(AssignExtractor(variable, pkbWriterManager->getAssignWriter()));
+
+		std::shared_ptr<PKBReaderManager> pkbReaderManager = pkb->getPKBReaderManager();
+		std::shared_ptr<ASTNode> assign = std::make_shared<ASTNode>(ASTNode(ASTNodeType::ASSIGN, 1, "assign"));
+		AssignExtractor assignExtractor(assign, pkbWriterManager->getAssignWriter());
+		assignExtractor.extract();
+
+		std::unordered_set<int> expectedAssigns = { 1 };
+		REQUIRE(pkbReaderManager->getAssignReader()->getAllAssigns() == expectedAssigns);
+	}
+
+	SECTION("Test assign pattern extractor modular") {
+		std::shared_ptr<PKBReaderManager> pkbReaderManager = pkb->getPKBReaderManager();
+		std::shared_ptr<ASTNode> assign = std::make_shared<ASTNode>(ASTNode(ASTNodeType::ASSIGN, 1, "assign"));
+		assign->addChild(std::make_shared<ASTNode>(ASTNode(ASTNodeType::VARIABLE, 1, "x")));
+		assign->addChild(std::make_shared<ASTNode>(ASTNode(ASTNodeType::CONSTANT, 1, "0")));
+		AssignPatternExtractor assignPatternExtractor(assign, assign->getChildByIndex(0), assign->getChildByIndex(1), pkbWriterManager->getAssignPatternWriter());
+		REQUIRE_NOTHROW(assignPatternExtractor.extract());
+	}
 }
