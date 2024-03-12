@@ -81,7 +81,7 @@ private:
     // Returns true if it matches, false otherwise.
     bool match(TokenType type);
 
-    void parseVarSynonyms();
+    void parseEntSynonym();
     void parseStmtSynonyms();
     void parseAssignSynonyms();
 

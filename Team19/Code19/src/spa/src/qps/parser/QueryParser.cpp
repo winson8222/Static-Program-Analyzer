@@ -370,7 +370,7 @@ void QueryParser::parseEntRef() {
     if (match(TokenType::QuoutIDENT) || match(TokenType::Wildcard)) {
         return;
     } else {
-        parseVarSynonyms();
+        parseEntSynonym();
     }
 
 }
@@ -589,10 +589,11 @@ void QueryParser::throwIncompleteQueryError() {
 }
 
 // Parses a variable synonym in the query.
-void QueryParser::parseVarSynonyms() {
+void QueryParser::parseEntSynonym() {
     ensureToken(TokenType::IDENT);
     // check if the token value is declared as variable synonyms in any of the set
-    if (parsingResult.getDeclaredSynonym(currentToken().getValue()) != "variable") {
+    if (parsingResult.getDeclaredSynonym(currentToken().getValue()) != "variable" &&
+        parsingResult.getDeclaredSynonym(currentToken().getValue()) != "procedure") {
         throwSemanticError();
     }
 }
@@ -742,7 +743,7 @@ bool QueryParser::checkIfStmt() {
         parsingResult.getDeclaredSynonym(currentToken().getValue()) == "while" ||
         parsingResult.getDeclaredSynonym(currentToken().getValue()) == "if" ||
         parsingResult.getDeclaredSynonym(currentToken().getValue()) == "print" ||
-        parsingResult.getDeclaredSynonym(currentToken().getValue()) == "procedure" ||
+        parsingResult.getDeclaredSynonym(currentToken().getValue()) == "call" ||
         parsingResult.getDeclaredSynonym(currentToken().getValue()) == "read") {
         return true;
     }

@@ -1,24 +1,30 @@
 1 - Finds all statements that use 'iter' directly or indirectly
-stmt s; Select s such that Uses(s, "iter")
-9, 10, 12, 13
+stmt s;
+Select s such that Uses(s, "iter")
+9, 10, 12, 13, 2, 5, 6, 8
 5000
 2 - Finds all procedures that use 'iter'
-procedure p; Select p such that Uses(p, "iter")
-Process, Finalize
+procedure p;
+Select p such that Uses(p, "iter")
+Process, Finalize, Main, Compute
 5000
 3 - Finds all print statements that use 'iter'
-print pn; Select pn such that Uses(pn, "iter")
+print pn;
+Select pn such that Uses(pn, "iter")
 none
 5000
 4 - Finds all while loops that use 'iter' in their condition or body
-while w; Select w such that Uses(w, "iter")
-3
+while w;
+Select w such that Uses(w, "iter")
+8
 5000
 5 - Finds all if statements that use 'iter' in their condition or branches
-if ifs; Select ifs such that Uses(ifs, "iter")
-4, 6
+if ifs;
+Select ifs such that Uses(ifs, "iter")
+10
 5000
 6 - Finds all call statements where the called procedure uses 'iter'
-call c; Select c such that Uses(c, "iter")
+call c;
+Select c such that Uses(c, "iter")
 2, 4
 5000
