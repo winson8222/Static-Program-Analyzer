@@ -3,8 +3,8 @@
 #include "sp/DesignExtractor/Visitor/IVisitor.h"
 #include "sp/DesignExtractor/Visitor/VariableVisitor.h"
 
-#include "sp/DesignExtractor/Extractor/ReadExtractor.h"
-#include "sp/DesignExtractor/Extractor/ParentExtractor.h"
+#include "sp/DesignExtractor/Extractor/EntityExtractor/ReadExtractor.h"
+#include "sp/DesignExtractor/Extractor/RelationshipExtractor/ParentExtractor.h"
 
 #include <stdexcept>
 
