@@ -29,7 +29,3 @@ void PrintVisitor::visit() {
 
 	setParents(this->contexts, this->root, this->pkbWriterManager);
 }
-
-void PrintVisitor::addContext(std::shared_ptr<ASTNode> context) {
-	// do nothing
-}

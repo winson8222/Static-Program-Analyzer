@@ -604,7 +604,6 @@ void QueryParser::parseStmtSynonyms() {
                 parsingResult.getDeclaredSynonym(currentToken().getValue()) != "while" &&
                 parsingResult.getDeclaredSynonym(currentToken().getValue()) != "if" &&
                 parsingResult.getDeclaredSynonym(currentToken().getValue()) != "print" &&
-                parsingResult.getDeclaredSynonym(currentToken().getValue()) != "procedure" &&
                 parsingResult.getDeclaredSynonym(currentToken().getValue()) != "read") {
             throwSemanticError();
         }
@@ -616,7 +615,6 @@ void QueryParser::parseStmtSynonyms() {
            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "while" &&
            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "if" &&
            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "print" &&
-           parsingResult.getDeclaredSynonym(currentToken().getValue()) != "procedure" &&
            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "read") {
             throwSemanticError();
         }
@@ -628,7 +626,6 @@ void QueryParser::parseStmtSynonyms() {
             parsingResult.getDeclaredSynonym(currentToken().getValue()) != "print" &&
             parsingResult.getDeclaredSynonym(currentToken().getValue()) != "while" &&
             parsingResult.getDeclaredSynonym(currentToken().getValue()) != "if" &&
-            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "procedure" &&
             parsingResult.getDeclaredSynonym(currentToken().getValue()) != "assign"){
             throwSemanticError();
         }
@@ -639,7 +636,6 @@ void QueryParser::parseStmtSynonyms() {
             parsingResult.getDeclaredSynonym(currentToken().getValue()) != "read" &&
             parsingResult.getDeclaredSynonym(currentToken().getValue()) != "while" &&
             parsingResult.getDeclaredSynonym(currentToken().getValue()) != "if" &&
-            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "procedure" &&
             parsingResult.getDeclaredSynonym(currentToken().getValue()) != "assign"){
             throwSemanticError();
         }

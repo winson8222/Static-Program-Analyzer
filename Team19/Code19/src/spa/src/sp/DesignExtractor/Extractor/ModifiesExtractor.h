@@ -2,7 +2,6 @@
 
 #include "sp/DesignExtractor/Extractor/IExtractor.h"
 #include <stdexcept>
-#include <iostream>
 
 /*
 * Extracts the modifies relationship between an entity and a variable

@@ -5,7 +5,6 @@
 #include "sp/DesignExtractor/Extractor/UsesExtractor.h"
 #include "sp/DesignExtractor/Extractor/ModifiesExtractor.h"
 #include <stdexcept>
-#include <iostream>
 
 
 /*

@@ -9,6 +9,8 @@
 #include "qps/evaluator/strategies/suchThatStrategies/ParentStrategy.h" // Include ParentStrategy
 #include "qps/evaluator/strategies/suchThatStrategies/ModifiesStrategy.h" // Include ModifiesStrategy
 #include "qps/evaluator/strategies/suchThatStrategies/UsesStrategy.h" // Include UsesStrategy
+#include "qps/evaluator/strategies/suchThatStrategies/UsesPStrategy.h" // Include UsesPStrategy
+#include "qps/evaluator/strategies/suchThatStrategies/ModifiesPStrategy.h" // Include ModifiesPStrategy
 #include <variant>
 
 
@@ -18,7 +20,7 @@ private:
     ParsingResult& parsingResult;
     std::shared_ptr<ResultTable> result;
     std::vector<std::unique_ptr<QueryEvaluationStrategy>> strategies; // Store multiple strategies
-    std::map<std::string, std::function<std::unique_ptr<QueryEvaluationStrategy>()>> strategyFactory; // Map of strategy factory
+    std::map<TokenType, std::function<std::unique_ptr<QueryEvaluationStrategy>()>> strategyFactory; // Map of strategy factory
     std::map<std::string, std::function<std::variant<std::unordered_set<int>, std::unordered_set<std::string>>()>> entityFactory;
     std::vector<std::pair<std::unique_ptr<QueryEvaluationStrategy>, const Clause*>> strategyAndClausePairs;
 
@@ -32,4 +34,5 @@ public:
 
     void initializeStrategyFactory(); // Method to initialize the strategy factory
     void initializeEntityFactory(); // Method to initialize the entity factory
+    string join(const unordered_set<string>& elements, const string& delimiter);
 };

@@ -15,7 +15,7 @@ ParsingResult createParsingResultForUses(const std::string& entity, const std::s
     TokenType entityType = isProcedure ? TokenType::IDENT : TokenType::INTEGER;
 
     SuchThatClause clause;
-    clause.setRelationship(Token(TokenType::Uses, "Uses"));
+    clause.setRelationship(Token(TokenType::UsesS, "Uses"));
     clause.setFirstParam(Token(entityType, entity));
     clause.setSecondParam(Token(TokenType::IDENT, variable));
     parsingResult.addSuchThatClause(clause);
@@ -95,7 +95,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/2") {
                 Token(TokenType::Comma, ","),
                 Token(TokenType::QuoutIDENT, "\"x\""),
                 Token(TokenType::Rparenthesis, ")")
-
         };
 
         QueryParser parser(tokens);
@@ -358,7 +357,6 @@ TEST_CASE("UsesStrategy - Comprehensive Test with Various Scenarios") {
     std::unordered_set<std::string> expected{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
     REQUIRE(res == expected);
 }
-
 
 
 

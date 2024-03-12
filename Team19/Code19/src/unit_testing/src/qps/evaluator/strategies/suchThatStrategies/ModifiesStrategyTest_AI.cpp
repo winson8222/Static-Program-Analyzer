@@ -1,6 +1,7 @@
 
 #include "catch.hpp"
 #include "qps/evaluator/strategies/suchThatStrategies/ModifiesStrategy.h"
+#include "qps/evaluator/strategies/suchThatStrategies/ModifiesPStrategy.h"
 #include "pkb/PKBReaderManager.h"
 #include "pkb/PKB.h"
 #include "qps/parser/ParsingResult.h"
@@ -15,7 +16,7 @@ ParsingResult createParsingResultForModifies(const std::string& entity, const st
     TokenType entityType = isProcedure ? TokenType::IDENT : TokenType::INTEGER;
     
     SuchThatClause clause;
-    clause.setRelationship(Token(TokenType::Modifies, "Modifies"));
+    clause.setRelationship(Token(TokenType::ModifiesS, "Modifies"));
     clause.setFirstParam(Token(entityType, entity));
     clause.setSecondParam(Token(TokenType::IDENT, variable));
     parsingResult.addSuchThatClause(clause);
@@ -220,6 +221,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/5") {
     REQUIRE(res == std::unordered_set<string>{"y"});
 }
 
+
+
 TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/6") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
@@ -273,7 +276,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/6") {
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
     std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{"y", "3", "2", "4", "1"});
+    REQUIRE(res == std::unordered_set<string>{ "y", "1 2 3 4", "2 3 4" });
 }
 
 TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/7") {
@@ -306,9 +309,11 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/7") {
             Token(TokenType::Semicolon, ";"),
             Token(TokenType::SelectKeyword, "Select"),
             Token(TokenType::LeftAngleBracket, "<"),
-            Token(TokenType::IDENT, "v"),
+            Token(TokenType::IDENT, "v1"),
             Token(TokenType::Comma, ","),
             Token(TokenType::IDENT, "a"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::IDENT, "v2"),
             Token(TokenType::RightAngleBracket, ">"),
             Token(TokenType::SuchKeyword, "such"),
             Token(TokenType::ThatKeyword, "that"),

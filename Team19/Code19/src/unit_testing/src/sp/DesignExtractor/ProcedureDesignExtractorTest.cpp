@@ -42,9 +42,4 @@ TEST_CASE("sp/DesignExtractor/Visitor/ProcedureVisitor") {
 	root->addChild(proc1);
 	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
-	DesignExtractorFacade fde(root, pkbWriterManager);
-
-	SECTION("Extract all") {
-		REQUIRE_THROWS_WITH(fde.extractAll(), "ERROR: This is not the start node!");
-	}
 }

@@ -27,7 +27,3 @@ void AssignVisitor::visit() {
 
 	setParents(this->contexts, this->root, this->pkbWriterManager);
 }
-
-void AssignVisitor::addContext(std::shared_ptr<ASTNode> context) {
-	// Do nothing
-}

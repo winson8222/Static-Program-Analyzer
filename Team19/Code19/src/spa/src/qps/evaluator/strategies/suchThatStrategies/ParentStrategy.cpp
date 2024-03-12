@@ -16,8 +16,7 @@ std::shared_ptr<ResultTable> ParentStrategy::evaluateQuery(PKBReaderManager& pkb
     } else {
         // Handle the case where there are no required synonyms
     }
-
-
+    
     // Obtain readers from PKBReaderManager
     this->parentReader = pkbReaderManager.getParentReader();
     this->parentTTReader = pkbReaderManager.getParentTReader();

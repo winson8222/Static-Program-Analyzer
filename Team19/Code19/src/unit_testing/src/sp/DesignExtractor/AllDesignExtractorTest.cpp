@@ -5,7 +5,6 @@
 #include "sp/AST/ASTUtility.h"
 #include "catch.hpp"
 #include <fstream>
-#include <iostream>
 #include <filesystem>
 #include <unordered_set>
 #include <vector>

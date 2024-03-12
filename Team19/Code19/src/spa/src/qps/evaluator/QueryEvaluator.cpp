@@ -34,7 +34,7 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
     vector<SuchThatClause> suchThatClauses = parsingResult.getSuchThatClauses();
     // Add such-that-strategies based on the relationship specified in the query.
     for (auto clause : suchThatClauses) {
-        std::string suchThatRelationship = clause.getRelationship().getValue();
+        TokenType suchThatRelationship = clause.getRelationship().getType();
         auto it = strategyFactory.find(suchThatRelationship);
         if (it != strategyFactory.end()) {
             addStrategy(it->second());
@@ -85,11 +85,12 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
     // Retrieve and return the results based on the required synonym.
     std::vector<std::string> requiredSynonyms = parsingResult.getRequiredSynonyms();
     std::unordered_set<std::string> finalSet;
-    for (auto requiredSynonym : requiredSynonyms) {
-        std::string requiredType = parsingResult.getRequiredSynonymType(requiredSynonym);
 
-        if (result->hasColumn(requiredSynonym)) {
-            unordered_set<string> currentResult = result->getColumnValues(requiredSynonym);
+    if (requiredSynonyms.size() == 1) {
+        std::string requiredType = parsingResult.getRequiredSynonymType(requiredSynonyms[0]);
+
+        if (result->hasColumn(requiredSynonyms[0])) {
+            unordered_set<string> currentResult = result->getColumnValues(requiredSynonyms[0]);
             finalSet.insert(currentResult.begin(), currentResult.end());
         }
         else {
@@ -97,6 +98,27 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
             if (result->isTableTrue() || !result->isEmpty() || isFirstStrategy) {
                 unordered_set<string> currentResult = getAllEntities(requiredType);;
                 finalSet.insert(currentResult.begin(), currentResult.end());
+            }
+
+        }
+        return finalSet;
+    }
+    for (auto requiredSynonym : requiredSynonyms) {
+        std::string requiredType = parsingResult.getRequiredSynonymType(requiredSynonym);
+
+        if (result->hasColumn(requiredSynonym)) {
+            unordered_set<string> currentResult = result->getColumnValues(requiredSynonym);
+            // Join the elements of currentResult with spaces and insert as the first element of finalSet.
+            string joinedResult = join(currentResult, " "); // You'll need to implement join or use an appropriate function
+            finalSet.insert(joinedResult);
+        }
+        else {
+            //return all statement/variables/whatever
+            if (result->isTableTrue() || !result->isEmpty() || isFirstStrategy) {
+                unordered_set<string> currentResult = getAllEntities(requiredType);
+                // Join the elements of currentResult with spaces and insert as the first element of finalSet.
+                string joinedResult = join(currentResult, " ");
+                finalSet.insert(joinedResult);
             }
             
         }
@@ -140,13 +162,15 @@ void QueryEvaluator::initializeStrategyFactory() {
 
     // Mapping of query types to their corresponding strategies.
     QueryEvaluator::strategyFactory = {
-        {"Follows", []() { return std::make_unique<FollowsStrategy>(); }},
-        {"Follows*", []() { return std::make_unique<FollowsStrategy>(); }},
-        {"Parent", []() { return std::make_unique<ParentStrategy>(); }},
-        {"Parent*", []() { return std::make_unique<ParentStrategy>(); }},
-        {"Uses", []() { return std::make_unique<UsesStrategy>(); }},
-        {"Modifies", []() { return std::make_unique<ModifiesStrategy>(); }}
-        // Additional strategies can be added here as needed.
+            {TokenType::Follows, []() { return std::make_unique<FollowsStrategy>(); }},
+            {TokenType::FollowsT, []() { return std::make_unique<FollowsStrategy>(); }},
+            {TokenType::Parent, []() { return std::make_unique<ParentStrategy>(); }},
+            {TokenType::ParentT, []() { return std::make_unique<ParentStrategy>(); }},
+            {TokenType::UsesS, []() { return std::make_unique<UsesStrategy>(); }},
+            {TokenType::ModifiesS, []() { return std::make_unique<ModifiesStrategy>(); }},
+            {TokenType::ModifiesP, []() { return std::make_unique<ModifiesPStrategy>(); }},
+            {TokenType::UsesP, []() { return std::make_unique<UsesPStrategy>(); }},
+            // Additional strategies can be added here as needed.
     };
 }
 
@@ -190,5 +214,16 @@ void QueryEvaluator::initializeEntityFactory() {
 
 
     };
+}
+
+string QueryEvaluator::join(const unordered_set<string>& elements, const string& delimiter) {
+    string result;
+    for (const auto& element : elements) {
+        if (!result.empty()) {
+            result += delimiter;
+        }
+        result += element;
+    }
+    return result;
 }
 
