@@ -87,6 +87,14 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
     std::unordered_set<std::string> finalSet;
 
     if (requiredSynonyms.size() == 1) {
+        if (requiredSynonyms[0] == "BOOLEAN") {
+            if (result->isTableTrue()) {
+                return unordered_set<string>{"TRUE"};
+            }
+            else {
+                return unordered_set<string>{"FALSE"};
+            }
+        }
         std::string requiredType = parsingResult.getRequiredSynonymType(requiredSynonyms[0]);
 
         if (result->hasColumn(requiredSynonyms[0])) {
