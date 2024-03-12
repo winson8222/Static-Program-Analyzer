@@ -121,7 +121,7 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
         return TokenType::RightAngleBracket;
     }
     // DesignEntity: Specific keywords.
-    else if (regex_match(tokenStr, regex("^(stmt|read|print|while|if|assign|variable|constant|procedure)$"))) {
+    else if (regex_match(tokenStr, regex("^(stmt|read|print|while|if|assign|variable|constant|procedure|call)$"))) {
         if (!tokens.empty() && (tokens.back().getType() == TokenType::SelectKeyword 
             || checkIfDeclaration() || tokens.back().getType() == TokenType::Lparenthesis 
             || tokens.back().getType() == TokenType::Comma)) {
