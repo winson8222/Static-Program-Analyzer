@@ -36,6 +36,7 @@ void IfElseThenVisitor::handleExpressionVisitor(std::shared_ptr<ASTNode> conditi
 	ExpressionVisitor expressionVisitor(condition, pkbWriterManager);
 	expressionVisitor.setUsedContext(contexts, root);
 	expressionVisitor.visit();
+	// expressionVisitor.handlePatternExtraction(condition, ASTNodeType::IF_ELSE_THEN);
 }
 
 void IfElseThenVisitor::handleStatementListVisitor(std::shared_ptr<ASTNode> statementList) {

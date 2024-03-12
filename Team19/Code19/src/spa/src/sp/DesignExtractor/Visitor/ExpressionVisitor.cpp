@@ -32,6 +32,20 @@ void ExpressionVisitor::setUsedContext(listnode contexts, std::shared_ptr<ASTNod
 	usedContexts.push_back(parent);
 }
 
+void ExpressionVisitor::handlePatternExtraction(std::shared_ptr<ASTNode> root, ASTNodeType caller) {
+	// do nothing
+	std::shared_ptr<ASTNode> variableNode = root->getChildByIndex(EXPR_LHS_INDEX);
+	std::shared_ptr<ASTNode> expressionNode = root->getChildByIndex(EXPR_RHS_INDEX);
+	if (ASTUtility::nodeIsTarget(caller, ASTNodeType::WHILE)) {
+		WhilePatternExtractor whilePatternExtractor(root, variableNode, expressionNode, pkbWriterManager->getWhilePatternWriter());
+		whilePatternExtractor.extract();
+	}
+	else if (ASTUtility::nodeIsTarget(caller, ASTNodeType::IF_ELSE_THEN)) {
+		IfsPatternExtractor ifsPatternExtractor(root, variableNode, expressionNode, pkbWriterManager->getIfPatternWriter());
+		ifsPatternExtractor.extract();
+	}
+}
+
 void ArithmeticExpressionVisitor::depthFirstSearch(std::shared_ptr<ASTNode> node) {
 	ExpressionVisitor::depthFirstSearch(node);
 }

@@ -40,7 +40,7 @@ private:
 	/*
 	* Invokes the ExpressionVisitor to visit the expression
 	*/
-	void handleExpressionVisitor(std::shared_ptr<ASTNode> expression);
+	void handleExpressionVisitor();
 
 	/*
 	* Invokes the StatementListVisitor to visit the statement list
