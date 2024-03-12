@@ -19,6 +19,8 @@ public:
     // This method tokenizes the stored query and returns a vector of Token objects.
     vector<Token> tokenize();
 
+    string Tokenizer::removeSpaces(string str);
+
 private:
     // Private member variable to store the query string.
     string query;
