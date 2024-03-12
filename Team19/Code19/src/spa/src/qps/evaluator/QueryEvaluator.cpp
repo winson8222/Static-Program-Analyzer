@@ -157,7 +157,7 @@ std::unordered_set<std::string> QueryEvaluator::getAllEntities(const std::string
 
 
 
-// Initializes the strategy factory with various query evaluation strategies.
+// Initializes the strategy factory with various query evaluation strategies..
 void QueryEvaluator::initializeStrategyFactory() {
 
     // Mapping of query types to their corresponding strategies.
