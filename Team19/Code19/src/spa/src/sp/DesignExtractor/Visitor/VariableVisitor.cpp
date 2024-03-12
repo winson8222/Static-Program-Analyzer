@@ -14,35 +14,49 @@ void VariableVisitor::visit() {
 
 	for (std::shared_ptr<ASTNode> context : usedContexts) {
 		if (context->equalType(ASTNodeType::PROCEDURE)) {
-			UsesPExtractor usesPExtractor(context, root, this->pkbWriterManager->getUsesPWriter());
-			usesPExtractor.extract();
+			handleUsesP(context, root);
 		}
 		else {
-			UsesSExtractor usesExtractor(context, root, this->pkbWriterManager->getUsesSWriter());
-			usesExtractor.extract();
+			handleUsesS(context, root);
 		}
 	}
 	
 	for (std::shared_ptr<ASTNode> context : modifiedContexts) {
 		if (context->equalType(ASTNodeType::PROCEDURE)) {
-			ModifiesPExtractor modifiesPExtractor(context, root, this->pkbWriterManager->getModifiesPWriter());
-			modifiesPExtractor.extract();
+			handleModifiesP(context, root);
 		}
 		else {
-			ModifiesSExtractor modifiesExtractor(context, root, this->pkbWriterManager->getModifiesSWriter());
-			modifiesExtractor.extract();
+			handleModifiesS(context, root);
 		}
 	}
 }
 
 void VariableVisitor::setUsedContext(listnode contexts, std::shared_ptr<ASTNode> parent) {
-	//this->contexts = contexts;
 	usedContexts = listnode(contexts.begin(), contexts.end());
 	usedContexts.push_back(parent);
 }
 
 void VariableVisitor::setModifiedContext(listnode contexts, std::shared_ptr<ASTNode> parent) {
-	//this->contexts = contexts;
 	modifiedContexts = listnode(contexts.begin(), contexts.end());
 	modifiedContexts.push_back(parent);
+}
+
+void VariableVisitor::handleUsesP(std::shared_ptr<ASTNode> user, std::shared_ptr<ASTNode> variable) {
+	UsesPExtractor usesPExtractor(user, variable, this->pkbWriterManager->getUsesPWriter());
+	usesPExtractor.extract();
+}
+
+void VariableVisitor::handleUsesS(std::shared_ptr<ASTNode> user, std::shared_ptr<ASTNode> variable) {
+	UsesSExtractor usesExtractor(user, variable, this->pkbWriterManager->getUsesSWriter());
+	usesExtractor.extract();
+}
+
+void VariableVisitor::handleModifiesP(std::shared_ptr<ASTNode> user, std::shared_ptr<ASTNode> variable) {
+	ModifiesPExtractor modifiesPExtractor(user, variable, this->pkbWriterManager->getModifiesPWriter());
+	modifiesPExtractor.extract();
+}
+
+void VariableVisitor::handleModifiesS(std::shared_ptr<ASTNode> user, std::shared_ptr<ASTNode> variable) {
+	ModifiesSExtractor modifiesExtractor(user, variable, this->pkbWriterManager->getModifiesSWriter());
+	modifiesExtractor.extract();
 }

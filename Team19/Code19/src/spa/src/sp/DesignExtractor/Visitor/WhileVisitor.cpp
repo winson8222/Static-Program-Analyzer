@@ -8,13 +8,12 @@ WhileVisitor::WhileVisitor(std::shared_ptr<ASTNode> root,
 		throw std::runtime_error("ERROR: Cannot initialized a non-WHILE node");
 	}
 	this->contexts = listnode(context.begin(), context.end());
+	this->expression = root->getChildByIndex(WHILE_EXPRESSION_INDEX);
+	this->statementList = root->getChildByIndex(WHILE_STATEMENT_LIST_INDEX);
 }
 
 void WhileVisitor::visit() {
 	// do nothing
-	std::shared_ptr<ASTNode> expression = root->getChildByIndex(0);
-	std::shared_ptr<ASTNode> statementList = root->getChildByIndex(1);
-
 	WhileExtractor whileExtractor(root, pkbWriterManager->getWhileWriter());
 	whileExtractor.extract();
 

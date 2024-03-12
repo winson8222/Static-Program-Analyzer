@@ -12,6 +12,9 @@
 // ai-gen start (gpt, 2, e)
 // prompt: https://platform.openai.com/playground/p/WEPuYktjSFWSXYtIjbHMb5KZ?model=gpt-4&mode=chat
 
+constexpr int ASSIGN_LHS = 0;
+constexpr int ASSIGN_RHS = 1;
+
 /*
 * A visitor for the assign statement which should
 * call on all relevant extractors and sub-visitors
@@ -25,6 +28,10 @@ public:
 	AssignVisitor(std::shared_ptr<ASTNode> root, listnode context, std::shared_ptr<PKBWriterManager> pkbWriterManager);
 
 	void visit() override;
+
+private:
+	std::shared_ptr<ASTNode> lhsExpr;
+	std::shared_ptr<ASTNode> rhsExpr;
 };
 
 // ai-gen end

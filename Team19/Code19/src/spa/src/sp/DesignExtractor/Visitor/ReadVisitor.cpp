@@ -8,13 +8,14 @@ ReadVisitor::ReadVisitor(std::shared_ptr<ASTNode> root,
 		throw std::invalid_argument("ReadVisitor - root is not of type READ");
 	}
 	this->contexts = listnode(context.begin(), context.end());
+	this->variableChild = root->getChildByIndex(READ_VARIABLE_INDEX);
 }
 
 void ReadVisitor::visit() {
 	ReadExtractor readExtractor(this->root, this->pkbWriterManager->getReadWriter());
 	readExtractor.extract();
 
-	VariableVisitor variableVisitor(this->root->getChildByIndex(0), this->pkbWriterManager);
+	VariableVisitor variableVisitor(variableChild, this->pkbWriterManager);
 	variableVisitor.setModifiedContext(this->contexts, this->root);
 	variableVisitor.visit();
 

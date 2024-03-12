@@ -6,6 +6,7 @@
 #include "sp/DesignExtractor/Extractor/ProcedureExtractor.h"
 #include "sp/DesignExtractor/Visitor/StatementListVisitor.h"
 
+constexpr int PROCEDURE_STATEMENT_LIST_INDEX = 0;
 
 /*
 * A visitor for the procedure node which should
@@ -37,5 +38,6 @@ public:
 	void addContexts(std::vector<std::shared_ptr<ASTNode>> contexts);
 
 private:
+	std::shared_ptr<ASTNode> statementListNode;
 	bool wasVisited;
 };

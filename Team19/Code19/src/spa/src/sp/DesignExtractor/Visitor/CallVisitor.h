@@ -9,6 +9,8 @@
 // ai-gen starts
 // prompt: https://platform.openai.com/playground/p/WEPuYktjSFWSXYtIjbHMb5KZ?model=gpt-4&mode=chat
 
+constexpr int CALLS_VARIABLE_INDEX = 0;
+
 class CallVisitor : public StatementVisitor {
 public:
 	CallVisitor(std::shared_ptr<ASTNode> root,
@@ -16,7 +18,11 @@ public:
 		std::shared_ptr<PKBWriterManager> pkbWriterManager);
 
 	void visit() override;
+
+private:
 	std::vector<std::shared_ptr<ASTNode>> getProcedureContexts();
+	void handleCallsP(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2);
+	void handleCallsT(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2);
 };
 
 // ai-gen ends

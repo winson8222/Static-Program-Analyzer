@@ -32,5 +32,9 @@ public:
 	std::vector<std::shared_ptr<ASTNode>> contexts;
 
 private:
-	void handleFollows();
+	std::vector<std::shared_ptr<ASTNode>> statementLists;
+	void handleAllFollows();
+	void handleStatementExtraction(std::shared_ptr<ASTNode> statement);
+	void handleFollowsS(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2);
+	void handleFollowsT(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2);
 };
