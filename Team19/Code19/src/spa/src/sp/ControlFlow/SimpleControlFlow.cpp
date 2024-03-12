@@ -9,6 +9,7 @@ std::shared_ptr<std::vector<std::shared_ptr<CFGNode>>> SimpleControlFlow::create
 
 	for (auto& procedure : procedures) {
 		std::shared_ptr<CFGNode> procedureCfg = this->generateFromProcedure(procedure);
+		controlFlowGraphs->push_back(procedureCfg);
 	}
 
 	return controlFlowGraphs;
@@ -20,14 +21,14 @@ std::shared_ptr<ASTNode> SimpleControlFlow::getStatementList(std::shared_ptr<AST
 
 std::shared_ptr<CFGNode> SimpleControlFlow::generateFromProcedure(std::shared_ptr<ASTNode> procedureNode) {
 	std::shared_ptr<ASTNode> statementListNode = this->getStatementList(procedureNode, PROCEDURE_STATEMENT_LIST_INDEX);
-	std::shared_ptr<CFGNode> endOfProcedureDummyNode = CFGNode::getDummyNode()
+	std::shared_ptr<CFGNode> endOfProcedureDummyNode = CFGNode::getDummyNode();
 	return this->generateFromStatementList(statementListNode, endOfProcedureDummyNode);
 }
 
 std::shared_ptr<CFGNode> SimpleControlFlow::generateFromStatementList(std::shared_ptr<ASTNode> statementListNode, std::shared_ptr<CFGNode> nextNode) {
 	std::vector<std::shared_ptr<ASTNode>> statements = statementListNode->getChildren();
 
-	// Recursively add the node representing the next line as a child opf the current node.
+	// Recursively add the node representing the next line as a child of the current node.
 	for (int i = statements.size() - 1; i >= 0; i--) {
 		std::shared_ptr<CFGNode> node = this->generateFromStatement(statements[i], nextNode);
 		nextNode = node;
