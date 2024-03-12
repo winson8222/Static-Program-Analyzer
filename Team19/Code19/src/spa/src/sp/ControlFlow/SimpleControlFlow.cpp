@@ -38,19 +38,17 @@ std::shared_ptr<CFGNode> SimpleControlFlow::generateFromStatementList(std::share
 }
 
 std::shared_ptr<CFGNode> SimpleControlFlow::generateFromStatement(std::shared_ptr<ASTNode> statementNode, std::shared_ptr<CFGNode> nextNode) {
-	ASTNodeType nodeType = statementNode->getType();
-
-	if (ASTUtility::nodeIsTarget(nodeType, ASTNodeType::IF_ELSE_THEN)) {	
+	if (statementNode->equalType(ASTNodeType::IF_ELSE_THEN)) {
 		return this->generateFromIfElseThen(statementNode, nextNode);
 	}
-	else if (ASTUtility::nodeIsTarget(nodeType, ASTNodeType::WHILE)) {
+	else if (statementNode->equalType(ASTNodeType::WHILE)) {
 		return this->generateFromWhile(statementNode, nextNode);
 	}
 
 	int lineNumber = statementNode->getLineNumber();
 	std::shared_ptr<CFGNode> node = std::make_shared<CFGNode>(lineNumber);
 	node->addChild(nextNode);
-	
+
 	return node;
 }
 
