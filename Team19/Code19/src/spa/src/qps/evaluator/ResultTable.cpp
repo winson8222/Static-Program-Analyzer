@@ -258,5 +258,9 @@ bool ResultTable::isEmpty() {
     return rows.empty();
 }
 
+bool ResultTable::isTableFalse() {
+    return !isTruthTable && isEmpty();
+}
+
 
 
