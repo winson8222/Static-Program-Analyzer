@@ -1,0 +1,5 @@
+1 - Finds all statements that use x
+stmt s;
+Select s such that Uses(s, "x")
+1
+5000
