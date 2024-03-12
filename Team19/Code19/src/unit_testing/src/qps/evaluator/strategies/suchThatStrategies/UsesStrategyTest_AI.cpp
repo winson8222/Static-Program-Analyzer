@@ -269,6 +269,117 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/2") {
         std::unordered_set<string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<string>{"x", "y", "z"});
     }
+
+    SECTION("Check true boolean for uses") {
+        std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+        std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+
+        std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+        std::shared_ptr<UsesSWriter> modifiesSWriter = pkbWriterManager->getUsesSWriter();
+        statementWriter->insertStatement(1);
+        statementWriter->insertStatement(2);
+        statementWriter->insertStatement(3);
+        modifiesSWriter->addUsesS(2, "x");
+        modifiesSWriter->addUsesS(3, "y");
+
+
+        std::vector<Token> tokens = {
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::BooleanKeyword, "BOOLEAN"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Uses, "Uses"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::INTEGER, "2"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::QuoutIDENT, "\"x\""),
+                Token(TokenType::Rparenthesis, ")")
+
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{"TRUE"});
+    }
+
+    SECTION("Check true boolean for uses") {
+        std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+        std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+
+        std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+        std::shared_ptr<UsesSWriter> modifiesSWriter = pkbWriterManager->getUsesSWriter();
+        statementWriter->insertStatement(1);
+        statementWriter->insertStatement(2);
+        statementWriter->insertStatement(3);
+        modifiesSWriter->addUsesS(2, "x");
+        modifiesSWriter->addUsesS(3, "y");
+
+
+        std::vector<Token> tokens = {
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::BooleanKeyword, "BOOLEAN"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Uses, "Uses"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::INTEGER, "3"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::QuoutIDENT, "\"x\""),
+                Token(TokenType::Rparenthesis, ")")
+
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{"FALSE"});
+    }
+
+    SECTION("Check true boolean for uses with variable") {
+        std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+        std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+
+        std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+        std::shared_ptr<UsesSWriter> modifiesSWriter = pkbWriterManager->getUsesSWriter();
+        statementWriter->insertStatement(1);
+        statementWriter->insertStatement(2);
+        statementWriter->insertStatement(3);
+        modifiesSWriter->addUsesS(2, "x");
+        modifiesSWriter->addUsesS(3, "y");
+
+
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "variable"),
+                Token(TokenType::IDENT, "v"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::BooleanKeyword, "BOOLEAN"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Uses, "Uses"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::INTEGER, "3"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::IDENT, "v"),
+                Token(TokenType::Rparenthesis, ")")
+
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{"TRUE"});
+    }
 }
 
 // M1 Test Fix for Uses

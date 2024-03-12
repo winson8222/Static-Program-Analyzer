@@ -499,6 +499,128 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrate
         REQUIRE(actualResults == expectedResults);
     }
 
+    SECTION("Check Evaluation result of pattern and follows") {
+
+        statementWriter->insertStatement(1);
+        statementWriter->insertStatement(2);
+        statementWriter->insertStatement(3);
+        statementWriter->insertStatement(4);
+        followsWriter->addFollows(1, 2);
+        assignPatternWriter->addAssignPattern(1, "x", "'1'");
+        assignPatternWriter->addAssignPattern(2, "x", "'2'");
+        assignPatternWriter->addAssignPattern(3, "x", "'3'");
+        assignWriter->insertAssign(1);
+        assignWriter->insertAssign(2);
+        assignWriter->insertAssign(3);
+
+
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "assign"),
+                Token(TokenType::IDENT, "a"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::BooleanKeyword, "BOOLEAN"),
+                Token(TokenType::PatternKeyword, "pattern"),
+                Token(TokenType::IDENT, "a"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::Wildcard, "_"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::Wildcard, "_"),
+                Token(TokenType::Rparenthesis, ")"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Follows, "Follows"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::INTEGER, "1"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::INTEGER, "2"),
+                Token(TokenType::Rparenthesis, ")"),
+
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{"TRUE"});
+    }
+
+    SECTION("Check Evaluation result of pattern and follows") {
+
+        statementWriter->insertStatement(1);
+        statementWriter->insertStatement(2);
+        statementWriter->insertStatement(3);
+        statementWriter->insertStatement(4);
+        followsWriter->addFollows(1, 2);
+        assignPatternWriter->addAssignPattern(1, "x", "'1'");
+        assignPatternWriter->addAssignPattern(2, "x", "'2'");
+        assignPatternWriter->addAssignPattern(3, "x", "'3'");
+        assignWriter->insertAssign(1);
+        assignWriter->insertAssign(2);
+        assignWriter->insertAssign(3);
+
+
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "assign"),
+                Token(TokenType::IDENT, "a"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::BooleanKeyword, "BOOLEAN"),
+                Token(TokenType::PatternKeyword, "pattern"),
+                Token(TokenType::IDENT, "a"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::QuoutIDENT, "\"x\""),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::QuoutConst, "\"1\""),
+                Token(TokenType::Rparenthesis, ")"),
+
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{"TRUE"});
+    }
+
+    SECTION("Check Evaluation result of pattern and follows") {
+
+        statementWriter->insertStatement(1);
+        statementWriter->insertStatement(2);
+        statementWriter->insertStatement(3);
+        statementWriter->insertStatement(4);
+        followsWriter->addFollows(1, 2);
+        assignPatternWriter->addAssignPattern(1, "x", "'1'");
+        assignPatternWriter->addAssignPattern(2, "x", "'2'");
+        assignPatternWriter->addAssignPattern(3, "x", "'3'");
+        assignWriter->insertAssign(1);
+        assignWriter->insertAssign(2);
+        assignWriter->insertAssign(3);
+
+
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "assign"),
+                Token(TokenType::IDENT, "a"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::BooleanKeyword, "BOOLEAN"),
+                Token(TokenType::PatternKeyword, "pattern"),
+                Token(TokenType::IDENT, "a"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::QuoutIDENT, "\"x\""),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::QuoutConst, "\"4\""),
+                Token(TokenType::Rparenthesis, ")"),
+
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{"False"});
+    }
+
 }
 
 TEST_CASE("Pattern partial match with semi-string") {

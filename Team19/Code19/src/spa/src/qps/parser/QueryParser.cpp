@@ -13,7 +13,9 @@ QueryParser::QueryParser(const vector<Token>& tokens) : tokens(tokens), currentT
 // Processes declarations, select clause, and optional such that and pattern clauses.
 ParsingResult QueryParser::parse() {
     try {
-        parseDeclarations();
+        if (match(TokenType::DesignEntity)) {
+            parseDeclarations();
+        }
         parseSelectClause();
         if (currentTokenIndex == tokens.size() - 1) {
             return parsingResult;

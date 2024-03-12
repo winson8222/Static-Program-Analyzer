@@ -18,7 +18,7 @@ TEST_CASE("src/qps/parser/QueryParser") {
                 Token(TokenType::Rparenthesis, ")")
         };
 
-        REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SyntaxError");
+        REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SemanticError");
 
 
     }
