@@ -33,7 +33,8 @@ std::shared_ptr<ResultTable> PatternStrategy::evaluateQuery(PKBReaderManager& pk
 
 
     // if the second param is an expressionSpec or a quoted IDENT, we need to retrieve the expression/identity within the quotes
-    if (patternSecondParam.getType() == TokenType::ExpressionSpec || patternSecondParam.getType() == TokenType::QuoutIDENT){
+    if (patternSecondParam.getType() == TokenType::ExpressionSpec || patternSecondParam.getType() == TokenType::QuoutIDENT ||
+    patternSecondParam.getType() == TokenType::QuoutConst){
         if (patternSecondParam.getValue() == "_") {
             secondParamValue = patternSecondParam.getValue();
         } else {

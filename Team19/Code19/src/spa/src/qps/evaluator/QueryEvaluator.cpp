@@ -24,6 +24,7 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
 
     // Create a new result table for storing query results.
     result = std::make_shared<ResultTable>();
+    result->setAsTruthTable();
 
     // Check if the query is valid. If not, return an error message.
     if (!parsingResult.isQueryValid()) {
