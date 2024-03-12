@@ -82,6 +82,9 @@ void QueryParser::parseDeclarations() {
         advanceToken();
 
         parseSynonym();
+        if (parsingResult.isSynonymDeclared(currentToken().getValue())) {
+            throwSemanticError();
+        }
         parsingResult.addDeclaredSynonym(currentToken().getValue(), assignmentType);
         advanceToken();
 

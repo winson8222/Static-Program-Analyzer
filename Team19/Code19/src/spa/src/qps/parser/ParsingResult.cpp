@@ -82,3 +82,6 @@ void ParsingResult::setErrorMessage(const string& message) {
 
 }
 
+bool ParsingResult::isSynonymDeclared(const string& synonym) {
+    return declaredSynonyms.find(synonym) != declaredSynonyms.end();
+}
