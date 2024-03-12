@@ -1,5 +1,7 @@
 #include "../../spa/src/qps/parser/Tokenizer.h"
 #include <stdexcept>
+#include <algorithm> // For std::remove
+#include <string>    // For std::string
 
 using namespace std;
 
@@ -29,7 +31,7 @@ void Tokenizer::splitQuery() {
             tokens.emplace_back(tokenType, lastRelationship);  // Add the token to the vector.
         }
         else {
-            tokens.emplace_back(tokenType, *iter);  // Add the token to the vector.
+            tokens.emplace_back(tokenType, removeSpaces(*iter));  // Add the token to the vector.
         }
         
     }
@@ -81,11 +83,11 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
         return TokenType::BooleanKeyword;
     }
     // QuoutIDENT: An IDENT enclosed in double quotes.
-    else if (regex_match(tokenStr, regex("^\"[a-zA-Z][a-zA-Z0-9]*\"$"))) {
+    else if (regex_match(tokenStr, regex("^\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\"$"))) {
         return TokenType::QuoutIDENT;
     }
     // QuoutConst: A constant enclosed in double quotes (for pattern matching).
-    else if (regex_match(tokenStr, regex("^\"[0-9]*\"$"))) {
+    else if (regex_match(tokenStr, regex("^\"\\s*[0-9]+\\s*\"$"))) {
         return TokenType::QuoutConst;
     }
     //
@@ -121,7 +123,7 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
         return TokenType::RightAngleBracket;
     }
     // DesignEntity: Specific keywords.
-    else if (regex_match(tokenStr, regex("^(stmt|read|print|while|if|assign|variable|constant|procedure)$"))) {
+    else if (regex_match(tokenStr, regex("^(stmt|read|print|while|if|assign|variable|constant|procedure|call)$"))) {
         if (!tokens.empty() && (tokens.back().getType() == TokenType::SelectKeyword 
             || checkIfDeclaration() || tokens.back().getType() == TokenType::Lparenthesis 
             || tokens.back().getType() == TokenType::Comma)) {
@@ -211,4 +213,9 @@ bool Tokenizer::checkIfDeclaration() {
 		i--;
 	}
     return false;
+}
+
+string Tokenizer::removeSpaces(string str) {
+    str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
+    return str;
 }
