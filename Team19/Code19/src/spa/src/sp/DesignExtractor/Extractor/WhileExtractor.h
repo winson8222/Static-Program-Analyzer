@@ -9,8 +9,10 @@
 */
 class WhileExtractor : public IExtractor {
 public:
-	explicit WhileExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
-		: IExtractor(root, pkbWriterManager) {}
+	WhileExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<WhileWriter> whileWriter);
 
 	void extract() override;
+
+private:
+	std::shared_ptr<WhileWriter> whileWriter;
 };

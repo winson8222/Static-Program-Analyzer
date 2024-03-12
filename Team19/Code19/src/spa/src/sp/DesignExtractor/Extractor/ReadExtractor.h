@@ -9,8 +9,10 @@
 */
 class ReadExtractor : public IExtractor {
 public:
-	explicit ReadExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
-		: IExtractor(root, pkbWriterManager) {}
+	ReadExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<ReadWriter> readWriter);
 
 	void extract() override;
+
+private:
+	std::shared_ptr<ReadWriter> readWriter;
 };

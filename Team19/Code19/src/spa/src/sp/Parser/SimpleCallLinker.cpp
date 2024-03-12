@@ -14,11 +14,9 @@ void SimpleCallLinker::linkAllCallsToProcedure() {
 
 void SimpleCallLinker::depthFirstSearch(std::shared_ptr<ASTNode> node) {
 	if (ASTUtility::nodeIsCall(node->getType())) {
-		// std::string procName = getProcedureVariableName(node->getChildByIndex(0));
-		std::string procName = node->children[0]->getValue();
+		std::string procName = getProcedureVariableName(node->getChildByIndex(0));
 		if (procedureNameToProcedureNode.find(procName) != procedureNameToProcedureNode.end()) {
-			// node->setChildByIndex(0, procedureNameToProcedureNode[procName]);
-			node->children[0] = procedureNameToProcedureNode[procName];
+			node->setChildByIndex(0, procedureNameToProcedureNode[procName]);
 		} else {
 			throw std::runtime_error("Procedure " + procName + " not found");
 		}

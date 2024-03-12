@@ -127,6 +127,11 @@ public:
     */
     void setChildByIndex(int index, std::shared_ptr<ASTNode> child);
 
+    /*
+    * @brief Compare the type of nodes
+    */
+    bool equalType(ASTNodeType type);
+
     // To be set as private in future, probably milestone 2
     ASTNodeType type;
     std::vector<std::shared_ptr<ASTNode>> children;

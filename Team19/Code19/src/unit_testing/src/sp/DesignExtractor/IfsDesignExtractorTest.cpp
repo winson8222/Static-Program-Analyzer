@@ -10,6 +10,18 @@
 #include <unordered_set>
 #include <vector>
 
+TEST_CASE("Singular Extractor") {
+	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
+	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
+	std::shared_ptr<PKBReaderManager> pkbReaderManager = pkb->getPKBReaderManager();
+
+	std::shared_ptr<ASTNode> ifs = std::make_shared<ASTNode>(ASTNode(ASTNodeType::IF_ELSE_THEN, 2, "ifs"));
+	IfThenElseExtractor ifThenElseExtractor(ifs, pkbWriterManager->getIfWriter());
+	ifThenElseExtractor.extract();
+
+	std::unordered_set<int> expectedIfs = { 2 };
+	REQUIRE(pkbReaderManager->getIfReader()->getAllIfs() == expectedIfs);
+}
 
 TEST_CASE("sp/DesignExtractor/Visitor/IfElseThenExtractor") {
 	/// <summary>
@@ -78,7 +90,6 @@ TEST_CASE("sp/DesignExtractor/Visitor/IfElseThenExtractor") {
 	SECTION("Test valid Uses retrieve") {
 		std::unordered_set<std::string> expectedUses = { "x", "y" };
 		REQUIRE(pkbReaderManager->getUsesSReader()->getAllVariablesUsedByAnyStmt() == expectedUses);
-
 	}
 }
 
