@@ -120,3 +120,44 @@ void QueryEvaluationStrategy::insertSingleColRowToTable(const pair<string,string
 bool QueryEvaluationStrategy::isBothParamsSynonym(const Token& firstParam, const Token& secondParam) {
     return firstParam.getType() == TokenType::IDENT && secondParam.getType() == TokenType::IDENT;
 }
+
+void QueryEvaluationStrategy::insertRowsWithMatchedResults(const Token& firstParam, const Token& secondParam, string searched, std::unordered_set<string> results,
+                                                           const std::shared_ptr<ResultTable>& resultTable) {
+    pair<string, string> col1Pair = make_pair<string, string>(firstParam.getValue(), std::move(searched));
+    for (string result : results) {
+        pair<string, string> col2Pair = make_pair<string, string>(secondParam.getValue(), std::move(result));
+        insertRowToTable(col1Pair, col2Pair, resultTable);
+    }
+}
+
+void QueryEvaluationStrategy::insertRowsWithSingleColumn(std::string colName, std::unordered_set<std::string> results,
+                                                         std::shared_ptr<ResultTable> resultTable) {
+    for (string result : results) {
+        pair<string, string> colPair = make_pair(colName, std::move(result));
+        insertSingleColRowToTable(colPair, resultTable);
+    }
+}
+
+void QueryEvaluationStrategy::setTrueIfRelationShipExist(const Token &firstParam, const Token &secondParam,
+                                                    const std::shared_ptr<IRelationshipReader<std::string, std::string>> &reader,
+                                                    std::shared_ptr<ResultTable> resultTable) {
+    if (firstParam.getType() == TokenType::Wildcard) {
+        string secondParamValue = extractQuotedExpression(secondParam);
+        if (!reader->getRelationshipsByValue(secondParamValue).empty()) {
+            resultTable->setAsTruthTable();
+        }
+    } else if (secondParam.getType() == TokenType::Wildcard) {
+        string firstParamValue = extractQuotedExpression(firstParam);
+        if (!reader->getRelationshipsByKey(firstParamValue).empty()) {
+            resultTable->setAsTruthTable();
+        }
+    } else {
+        string firstParamValue = extractQuotedExpression(firstParam);
+        string secondParamValue = extractQuotedExpression(secondParam);
+
+        if (reader->hasRelationship(firstParamValue, secondParamValue)) {
+            resultTable->setAsTruthTable();
+        }
+    }
+
+}
