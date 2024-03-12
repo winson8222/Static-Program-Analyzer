@@ -16,13 +16,21 @@ TEST_CASE("sp/DesignExtractor/Extractor/PrintExtractor") {
 	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
 	SECTION("Valid print initializations") {
-		REQUIRE_NOTHROW(PrintExtractor(print1, pkbWriterManager));
+		REQUIRE_NOTHROW(PrintExtractor(print1, pkbWriterManager->getPrintWriter()));
 	}
 
 	SECTION("Invalid print statement") {
 		std::shared_ptr<ASTNode> print2 = std::make_shared<ASTNode>(ASTNode(ASTNodeType::READ, 2, "read"));
 		auto context = std::vector<std::shared_ptr<ASTNode>>{ print2 };
 		REQUIRE_THROWS(PrintVisitor(print2, context, pkbWriterManager));
+	}
+
+	SECTION("Valid Print extraction") {
+		PrintExtractor printExtractor(print1, pkbWriterManager->getPrintWriter());
+		REQUIRE_NOTHROW(printExtractor.extract());
+		auto actualPrints = pkb->getPKBReaderManager()->getPrintReader()->getAllPrints();
+		std::unordered_set<int> expectedPrints = { 2 };
+		REQUIRE(expectedPrints == actualPrints);
 	}
 }
 

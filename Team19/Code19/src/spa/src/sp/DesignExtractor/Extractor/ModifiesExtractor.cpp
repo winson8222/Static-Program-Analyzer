@@ -1,60 +1,23 @@
 #include "sp/DesignExtractor/Extractor/ModifiesExtractor.h"
 
-void ModifiesExtractor::extract() {
-	switch (ast1->type) {
-		case ASTNodeType::ASSIGN:
-			getAssignModifies();
-			break;
-		case ASTNodeType::READ:
-			getReadModifies();
-			break;
-		case ASTNodeType::IF_ELSE_THEN:
-			getIfModifies();
-			break;
-		case ASTNodeType::WHILE:
-			getWhileModifies();
-			break;
-		case ASTNodeType::PROCEDURE:
-			getProcedureModifies();
-			break;
-		case ASTNodeType::CALL:
-			getCallModifies();
-			break;
-		default:
-			// to do: throw exception
-			// for now bugs will happen if exception is thrown so will handle in M2
-			break;
-	}
+ModifiesSExtractor::ModifiesSExtractor(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2, 
+	std::shared_ptr<ModifiesSWriter> modifiesSWriter) : IRelationshipExtractor(ast1, ast2) {
+	this->modifiesSWriter = modifiesSWriter;
 }
 
-void ModifiesExtractor::getAssignModifies() {
+void ModifiesSExtractor::extract() {
 	// Add modifies to the ModifiesS table
-	this->pkbWriterManager->getModifiesSWriter()->addModifiesS(ast1->lineNumber, ast2->value);
+	if (!ASTUtility::nodeStatementCanModifies(ast1->getType())) return;
+	this->modifiesSWriter->addModifiesS(ast1->getLineNumber(), ast2->getValue());
 }
 
-void ModifiesExtractor::getReadModifies() {
-	// Add modifies to the ModifiesS table
-	this->pkbWriterManager->getModifiesSWriter()->addModifiesS(ast1->lineNumber, ast2->value);
+ModifiesPExtractor::ModifiesPExtractor(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2,
+	std::shared_ptr<ModifiesPWriter> modifiesPWriter) : IRelationshipExtractor(ast1, ast2) {
+	this->modifiesPWriter = modifiesPWriter;
 }
 
-void ModifiesExtractor::getIfModifies() {
-	// Add modifies to the ModifiesS table
-	this->pkbWriterManager->getModifiesSWriter()->addModifiesS(ast1->lineNumber, ast2->value);
-}
-
-void ModifiesExtractor::getWhileModifies() {
-	// Add modifies to the ModifiesS table
-	this->pkbWriterManager->getModifiesSWriter()->addModifiesS(ast1->lineNumber, ast2->value);
-}
-
-void ModifiesExtractor::getProcedureModifies() {
+void ModifiesPExtractor::extract() {
 	// Add modifies to the ModifiesP table
-	this->pkbWriterManager->getModifiesPWriter()->addModifiesP(ast1->value, ast2->value);
-}
-
-void ModifiesExtractor::getCallModifies() {
-	// Do nothing for now
-	// ideas: will need to modify pointers/variables in the future
-	auto modifiesWriter = this->pkbWriterManager->getModifiesSWriter();
-	modifiesWriter->addModifiesS(ast1->lineNumber, ast2->value);
+	if (!ast1->equalType(ASTNodeType::PROCEDURE)) return;
+	this->modifiesPWriter->addModifiesP(ast1->getValue(), ast2->getValue());
 }

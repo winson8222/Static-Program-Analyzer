@@ -33,6 +33,16 @@ TEST_CASE("sp/DesignExtractor/Extractor/ProcedureExtractor") {
 		auto val = pkbReaderManager->getProcedureReader()->getAllProcedures();
 		REQUIRE(val == expectedProcNames);
 	}
+
+	SECTION("Extract procedure singular") {
+		std::shared_ptr<ASTNode> proc = std::make_shared<ASTNode>(ASTNode(ASTNodeType::PROCEDURE, 3, "proc3"));
+		ProcedureExtractor procExtractor(proc, pkbWriterManager->getProcedureWriter());
+		REQUIRE_NOTHROW(procExtractor.extract());
+
+		std::unordered_set<std::string> expectedProcNames = { "proc1", "proc2", "proc3" };
+		auto val = pkbReaderManager->getProcedureReader()->getAllProcedures();
+		REQUIRE(val == expectedProcNames);
+	}
 }
 
 TEST_CASE("sp/DesignExtractor/Visitor/ProcedureVisitor") {

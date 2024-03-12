@@ -15,7 +15,7 @@ TEST_CASE("sp/DesignExtractor/Extractor/ConstantExtractor") {
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
 	std::shared_ptr<ASTNode> constant = std::make_shared<ASTNode>(ASTNode(ASTNodeType::CONSTANT, 1, "1"));
 
-	ConstantExtractor constantExtractor(constant, pkbWriterManager);
+	ConstantExtractor constantExtractor(constant, pkbWriterManager->getConstantWriter());
 	constantExtractor.extract();
 	SECTION("Test constant extractor methods") {
 		std::shared_ptr<PKBReaderManager> pkbReaderManager = pkb->getPKBReaderManager();

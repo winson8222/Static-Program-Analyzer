@@ -7,6 +7,10 @@
 #include "sp/DesignExtractor/Extractor/ParentExtractor.h"
 #include <stdexcept>
 
+constexpr int IF_EXPR_INDEX = 0;
+constexpr int THEN_STMT_INDEX = 1;
+constexpr int ELSE_STMT_INDEX = 2;
+constexpr int IF_ELSE_THEN_NUM_CHILDREN = 3;
 
 /*
 * A visitor for the if-then-else statement which should
@@ -22,4 +26,24 @@ public:
 		listnode context,
 		std::shared_ptr<PKBWriterManager> pkbWriterManager);
 	void visit() override;
+
+private:
+	std::shared_ptr<ASTNode> condition;
+	std::shared_ptr<ASTNode> thenStatementList;
+	std::shared_ptr<ASTNode> elseStatementList;
+
+	/*
+	* Invokes the WhileExtractor to extract the if statement
+	*/
+	void handleIfExtractor(std::shared_ptr<ASTNode> root);
+
+	/*
+	* Invokes extractor of the expression statement
+	*/
+	void handleExpressionVisitor(std::shared_ptr<ASTNode> condition);
+
+	/*
+	* Invokes the visitor of the statement list
+	*/
+	void handleStatementListVisitor(std::shared_ptr<ASTNode> statementList);
 };

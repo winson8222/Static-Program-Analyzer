@@ -1,6 +1,6 @@
 #include "sp/DesignExtractor/Visitor/PrintVisitor.h"
 
-PrintVisitor::PrintVisitor(std::shared_ptr<ASTNode> root, 
+PrintVisitor::PrintVisitor(std::shared_ptr<ASTNode> root,
 	listnode context,
 	std::shared_ptr<PKBWriterManager> pkbWriterManager)
 	: StatementVisitor(root, context, pkbWriterManager) {
@@ -11,19 +11,16 @@ PrintVisitor::PrintVisitor(std::shared_ptr<ASTNode> root,
 		throw std::invalid_argument("PrintVisitor - root does not have 1 child");
 	}
 	this->contexts = listnode(context.begin(), context.end());
+	this->childVariable = root->getChildByIndex(PRINT_VARIABLE_INDEX);
 }
 
 
 void PrintVisitor::visit() {
-	// TODO
-	if (this->root->type != ASTNodeType::PRINT) {
-		throw std::runtime_error("This is not a print node!");
-	}
 
-	PrintExtractor printExtractor(this->root, this->pkbWriterManager);
+	PrintExtractor printExtractor(this->root, this->pkbWriterManager->getPrintWriter());
 	printExtractor.extract();
 
-	VariableVisitor variableVisitor(this->root->children[0], this->pkbWriterManager);
+	VariableVisitor variableVisitor(childVariable, this->pkbWriterManager);
 	variableVisitor.setUsedContext(contexts, root);
 	variableVisitor.visit();
 

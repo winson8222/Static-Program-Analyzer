@@ -26,12 +26,7 @@ public:
     * @param pkbWriterManager the pkbWriterManager to be visited
     * @return the visitor for the statement
     */
-    std::shared_ptr<StatementVisitor> createVisitor(std::shared_ptr<ASTNode> node, listnode parent, std::shared_ptr<PKBWriterManager> pkbWriterManager);
-};
-
-/*
-* For future SWE Designs: to create the visitor for the expression, by using the factory pattern
-*/
-class ExpressionFactory  {
-    std::shared_ptr<IVisitor> createVisitor(std::shared_ptr<ASTNode> node, std::shared_ptr<PKBWriterManager> pkbWriterManager);
+    std::shared_ptr<StatementVisitor> createVisitor(std::shared_ptr<ASTNode> node, 
+        listnode parent, 
+        std::shared_ptr<PKBWriterManager> pkbWriterManager);
 };

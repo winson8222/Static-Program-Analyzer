@@ -97,8 +97,23 @@ public:
 
     /*
     * Method to compare two AST node types together
+    * @param t1 the first AST node type
+    * @param t2 the second AST node type
+    * @return true if the two AST node types are the same, and false otherwise.
     */
     static bool nodeIsTarget(ASTNodeType t1, ASTNodeType t2);
+
+    /*
+    * @brief Check if the accepting AST node can "uses" a variable
+    * @return true if can and false otherwise
+    */
+    static bool nodeStatementCanUses(ASTNodeType t);
+
+    /*
+    * @brief Check if the accepting AST node can "modifies" a variable
+    * @return true if can and false otherwise
+    */
+    static bool nodeStatementCanModifies(ASTNodeType t);
 };
 
 // ai-gen end
