@@ -28,3 +28,8 @@ call c;
 Select c such that Uses(c, "iter")
 2, 5, 6
 5000
+7 - Finds all call statements where the called procedure uses 'iter'
+call c;
+Select c such that Uses(c, " iter")
+2, 5, 6
+5000

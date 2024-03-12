@@ -883,3 +883,45 @@ TEST_CASE("procedure p, q;Select p such that Calls(p, q) with q.procName = 'Thir
     REQUIRE(tokens[20].getValue() == "\"Third\"");
     
 }
+
+
+//call c;
+//Select c such that Uses(c, " iter")
+TEST_CASE("call c; Select c such that Uses(c, \" iter\")") {
+    // Initialize tokenizer with the input string
+    Tokenizer tokenizer("call c; Select c such that Uses(c, \" iter\")");
+    vector<Token> tokens = tokenizer.tokenize();
+
+    // Check the total number of tokens
+    REQUIRE(tokens.size() == 13);  // Expecting 22 tokens
+
+    // Validate each token against the expected output
+    REQUIRE(tokens[0].getType() == TokenType::DesignEntity);
+    REQUIRE(tokens[0].getValue() == "call");
+    REQUIRE(tokens[1].getType() == TokenType::IDENT);
+    REQUIRE(tokens[1].getValue() == "c");
+    REQUIRE(tokens[2].getType() == TokenType::Semicolon);
+    REQUIRE(tokens[2].getValue() == ";");
+    REQUIRE(tokens[3].getType() == TokenType::SelectKeyword);
+    REQUIRE(tokens[3].getValue() == "Select");
+    REQUIRE(tokens[4].getType() == TokenType::IDENT);
+    REQUIRE(tokens[4].getValue() == "c");
+    REQUIRE(tokens[5].getType() == TokenType::SuchKeyword);
+    REQUIRE(tokens[5].getValue() == "such");
+    REQUIRE(tokens[6].getType() == TokenType::ThatKeyword);
+    REQUIRE(tokens[6].getValue() == "that");
+    REQUIRE(tokens[7].getType() == TokenType::Uses);
+    REQUIRE(tokens[7].getValue() == "Uses");
+    REQUIRE(tokens[8].getType() == TokenType::Lparenthesis);
+    REQUIRE(tokens[8].getValue() == "(");
+    REQUIRE(tokens[9].getType() == TokenType::IDENT);
+    REQUIRE(tokens[9].getValue() == "c");
+    REQUIRE(tokens[10].getType() == TokenType::Comma);
+    REQUIRE(tokens[10].getValue() == ",");
+    REQUIRE(tokens[11].getType() == TokenType::QuoutIDENT);
+    REQUIRE(tokens[11].getValue() == "\" iter\"");
+    REQUIRE(tokens[12].getType() == TokenType::Rparenthesis);
+    REQUIRE(tokens[12].getValue() == ")");
+
+
+}

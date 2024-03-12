@@ -802,7 +802,43 @@ TEST_CASE("src/qps/parser/QueryParser") {
 
 //call c;
 //Select c such that Uses(c, "iter")
-TEST_CASE("src/qps/parser/QueryParser/M1FailedCases") {
+TEST_CASE("src/qps/parser/QueryParser/M1FailedCases/1") {
+    //Select c such that Uses(c, "iter")
+    SECTION("QueryParser correctly parses 'call c; Select c such that Uses(c, \"iter\")' with no errors") {
+        // Manually create the vector of tokens for the query
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "call"),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Uses, "Uses"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::QuoutIDENT, "\"iter\""),
+                Token(TokenType::Rparenthesis, ")")
+
+        };
+
+
+        // Instantiate the QueryParser with the tokens
+        QueryParser queryParser(tokens);
+
+        // Parse the query
+        ParsingResult parsingResult = queryParser.parse();
+
+        // Verify that the parsing result indicates a valid query with no errors
+        REQUIRE(parsingResult.isQueryValid() == true);
+        REQUIRE(parsingResult.getErrorMessage().empty() == true);
+
+        // Additional checks can be performed here if needed, such as verifying the specific parsing output
+    }
+}
+
+TEST_CASE("src/qps/parser/QueryParser/M1FailedCases/2") {
     //Select c such that Uses(c, "iter")
     SECTION("QueryParser correctly parses 'call c; Select c such that Uses(c, \"iter\")' with no errors") {
         // Manually create the vector of tokens for the query
