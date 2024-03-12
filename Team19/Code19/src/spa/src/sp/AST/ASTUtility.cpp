@@ -67,6 +67,18 @@ bool ASTUtility::nodeCanFormValidExpression(ASTNodeType t) {
         || nodeIsValidRelFactor(t);
 }
 
+bool ASTUtility::nodeStatementCanUses(ASTNodeType t) {
+	return t == ASTNodeType::PRINT || t == ASTNodeType::ASSIGN
+		|| t == ASTNodeType::WHILE || t == ASTNodeType::CALL
+		|| t == ASTNodeType::IF_ELSE_THEN;
+}
+
+bool ASTUtility::nodeStatementCanModifies(ASTNodeType t) {
+	return t == ASTNodeType::READ || t == ASTNodeType::ASSIGN
+		|| t == ASTNodeType::WHILE || t == ASTNodeType::CALL
+		|| t == ASTNodeType::IF_ELSE_THEN;
+}
+
 bool ASTUtility::nodeIsProgram(ASTNodeType t) {
 	return t == ASTNodeType::PROGRAMS;
 }
@@ -81,5 +93,13 @@ bool ASTUtility::nodeIsStatementList(ASTNodeType t) {
 
 bool ASTUtility::nodeIsIfElse(ASTNodeType t) {
 	return t == ASTNodeType::IF_ELSE_THEN;
+}
+
+bool ASTUtility::nodeIsCall(ASTNodeType t) {
+	return t == ASTNodeType::CALL;
+}
+
+bool ASTUtility::nodeIsTarget(ASTNodeType t1, ASTNodeType t2) {
+	return t1 == t2;
 }
 // ai-gen end

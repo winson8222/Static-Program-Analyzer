@@ -13,8 +13,8 @@ public:
 	/*
 	* Constructor for IExtractor, takes in the root of the AST and the PKBWriterManager
 	*/
-    explicit IExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
-		: root(root), pkbWriterManager(pkbWriterManager) {}
+    explicit IExtractor(std::shared_ptr<ASTNode> root)
+		: root(root) {}
 	
 	/*
 	* Extracts information from the AST and stores it in the PKB by calling
@@ -23,7 +23,6 @@ public:
 	virtual void extract() = 0;
 
 	std::shared_ptr<ASTNode> root;
-	std::shared_ptr<PKBWriterManager> pkbWriterManager;
 };
 
 /*
@@ -34,9 +33,8 @@ public:
 class IRelationshipExtractor {
 public:
 	explicit IRelationshipExtractor(std::shared_ptr<ASTNode> ast1,
-		std::shared_ptr<ASTNode> ast2,
-		std::shared_ptr<PKBWriterManager> pkbWriterManager)
-		: ast1(ast1), ast2(ast2), pkbWriterManager(pkbWriterManager) {}
+		std::shared_ptr<ASTNode> ast2)
+		: ast1(ast1), ast2(ast2) {}
 
 	/*
 	* Extracts relationships from the AST and stores it in the PKB by calling
@@ -46,5 +44,4 @@ public:
 
 	std::shared_ptr<ASTNode> ast1;
 	std::shared_ptr<ASTNode> ast2;
-	std::shared_ptr<PKBWriterManager> pkbWriterManager;
 };

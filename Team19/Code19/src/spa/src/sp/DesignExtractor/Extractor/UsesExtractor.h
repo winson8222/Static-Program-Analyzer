@@ -3,57 +3,37 @@
 #include "sp/DesignExtractor/Extractor/IExtractor.h"
 #include "sp/AST/ASTUtility.h"
 #include <stdexcept>
-#include <iostream>
 
 /*
 * Extracts the Uses relationship between an entity and a variable
 * This class implements the IRelationshipExtractor interface, so most
 * of the methods are overridden with documentations from IRelationshipExtractor.h
 */
-class UsesExtractor : public IRelationshipExtractor {
+class UsesSExtractor : public IRelationshipExtractor {
 public:
-	UsesExtractor(std::shared_ptr<ASTNode> ast1,
+	UsesSExtractor(std::shared_ptr<ASTNode> ast1,
 		std::shared_ptr<ASTNode> ast2,
-		std::shared_ptr<PKBWriterManager> pkbWriterManager)
-		: IRelationshipExtractor(ast1, ast2, pkbWriterManager) {
-	}
+		std::shared_ptr<UsesSWriter> usesSWriter);
 
 	void extract() override;
 
 private:
-	/*
-	* Extracts the used relationship between an assignment statement and a variable
-	* then writes the relationship to PKB
-	*/
-	void getAssignUses();
+	std::shared_ptr<UsesSWriter> usesSWriter;
+};
 
-	/*
-	* Extracts the used relationship between an print statement and a variable
-	* then writes the relationship to PKB
-	*/
-	void getPrintUses();
+/*
+* Extracts the Uses relationship between a procedure and a variable
+* This class implements the IRelationshipExtractor interface, so most
+* of the methods are overridden with documentations from IRelationshipExtractor.h
+*/
+class UsesPExtractor : public IRelationshipExtractor {
+public:
+	UsesPExtractor(std::shared_ptr<ASTNode> ast1,
+		std::shared_ptr<ASTNode> ast2,
+		std::shared_ptr<UsesPWriter> usesPWriter);
 
-	/*
-	* Extracts the used relationship between an if statement and a variable
-	* then writes the relationship to PKB
-	*/
-	void getIfUses();
+	void extract() override;
 
-	/*
-	* Extracts the used relationship between an while statement and a variable
-	* then writes the relationship to PKB
-	*/
-	void getWhileUses();
-
-	/*
-	* Extracts the used relationship between an procedure statement and a variable
-	* then writes the relationship to PKB
-	*/
-	void getProcedureUses();
-
-	/*
-	* Extracts the used relationship between an call statement and a variable
-	* then writes the relationship to PKB
-	*/
-	void getCallUses();
+private:
+	std::shared_ptr<UsesPWriter> usesPWriter;
 };

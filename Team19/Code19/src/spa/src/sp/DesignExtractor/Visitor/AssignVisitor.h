@@ -3,6 +3,7 @@
 #include "sp/DesignExtractor/Visitor/IVisitor.h"
 #include "sp/DesignExtractor/Visitor/VariableVisitor.h"
 #include "sp/DesignExtractor/Extractor/AssignExtractor.h"
+#include "sp/DesignExtractor/Extractor/PatternExtractor.h"
 #include "sp/DesignExtractor/Extractor/VariableExtractor.h"
 #include "sp/DesignExtractor/Extractor/ParentExtractor.h"
 #include "sp/DesignExtractor/Visitor/ExpressionVisitor.h"
@@ -10,6 +11,9 @@
 
 // ai-gen start (gpt, 2, e)
 // prompt: https://platform.openai.com/playground/p/WEPuYktjSFWSXYtIjbHMb5KZ?model=gpt-4&mode=chat
+
+constexpr int ASSIGN_LHS = 0;
+constexpr int ASSIGN_RHS = 1;
 
 /*
 * A visitor for the assign statement which should
@@ -24,7 +28,30 @@ public:
 	AssignVisitor(std::shared_ptr<ASTNode> root, listnode context, std::shared_ptr<PKBWriterManager> pkbWriterManager);
 
 	void visit() override;
-	void addContext(std::shared_ptr<ASTNode> context) override;
+
+private:
+	std::shared_ptr<ASTNode> lhsExpr;
+	std::shared_ptr<ASTNode> rhsExpr;
+
+	/*
+	* Handle invoking the assign extractor
+	*/
+	void handleAssignExtraction(std::shared_ptr<ASTNode> node);
+
+	/*
+	* Handle invoking the variable modifies extractor
+	*/
+	void handleLHSExtraction(std::shared_ptr<ASTNode> node);
+
+	/*
+	* Handle invoking the expression used extractor
+	*/
+	void handleRHSExtraction(std::shared_ptr<ASTNode> node);
+
+	/*
+	* Handle invoking the pattern extractor
+	*/
+	void handleAssignPatternExtraction(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2, std::shared_ptr<ASTNode> ast3);
 };
 
 // ai-gen end

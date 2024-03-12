@@ -2,7 +2,6 @@
 
 #include <memory>
 #include <vector>
-#include <iostream>
 #include "sp/AST/ASTNode.h" 
 #include "sp/AST/ASTUtility.h"
 #include "sp/DesignExtractor/Extractor/ParentExtractor.h"
@@ -67,11 +66,6 @@ public:
     * as inherited from the IVisitor class
     */
     virtual void visit() = 0;
-
-    /*
-    * The method to add a context to the list of contexts
-    */
-    virtual void addContext(std::shared_ptr<ASTNode> context) = 0;
 
     /*
     * The method to set the parents of the contexts, which takes in

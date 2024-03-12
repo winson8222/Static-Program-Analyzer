@@ -6,6 +6,7 @@
 #include "sp/DesignExtractor/Extractor/ProcedureExtractor.h"
 #include "sp/DesignExtractor/Visitor/StatementListVisitor.h"
 
+constexpr int PROCEDURE_STATEMENT_LIST_INDEX = 0;
 
 /*
 * A visitor for the procedure node which should
@@ -19,4 +20,24 @@ class ProcedureVisitor : public IVisitor {
 public:
 	ProcedureVisitor(std::shared_ptr<ASTNode> node, std::shared_ptr<PKBWriterManager> pkbWriterManager);
 	void visit() override;
+
+	/*
+	* A method to set the procedure node to status visited
+	*/
+	void setIsVisited();
+
+	/*
+	* A method to check if the procedure node has been visited
+	*/
+	bool checkIfVisited();
+
+	/*
+	* A method to add all contexts relevant before the procedure is called
+	* @param contexts a vector of shared pointers to ASTNode
+	*/
+	void addContexts(std::vector<std::shared_ptr<ASTNode>> contexts);
+
+private:
+	std::shared_ptr<ASTNode> statementListNode;
+	bool wasVisited;
 };

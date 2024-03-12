@@ -5,7 +5,6 @@
 #include "sp/DesignExtractor/Extractor/UsesExtractor.h"
 #include "sp/DesignExtractor/Extractor/ModifiesExtractor.h"
 #include <stdexcept>
-#include <iostream>
 
 
 /*
@@ -42,6 +41,35 @@ public:
 	void setModifiedContext(listnode contexts, std::shared_ptr<ASTNode> parent);
 	
 private:
+	/*
+	* Contexts of the current variable, all nodes that use it
+	*/
 	std::vector<std::shared_ptr<ASTNode>> usedContexts;
+
+	/*
+	* Contexts of the current variable, all nodes that modifies it
+	* 	
+	*/
 	std::vector<std::shared_ptr<ASTNode>> modifiedContexts;
+
+
+	/*
+	* Handle invokations of UsesPExtractor
+	*/
+	void handleUsesP(std::shared_ptr<ASTNode> user, std::shared_ptr<ASTNode> variable);
+
+	/*
+	* Handle invokations of UsesSExtractor
+	*/
+	void handleUsesS(std::shared_ptr<ASTNode> user, std::shared_ptr<ASTNode> variable);
+
+	/*
+	* Handle invokations of ModifiesPExtractor
+	*/
+	void handleModifiesP(std::shared_ptr<ASTNode> user, std::shared_ptr<ASTNode> variable);
+
+	/*
+	* Handle invokations of ModifiesSExtractor
+	*/
+	void handleModifiesS(std::shared_ptr<ASTNode> user, std::shared_ptr<ASTNode> variable);
 };

@@ -33,6 +33,16 @@ TEST_CASE("sp/DesignExtractor/Extractor/ProcedureExtractor") {
 		auto val = pkbReaderManager->getProcedureReader()->getAllProcedures();
 		REQUIRE(val == expectedProcNames);
 	}
+
+	SECTION("Extract procedure singular") {
+		std::shared_ptr<ASTNode> proc = std::make_shared<ASTNode>(ASTNode(ASTNodeType::PROCEDURE, 3, "proc3"));
+		ProcedureExtractor procExtractor(proc, pkbWriterManager->getProcedureWriter());
+		REQUIRE_NOTHROW(procExtractor.extract());
+
+		std::unordered_set<std::string> expectedProcNames = { "proc1", "proc2", "proc3" };
+		auto val = pkbReaderManager->getProcedureReader()->getAllProcedures();
+		REQUIRE(val == expectedProcNames);
+	}
 }
 
 TEST_CASE("sp/DesignExtractor/Visitor/ProcedureVisitor") {
@@ -42,9 +52,4 @@ TEST_CASE("sp/DesignExtractor/Visitor/ProcedureVisitor") {
 	root->addChild(proc1);
 	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
-	DesignExtractorFacade fde(root, pkbWriterManager);
-
-	SECTION("Extract all") {
-		REQUIRE_THROWS_WITH(fde.extractAll(), "ERROR: This is not the start node!");
-	}
 }

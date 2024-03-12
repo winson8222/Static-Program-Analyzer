@@ -10,7 +10,6 @@ unordered_set<std::string> Utils::getResultsFromQuery(const std::string& query, 
     std::unordered_set<std::string> results;
     for (auto & re : res) {
         results.insert(re);
-        std::cout << re << std::endl;
     }
     return results;
 }

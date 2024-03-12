@@ -1,58 +1,21 @@
 #include "sp/DesignExtractor/Extractor/UsesExtractor.h"
 
-void UsesExtractor::extract() {
-	switch (ast1->type) {
-		case ASTNodeType::ASSIGN:
-			getAssignUses();
-			break;
-		case ASTNodeType::PRINT:
-			getPrintUses();
-			break;
-		case ASTNodeType::IF_ELSE_THEN:
-			getIfUses();
-			break;
-		case ASTNodeType::WHILE:
-			getWhileUses();
-			break;
-		case ASTNodeType::PROCEDURE:
-			getProcedureUses();
-			break;
-		case ASTNodeType::CALL:
-			getCallUses();
-			break;
-		default:
-			// to do: throwexception
-			// this will be handled in M2
-			break;
-	}
+UsesSExtractor::UsesSExtractor(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2,
+	std::shared_ptr<UsesSWriter> usesSWriter) : IRelationshipExtractor(ast1, ast2) {
+	this->usesSWriter = usesSWriter;
 }
 
-void UsesExtractor::getAssignUses() {
-	// Add uses for the variable in the assignment statement
-	this->pkbWriterManager->getUsesSWriter()->addUsesS(ast1->lineNumber, ast2->value);
+void UsesSExtractor::extract() {
+	if (!ASTUtility::nodeStatementCanUses(ast1->getType())) return;
+	usesSWriter->addUsesS(ast1->getLineNumber(), ast2->getValue());
 }
 
-void UsesExtractor::getPrintUses() {
-	// Add uses for the variable in the print statement
-	this->pkbWriterManager->getUsesSWriter()->addUsesS(ast1->lineNumber, ast2->value);
+UsesPExtractor::UsesPExtractor(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2,
+	std::shared_ptr<UsesPWriter> usesPWriter) : IRelationshipExtractor(ast1, ast2) {
+	this->usesPWriter = usesPWriter;
 }
 
-void UsesExtractor::getIfUses() {
-	// Add uses for the variable in the if statement
-	this->pkbWriterManager->getUsesSWriter()->addUsesS(ast1->lineNumber, ast2->value);
-}
-
-void UsesExtractor::getWhileUses() {
-	// Add uses for the variable in the while statement
-	this->pkbWriterManager->getUsesSWriter()->addUsesS(ast1->lineNumber, ast2->value);
-}
-
-void UsesExtractor::getProcedureUses() {
-	// Add uses for the variable in the procedure
-	this->pkbWriterManager->getUsesPWriter()->addUsesP(ast1->value, ast2->value);
-}
-
-void UsesExtractor::getCallUses() {
-	// Do nothing for now
-	// will need to handle later in M2
+void UsesPExtractor::extract() {
+	if (!ast1->equalType(ASTNodeType::PROCEDURE)) return;
+	usesPWriter->addUsesP(ast1->getValue(), ast2->getValue());
 }

@@ -5,9 +5,9 @@
 
 #include "sp/DesignExtractor/Extractor/PrintExtractor.h"
 #include "sp/DesignExtractor/Extractor/ParentExtractor.h"
-#include <iostream>
-#include <stdexcept>
 
+
+constexpr int PRINT_VARIABLE_INDEX = 0;
 /*
 * A visitor for the while statement which should
 * call on all relevant extractors and sub-visitors
@@ -23,5 +23,7 @@ public:
 		std::shared_ptr<PKBWriterManager> pkbWriterManager);
 
 	void visit() override;
-	void addContext(std::shared_ptr<ASTNode> context) override;
+
+private:
+	std::shared_ptr<ASTNode> childVariable;
 };

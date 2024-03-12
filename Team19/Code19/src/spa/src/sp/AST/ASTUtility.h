@@ -87,6 +87,32 @@ public:
     * @return true if AST node is an if-else statement, and false otherwise.
     */
     static bool nodeIsIfElse(ASTNodeType t);
+
+    /*
+    * @brief Check if accepting AST node is a call statement
+    * @return true if AST node is a call statement, and false otherwise.
+	*/
+    static bool nodeIsCall(ASTNodeType t);
+
+    /*
+    * Method to compare two AST node types together
+    * @param t1 the first AST node type
+    * @param t2 the second AST node type
+    * @return true if the two AST node types are the same, and false otherwise.
+    */
+    static bool nodeIsTarget(ASTNodeType t1, ASTNodeType t2);
+
+    /*
+    * @brief Check if the accepting AST node can "uses" a variable
+    * @return true if can and false otherwise
+    */
+    static bool nodeStatementCanUses(ASTNodeType t);
+
+    /*
+    * @brief Check if the accepting AST node can "modifies" a variable
+    * @return true if can and false otherwise
+    */
+    static bool nodeStatementCanModifies(ASTNodeType t);
 };
 
 // ai-gen end

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "sp/DesignExtractor/Extractor/IExtractor.h"
-#include <iostream>
 
 /*
 * Extracts the read statement from the AST and writes the information to the PKB.
@@ -10,8 +9,10 @@
 */
 class ReadExtractor : public IExtractor {
 public:
-	explicit ReadExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager)
-		: IExtractor(root, pkbWriterManager) {}
+	ReadExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<ReadWriter> readWriter);
 
 	void extract() override;
+
+private:
+	std::shared_ptr<ReadWriter> readWriter;
 };

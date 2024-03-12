@@ -1,9 +1,14 @@
 #include "sp/DesignExtractor/Extractor/WhileExtractor.h"
 
+WhileExtractor::WhileExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<WhileWriter> whileWriter)
+	: IExtractor(root) {
+	if (!root->equalType(ASTNodeType::WHILE)) {
+		throw std::invalid_argument("While Extractor: root is not of type While");
+	}
+	this->whileWriter = whileWriter;
+}
+
 void WhileExtractor::extract() {
 	// Insert while entity into pkb
-	this->pkbWriterManager->getWhileWriter()->insertWhile(this->root->lineNumber);
-
-	// Insert while as a statement into pkb
-	this->pkbWriterManager->getStatementWriter()->insertStatement(this->root->lineNumber);
+	this->whileWriter->insertWhile(this->root->getLineNumber());
 }

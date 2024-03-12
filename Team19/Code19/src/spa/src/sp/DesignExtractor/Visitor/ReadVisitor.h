@@ -7,8 +7,9 @@
 #include "sp/DesignExtractor/Extractor/ParentExtractor.h"
 
 #include <stdexcept>
-#include <iostream>
 
+
+constexpr int READ_VARIABLE_INDEX = 0;
 /*
 * A visitor for the read statement which should
 * call on all relevant extractors and sub-visitors
@@ -24,5 +25,7 @@ public:
 		std::shared_ptr<PKBWriterManager> pkbWriterManager);
 
 	void visit() override;
-	void addContext(std::shared_ptr<ASTNode> node) override;
+
+private:
+	std::shared_ptr<ASTNode> variableChild;
 };

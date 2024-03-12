@@ -8,6 +8,10 @@
 #include <stdexcept>
 #include <memory>
 
+// Define constants for the indices
+constexpr int WHILE_EXPRESSION_INDEX = 0;
+constexpr int WHILE_STATEMENT_LIST_INDEX = 1;
+
 /*
 * A visitor for the while statement which should
 * call on all relevant extractors and sub-visitors
@@ -23,5 +27,23 @@ public:
 		std::shared_ptr<PKBWriterManager> pkbWriterManager);
 
 	void visit() override;
-	void addContext(std::shared_ptr<ASTNode> context) override;
+
+private:
+	std::shared_ptr<ASTNode> expression;
+	std::shared_ptr<ASTNode> statementList;
+
+	/*
+	* Invokes the WhileExtractor to extract the while statement
+	*/
+	void handleWhileExtraction(std::shared_ptr<ASTNode> root);
+
+	/*
+	* Invokes the ExpressionVisitor to visit the expression
+	*/
+	void handleExpressionVisitor(std::shared_ptr<ASTNode> expression);
+
+	/*
+	* Invokes the StatementListVisitor to visit the statement list
+	*/
+	void handleStatementListVisitor(std::shared_ptr<ASTNode> statementList);
 };

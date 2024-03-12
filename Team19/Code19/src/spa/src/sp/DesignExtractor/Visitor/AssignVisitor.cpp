@@ -8,26 +8,38 @@ AssignVisitor::AssignVisitor(std::shared_ptr<ASTNode> root,
 		throw std::invalid_argument("ERROR: AssignVisitor - not an assign node");
 	}
 	this->contexts = listnode(context.begin(), context.end());
+	this->lhsExpr = root->getChildByIndex(ASSIGN_LHS);
+	this->rhsExpr = root->getChildByIndex(ASSIGN_RHS);
 }
 
 // assign (statement): extracts Assign (assign, statement, pattern)
 // Variable, Constant (by lhs var + rhs expr), Uses, Modifies (lhs var)
 void AssignVisitor::visit() {
-	// TODO
-	AssignExtractor assignExtractor(this->root, this->pkbWriterManager);
-	assignExtractor.extract();
-
-	VariableVisitor variableVisitor(this->root->children[0], this->pkbWriterManager);
-	variableVisitor.setModifiedContext(this->contexts, this->root);
-	variableVisitor.visit();
-
-	ArithmeticExpressionVisitor expressionVisitor(this->root->children[1], this->pkbWriterManager);
-	expressionVisitor.setUsedContext(this->contexts, this->root);
-	expressionVisitor.visit();
-
+	handleAssignExtraction(this->root);
+	handleLHSExtraction(this->lhsExpr);
+	handleRHSExtraction(this->rhsExpr);
+	handleAssignPatternExtraction(this->root, this->lhsExpr, this->rhsExpr);
 	setParents(this->contexts, this->root, this->pkbWriterManager);
 }
 
-void AssignVisitor::addContext(std::shared_ptr<ASTNode> context) {
-	// Do nothing
+void AssignVisitor::handleAssignExtraction(std::shared_ptr<ASTNode> node) {
+	AssignExtractor assignExtractor(node, this->pkbWriterManager->getAssignWriter());
+	assignExtractor.extract();
+}
+
+void AssignVisitor::handleLHSExtraction(std::shared_ptr<ASTNode> node) {
+	VariableVisitor variableVisitor(node, this->pkbWriterManager);
+	variableVisitor.setModifiedContext(this->contexts, this->root);
+	variableVisitor.visit();
+}
+
+void AssignVisitor::handleRHSExtraction(std::shared_ptr<ASTNode> node) {
+	ArithmeticExpressionVisitor expressionVisitor(node, this->pkbWriterManager);
+	expressionVisitor.setUsedContext(this->contexts, this->root);
+	expressionVisitor.visit();
+}
+
+void AssignVisitor::handleAssignPatternExtraction(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2, std::shared_ptr<ASTNode> ast3) {
+	AssignPatternExtractor assignPatternExtractor(ast1, ast2, ast3, this->pkbWriterManager->getAssignPatternWriter());
+	assignPatternExtractor.extract();
 }
