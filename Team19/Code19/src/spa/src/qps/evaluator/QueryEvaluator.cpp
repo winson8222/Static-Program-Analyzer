@@ -24,6 +24,7 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
 
     // Create a new result table for storing query results.
     result = std::make_shared<ResultTable>();
+    result->setAsTruthTable();
 
     // Check if the query is valid. If not, return an error message.
     if (!parsingResult.isQueryValid()) {
@@ -67,9 +68,9 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
         }
         if (isFirstStrategy) {
             
-            
-            if (result->isEmpty() && !result->isTableTrue()) {
-                return {};
+            // if it is a false table, we can break early since the result will be false
+            if (result->isTableFalse()) {
+                break;
             }
 
             // if it is not a truth table we still need to populate the result table
@@ -88,12 +89,16 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
 
     if (requiredSynonyms.size() == 1) {
         if (requiredSynonyms[0] == "BOOLEAN") {
-            if (result->isTableTrue()) {
+            if (result->isTableTrue() || !result->isEmpty()) {
                 return unordered_set<string>{"TRUE"};
             }
             else {
                 return unordered_set<string>{"FALSE"};
             }
+        }
+
+        if (result->isTableFalse()) {
+            return {};
         }
         std::string requiredType = parsingResult.getRequiredSynonymType(requiredSynonyms[0]);
 
@@ -110,27 +115,35 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
 
         }
         return finalSet;
-    }
-    for (auto requiredSynonym : requiredSynonyms) {
-        std::string requiredType = parsingResult.getRequiredSynonymType(requiredSynonym);
-
-        if (result->hasColumn(requiredSynonym)) {
-            unordered_set<string> currentResult = result->getColumnValues(requiredSynonym);
-            // Join the elements of currentResult with spaces and insert as the first element of finalSet.
-            string joinedResult = join(currentResult, " "); // You'll need to implement join or use an appropriate function
-            finalSet.insert(joinedResult);
+    } else {
+        if (result->isTableFalse()) {
+            return {};
         }
-        else {
-            //return all statement/variables/whatever
-            if (result->isTableTrue() || !result->isEmpty() || isFirstStrategy) {
-                unordered_set<string> currentResult = getAllEntities(requiredType);
+
+
+        for (auto requiredSynonym : requiredSynonyms) {
+            std::string requiredType = parsingResult.getRequiredSynonymType(requiredSynonym);
+
+            if (result->hasColumn(requiredSynonym)) {
+                unordered_set<string> currentResult = result->getColumnValues(requiredSynonym);
                 // Join the elements of currentResult with spaces and insert as the first element of finalSet.
-                string joinedResult = join(currentResult, " ");
+                string joinedResult = join(currentResult, " "); // You'll need to implement join or use an appropriate function
                 finalSet.insert(joinedResult);
             }
-            
+            else {
+                //return all statement/variables/whatever
+                if (result->isTableTrue() || !result->isEmpty() || isFirstStrategy) {
+                    unordered_set<string> currentResult = getAllEntities(requiredType);
+                    // Join the elements of currentResult with spaces and insert as the first element of finalSet.
+                    string joinedResult = join(currentResult, " ");
+                    finalSet.insert(joinedResult);
+                }
+
+            }
         }
+
     }
+
     return finalSet;
     
  

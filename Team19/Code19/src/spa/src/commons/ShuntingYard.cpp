@@ -106,6 +106,7 @@ std::string ShuntingYard::infixToPostfix(const std::string& infixExpression) {
         handleNextCharacter(shunt, c);
     }
     cleanUpStack(shunt);
+    if (shunt.getPrevOperand()) shunt.addStringToPostfixExpression("'");
     return shunt.getPostfixExpression();
 }
 // ai-gen end

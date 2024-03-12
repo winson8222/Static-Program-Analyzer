@@ -884,6 +884,7 @@ TEST_CASE("procedure p, q;Select p such that Calls(p, q) with q.procName = 'Thir
     
 }
 
+
 TEST_CASE("Tokenization of spaces in quoutes") {
     Tokenizer tokenizer("assign a; Select a pattern a(_, _\" x\"_)");
     vector<Token> tokens = tokenizer.tokenize();
@@ -948,6 +949,7 @@ TEST_CASE("Tokenization of spaces in quoutes") {
 
     REQUIRE(tokens[13].getType() == TokenType::Rparenthesis);
     REQUIRE(tokens[13].getValue() == ")");
+
 
 
 }

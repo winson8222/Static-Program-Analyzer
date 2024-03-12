@@ -618,7 +618,7 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrate
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
         std::unordered_set<string> res = evaluator.evaluateQuery();
-        REQUIRE(res == std::unordered_set<string>{"False"});
+        REQUIRE(res == std::unordered_set<string>{"FALSE"});
     }
 
 }
