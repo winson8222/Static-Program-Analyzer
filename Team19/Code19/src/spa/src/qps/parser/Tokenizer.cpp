@@ -53,8 +53,8 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
         // The first case check if there is unconventional naming 
         // and avoids assigning wrong token type
         if (!tokens.empty() && (tokens.back().getType() == TokenType::SelectKeyword 
-            || checkIfDeclaration() || tokens.back().getType() == TokenType::Lparenthesis 
-            || tokens.back().getType() == TokenType::Comma)) {
+            || checkIfDeclaration() || tokens.back().getType() == TokenType::Lparenthesis
+            || tokens.back().getType() == TokenType::Comma || tokens.back().getType() == TokenType::PatternKeyword)) {
             return TokenType::IDENT;
         }
         if (tokenStr == "Select") {
