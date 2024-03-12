@@ -126,7 +126,7 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     else if (regex_match(tokenStr, regex("^(stmt|read|print|while|if|assign|variable|constant|procedure|call)$"))) {
         if (!tokens.empty() && (tokens.back().getType() == TokenType::SelectKeyword 
             || checkIfDeclaration() || tokens.back().getType() == TokenType::Lparenthesis 
-            || tokens.back().getType() == TokenType::Comma)) {
+            || tokens.back().getType() == TokenType::Comma || tokens.back().getType() == TokenType::PatternKeyword)) {
             return TokenType::IDENT;
         }
         else {
@@ -175,7 +175,7 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     else if (regex_match(tokenStr, regex("^(procName|varName|value|stmt#)$"))) {
         if (!tokens.empty() && (tokens.back().getType() == TokenType::SelectKeyword
             || checkIfDeclaration() || tokens.back().getType() == TokenType::Lparenthesis
-            || tokens.back().getType() == TokenType::Comma)) {
+            || tokens.back().getType() == TokenType::Comma || tokens.back().getType() == TokenType::PatternKeyword)) {
             return TokenType::IDENT;
         }
         else {
