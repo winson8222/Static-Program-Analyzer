@@ -253,12 +253,9 @@ void QueryParser::parseUsesOrModifies(SuchThatClause& clause) {
         throwSemanticError();
     }
 
-
-
-
-    try {
-        parseStmtRef(); // Attempt to parse a statement reference
-        // If parseStmtRef succeeds, control continues here
+    // check if it is synonym of stmt or ent/an integer or a quoted identifier
+    if (checkIfStmt()) {
+        parseStmtRef();
         if (currentSuchThatToken.getType() == TokenType::Uses) {
             currentSuchThatToken.setType(TokenType::UsesS);
         }
@@ -268,26 +265,36 @@ void QueryParser::parseUsesOrModifies(SuchThatClause& clause) {
         clause.setRelationship(currentSuchThatToken);
         clause.setFirstParam(currentToken());
         advanceToken();
-    }
-    catch (const std::exception& e) { // If parseStmtRef fails, it will enter this catch block
-        try {
-            parseEntRef(); // Attempt to parse an entity reference
-            // If parseEntRef succeeds, control continues here
-            if (currentSuchThatToken.getType() == TokenType::Uses) {
-                currentSuchThatToken.setType(TokenType::UsesP);
-            }
-            else {
-                currentSuchThatToken.setType(TokenType::ModifiesP);
-            }
-            clause.setRelationship(currentSuchThatToken);
-            clause.setFirstParam(currentToken());
-            advanceToken();
+    } else if (checkIfEnt()) {
+        parseEntRef(); // Attempt to parse an entity reference
+        // If parseEntRef succeeds, control continues here
+        if (currentSuchThatToken.getType() == TokenType::Uses) {
+            currentSuchThatToken.setType(TokenType::UsesP);
         }
-        catch (const std::exception& e) {
-            // If both parseStmtRef and parseEntRef fail, it will enter this catch block
-            throwGrammarError(); // Throws a grammar error if both parsing attempts fail
+        else {
+            currentSuchThatToken.setType(TokenType::ModifiesP);
         }
+        clause.setRelationship(currentSuchThatToken);
+        clause.setFirstParam(currentToken());
+        advanceToken();
     }
+
+
+//
+//    try {
+//        parseStmtRef(); // Attempt to parse a statement reference
+//        // If parseStmtRef succeeds, control continues here
+//
+//    }
+//    catch (const std::exception& e) { // If parseStmtRef fails, it will enter this catch block
+//        try {
+//
+//        }
+//        catch (const std::exception& e) {
+//            // If both parseStmtRef and parseEntRef fail, it will enter this catch block
+//            throwGrammarError(); // Throws a grammar error if both parsing attempts fail
+//        }
+//    }
 
 
 
@@ -573,7 +580,7 @@ void QueryParser::throwSemanticError() {
 
 // Throws a standard invalid_argument exception with a custom error message for incomplete error.
 void QueryParser::throwIncompleteQueryError() {
-    throw std::invalid_argument("Incomplete Query");
+    throw std::invalid_argument("SyntaxError");
 }
 
 // Parses a variable synonym in the query.
@@ -584,6 +591,9 @@ void QueryParser::parseVarSynonyms() {
         throwSemanticError();
     }
 }
+
+
+
 
 // Parses a statement synonym in the query.
 void QueryParser::parseStmtSynonyms() {
@@ -720,4 +730,32 @@ void QueryParser::parseAttrRef() {
     ensureToken(TokenType::Dot);
     advanceToken();
     ensureToken(TokenType::AttrName);
+}
+
+bool QueryParser::checkIfStmt() {
+    if (match(TokenType::INTEGER)) {
+        return true;
+    }
+    if (parsingResult.getDeclaredSynonym(currentToken().getValue()) == "stmt" ||
+        parsingResult.getDeclaredSynonym(currentToken().getValue()) == "assign" ||
+        parsingResult.getDeclaredSynonym(currentToken().getValue()) == "while" ||
+        parsingResult.getDeclaredSynonym(currentToken().getValue()) == "if" ||
+        parsingResult.getDeclaredSynonym(currentToken().getValue()) == "print" ||
+        parsingResult.getDeclaredSynonym(currentToken().getValue()) == "procedure" ||
+        parsingResult.getDeclaredSynonym(currentToken().getValue()) == "read") {
+        return true;
+    }
+    return false;
+}
+
+bool QueryParser::checkIfEnt() {
+    if (match(TokenType::QuoutIDENT)) {
+        return true;
+    }
+    if (parsingResult.getDeclaredSynonym(currentToken().getValue()) == "variable" ||
+        parsingResult.getDeclaredSynonym(currentToken().getValue()) == "constant" ||
+        parsingResult.getDeclaredSynonym(currentToken().getValue()) == "procedure") {
+        return true;
+    }
+    return false;
 }

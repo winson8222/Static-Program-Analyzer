@@ -335,3 +335,4 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/7") {
     std::unordered_set<string> res = evaluator.evaluateQuery();
     REQUIRE(res == std::unordered_set<string>{"y", "z", "3", "2", "4"});
 }
+
