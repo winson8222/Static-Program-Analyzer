@@ -15,20 +15,31 @@ AssignVisitor::AssignVisitor(std::shared_ptr<ASTNode> root,
 // assign (statement): extracts Assign (assign, statement, pattern)
 // Variable, Constant (by lhs var + rhs expr), Uses, Modifies (lhs var)
 void AssignVisitor::visit() {
-	// TODO
-	AssignExtractor assignExtractor(this->root, this->pkbWriterManager->getAssignWriter());
-	assignExtractor.extract();
+	handleAssignExtraction(this->root);
+	handleLHSExtraction(this->lhsExpr);
+	handleRHSExtraction(this->rhsExpr);
+	handleAssignPatternExtraction(this->root, this->lhsExpr, this->rhsExpr);
+	setParents(this->contexts, this->root, this->pkbWriterManager);
+}
 
-	VariableVisitor variableVisitor(lhsExpr, this->pkbWriterManager);
+void AssignVisitor::handleAssignExtraction(std::shared_ptr<ASTNode> node) {
+	AssignExtractor assignExtractor(node, this->pkbWriterManager->getAssignWriter());
+	assignExtractor.extract();
+}
+
+void AssignVisitor::handleLHSExtraction(std::shared_ptr<ASTNode> node) {
+	VariableVisitor variableVisitor(node, this->pkbWriterManager);
 	variableVisitor.setModifiedContext(this->contexts, this->root);
 	variableVisitor.visit();
+}
 
-	ArithmeticExpressionVisitor expressionVisitor(rhsExpr, this->pkbWriterManager);
+void AssignVisitor::handleRHSExtraction(std::shared_ptr<ASTNode> node) {
+	ArithmeticExpressionVisitor expressionVisitor(node, this->pkbWriterManager);
 	expressionVisitor.setUsedContext(this->contexts, this->root);
 	expressionVisitor.visit();
+}
 
-	AssignPatternExtractor assignPatternExtractor(this->root, lhsExpr, rhsExpr, this->pkbWriterManager->getAssignPatternWriter());
+void AssignVisitor::handleAssignPatternExtraction(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2, std::shared_ptr<ASTNode> ast3) {
+	AssignPatternExtractor assignPatternExtractor(ast1, ast2, ast3, this->pkbWriterManager->getAssignPatternWriter());
 	assignPatternExtractor.extract();
-
-	setParents(this->contexts, this->root, this->pkbWriterManager);
 }

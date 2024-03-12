@@ -32,6 +32,26 @@ public:
 private:
 	std::shared_ptr<ASTNode> lhsExpr;
 	std::shared_ptr<ASTNode> rhsExpr;
+
+	/*
+	* Handle invoking the assign extractor
+	*/
+	void handleAssignExtraction(std::shared_ptr<ASTNode> node);
+
+	/*
+	* Handle invoking the variable modifies extractor
+	*/
+	void handleLHSExtraction(std::shared_ptr<ASTNode> node);
+
+	/*
+	* Handle invoking the expression used extractor
+	*/
+	void handleRHSExtraction(std::shared_ptr<ASTNode> node);
+
+	/*
+	* Handle invoking the pattern extractor
+	*/
+	void handleAssignPatternExtraction(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2, std::shared_ptr<ASTNode> ast3);
 };
 
 // ai-gen end

@@ -20,22 +20,26 @@ IfElseThenVisitor::IfElseThenVisitor(std::shared_ptr<ASTNode> root,
 
 
 void IfElseThenVisitor::visit() {
-	// Extract if-then-else
+	handleIfExtractor(this->root);
+	handleExpressionVisitor(this->condition);
+	handleStatementListVisitor(this->thenStatementList);
+	handleStatementListVisitor(this->elseStatementList);
+	setParents(this->contexts, this->root, this->pkbWriterManager);
+}
+
+void IfElseThenVisitor::handleIfExtractor(std::shared_ptr<ASTNode> root) {
 	IfThenElseExtractor ifThenElseExtractor(root, pkbWriterManager->getIfWriter());
 	ifThenElseExtractor.extract();
+}
 
-	// Visit all expressions
+void IfElseThenVisitor::handleExpressionVisitor(std::shared_ptr<ASTNode> condition) {
 	ExpressionVisitor expressionVisitor(condition, pkbWriterManager);
 	expressionVisitor.setUsedContext(contexts, root);
 	expressionVisitor.visit();
+}
 
-	StatementListVisitor thenStatementListVisitor(thenStatementList, pkbWriterManager);
-	thenStatementListVisitor.setContext(contexts, root);
-	thenStatementListVisitor.visit();
-
-	StatementListVisitor elseStatementListVisitor(elseStatementList, pkbWriterManager);
-	elseStatementListVisitor.setContext(contexts, root);
-	elseStatementListVisitor.visit();
-
-	setParents(this->contexts, this->root, this->pkbWriterManager);
+void IfElseThenVisitor::handleStatementListVisitor(std::shared_ptr<ASTNode> statementList) {
+	StatementListVisitor statementListVisitor(statementList, pkbWriterManager);
+	statementListVisitor.setContext(contexts, root);
+	statementListVisitor.visit();
 }

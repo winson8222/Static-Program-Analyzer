@@ -31,4 +31,19 @@ private:
 	std::shared_ptr<ASTNode> condition;
 	std::shared_ptr<ASTNode> thenStatementList;
 	std::shared_ptr<ASTNode> elseStatementList;
+
+	/*
+	* Invokes the WhileExtractor to extract the if statement
+	*/
+	void handleIfExtractor(std::shared_ptr<ASTNode> root);
+
+	/*
+	* Invokes extractor of the expression statement
+	*/
+	void handleExpressionVisitor(std::shared_ptr<ASTNode> condition);
+
+	/*
+	* Invokes the visitor of the statement list
+	*/
+	void handleStatementListVisitor(std::shared_ptr<ASTNode> statementList);
 };

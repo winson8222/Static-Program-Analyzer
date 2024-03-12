@@ -14,8 +14,8 @@ void ExpressionVisitor::visit() {
 void ExpressionVisitor::depthFirstSearch(std::shared_ptr<ASTNode> node) {
 	if (node->type == ASTNodeType::VARIABLE) {
 		VariableVisitor variableVisitor(node, this->pkbWriterManager);
-		variableVisitor.setUsedContext(usedContexts, node); 
 		// set the used context (parent and siblings of the variable node)
+		variableVisitor.setUsedContext(usedContexts, node); 
 		variableVisitor.visit();
 	}
 	else if (node->type == ASTNodeType::CONSTANT) {
