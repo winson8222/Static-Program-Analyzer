@@ -18,7 +18,7 @@ TEST_CASE("CFGNode constructor with line number") {
 
 TEST_CASE("CFGNode end of procedure node") {
     auto& node = CFGNode::getDummyNode();
-    REQUIRE(node->getLineNumber() == -1);
+    REQUIRE(node->getLineNumber() == CFGNode::PROCEDURE_END_LINE_NUMBER);
     REQUIRE(node->getChildren().empty() == true);
     REQUIRE(node->isEndOfProcedure() == true);
 }
