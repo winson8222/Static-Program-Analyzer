@@ -170,6 +170,12 @@ TEST_CASE("CFG generation for multiple procedures, with all names that may be po
 	std::vector<std::shared_ptr<CFGNode>> cfgGraphs = *(cfg.createControlFlowGraphs());
 
 	REQUIRE(cfgGraphs.size() == 30);
+
+	for (int i = 0; i < cfgGraphs.size(); i++) {
+		REQUIRE(cfgGraphs[i]->getLineNumber() == i + 1);
+		REQUIRE(cfgGraphs[i]->getChildren()[0]->getLineNumber() == CFGNode::PROCEDURE_END_LINE_NUMBER);
+	}
+
 	std::filesystem::remove(filename);
 }
 
