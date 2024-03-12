@@ -251,5 +251,80 @@ std::shared_ptr<ParentWriter> parentWriter = pkbWriterManager->getParentWriter()
         std::unordered_set<string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<string>{ "1 2", "2 3"});
     }
+
+    SECTION("Selecting true boolean") {
+
+        std::vector<Token> tokens = {
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::BooleanKeyword, "BOOLEAN"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Parent, "Parent"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::INTEGER, "1"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::INTEGER, "2"),
+                Token(TokenType::Rparenthesis, ")")
+
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{ "TRUE" });
+
+    }
+
+    SECTION("Selecting false boolean") {
+
+        std::vector<Token> tokens = {
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::BooleanKeyword, "BOOLEAN"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Parent, "Parent"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::INTEGER, "2"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::INTEGER, "1"),
+                Token(TokenType::Rparenthesis, ")")
+
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{ "FALSE" });
+
+    }
+
+    SECTION("Selecting true boolean with stmt") {
+
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "stmt"),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::BooleanKeyword, "BOOLEAN"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Parent, "Parent"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::INTEGER, "2"),
+                Token(TokenType::Rparenthesis, ")")
+
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{ "TRUE" });
+
+    }
 }
 
