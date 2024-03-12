@@ -873,3 +873,37 @@ TEST_CASE("src/qps/parser/QueryParser/M1FailedCases/2") {
         // Additional checks can be performed here if needed, such as verifying the specific parsing output
     }
 }
+
+//read r;
+//Select r such that Uses(r, 1)
+TEST_CASE("src/qps/parser/QueryParser/M1FailedCases/3") {
+    //Select r such that Uses(r, 1)
+    SECTION("QueryParser correctly parses 'read r; Select r such that Uses(r, 1)' with no errors") {
+        // Manually create the vector of tokens for the query
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "read"),
+                Token(TokenType::IDENT, "r"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::IDENT, "r"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Uses, "Uses"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::IDENT, "r"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::INTEGER, "1"),
+                Token(TokenType::Rparenthesis, ")")
+
+        };
+        QueryParser queryParser(tokens);
+
+        // Parse the query
+        ParsingResult parsingResult = queryParser.parse();
+
+
+        // Verify that the parsing result indicates a valid query with no errors
+        REQUIRE(parsingResult.isQueryValid() == true);
+        REQUIRE(parsingResult.getErrorMessage().empty() == true);
+    }
+}
