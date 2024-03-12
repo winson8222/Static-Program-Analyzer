@@ -95,6 +95,8 @@ private:
     string getSemanticError();
 
     bool checkValidStmtNum();
+    bool checkIfStmt();
+    bool checkIfEnt();
 
 
 
@@ -103,3 +105,5 @@ private:
 };
 
 #endif // QUERYPARSER_H
+
+

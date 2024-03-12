@@ -111,7 +111,7 @@ SyntaxError
 23 - Invalid Follows 5
 stmt s1;
 Select s1 such that Follows(5, s1
-Incomplete Query
+SyntaxError
 5000
 24 - Invalid Follows 6
 stm s1;
@@ -391,7 +391,7 @@ SyntaxError
 78 - Invalid Uses 2
 variable v; assign a;
 Select v such that Uses
-Incomplete Query
+SyntaxError
 5000
 79 - Invalid Uses 3
 read r;

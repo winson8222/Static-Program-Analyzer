@@ -9,7 +9,7 @@
 #include "sp/SourceProcessor.h"
 
 // Test suite for evaluating integration between Parent*, Pattern, and Follows clauses
-TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrategy") {
+TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrategy/2") {
     // Setup shared PKBManager and related components for use in test cases
     auto pkbManager = std::make_shared<PKBManager>();
     auto pkbReaderManager = pkbManager->getPKBReaderManager();

@@ -42,6 +42,9 @@ public:
     const vector<PatternClause>& getPatternClauses() const;
     const vector<WithClause>& getWithClauses() const;
 
+    // method to check if the synonym is delcared
+    bool isSynonymDeclared(const string& synonym);
+
 private:
     unordered_map<string, string> declaredSynonyms;
     vector<string> requiredSynonyms;

@@ -341,6 +341,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/7") {
     REQUIRE(res == std::unordered_set<string>{"y", "z", "3", "2", "4"});
 }
 
+
 TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/8") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
