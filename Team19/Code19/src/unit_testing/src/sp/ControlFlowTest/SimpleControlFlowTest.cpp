@@ -56,16 +56,16 @@ TEST_CASE("CFG for single program with all possible statements types.") {
 			auto& elseBlockNode = ifElseStatement[1];
 
 			REQUIRE(ifBlockNode->getLineNumber() == 8);
-			REQUIRE((ifBlockNode->getChildren()[0])->getLineNumber() == CFGNode::PROCEDURE_END_LINE_NUMBER);
+			REQUIRE((ifBlockNode->getChildren()[0])->getLineNumber() == -1);
 
 			REQUIRE(elseBlockNode->getLineNumber() == 9);
-			REQUIRE((elseBlockNode->getChildren()[0])->getLineNumber() == CFGNode::PROCEDURE_END_LINE_NUMBER);
+			REQUIRE((elseBlockNode->getChildren()[0])->getLineNumber() == -1);
 		}
 
 		node = cfgGraphs[1];
 		SECTION("Check second procedure") {
 			REQUIRE(node->getLineNumber() == 10);
-			REQUIRE((node->getChildren()[0])->getLineNumber() == CFGNode::PROCEDURE_END_LINE_NUMBER);
+			REQUIRE((node->getChildren()[0])->getLineNumber() == -1);
 		}
 	}
 	std::filesystem::remove(filename);
@@ -121,7 +121,7 @@ TEST_CASE("CFG generation for multiple whiles in a procedure") {
 			node = (node->getChildren())[1];
 		}
 
-		REQUIRE(node->getLineNumber() == CFGNode::PROCEDURE_END_LINE_NUMBER);
+		REQUIRE(node->getLineNumber() == -1);
 	}
 	std::filesystem::remove(filename);
 }
@@ -173,7 +173,7 @@ TEST_CASE("CFG generation for multiple procedures, with all names that may be po
 
 	for (int i = 0; i < cfgGraphs.size(); i++) {
 		REQUIRE(cfgGraphs[i]->getLineNumber() == i + 1);
-		REQUIRE(cfgGraphs[i]->getChildren()[0]->getLineNumber() == CFGNode::PROCEDURE_END_LINE_NUMBER);
+		REQUIRE(cfgGraphs[i]->getChildren()[0]->getLineNumber() == -1);
 	}
 
 	std::filesystem::remove(filename);
@@ -230,7 +230,7 @@ TEST_CASE("CFG generation for 20 nested while statements") {
 			node = (node->getChildren())[1];
 		}
 
-		REQUIRE(node->getLineNumber() == CFGNode::PROCEDURE_END_LINE_NUMBER);
+		REQUIRE(node->getLineNumber() == -1);
 	}
 	std::filesystem::remove(filename);
 }
@@ -285,7 +285,7 @@ TEST_CASE("CFG for complex nested if-while constructs") {
 
 	SECTION("Check Complex Nested Constructs") {
 		REQUIRE(node->getLineNumber() == 1);
-		REQUIRE((node->getChildren())[1]->getLineNumber() == CFGNode::PROCEDURE_END_LINE_NUMBER);
+		REQUIRE((node->getChildren())[1]->getLineNumber() == -1);
 
 		node = (node->getChildren())[0];
 		REQUIRE(node->getLineNumber() == 2);
