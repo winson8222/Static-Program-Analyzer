@@ -21,6 +21,11 @@ private:
 	std::shared_ptr<ModifiesSWriter> modifiesSWriter;
 };
 
+/*
+* Extracts the modifies relationship between a procedure and a variable
+* This class implements the IRelationshipExtractor interface, so most
+* of the methods are overridden with documentations from IRelationshipExtractor.h
+*/
 class ModifiesPExtractor : public IRelationshipExtractor {
 public:
 	ModifiesPExtractor(std::shared_ptr<ASTNode> ast1,

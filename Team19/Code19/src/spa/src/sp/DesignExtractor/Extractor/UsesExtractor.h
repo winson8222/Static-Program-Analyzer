@@ -21,6 +21,11 @@ private:
 	std::shared_ptr<UsesSWriter> usesSWriter;
 };
 
+/*
+* Extracts the Uses relationship between a procedure and a variable
+* This class implements the IRelationshipExtractor interface, so most
+* of the methods are overridden with documentations from IRelationshipExtractor.h
+*/
 class UsesPExtractor : public IRelationshipExtractor {
 public:
 	UsesPExtractor(std::shared_ptr<ASTNode> ast1,
