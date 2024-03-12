@@ -40,11 +40,7 @@ void UsesPStrategy::processBothSynonyms(const Token &firstParam, const Token &se
             std::unordered_set<std::string> allVars =
                     pkbReaderManager.getUsesPReader()->getAllVariablesUsedByProc(proc);
             // copy the value of procs to a rvalue string
-            pair<string, string> col1Pair = make_pair<string, string>(firstParam.getValue(), std::move(proc));
-            for (string var : allVars) {
-                pair<string, string> col2Pair = make_pair<string, string>(secondParam.getValue(), std::move(var));
-                insertRowToTable(col1Pair, col2Pair, resultTable);
-            }
+            insertRowsWithMatchedResults(firstParam, secondParam, proc, allVars, resultTable);
         }
     }
 
@@ -56,22 +52,17 @@ void UsesPStrategy::processFirstParam(const Token &firstParam, const Token &seco
                                           PKBReaderManager &pkbReaderManager) {
     string colName = firstParam.getValue();
     insertSingleColToTable(firstParam, resultTable);
+    std::unordered_set<std::string> allProcs;
     if (secondParam.getType() == TokenType::QuoutIDENT) {
         string secondParamValue = extractQuotedExpression(secondParam);
-        std::unordered_set<std::string> allProcs = pkbReaderManager.getUsesPReader()->getAllProcsThatUseVariable(secondParamValue);
-        for (string proc : allProcs) {
-            pair<string, string> colPair = make_pair(colName, std::move(proc));
-            insertSingleColRowToTable(colPair, resultTable);
-        }
+        allProcs = pkbReaderManager.getUsesPReader()->getAllProcsThatUseVariable(secondParamValue);
+
     } else {
         // it is a wildcard
-        std::unordered_set<std::string> allProcs = pkbReaderManager.getUsesPReader()->getAllProcsThatUseAnyVariable();
-        for (string proc : allProcs) {
-            pair<string, string> colPair = make_pair(colName, std::move(proc));
-            insertSingleColRowToTable(colPair, resultTable);
-        }
+        allProcs = pkbReaderManager.getUsesPReader()->getAllProcsThatUseAnyVariable();
 
     }
+    insertRowsWithSingleColumn(colName, allProcs, resultTable);
 }
 
 void UsesPStrategy::processSecondParam(const Token &firstParam, const Token &secondParam,
@@ -79,21 +70,17 @@ void UsesPStrategy::processSecondParam(const Token &firstParam, const Token &sec
                                            PKBReaderManager &pkbReaderManager) {
     string colName = secondParam.getValue();
     insertSingleColToTable(secondParam, resultTable);
+    std::unordered_set<std::string> allVars;
     if (firstParam.getType() == TokenType::QuoutIDENT) {
         string firstParamValue = extractQuotedExpression(firstParam);
-        std::unordered_set<std::string> allVars = pkbReaderManager.getUsesPReader()->getAllVariablesUsedByProc(firstParamValue);
-        for (string var : allVars) {
-            pair<string, string> colPair = make_pair(colName, std::move(var));
-            insertSingleColRowToTable(colPair, resultTable);
-        }
+        allVars = pkbReaderManager.getUsesPReader()->getAllVariablesUsedByProc(firstParamValue);
+
     } else {
         // it is a wildcard
-        std::unordered_set<std::string> allVars = pkbReaderManager.getUsesPReader()->getAllVariablesUsedByAnyProc();
-        for (string var : allVars) {
-            pair<string, string> colPair = make_pair(colName, std::move(var));
-            insertSingleColRowToTable(colPair, resultTable);
-        }
+        allVars = pkbReaderManager.getUsesPReader()->getAllVariablesUsedByAnyProc();
+
     }
+    insertRowsWithSingleColumn(colName, allVars, resultTable);
 }
 
 void UsesPStrategy::processBothConstants(const Token &firstParam, const Token &secondParam,
@@ -103,21 +90,7 @@ void UsesPStrategy::processBothConstants(const Token &firstParam, const Token &s
         if (!pkbReaderManager.getUsesPReader()->getAllProcsThatUseAnyVariable().empty()) {
             resultTable->setAsTruthTable();
         }
-    } else if (firstParam.getType() == TokenType::Wildcard) {
-        string secondParamValue = extractQuotedExpression(secondParam);
-        if (!pkbReaderManager.getUsesPReader()->getRelationshipsByValue(secondParamValue).empty()) {
-            resultTable->setAsTruthTable();
-        }
-    } else if (secondParam.getType() == TokenType::Wildcard) {
-        string firstParamValue = extractQuotedExpression(firstParam);
-        if (!pkbReaderManager.getUsesPReader()->getRelationshipsByKey(firstParamValue).empty()) {
-            resultTable->setAsTruthTable();
-        }
     } else {
-        string firstParamValue = extractQuotedExpression(firstParam);
-        string secondParamValue = extractQuotedExpression(secondParam);
-        if (pkbReaderManager.getUsesPReader()->hasRelationship(firstParamValue, secondParamValue)) {
-            resultTable->setAsTruthTable();
-        }
+        setTrueIfRelationShipExist(firstParam, secondParam, pkbReaderManager.getUsesPReader(), resultTable);
     }
 }

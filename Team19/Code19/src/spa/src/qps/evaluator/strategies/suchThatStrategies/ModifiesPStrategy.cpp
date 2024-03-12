@@ -56,7 +56,7 @@ void ModifiesPStrategy::processFirstParam(const Token &firstParam, const Token &
     if (secondParam.getType() == TokenType::QuoutIDENT) {
         string secondParamValue = extractQuotedExpression(secondParam);
 
-         allProcs = pkbReaderManager.getModifiesPReader()->getAllProcsThatModifyVariable(secondParamValue);
+        allProcs = pkbReaderManager.getModifiesPReader()->getAllProcsThatModifyVariable(secondParamValue);
 
     } else {
         // it is a wildcard
