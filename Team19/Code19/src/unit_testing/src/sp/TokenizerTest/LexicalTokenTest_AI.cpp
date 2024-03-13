@@ -1,5 +1,3 @@
-// ai-gen start(gpt,2,e)
-// prompt: https://platform.openai.com/playground/p/vwMjpyCtExjgJwMs6KZaXnTE?model=gpt-4&mode=chat
 #include "catch.hpp"
 #include "sp/SPTokenizer/LexicalToken.h"
 
@@ -16,5 +14,3 @@ TEST_CASE("Get TokenType", "[LexicalToken]")
     LexicalToken token(LexicalTokenType::OPERATOR_PLUS,1,1,"+");
     REQUIRE(token.getTokenType() == LexicalTokenType::OPERATOR_PLUS);
 }
-//ai-gen end
-

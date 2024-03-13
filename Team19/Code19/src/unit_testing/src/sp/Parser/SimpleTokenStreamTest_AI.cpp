@@ -14,7 +14,7 @@ TEST_CASE("Check SimpleTokenStream behavior for Whitespace at the end.") {
 }
 
 // Check whether the next non-whitespace token function works correctly
-TEST_CASE("Check SimpleTokenstream behavior for skipping whitespaces.", "[SimpleTokenStream]") {
+TEST_CASE("Check SimpleTokenstream behavior for skipping whitespaces.") {
     std::vector<LexicalToken> tokens = { LexicalToken(LexicalTokenType::WHITESPACE), LexicalToken(LexicalTokenType::INTEGER) };
     auto token_ptr = std::make_shared<std::vector<LexicalToken>>(tokens);
     SimpleTokenStream tokenStream(token_ptr);
@@ -22,7 +22,7 @@ TEST_CASE("Check SimpleTokenstream behavior for skipping whitespaces.", "[Simple
 }
 
 // Check behavior for empty input token vector
-TEST_CASE("Test hasTokensLeft", "[SimpleTokenStream]") {
+TEST_CASE("Test hasTokensLeft") {
     std::vector<LexicalToken> tokens;
     auto token_ptr = std::make_shared<std::vector<LexicalToken>>(tokens);
     SimpleTokenStream tokenStream(token_ptr);
@@ -30,7 +30,7 @@ TEST_CASE("Test hasTokensLeft", "[SimpleTokenStream]") {
 }
 
 // Check whether peekToken function works correctly
-TEST_CASE("Test peekToken", "[SimpleTokenStream]") {
+TEST_CASE("Test peekToken") {
     std::vector<LexicalToken> tokens = { LexicalToken(LexicalTokenType::INTEGER), LexicalToken(LexicalTokenType::WHITESPACE), LexicalToken(LexicalTokenType::OPERATOR_AND), LexicalToken(LexicalTokenType::WHITESPACE) };
     auto token_ptr = std::make_shared<std::vector<LexicalToken>>(tokens);
     SimpleTokenStream tokenStream(token_ptr);
