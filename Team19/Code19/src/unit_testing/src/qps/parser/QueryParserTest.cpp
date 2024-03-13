@@ -903,7 +903,7 @@ TEST_CASE("src/qps/parser/QueryParser/M1FailedCases/3") {
 
 
         // Verify that the parsing result indicates a valid query with no errors
-        REQUIRE(parsingResult.isQueryValid() == true);
-        REQUIRE(parsingResult.getErrorMessage().empty() == true);
+        REQUIRE(parsingResult.isQueryValid() == false);
+        REQUIRE(parsingResult.getErrorMessage() == "SyntaxError");
     }
 }
