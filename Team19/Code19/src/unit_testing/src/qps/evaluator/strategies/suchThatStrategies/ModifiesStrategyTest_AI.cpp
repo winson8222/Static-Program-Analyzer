@@ -286,6 +286,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/7") {
 
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
     std::shared_ptr<ModifiesSWriter> modifiesSWriter = pkbWriterManager->getModifiesSWriter();
+	std::shared_ptr<VariableWriter> variableWriter = pkbWriterManager->getVariableWriter();
     auto assignWriter = pkbWriterManager->getAssignWriter();
     statementWriter->insertStatement(1);
     statementWriter->insertStatement(2);
@@ -297,6 +298,9 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/7") {
     assignWriter->insertAssign(2);
     assignWriter->insertAssign(3);
     assignWriter->insertAssign(4);
+	variableWriter->insertVariable("x");
+	variableWriter->insertVariable("y");
+	variableWriter->insertVariable("z");
 
     std::vector<Token> tokens = {
             Token(TokenType::DesignEntity, "variable"),
@@ -323,14 +327,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/7") {
             Token(TokenType::Comma, ","),
             Token(TokenType::IDENT, "v1"),
             Token(TokenType::Rparenthesis, ")"),
-            Token(TokenType::SuchKeyword, "such"),
-            Token(TokenType::ThatKeyword, "that"),
-            Token(TokenType::Modifies, "Modifies"),
-            Token(TokenType::Lparenthesis, "("),
-            Token(TokenType::INTEGER, "4"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::IDENT, "v2"),
-            Token(TokenType::Rparenthesis, ")")
 
     };
 
@@ -338,7 +334,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/7") {
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
     std::unordered_set<string> res = evaluator.evaluateQuery();
-//    REQUIRE(res == std::unordered_set<string>{"y", "z", "3", "2", "4"});
+    REQUIRE(res == std::unordered_set<string>{"y 2 x", "y 3 x", "y 4 x", "y 4 y", "y 2 y", "y 2 z", "y 3 z", "y 3 y", "y 4 z"});
 }
 
 
