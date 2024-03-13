@@ -32,7 +32,7 @@ protected:
                                              const std::shared_ptr<ResultTable>& resultTable);
     // used with there is only 1 column, it will fills the table with all possible results of this synonym
     static void insertRowsWithSingleColumn(string colName, std::unordered_set<std::string> results, std::shared_ptr<ResultTable> resultTable);
-    static void setTrueIfRelationShipExist(const Token& firstParam, const Token& secondParam, const std::shared_ptr<IRelationshipReader<std::string, std::string> >& reader, std::shared_ptr<ResultTable> resultTable);
+
 };
 
 #endif //QUERYEVALUATIONSTRATEGY_H

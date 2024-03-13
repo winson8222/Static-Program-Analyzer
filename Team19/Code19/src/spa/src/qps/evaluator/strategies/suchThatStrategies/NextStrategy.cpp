@@ -4,25 +4,26 @@ std::shared_ptr<ResultTable> NextStrategy::evaluateQuery(PKBReaderManager& pkbRe
     auto resultTable = std::make_shared<ResultTable>();
 
     // Determine if we're dealing with Next or Next*
-    this->variant = clause.getTypeName();
+    const SuchThatClause* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
+    this->variant = suchClause->getRelationship().getValue();
     this->nextReader = pkbReaderManager.getNextReader();
     this->nextTReader = pkbReaderManager.getNextTReader();
     this->statementReader = pkbReaderManager.getStatementReader();
 
 
-    const SuchThatClause* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
+    // Get the parameters
     this->firstParam = suchClause->getFirstParam();
     this->secondParam = suchClause->getSecondParam();
 
 
     // Process based on token types
-    if (firstParam.getType() == TokenType::IDENT && secondParam.getType() == TokenType::IDENT) {
+    if (isBothParamsSynonym(firstParam, secondParam)) {
         processSynonyms(resultTable, parsingResult, pkbReaderManager);
-    } else if (firstParam.getType() == TokenType::IDENT || firstParam.getType() == TokenType::INTEGER) {
+    } else if (firstParam.getType() == TokenType::IDENT) {
         processFirstParam(resultTable, parsingResult, pkbReaderManager);
-    } else if (secondParam.getType() == TokenType::IDENT || secondParam.getType() == TokenType::INTEGER) {
+    } else if (secondParam.getType() == TokenType::IDENT) {
         processSecondParam(resultTable, parsingResult, pkbReaderManager);
-    } else if (firstParam.getType() == TokenType::INTEGER && secondParam.getType() == TokenType::INTEGER) {
+    } else {
         processIntegerParams(resultTable);
     }
 
@@ -43,12 +44,7 @@ void NextStrategy::processSynonyms(std::shared_ptr<ResultTable> resultTable, con
         return;
     }
 
-    // Assuming that synonyms represent statement numbers and both are expected to exist in the results.
-    auto declaredSynonyms = parsingResult.getDeclaredSynonyms();
-    if (declaredSynonyms.find(firstParam.getValue()) == declaredSynonyms.end() || declaredSynonyms.find(secondParam.getValue()) == declaredSynonyms.end()) {
-        // One or both synonyms are not declared, handle this case appropriately.
-        return;
-    }
+
 
     // Fetch all relationships from the selected reader
     auto relationships = reader->getKeyValueRelationships();
@@ -69,67 +65,106 @@ void NextStrategy::processSynonyms(std::shared_ptr<ResultTable> resultTable, con
 
 void NextStrategy::processFirstParam(std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
     // Define a container for storing statement numbers
-    std::unordered_set<int> nextStatements;
+    std::unordered_set<int> previousStatements;
 
-    // Determine the reader based on isNext or isNextT and fetch the next statements accordingly
-    if (variant == "Next") {
-        auto reader = pkbReaderManager.getNextReader();
-        nextStatements = reader->getNext(std::stoi(firstParam.getValue()));
-    } else if (variant == "Next*"){
-        auto reader = pkbReaderManager.getNextTReader();
-        nextStatements = reader->getNextT(std::stoi(firstParam.getValue()));
+    if (secondParam.getType() == TokenType::Wildcard) {
+        // If the second param is a wildcard, we can just fetch all the next statements
+        if (variant == "Next") {
+            auto reader = pkbReaderManager.getNextReader();
+            previousStatements = reader->getAllPrevious();
+        } else if (variant == "Next*") {
+            auto reader = pkbReaderManager.getNextTReader();
+            previousStatements = reader->getAllPreviousT();
+        } else {
+            // Handle unexpected scenario where neither isNext nor isNextT is true
+            return;
+        }
     } else {
-        // Handle unexpected scenario where neither isNext nor isNextT is true
-        return;
-    }
-
-    if (secondParam.getType() == TokenType::INTEGER || secondParam.getType() == TokenType::IDENT) {
-        resultTable->insertColumn(secondParam.getValue());
-
-        for (int stmt : nextStatements) {
-            resultTable->insertNewRow({{firstParam.getValue(), std::to_string(stmt)}});
+        // Determine the reader based on isNext or isNextT and fetch the next statements accordingly
+        if (variant == "Next") {
+            auto reader = pkbReaderManager.getNextReader();
+            previousStatements = reader->getPrevious(std::stoi(secondParam.getValue()));
+        } else if (variant == "Next*"){
+            auto reader = pkbReaderManager.getNextTReader();
+            previousStatements = reader->getPreviousT(std::stoi(secondParam.getValue()));
+        } else {
+            // Handle unexpected scenario where neither isNext nor isNextT is true
+            return;
         }
     }
+
+
+    resultTable->insertColumn(firstParam.getValue());
+    // convert the set of previous statements to a unordered set of strings
+    std::unordered_set<std::string> previousStatementsStr;
+    convertIntSetToStringSet(previousStatements, previousStatementsStr);
+    insertRowsWithSingleColumn(firstParam.getValue(), previousStatementsStr, resultTable);
+
 }
+
 
 void NextStrategy::processSecondParam(std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
     // Define a container for storing statement numbers
     std::unordered_set<int> nextStatements;
-
-    // Determine the reader based on isNext or isNextT and fetch the next statements accordingly
-    if (variant == "Next") {
-        auto reader = pkbReaderManager.getNextReader();
-        nextStatements = reader->getPrevious(std::stoi(secondParam.getValue()));
-    } else if (variant == "Next*") {
-        auto reader = pkbReaderManager.getNextTReader();
-        nextStatements = reader->getPreviousT(std::stoi(secondParam.getValue()));
+    if (firstParam.getType() == TokenType::Wildcard) {
+        // If the first param is a wildcard, we can just fetch all the next statements
+        if (variant == "Next") {
+            auto reader = pkbReaderManager.getNextReader();
+            nextStatements = reader->getAllNext();
+        } else if (variant == "Next*") {
+            auto reader = pkbReaderManager.getNextTReader();
+            nextStatements = reader->getAllNextT();
+        } else {
+            // Handle unexpected scenario where neither isNext nor isNextT is true
+            return;
+        }
     } else {
-        // Handle unexpected scenario where neither isNext nor isNextT is true
-        return;
-    }
-
-    if (secondParam.getType() == TokenType::INTEGER || secondParam.getType() == TokenType::IDENT) {
-        resultTable->insertColumn(secondParam.getValue());
-
-        for (int stmt : nextStatements) {
-            resultTable->insertNewRow({{secondParam.getValue(), std::to_string(stmt)}});
+        // Determine the reader based on isNext or isNextT and fetch the next statements accordingly
+        if (variant == "Next") {
+            auto reader = pkbReaderManager.getNextReader();
+            nextStatements = reader->getNext(std::stoi(firstParam.getValue()));
+        } else if (variant == "Next*"){
+            auto reader = pkbReaderManager.getNextTReader();
+            nextStatements = reader->getNextT(std::stoi(firstParam.getValue()));
+        } else {
+            // Handle unexpected scenario where neither isNext nor isNextT is true
+            return;
         }
     }
+
+    resultTable->insertColumn(secondParam.getValue());
+    // convert the set of next statements to a unordered set of strings
+    std::unordered_set<std::string> nextStatementsStr;
+    convertIntSetToStringSet(nextStatements, nextStatementsStr);
+    insertRowsWithSingleColumn(secondParam.getValue(), nextStatementsStr, resultTable);
 }
 
 void NextStrategy::processIntegerParams(std::shared_ptr<ResultTable> resultTable) {
     bool relationshipExists;
     if (variant == "Next") {
-
-        relationshipExists = nextReader->hasRelationship(std::stoi(firstParam.getValue()), std::stoi(secondParam.getValue()));
+        if (isBothParamsWildcard(firstParam, secondParam)) {
+    // If both params are wildcards, we can just check if there is a next statement
+            relationshipExists = !nextReader->getAllNext().empty();
+            if (relationshipExists) {
+                resultTable->setAsTruthTable();
+            }
+        } else {
+            setTrueIfRelationShipExist(firstParam, secondParam, nextReader, resultTable);
+        }
     } else if (variant == "Next*") {
+        if (isBothParamsWildcard(firstParam, secondParam)) {
+            // If both params are wildcards, we can just check if there is a next* statement
+            relationshipExists = !nextTReader->getAllNextT().empty();
+            if (relationshipExists) {
+                resultTable->setAsTruthTable();
+            }
+        } else {
+            setTrueIfRelationShipExist(firstParam, secondParam, nextTReader, resultTable);
+        }
 
-        relationshipExists = nextTReader->hasRelationship(std::stoi(firstParam.getValue()), std::stoi(secondParam.getValue()));
     } else {
         // Handle unexpected scenario where neither isNext nor isNextT is true
         return;
     }
-    if (relationshipExists) {
-        resultTable->setAsTruthTable();
-    }
+
 }

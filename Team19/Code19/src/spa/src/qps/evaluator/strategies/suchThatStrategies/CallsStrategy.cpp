@@ -83,6 +83,7 @@ void CallsStrategy::processFirstParam(const ParsingResult &parsingResult, std::s
         }
 
     }
+
     insertRowsWithSingleColumn(colName, allCallers, resultTable);
 
 }
