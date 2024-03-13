@@ -4,35 +4,39 @@ std::shared_ptr<ResultTable> NextStrategy::evaluateQuery(PKBReaderManager& pkbRe
     auto resultTable = std::make_shared<ResultTable>();
 
     // Determine if we're dealing with Next or Next*
-    isNext = (clause.getTypeName() == "Next");
-    isNextT = (clause.getTypeName() == "Next*");
+    this->variant = clause.getTypeName();
+    this->nextReader = pkbReaderManager.getNextReader();
+    this->nextTReader = pkbReaderManager.getNextTReader();
+    this->statementReader = pkbReaderManager.getStatementReader();
+
 
     const SuchThatClause* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
-    const Token& firstParam = suchClause->getFirstParam();
-    const Token& secondParam = suchClause->getSecondParam();
+    this->firstParam = suchClause->getFirstParam();
+    this->secondParam = suchClause->getSecondParam();
+
 
     // Process based on token types
     if (firstParam.getType() == TokenType::IDENT && secondParam.getType() == TokenType::IDENT) {
-        processSynonyms(firstParam, secondParam, resultTable, parsingResult, pkbReaderManager);
+        processSynonyms(resultTable, parsingResult, pkbReaderManager);
     } else if (firstParam.getType() == TokenType::IDENT || firstParam.getType() == TokenType::INTEGER) {
-        processFirstParam(firstParam, secondParam, resultTable, parsingResult, pkbReaderManager);
+        processFirstParam(resultTable, parsingResult, pkbReaderManager);
     } else if (secondParam.getType() == TokenType::IDENT || secondParam.getType() == TokenType::INTEGER) {
-        processSecondParam(firstParam, secondParam, resultTable, parsingResult, pkbReaderManager);
+        processSecondParam(resultTable, parsingResult, pkbReaderManager);
     } else if (firstParam.getType() == TokenType::INTEGER && secondParam.getType() == TokenType::INTEGER) {
-        processIntegerParams(firstParam, secondParam, resultTable);
+        processIntegerParams(resultTable);
     }
 
     return resultTable;
 }
 
-void NextStrategy::processSynonyms(const Token& firstParam, const Token& secondParam, std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
+void NextStrategy::processSynonyms(std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
     // Add columns to the result table
     insertColsToTable(firstParam, secondParam, resultTable);
     // Choose the correct reader based on the variant indicating "Next" or "Next*"
     std::shared_ptr<IRelationshipReader<int, int>> reader;
-    if (isNext) {
+    if (variant == "Next") {
         reader = pkbReaderManager.getNextReader();
-    } else if (isNextT) {
+    } else if (variant == "Next*") {
         reader = pkbReaderManager.getNextTReader();
     } else {
         // Handle unexpected variant
@@ -63,15 +67,15 @@ void NextStrategy::processSynonyms(const Token& firstParam, const Token& secondP
 
 
 
-void NextStrategy::processFirstParam(const Token& firstParam, const Token& secondParam, std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
+void NextStrategy::processFirstParam(std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
     // Define a container for storing statement numbers
     std::unordered_set<int> nextStatements;
 
     // Determine the reader based on isNext or isNextT and fetch the next statements accordingly
-    if (isNext) {
+    if (variant == "Next") {
         auto reader = pkbReaderManager.getNextReader();
         nextStatements = reader->getNext(std::stoi(firstParam.getValue()));
-    } else if (isNextT) {
+    } else if (variant == "Next*"){
         auto reader = pkbReaderManager.getNextTReader();
         nextStatements = reader->getNextT(std::stoi(firstParam.getValue()));
     } else {
@@ -88,15 +92,15 @@ void NextStrategy::processFirstParam(const Token& firstParam, const Token& secon
     }
 }
 
-void NextStrategy::processSecondParam(const Token& firstParam, const Token& secondParam, std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
+void NextStrategy::processSecondParam(std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
     // Define a container for storing statement numbers
     std::unordered_set<int> nextStatements;
 
     // Determine the reader based on isNext or isNextT and fetch the next statements accordingly
-    if (isNext) {
+    if (variant == "Next") {
         auto reader = pkbReaderManager.getNextReader();
         nextStatements = reader->getPrevious(std::stoi(secondParam.getValue()));
-    } else if (isNextT) {
+    } else if (variant == "Next*") {
         auto reader = pkbReaderManager.getNextTReader();
         nextStatements = reader->getPreviousT(std::stoi(secondParam.getValue()));
     } else {
@@ -113,19 +117,19 @@ void NextStrategy::processSecondParam(const Token& firstParam, const Token& seco
     }
 }
 
-void NextStrategy::processIntegerParams(const Token& firstParam, const Token& secondParam, std::shared_ptr<ResultTable> resultTable, PKBReaderManager& pkbReaderManager) {
-    bool exists;
-    if (isNext) {
-        auto reader = pkbReaderManager.getNextReader();
-        exists = reader->hasRelationship(std::stoi(firstParam.getValue()), std::stoi(secondParam.getValue()));
-    } else if (isNextT) {
-        auto reader = pkbReaderManager.getNextTReader();
-        exists = reader->hasRelationship(std::stoi(firstParam.getValue()), std::stoi(secondParam.getValue()));
+void NextStrategy::processIntegerParams(std::shared_ptr<ResultTable> resultTable) {
+    bool relationshipExists;
+    if (variant == "Next") {
+
+        relationshipExists = nextReader->hasRelationship(std::stoi(firstParam.getValue()), std::stoi(secondParam.getValue()));
+    } else if (variant == "Next*") {
+
+        relationshipExists = nextTReader->hasRelationship(std::stoi(firstParam.getValue()), std::stoi(secondParam.getValue()));
     } else {
         // Handle unexpected scenario where neither isNext nor isNextT is true
         return;
     }
-    if (exists) {
+    if (relationshipExists) {
         resultTable->setAsTruthTable();
     }
 }

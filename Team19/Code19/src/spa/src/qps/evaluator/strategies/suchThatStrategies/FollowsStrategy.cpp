@@ -21,21 +21,21 @@ std::shared_ptr<ResultTable> FollowsStrategy::evaluateQuery(PKBReaderManager& pk
     followsReader = pkbReaderManager.getFollowsReader();
     followsTReader = pkbReaderManager.getFollowsTReader();
     const SuchThatClause* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
-    const Token& firstParam = suchClause->getFirstParam();
-    const Token& secondParam = suchClause->getSecondParam();
-    string variant = suchClause->getRelationship().getValue();
+    this->firstParam = suchClause->getFirstParam();
+    this->secondParam = suchClause->getSecondParam();
+    this->variant = suchClause->getRelationship().getValue();
 
     // Handling different parameter types for the Follows relationship
     if (isBothParamsSynonym(firstParam, secondParam)) {
-        processSynonyms(firstParam, secondParam, variant, resultTable, parsingResult, pkbReaderManager);
+        processSynonyms(resultTable, parsingResult, pkbReaderManager);
     } else if (firstParam.getType() == TokenType::IDENT) {
-        processFirstParam(firstParam, secondParam, variant, resultTable, parsingResult, pkbReaderManager);
+        processFirstParam(resultTable, parsingResult, pkbReaderManager);
     } else if (secondParam.getType() == TokenType::IDENT) {
-        processSecondParam(firstParam, secondParam, variant, resultTable, parsingResult, pkbReaderManager);
+        processSecondParam(resultTable, parsingResult, pkbReaderManager);
     } else if (isBothParamsWildcard(firstParam, secondParam)) {
         resultTable->setAsTruthTable(); // Handling wildcard cases
     } else if (isBothParamsInteger(firstParam, secondParam)) {
-        processIntegerParams(firstParam, secondParam, resultTable); // Handling integer cases
+        processIntegerParams(resultTable); // Handling integer cases
     }
 
     return resultTable;
@@ -50,7 +50,7 @@ std::shared_ptr<ResultTable> FollowsStrategy::evaluateQuery(PKBReaderManager& pk
  * @param variant Specifies whether it's a direct Follows or transitive Follows* relationship.
  * @param resultTable The table to be populated with query results.
  */
-void FollowsStrategy::processSynonyms(const Token& firstParam, const Token& secondParam, const std::string& variant, std::shared_ptr<ResultTable> resultTable,
+void FollowsStrategy::processSynonyms(std::shared_ptr<ResultTable> resultTable,
                                       const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
     insertColsToTable(firstParam, secondParam, resultTable);
 
@@ -82,7 +82,7 @@ void FollowsStrategy::processSynonyms(const Token& firstParam, const Token& seco
  * @param variant Specifies whether it's a direct Follows or transitive Follows* relationship.
  * @param resultTable The table to be populated with query results.
  */
-void FollowsStrategy::processFirstParam(const Token& firstParam, const Token& secondParam, const string& variant,
+void FollowsStrategy::processFirstParam(
                                         std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult,
                                         PKBReaderManager& pkbReaderManager) {
     string col1 = firstParam.getValue();
@@ -119,7 +119,7 @@ void FollowsStrategy::processFirstParam(const Token& firstParam, const Token& se
  * @param variant Specifies whether it's a direct Follows or transitive Follows* relationship.
  * @param resultTable The table to be populated with query results.
  */
-void FollowsStrategy::processSecondParam(const Token& firstParam, const Token& secondParam, const string& variant,
+void FollowsStrategy::processSecondParam(
                                          std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult,
                                          PKBReaderManager& pkbReaderManager) {
     string col2 = secondParam.getValue();
@@ -158,7 +158,7 @@ void FollowsStrategy::processSecondParam(const Token& firstParam, const Token& s
  * @param secondParam The second parameter token of the query, another integer representing a statement number.
  * @param resultTable The table to be set as a truth table if the Follows relationship exists.
  */
-void FollowsStrategy::processIntegerParams(const Token& firstParam, const Token& secondParam,
+void FollowsStrategy::processIntegerParams(
                                            std::shared_ptr<ResultTable> resultTable) {
     int firstStmtNum = std::stoi(firstParam.getValue());
     int secondStmtNum = std::stoi(secondParam.getValue());

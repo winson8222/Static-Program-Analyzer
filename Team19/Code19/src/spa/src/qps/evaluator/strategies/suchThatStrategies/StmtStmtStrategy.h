@@ -16,14 +16,11 @@ public:
     ~StmtStmtStrategy() override = default;
 
 
-    virtual void processIntegerParams(const Token& firstParam, const Token& secondParam,
-        std::shared_ptr<ResultTable> resultTable) = 0;
+    virtual void processIntegerParams(std::shared_ptr<ResultTable> resultTable) = 0;
 
-    virtual void processFirstParam(const Token& firstParam, const Token& secondParam, const string& variant,
-        std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) = 0;
+    virtual void processFirstParam(std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) = 0;
 
-    virtual void processSecondParam(const Token& firstParam, const Token& secondParam, const string& variant,
-        std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) = 0;
+    virtual void processSecondParam(std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) = 0;
 protected:
     static bool isBothParamsInteger(const Token& firstParam, const Token& secondParam);
 
