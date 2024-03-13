@@ -12,7 +12,7 @@
  * @param filename The name of the file to parse.
  */
 SimpleParser::SimpleParser(std::shared_ptr<std::vector<LexicalToken>> tokens) {
-	this->tokenStream = std::make_unique<SimpleTokenStream>(tokens);
+	this->tokenStream = std::make_unique<SimpleTokenStream>(std::move(tokens));
 	this->lineManager = std::make_unique<SimpleLineManager>();
 }
 
