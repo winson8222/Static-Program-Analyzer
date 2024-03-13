@@ -1,5 +1,5 @@
 #include "QueryEvaluator.h"
-#include "PatternStrategy.h"
+#include "qps/evaluator/strategies/PatternStrategy.h"
 #include "qps/evaluator/ResultTable.h"
 #include <variant>
 
@@ -24,6 +24,7 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
 
     // Create a new result table for storing query results.
     result = std::make_shared<ResultTable>();
+    result->setAsTruthTable();
 
     // Check if the query is valid. If not, return an error message.
     if (!parsingResult.isQueryValid()) {
@@ -31,26 +32,45 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
         error.insert(parsingResult.getErrorMessage());
         return error;
     }
-    
+    vector<SuchThatClause> suchThatClauses = parsingResult.getSuchThatClauses();
     // Add such-that-strategies based on the relationship specified in the query.
-    std::string suchThatRelationship = parsingResult.getSuchThatClauseRelationship().getValue();
-    auto it = strategyFactory.find(suchThatRelationship);
-    if (it != strategyFactory.end()) {
-        addStrategy(it->second());
+    for (auto clause : suchThatClauses) {
+        TokenType suchThatRelationship = clause.getRelationship().getType();
+        auto it = strategyFactory.find(suchThatRelationship);
+        if (it != strategyFactory.end()) {
+            addStrategy(it->second());
+        }
     }
-
+    
+    vector<PatternClause> patternClauses = parsingResult.getPatternClauses();
     // Add PatternStrategy if pattern clause exists in the query.
-    if (!parsingResult.getPatternClauseRelationship().getValue().empty()) {
+    for (auto clause : patternClauses) {
         addStrategy(std::make_unique<PatternStrategy>());
     }
+    
+    /*vector<WithClause> withClauses = parsingResult.getWithClauses();
+    for (auto cluase : withClauses) {
+
+    }*/
 
     // Evaluate the query using the strategies and compile the results.
     bool isFirstStrategy = true;
+    int suchThatCounter = 0;
+    int patternCounter = 0;
     for (auto& strategy : strategies) {
+        if (suchThatCounter < suchThatClauses.size()) {
+            result = strategy->evaluateQuery(*pkbReaderManager, parsingResult, suchThatClauses[suchThatCounter]);
+            suchThatCounter++;
+        }
+        else if (patternCounter < patternClauses.size()) {
+            result = strategy->evaluateQuery(*pkbReaderManager, parsingResult, patternClauses[patternCounter]);
+            patternCounter++;
+        }
         if (isFirstStrategy) {
-            result = strategy->evaluateQuery(*pkbReaderManager, parsingResult);
-            if (result->isEmpty() && !result->isTableTrue()) {
-                return {};
+            
+            // if it is a false table, we can break early since the result will be false
+            if (result->isTableFalse()) {
+                break;
             }
 
             // if it is not a truth table we still need to populate the result table
@@ -59,24 +79,73 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
             }
         }
         else {
-            result = result->joinOnColumns(strategy->evaluateQuery(*pkbReaderManager, parsingResult));
+            result = result->joinOnColumns(result);
         }
     }
 
     // Retrieve and return the results based on the required synonym.
-    std::string requiredSynonym = parsingResult.getRequiredSynonym();
-    std::string requiredType = parsingResult.getRequiredSynonymType();
+    std::vector<std::string> requiredSynonyms = parsingResult.getRequiredSynonyms();
+    std::unordered_set<std::string> finalSet;
 
-    if (result->hasColumn(requiredSynonym)) {
-        return result->getColumnValues(requiredSynonym);
-    }
-    else {
-        //return all statement/variables/whatever
-        if (result->isTableTrue() || !result->isEmpty() || isFirstStrategy) {
-            return getAllEntities(requiredType);
+    if (requiredSynonyms.size() == 1) {
+        if (requiredSynonyms[0] == "BOOLEAN") {
+            if (result->isTableTrue() || !result->isEmpty()) {
+                return unordered_set<string>{"TRUE"};
+            }
+            else {
+                return unordered_set<string>{"FALSE"};
+            }
         }
-        return {};
-	}
+
+        if (result->isTableFalse()) {
+            return {};
+        }
+        std::string requiredType = parsingResult.getRequiredSynonymType(requiredSynonyms[0]);
+
+        if (result->hasColumn(requiredSynonyms[0])) {
+            unordered_set<string> currentResult = result->getColumnValues(requiredSynonyms[0]);
+            finalSet.insert(currentResult.begin(), currentResult.end());
+        }
+        else {
+            //return all statement/variables/whatever
+            if (result->isTableTrue() || !result->isEmpty() || isFirstStrategy) {
+                unordered_set<string> currentResult = getAllEntities(requiredType);;
+                finalSet.insert(currentResult.begin(), currentResult.end());
+            }
+
+        }
+        return finalSet;
+    } else {
+        if (result->isTableFalse()) {
+            return {};
+        }
+
+
+        for (auto requiredSynonym : requiredSynonyms) {
+            std::string requiredType = parsingResult.getRequiredSynonymType(requiredSynonym);
+
+            if (result->hasColumn(requiredSynonym)) {
+                unordered_set<string> currentResult = result->getColumnValues(requiredSynonym);
+                // Join the elements of currentResult with spaces and insert as the first element of finalSet.
+                string joinedResult = join(currentResult, " "); // You'll need to implement join or use an appropriate function
+                finalSet.insert(joinedResult);
+            }
+            else {
+                //return all statement/variables/whatever
+                if (result->isTableTrue() || !result->isEmpty() || isFirstStrategy) {
+                    unordered_set<string> currentResult = getAllEntities(requiredType);
+                    // Join the elements of currentResult with spaces and insert as the first element of finalSet.
+                    string joinedResult = join(currentResult, " ");
+                    finalSet.insert(joinedResult);
+                }
+
+            }
+        }
+
+    }
+
+    return finalSet;
+    
  
 }
 
@@ -109,18 +178,20 @@ std::unordered_set<std::string> QueryEvaluator::getAllEntities(const std::string
 
 
 
-// Initializes the strategy factory with various query evaluation strategies.
+// Initializes the strategy factory with various query evaluation strategies..
 void QueryEvaluator::initializeStrategyFactory() {
 
     // Mapping of query types to their corresponding strategies.
     QueryEvaluator::strategyFactory = {
-        {"Follows", []() { return std::make_unique<FollowsStrategy>(); }},
-        {"Follows*", []() { return std::make_unique<FollowsStrategy>(); }},
-        {"Parent", []() { return std::make_unique<ParentStrategy>(); }},
-        {"Parent*", []() { return std::make_unique<ParentStrategy>(); }},
-        {"Uses", []() { return std::make_unique<UsesStrategy>(); }},
-        {"Modifies", []() { return std::make_unique<ModifiesStrategy>(); }}
-        // Additional strategies can be added here as needed.
+            {TokenType::Follows, []() { return std::make_unique<FollowsStrategy>(); }},
+            {TokenType::FollowsT, []() { return std::make_unique<FollowsStrategy>(); }},
+            {TokenType::Parent, []() { return std::make_unique<ParentStrategy>(); }},
+            {TokenType::ParentT, []() { return std::make_unique<ParentStrategy>(); }},
+            {TokenType::UsesS, []() { return std::make_unique<UsesStrategy>(); }},
+            {TokenType::ModifiesS, []() { return std::make_unique<ModifiesStrategy>(); }},
+            {TokenType::ModifiesP, []() { return std::make_unique<ModifiesPStrategy>(); }},
+            {TokenType::UsesP, []() { return std::make_unique<UsesPStrategy>(); }},
+            // Additional strategies can be added here as needed.
     };
 }
 
@@ -164,5 +235,16 @@ void QueryEvaluator::initializeEntityFactory() {
 
 
     };
+}
+
+string QueryEvaluator::join(const unordered_set<string>& elements, const string& delimiter) {
+    string result;
+    for (const auto& element : elements) {
+        if (!result.empty()) {
+            result += delimiter;
+        }
+        result += element;
+    }
+    return result;
 }
 

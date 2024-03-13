@@ -19,12 +19,18 @@ public:
     // This method tokenizes the stored query and returns a vector of Token objects.
     vector<Token> tokenize();
 
+    string removeSpaces(string str);
+
 private:
     // Private member variable to store the query string.
     string query;
 
     // A regular expression object used to identify tokens in the query string.
     regex tokenRegex;
+
+    // string the represents the last relationship used (such that, with, pattern)
+    // it is used to explicitly state the relationship instead of "and"
+    string lastRelationship;
 
     // A private method that splits the query into tokens based on the regular expression.
     // Returns a vector of Token objects.

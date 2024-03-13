@@ -1,12 +1,14 @@
 #include "../../spa/src/qps/parser/Tokenizer.h"
 #include <stdexcept>
+#include <algorithm> // For std::remove
+#include <string>    // For std::string
 
 using namespace std;
 
 // Initializes the Tokenizer with a given query string.
 Tokenizer::Tokenizer(const string& query) : query(query) {
     // Regex to split based on quouted text, whitespaces, parentheses, commas, semicolons
-    tokenRegex = std::regex(R"("[^"]*"|[\w.`~@#$%^&*+={}:<>-]+|_|[,;()\"\'])");
+    tokenRegex = std::regex(R"("[^"]*"|[\w`~@#$%^&*+={}:-]+|_|[,;.<>()\"\'])");
 }
 
 // This method tokenizes the stored query and returns a vector of Token objects.
@@ -25,7 +27,13 @@ void Tokenizer::splitQuery() {
 
     for (; iter != end; ++iter) {  // Loop through all tokens.
         auto tokenType = determineTokenType(*iter);  // Determine the type of each token.
-        tokens.emplace_back(tokenType, *iter);  // Add the token to the vector.
+        if (*iter == "and") {
+            tokens.emplace_back(tokenType, lastRelationship);  // Add the token to the vector.
+        }
+        else {
+            tokens.emplace_back(tokenType, removeSpaces(*iter));  // Add the token to the vector.
+        }
+        
     }
 
      
@@ -41,33 +49,45 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
         return TokenType::Wildcard;
     }
     // ClauseKeyword: Specific clause keywords.
-    else if (regex_match(tokenStr, regex("^(Select|pattern|such|that)$"))) {
+    else if (regex_match(tokenStr, regex("^(Select|pattern|such|that|with|and)$"))) {
         // The first case check if there is unconventional naming 
         // and avoids assigning wrong token type
         if (!tokens.empty() && (tokens.back().getType() == TokenType::SelectKeyword 
-            || checkIfDeclaration() || tokens.back().getType() == TokenType::Lparenthesis 
-            || tokens.back().getType() == TokenType::Comma)) {
+            || checkIfDeclaration() || tokens.back().getType() == TokenType::Lparenthesis
+            || tokens.back().getType() == TokenType::Comma || tokens.back().getType() == TokenType::PatternKeyword)) {
             return TokenType::IDENT;
         }
         if (tokenStr == "Select") {
             return TokenType::SelectKeyword;
         }
         else if (tokenStr == "pattern") {
+            lastRelationship = "pattern";
             return TokenType::PatternKeyword;
         }
         else if (tokenStr == "such") {
+            lastRelationship = "such that";
             return TokenType::SuchKeyword;
         }
         else if (tokenStr == "that") {
             return TokenType::ThatKeyword;
         }
+        else if (tokenStr == "with") {
+            lastRelationship = "with";
+            return TokenType::WithKeyword;
+        }
+        else if (tokenStr == "and") {
+            return TokenType::AndKeyword;
+        }
+    }
+    else if (tokenStr == "BOOLEAN") {
+        return TokenType::BooleanKeyword;
     }
     // QuoutIDENT: An IDENT enclosed in double quotes.
-    else if (regex_match(tokenStr, regex("^\"[a-zA-Z][a-zA-Z0-9]*\"$"))) {
+    else if (regex_match(tokenStr, regex("^\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\"$"))) {
         return TokenType::QuoutIDENT;
     }
     // QuoutConst: A constant enclosed in double quotes (for pattern matching).
-    else if (regex_match(tokenStr, regex("^\"[0-9]*\"$"))) {
+    else if (regex_match(tokenStr, regex("^\"\\s*[0-9]+\\s*\"$"))) {
         return TokenType::QuoutConst;
     }
     //
@@ -90,11 +110,23 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     else if (tokenStr == ",") {
         return TokenType::Comma;
     }
+    else if (tokenStr == ".") {
+        return TokenType::Dot;
+    }
+    else if (tokenStr == "=") {
+        return TokenType::Equal;
+    }
+    else if (tokenStr == "<") {
+        return TokenType::LeftAngleBracket;
+    }
+    else if (tokenStr == ">") {
+        return TokenType::RightAngleBracket;
+    }
     // DesignEntity: Specific keywords.
-    else if (regex_match(tokenStr, regex("^(stmt|read|print|while|if|assign|variable|constant|procedure)$"))) {
+    else if (regex_match(tokenStr, regex("^(stmt|read|print|while|if|assign|variable|constant|procedure|call)$"))) {
         if (!tokens.empty() && (tokens.back().getType() == TokenType::SelectKeyword 
             || checkIfDeclaration() || tokens.back().getType() == TokenType::Lparenthesis 
-            || tokens.back().getType() == TokenType::Comma)) {
+            || tokens.back().getType() == TokenType::Comma || tokens.back().getType() == TokenType::PatternKeyword)) {
             return TokenType::IDENT;
         }
         else {
@@ -102,7 +134,7 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
         }
     }
     // RelRef: Specific keywords.
-    else if (regex_match(tokenStr, regex("^(Follows|Follows\\*|Parent|Parent\\*|Uses|Modifies)$"))) {
+    else if (regex_match(tokenStr, regex("^(Follows|Follows\\*|Parent|Parent\\*|Uses|Modifies|Next|Next\\*|Calls|Calls\\*)$"))) {
         if (!tokens.empty() && (tokens.back().getType() == TokenType::SelectKeyword 
             || checkIfDeclaration() || tokens.back().getType() == TokenType::Lparenthesis 
             || tokens.back().getType() == TokenType::Comma)) {
@@ -126,6 +158,29 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
         else if (tokenStr == "Modifies") {
             return TokenType::Modifies;
         }
+        else if (tokenStr == "Next") {
+            return TokenType::Next;
+        }
+        else if (tokenStr == "Next*") {
+            return TokenType::NextT;
+        }
+        else if (tokenStr == "Calls") {
+            return TokenType::Calls;
+        }
+        else if (tokenStr == "Calls*") {
+            return TokenType::CallsT;
+        }
+    }
+    // AttrName: Specific attributes.
+    else if (regex_match(tokenStr, regex("^(procName|varName|value|stmt#)$"))) {
+        if (!tokens.empty() && (tokens.back().getType() == TokenType::SelectKeyword
+            || checkIfDeclaration() || tokens.back().getType() == TokenType::Lparenthesis
+            || tokens.back().getType() == TokenType::Comma || tokens.back().getType() == TokenType::PatternKeyword)) {
+            return TokenType::IDENT;
+        }
+        else {
+            return TokenType::AttrName;
+        } 
     }
     // IDENT: Starts with a letter and may continue with letters or digits.
     else if (regex_match(tokenStr, regex("^[a-zA-Z][a-zA-Z0-9]*$"))) {
@@ -136,7 +191,7 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
         return TokenType::INTEGER;
     }
     // OPERATOR" "+-*/%&|<>=!~^"
-    else if (regex_match(tokenStr, regex("^[+\\-*/%&|<>=!~^]$"))) {
+    else if (regex_match(tokenStr, regex("^[+\\-*/%&|!~^]$"))) {
         return TokenType::Operator;
     }
 
@@ -158,4 +213,9 @@ bool Tokenizer::checkIfDeclaration() {
 		i--;
 	}
     return false;
+}
+
+string Tokenizer::removeSpaces(string str) {
+    str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
+    return str;
 }

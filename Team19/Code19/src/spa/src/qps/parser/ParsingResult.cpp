@@ -12,35 +12,32 @@ void ParsingResult::addDeclaredSynonym(const std::string& key, const std::string
 }
 
 void ParsingResult::setRequiredSynonym(const string& synonym) {
-    requiredSynonym = synonym;
+    requiredSynonyms.push_back(synonym);
 }
 
-
-
-// Implementations for setting individual parts of SuchThatClause
-void ParsingResult::setSuchThatClauseRelationship(const Token& relationship) {
-    suchThatClauseRelationship = relationship;
+// Methods for adding clauses
+void ParsingResult::addSuchThatClause(const SuchThatClause& clause) {
+    suchThatClauses.push_back(clause);
 }
 
-void ParsingResult::setSuchThatClauseFirstParam(const Token& firstParam) {
-    suchThatClauseFirstParam = firstParam;
+void ParsingResult::addPatternClause(const PatternClause& clause) {
+    patternClauses.push_back(clause);
 }
 
-void ParsingResult::setSuchThatClauseSecondParam(const Token& secondParam) {
-    suchThatClauseSecondParam = secondParam;
+void ParsingResult::addWithClause(const WithClause& clause) {
+    withClauses.push_back(clause);
 }
 
-// Implementations for setting individual parts of PatternClause
-void ParsingResult::setPatternClauseRelationship(const Token& relationship) {
-    patternRelationship = relationship;
+const vector<SuchThatClause>& ParsingResult::getSuchThatClauses() const {
+    return suchThatClauses;
 }
 
-void ParsingResult::setPatternClauseFirstParam(const Token& firstParam) {
-    patternFirstParam = firstParam;
+const vector<PatternClause>& ParsingResult::getPatternClauses() const {
+    return patternClauses;
 }
 
-void ParsingResult::setPatternClauseSecondParam(const Token& secondParam) {
-    patternSecondParam = secondParam;
+const vector<WithClause>& ParsingResult::getWithClauses() const {
+    return withClauses;
 }
 
 // Getters
@@ -58,41 +55,14 @@ const string& ParsingResult::getDeclaredSynonym(const string& key) const {
 }
 
 
-const string& ParsingResult::getRequiredSynonym() const {
-    return requiredSynonym;
+const vector<string>& ParsingResult::getRequiredSynonyms() const {
+    return requiredSynonyms;
 }
 
-const string& ParsingResult::getRequiredSynonymType() const {
+const string& ParsingResult::getRequiredSynonymType(const string& requiredSynonym) const {
     return getDeclaredSynonym(requiredSynonym);
 }
 
-const Token& ParsingResult::getSuchThatClauseRelationship() const {
-    return suchThatClauseRelationship;
-}
-
-const Token& ParsingResult::getSuchThatClauseFirstParam() const {
-    return suchThatClauseFirstParam;
-}
-
-const Token& ParsingResult::getSuchThatClauseSecondParam() const {
-    return suchThatClauseSecondParam;
-}
-
-const Token& ParsingResult::getPatternClauseRelationship() const {
-    return patternRelationship;
-}
-
-const string ParsingResult::getPatternClauseRelationshipType() const {
-    return getDeclaredSynonym(patternRelationship.getValue());
-}
-
-const Token& ParsingResult::getPatternClauseFirstParam() const {
-    return patternFirstParam;
-}
-
-const Token& ParsingResult::getPatternClauseSecondParam() const {
-    return patternSecondParam;
-}
 
 // check if the query is valid
 bool ParsingResult::isQueryValid() {
@@ -111,4 +81,9 @@ void ParsingResult::setErrorMessage(const string& message) {
     }
 
 }
+
+bool ParsingResult::isSynonymDeclared(const string& synonym) {
+    return declaredSynonyms.find(synonym) != declaredSynonyms.end();
+}
+
 

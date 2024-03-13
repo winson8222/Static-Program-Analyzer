@@ -1,0 +1,64 @@
+<?xml-stylesheet type="text/xsl" href="analysis.xsl"?>
+<test_results>
+<info>
+<name>m1</name><parsing_time_taken>54.698000</parsing_time_taken>
+</info>
+<queries>
+<query>
+<id ReturnTuple="1" Uses="1" SuchThat="1" CondNum="3" RelNum="1" comment="Finds all statements that use 'iter' directly or indirectly">1</id><querystr><![CDATA[stmt s; Select s such that Uses(s, "iter") 9, 10, 12, 13]]></querystr>
+<stuans>SyntaxError</stuans>
+<correct>5000</correct>
+<time_taken>1.278000</time_taken>
+<failed>
+<missing>5000</missing>
+<additional>SyntaxError</additional>
+<summary>
+<expected>1</expected>
+<matched>0</matched>
+<missing>1</missing>
+<additional>1</additional>
+</summary>
+</failed>
+</query>
+<query>
+<id ReturnTuple="1" CondNum="1" RelNum="0" >0</id><querystr><![CDATA[Process, Finalize 5000]]></querystr>
+<timeout/>
+</query>
+<query>
+<id ReturnTuple="1" CondNum="1" RelNum="0" >0</id><querystr><![CDATA[5000 4 - Finds all while loops that use 'iter' in their condition or body]]></querystr>
+<timeout/>
+</query>
+<query>
+<id ReturnTuple="1" Uses="1" SuchThat="1" CondNum="3" RelNum="1" >5000</id><querystr><![CDATA[5 - Finds all if statements that use 'iter' in their condition or branches if ifs; Select ifs such that Uses(ifs, "iter")]]></querystr>
+<stuans>SyntaxError</stuans>
+<correct>4,6</correct>
+<time_taken>6.595000</time_taken>
+<failed>
+<missing>4,6</missing>
+<additional>SyntaxError</additional>
+<summary>
+<expected>2</expected>
+<matched>0</matched>
+<missing>2</missing>
+<additional>1</additional>
+</summary>
+</failed>
+</query>
+<query>
+<id ReturnTuple="1" Uses="1" SuchThat="1" CondNum="3" RelNum="1" comment="Finds all call statements where the called procedure uses 'iter'">6</id><querystr><![CDATA[call c; Select c such that Uses(c, "iter") 2, 4]]></querystr>
+<stuans>SyntaxError</stuans>
+<correct>5000</correct>
+<time_taken>3.000000</time_taken>
+<failed>
+<missing>5000</missing>
+<additional>SyntaxError</additional>
+<summary>
+<expected>1</expected>
+<matched>0</matched>
+<missing>1</missing>
+<additional>1</additional>
+</summary>
+</failed>
+</query>
+</queries>
+</test_results>

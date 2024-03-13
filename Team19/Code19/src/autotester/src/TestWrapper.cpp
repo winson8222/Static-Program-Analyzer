@@ -1,5 +1,4 @@
 #include "TestWrapper.h"
-
 using namespace std;
 // implementation code of WrapperFactory - do NOT modify the next 5 lines
 AbstractWrapper* WrapperFactory::wrapper = 0;
@@ -17,7 +16,8 @@ TestWrapper::TestWrapper() {
 	pkbManager = std::make_shared<PKBManager>();
 	pkbReaderManager = pkbManager->getPKBReaderManager();
 	pkbWriterManager = pkbManager->getPKBWriterManager();
-	pkbCacheManager = pkbManager->getPKBCacheManager();
+    pkbCacheManager = pkbManager->getPKBCacheManager();
+
 }
 
 // method for parsing the SIMPLE source
@@ -37,22 +37,23 @@ void TestWrapper::parse(std::string filename) {
 // method to evaluating a query
 void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
 
-	// Populate cache before each query
-	pkbCacheManager->populateCache();
-
 	// call your evaluator to evaluate the query here
     // ...code to evaluate query...
+    pkbCacheManager->populateCache();
 	Tokenizer tokenizer(query);
 	vector<Token> tokens = tokenizer.tokenize();
 	QueryParser parser(tokens);
 	auto parsingResult = parser.parse();
 	QueryEvaluator evaluator(pkbReaderManager, parsingResult);
 	std::unordered_set<string> res = evaluator.evaluateQuery();
-	for (auto & re : res) {
-		results.push_back(re);
-	}
+    int synCount = parsingResult.getRequiredSynonyms().size();
+
+    for (auto & re : res) {
+        results.push_back(re);
+    }
+    pkbCacheManager->clearCache();
+
 	// store the answers to the query in the results list (it is initially empty)
 	// each result must be a string.
-	// Clear cache after each query
-	pkbCacheManager->clearCache();
+
 }
