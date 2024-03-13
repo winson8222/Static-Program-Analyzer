@@ -23,3 +23,23 @@ procedure p;
 Select p such that Calls(p, "Last")
 Finalize
 5000
+6 - Finds if it is true that a procedure that calls Last
+procedure p;
+Select p such that Calls(_, "Last")
+Finalize, Compute, Last, Main, Process
+5000
+7 - Finds if it is true that a procedure that calls Last
+procedure p;
+Select p such that Calls("Finalize", "Last")
+Finalize, Compute, Last, Main, Process
+5000
+8 - Finds if it is true that a procedure that calls Last
+procedure p;
+Select p such that Calls("Last", "Finalize")
+none
+5000
+8 - Finds if it is true that a procedure that calls Last
+procedure p;
+Select p such that Calls("Last", _)
+none
+5000
