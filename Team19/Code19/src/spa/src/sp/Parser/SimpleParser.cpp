@@ -40,13 +40,6 @@ std::shared_ptr<ASTNode> SimpleParser::parseProgram() {
 	return root;
 }
 
-/**
- * @brief Assert Token to check if the token's type matches the expected one.
- *
- * @param token A lexical token in the stream.
- * @param type A expected lexical token type.
- * @throws Retrieves a runtime_error if the token's type doesn't match the expected type.
- */
 void SimpleParser::assertToken(LexicalToken token, LexicalTokenType type) const {
 	if (!token.isType(type)) {
 		throw std::runtime_error("Error: Expected " + LexicalTokenTypeMapper::printType(type) + " but got " + LexicalTokenTypeMapper::printType(token.getTokenType()) +
@@ -62,12 +55,6 @@ std::shared_ptr<ASTNode> SimpleParser::createNode(ASTNodeType type, int lineNumb
 	return std::make_shared<ASTNode>(type, lineNumber, nodeValue);
 }
 
-/**
- * @brief Parse a procedure in the program.
- *
- * @return std::shared_ptr<ASTNode> A smart pointer pointing to the root of the parsed procedure node tree.
- * @throws Retrieves a runtime_error if parsing is unsuccessful.
- */
 std::shared_ptr<ASTNode> SimpleParser::parseProcedure() {
 	if (!this->tokenStream->hasTokensLeft()) {
 		throw std::runtime_error("Error: SimpleParser::parseProcedure encounter empty statement.");
@@ -89,11 +76,6 @@ std::shared_ptr<ASTNode> SimpleParser::parseProcedure() {
 
 }
 
-/**
- * @brief Parse a list of statements in the program.
- *
- * @return std::shared_ptr<ASTNode> A smart pointer pointing to the root of the parsed statement list node tree.
- */
 std::shared_ptr<ASTNode> SimpleParser::parseStmtLst() {
 	std::vector<std::shared_ptr<ASTNode>> statements;
 
@@ -114,12 +96,6 @@ std::shared_ptr<ASTNode> SimpleParser::parseStmtLst() {
 
 // ai-gen start(gpt, 2, e)
 // Prompt: https://platform.openai.com/playground/p/f2k5TIcmcUShJEcyjSweZOMD?mode=chat
-/**
- * @brief Parse a statement in the program.
- *
- * @return std::shared_ptr<ASTNode> A smart pointer pointing to the root of the parsed statement node tree.
- * @throws Retrieves a runtime_error if parsing is unsuccessful.
- */
 std::shared_ptr<ASTNode> SimpleParser::parseStmt() {
 	// If next next token is '=', we are assigning. Call assign.
 	LexicalToken secondToken = this->tokenStream->peekToken(2);
@@ -149,11 +125,6 @@ std::shared_ptr<ASTNode> SimpleParser::parseStmt() {
 }
 // ai-gen end
 
-/**
- * @brief Parse a read statement in the program.
- *
- * @return std::shared_ptr<ASTNode> A smart pointer pointing to the root of the parsed read node tree.
- */
 std::shared_ptr<ASTNode> SimpleParser::parseRead() {
 	LexicalToken keyword = this->tokenStream->getNextToken();
 	this->assertToken(keyword, LexicalTokenType::KEYWORD_READ);
@@ -169,11 +140,6 @@ std::shared_ptr<ASTNode> SimpleParser::parseRead() {
 	return readTree;
 }
 
-/**
- * @brief Parse a print statement in the program.
- *
- * @return std::shared_ptr<ASTNode> A smart pointer pointing to the root of the parsed print node tree.
- */
 std::shared_ptr<ASTNode> SimpleParser::parsePrint() {
 	LexicalToken keyword = this->tokenStream->getNextToken();
 	this->assertToken(keyword, LexicalTokenType::KEYWORD_PRINT);
@@ -189,11 +155,6 @@ std::shared_ptr<ASTNode> SimpleParser::parsePrint() {
 	return printTree;
 }
 
-/**
- * @brief Parse a call statement in the program.
- *
- * @return std::shared_ptr<ASTNode> A smart pointer pointing to the root of the parsed call node tree.
- */
 std::shared_ptr<ASTNode> SimpleParser::parseCall() {
 	LexicalToken keyword = this->tokenStream->getNextToken();
 	this->assertToken(keyword, LexicalTokenType::KEYWORD_CALL);
@@ -209,14 +170,6 @@ std::shared_ptr<ASTNode> SimpleParser::parseCall() {
 	return callTree;
 }
 
-
-/**
- * @brief Parse a while statement in the program.
- *
- * @details While statement can only take this form: 'while' '(' cond_expr ')' '{' stmtLst '}'
- *
- * @return std::shared_ptr<ASTNode> A smart pointer pointing to the root of the parsed while node tree.
- */
 std::shared_ptr<ASTNode> SimpleParser::parseWhile() {
 	LexicalToken keyword = this->tokenStream->getNextToken();
 	this->assertToken(keyword, LexicalTokenType::KEYWORD_WHILE);
@@ -238,14 +191,6 @@ std::shared_ptr<ASTNode> SimpleParser::parseWhile() {
 	return whileTree;
 }
 
-
-/**
- * @brief Parse a if statement in the program.
- *
- * @details If statement can only take this form: 'if' '(' cond_expr ')' 'then' '{' stmtLst '}' 'else' '{' stmtLst '}'
- *
- * @return std::shared_ptr<ASTNode> A smart pointer pointing to the root of the parsed if node tree.
- */
 std::shared_ptr<ASTNode> SimpleParser::parseIf() {
 	LexicalToken keyword = this->tokenStream->getNextToken();
 	this->assertToken(keyword, LexicalTokenType::KEYWORD_IF);
@@ -275,11 +220,6 @@ std::shared_ptr<ASTNode> SimpleParser::parseIf() {
 	return ifTree;
 }
 
-/**
- * @brief Parse a assign statement in the program.
- *
- * @return std::shared_ptr<ASTNode> A smart pointer pointing to the root of the parsed assign node tree.
- */
 std::shared_ptr<ASTNode> SimpleParser::parseAssign() {
 	std::shared_ptr<ASTNode> variable = this->parseVarName();
 
@@ -296,14 +236,6 @@ std::shared_ptr<ASTNode> SimpleParser::parseAssign() {
 	return assignNode;
 }
 
-
-/**
- * @brief Parse a conditional expression in the program.
- *
- * @details CondExpr can only take these forms: rel_expr | '!' '(' cond_expr ')' | '(' cond_expr ')' '&&' '(' cond_expr ')' | '(' cond_expr ')' '||' '(' cond_expr ')'
- *
- * @return std::shared_ptr<ASTNode> A smart pointer pointing to the root of the parsed conditional expression node tree.
- */
 std::shared_ptr<ASTNode> SimpleParser::parseCondExpr() {
 	LexicalToken firstToken = this->tokenStream->peekToken();
 
@@ -350,11 +282,6 @@ std::shared_ptr<ASTNode> SimpleParser::parseCondExpr() {
 	return operationNode;
 }
 
-/**
- * @brief Parse a relational expression in the program.
- *
- * @return std::shared_ptr<ASTNode> A smart pointer pointing to the root of the parsed relational expression node tree.
- */
 std::shared_ptr<ASTNode> SimpleParser::parseRelExpr() {
 	std::shared_ptr<ASTNode> left = this->parseRelFactor();
 
@@ -372,22 +299,12 @@ std::shared_ptr<ASTNode> SimpleParser::parseRelExpr() {
 	return operationNode;
 }
 
-/**
- * @brief Parse a relational factor in the program.
- * @details A rel_factor can be of form : var_name | const_value | expr, note that parsing a rel_factor is the same as parsing an expr.
- * @return std::shared_ptr<ASTNode> A smart pointer pointing to the root of the parsed relational factor node tree.
- */
 std::shared_ptr<ASTNode> SimpleParser::parseRelFactor() {
 	return parseExpr();
 }
 
 // ai-gen start(gpt,1,e)
 // Prompt: https://platform.openai.com/playground/p/NGm3fHHy62WWafdKCc95vHpD?mode=chat
-/**
- * @brief Parse a expression in the program.
- *
- * @return std::shared_ptr<ASTNode> A smart pointer pointing to the root of the parsed expression node tree.
- */
 std::shared_ptr<ASTNode> SimpleParser::parseExpr() {
 	std::shared_ptr<ASTNode> left = parseTerm();
 
@@ -413,11 +330,6 @@ std::shared_ptr<ASTNode> SimpleParser::parseExpr() {
 	return left;
 }
 
-/**
- * @brief Parse a term in the program.
- *
- * @return std::shared_ptr<ASTNode> A smart pointer pointing to the root of the parsed term node tree.
- */
 std::shared_ptr<ASTNode> SimpleParser::parseTerm() {
 	std::shared_ptr<ASTNode> left = parseFactor();
 
@@ -444,11 +356,6 @@ std::shared_ptr<ASTNode> SimpleParser::parseTerm() {
 }
 // ai-gen end
 
-/**
- * @brief Parse a factor in the program.
- *
- * @return std::shared_ptr<ASTNode> A smart pointer pointing to the root of the parsed factor node tree.
- */
 std::shared_ptr<ASTNode> SimpleParser::parseFactor() {
 	LexicalToken nextToken = this->tokenStream->peekToken();
 
@@ -470,33 +377,18 @@ std::shared_ptr<ASTNode> SimpleParser::parseFactor() {
 	throw std::runtime_error("Error: SimpleParser tries to parse factor, but does not see parenthesis, name nor integer");
 }
 
-/**
- * @brief Parse a Variable Name in the program.
- *
- * @return std::shared_ptr<ASTNode> A smart pointer pointing to the root of the parsed Variable Name node tree.
- */
 std::shared_ptr<ASTNode> SimpleParser::parseVarName() {
 	LexicalToken variable = this->tokenStream->getNextToken();
 	this->assertToken(variable, LexicalTokenType::NAME);
 	return this->createNode(ASTNodeType::VARIABLE, this->lineManager->getLine(), variable.getValue());
 }
 
-/**
- * @brief Parse a Procedure Name in the program.
- *
- * @return std::shared_ptr<ASTNode> A smart pointer pointing to the root of the parsed Procedure Name node tree.
- */
 std::shared_ptr<ASTNode> SimpleParser::parseProcName() {
 	LexicalToken procedureName = this->tokenStream->getNextToken();
 	this->assertToken(procedureName, LexicalTokenType::NAME);
 	return this->createNode(ASTNodeType::VARIABLE, this->lineManager->getLine(), procedureName.getValue());
 }
 
-/**
- * @brief Parse a Constant Value in the program.
- *
- * @return std::shared_ptr<ASTNode> A smart pointer pointing to the root of the parsed Constant Value node tree.
- */
 std::shared_ptr<ASTNode> SimpleParser::parseConstValue() {
 	LexicalToken constant = this->tokenStream->getNextToken();
 	this->assertToken(constant, LexicalTokenType::INTEGER);
