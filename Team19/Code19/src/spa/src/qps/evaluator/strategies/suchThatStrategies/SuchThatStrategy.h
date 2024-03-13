@@ -15,6 +15,7 @@ using namespace std;
  *
  */
 class SuchThatStrategy : public QueryEvaluationStrategy {
+
 public:
     SuchThatStrategy() = default;
 
