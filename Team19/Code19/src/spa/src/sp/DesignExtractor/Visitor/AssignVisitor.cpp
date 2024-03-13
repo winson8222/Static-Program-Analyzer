@@ -34,7 +34,7 @@ void AssignVisitor::handleLHSExtraction(std::shared_ptr<ASTNode> node) {
 }
 
 void AssignVisitor::handleRHSExtraction(std::shared_ptr<ASTNode> node) {
-	ArithmeticExpressionVisitor expressionVisitor(node, this->pkbWriterManager);
+	ExpressionVisitor expressionVisitor(node, ASTNodeType::ASSIGN, this->pkbWriterManager);
 	expressionVisitor.setUsedContext(this->contexts, this->root);
 	expressionVisitor.visit();
 }

@@ -20,23 +20,22 @@ IfElseThenVisitor::IfElseThenVisitor(std::shared_ptr<ASTNode> root,
 
 
 void IfElseThenVisitor::visit() {
-	handleIfExtractor(this->root);
-	handleExpressionVisitor(this->condition);
+	handleIfExtractor();
+	handleExpressionVisitor();
 	handleStatementListVisitor(this->thenStatementList);
 	handleStatementListVisitor(this->elseStatementList);
 	setParents(this->contexts, this->root, this->pkbWriterManager);
 }
 
-void IfElseThenVisitor::handleIfExtractor(std::shared_ptr<ASTNode> root) {
+void IfElseThenVisitor::handleIfExtractor() {
 	IfThenElseExtractor ifThenElseExtractor(root, pkbWriterManager->getIfWriter());
 	ifThenElseExtractor.extract();
 }
 
-void IfElseThenVisitor::handleExpressionVisitor(std::shared_ptr<ASTNode> condition) {
-	ExpressionVisitor expressionVisitor(condition, pkbWriterManager);
+void IfElseThenVisitor::handleExpressionVisitor() {
+	ExpressionVisitor expressionVisitor(condition, ASTNodeType::IF_ELSE_THEN, pkbWriterManager);
 	expressionVisitor.setUsedContext(contexts, root);
 	expressionVisitor.visit();
-	// expressionVisitor.handlePatternExtraction(condition, ASTNodeType::IF_ELSE_THEN);
 }
 
 void IfElseThenVisitor::handleStatementListVisitor(std::shared_ptr<ASTNode> statementList) {

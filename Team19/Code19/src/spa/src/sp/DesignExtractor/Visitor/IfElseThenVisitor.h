@@ -35,12 +35,12 @@ private:
 	/*
 	* Invokes the WhileExtractor to extract the if statement
 	*/
-	void handleIfExtractor(std::shared_ptr<ASTNode> root);
+	void handleIfExtractor();
 
 	/*
 	* Invokes extractor of the expression statement
 	*/
-	void handleExpressionVisitor(std::shared_ptr<ASTNode> condition);
+	void handleExpressionVisitor();
 
 	/*
 	* Invokes the visitor of the statement list

@@ -35,7 +35,7 @@ private:
 	/*
 	* Invokes the WhileExtractor to extract the while statement
 	*/
-	void handleWhileExtraction(std::shared_ptr<ASTNode> root);
+	void handleWhileExtraction();
 
 	/*
 	* Invokes the ExpressionVisitor to visit the expression
@@ -45,5 +45,5 @@ private:
 	/*
 	* Invokes the StatementListVisitor to visit the statement list
 	*/
-	void handleStatementListVisitor(std::shared_ptr<ASTNode> statementList);
+	void handleStatementListVisitor();
 };

@@ -14,7 +14,8 @@ TEST_CASE("sp/DesignExtractor/Extractor/ProcedureExtractor") {
 	std::shared_ptr<ASTNode> root = std::make_shared<ASTNode>(ASTNode());
 	std::shared_ptr<ASTNode> proc1 = std::make_shared<ASTNode>(ASTNode(ASTNodeType::PROCEDURE, 1, "proc1"));
 	std::shared_ptr<ASTNode> proc2 = std::make_shared<ASTNode>(ASTNode(ASTNodeType::PROCEDURE, 2, "proc2"));
-
+	proc1->addChild(std::make_shared<ASTNode>(ASTNode(ASTNodeType::STATEMENT_LIST, 1, "a")));
+	proc2->addChild(std::make_shared<ASTNode>(ASTNode(ASTNodeType::STATEMENT_LIST, 2, "b")));
 	root->addChild(proc1);
 	root->addChild(proc2);
 	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();

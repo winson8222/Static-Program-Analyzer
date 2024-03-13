@@ -12,8 +12,7 @@ class IfsPatternExtractor : public IPatternExtractor {
 public:
 	IfsPatternExtractor(
 		std::shared_ptr<ASTNode> root,
-		std::shared_ptr<ASTNode> left,
-		std::shared_ptr<ASTNode> right,
+		std::shared_ptr<ASTNode> variable,
 		std::shared_ptr<IfPatternWriter> ifWriter);
 
 	void extract() override;
