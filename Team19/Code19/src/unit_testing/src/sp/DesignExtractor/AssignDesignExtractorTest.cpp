@@ -82,5 +82,7 @@ TEST_CASE("sp/DesignExtractor/Extractor/AssignExtractor") {
 		assign->addChild(std::make_shared<ASTNode>(ASTNode(ASTNodeType::CONSTANT, 1, "0")));
 		AssignPatternExtractor assignPatternExtractor(assign, assign->getChildByIndex(0), assign->getChildByIndex(1), pkbWriterManager->getAssignPatternWriter());
 		REQUIRE_NOTHROW(assignPatternExtractor.extract());
+		auto patternReader = pkbReaderManager->getAssignPatternReader();
+		REQUIRE(patternReader->getAllStatementNumbers() == std::unordered_set<int>{1});
 	}
 }

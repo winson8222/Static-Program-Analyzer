@@ -10,6 +10,24 @@
 #include <unordered_set>
 #include <vector>
 
+TEST_CASE("Singular Pattern Extractor") {
+	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
+	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
+	std::shared_ptr<PKBReaderManager> pkbReaderManager = pkb->getPKBReaderManager();
+
+	std::shared_ptr<ASTNode> ifs = std::make_shared<ASTNode>(ASTNode(ASTNodeType::IF_ELSE_THEN, 2, "ifs"));
+	std::shared_ptr<ASTNode> var1 = std::make_shared<ASTNode>(ASTNode(ASTNodeType::VARIABLE, 2, "x"));
+
+	IfsPatternExtractor ifsPatternExtractor(ifs, var1, pkbWriterManager->getIfPatternWriter());
+	ifsPatternExtractor.extract();
+
+	std::unordered_set<std::string> expectedIfs = { "x" };
+	std::unordered_set<int> expectedIfsInt = { 2 };
+	REQUIRE(pkbReaderManager->getIfPatternReader()->getAllIfControlVariables() == expectedIfs);
+	REQUIRE(pkbReaderManager->getIfPatternReader()->getControlPatternsWithStatementNumber(2) == expectedIfs);
+	REQUIRE(pkbReaderManager->getIfPatternReader()->getStatementNumbersOfIfControlVariable("x") == expectedIfsInt);
+}
+
 TEST_CASE("Singular Extractor") {
 	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
