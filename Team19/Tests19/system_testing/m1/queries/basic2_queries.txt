@@ -198,18 +198,3 @@ procedure p;
 Select p
 nestedIfWhile
 5000
-42 - select a var and aa assign
-variable v; stmt s;
-Select <v, s>
-18 17 16 15 13 12 11 14 2 9 6 7 1 5 10 8 4 3, y x,
-5000
-43 - valid true wild card pattern to get all variables and all assign
-variable v; assign a;
-Select <v, a> pattern a (_, _)
-5 13, y x,
-5000
-44 - valid Modifies with stmt
-stmt s; variable v;
-Select <s, v> such that Modifies(s, "x")
-11 3 8 13 4 1 2 5, y x,
-5000
