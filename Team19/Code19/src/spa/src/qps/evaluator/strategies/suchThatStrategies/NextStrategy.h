@@ -21,7 +21,6 @@ public:
      * Processes queries where both parameters are synonyms.
      * @param firstParam The first parameter token of the query.
      * @param secondParam The second parameter token of the query.
-     * @param variant The variant of the Next relationship (direct or transitive).
      * @param resultTable The result table to be populated with the evaluation results.
      */
     void processSynonyms(const Token& firstParam, const Token& secondParam, std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager);
@@ -38,7 +37,6 @@ public:
      * Processes queries where the second parameter is a synonym and the first parameter is specific.
      * @param firstParam The first parameter token of the query.
      * @param secondParam The second parameter token of the query.
-     * @param variant The variant of the Next relationship (direct or transitive).
      * @param resultTable The result table to be populated with the evaluation results.
      */
     void processSecondParam(const Token& firstParam, const Token& secondParam, std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) override;
