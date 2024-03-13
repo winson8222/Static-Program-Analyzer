@@ -49,7 +49,7 @@ void LexicalToken::print() {
 }
 
 void LexicalToken::assertToken(LexicalTokenType type) {
-    if (this->isType(type)) {
+    if (!this->isType(type)) {
         throw std::runtime_error("Error: Expected " + LexicalTokenTypeMapper::printType(type) + " but got " + LexicalTokenTypeMapper::printType(this->getTokenType()) +
             " At Line " + std::to_string(this->getLine()) + "Position" + std::to_string(this->getLinePosition()));
     }

@@ -30,15 +30,6 @@ private:
 	std::unique_ptr<SimpleLineManager> lineManager;
 	std::unique_ptr<SimpleTokenStream> tokenStream;
 
-	/**
-	 * @brief Assert Token to check if the token's type matches the expected one.
-	 *
-	 * @param token A lexical token in the stream.
-	 * @param type A expected lexical token type.
-	 * @throws Retrieves a runtime_error if the token's type doesn't match the expected type.
-	 */
-	void assertToken(LexicalToken token, LexicalTokenType type) const;
-
 	std::shared_ptr<ASTNode> createNode(ASTNodeType type, int lineNumber, std::string nodeValue = "");
 	std::shared_ptr<ASTNode> parseProcedure();
 	std::shared_ptr<ASTNode> parseStmtLst();
