@@ -4,7 +4,7 @@
 #include <vector>
 #include "sp/AST/ASTNode.h" 
 #include "sp/AST/ASTUtility.h"
-#include "sp/DesignExtractor/Extractor/ParentExtractor.h"
+#include "sp/DesignExtractor/Extractor/RelationshipExtractor/ParentExtractor.h"
 #include "pkb/PKBWriterManager.h"
 
 // ai-gen start(chatgpt, 2, e)

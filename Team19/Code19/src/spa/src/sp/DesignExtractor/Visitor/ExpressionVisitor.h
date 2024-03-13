@@ -2,11 +2,15 @@
 
 #include "sp/DesignExtractor/Visitor/IVisitor.h"
 #include "sp/DesignExtractor/Visitor/VariableVisitor.h"
-#include "sp/DesignExtractor/Extractor/VariableExtractor.h"
-#include "sp/DesignExtractor/Extractor/ConstantExtractor.h"
+#include "sp/DesignExtractor/Extractor/EntityExtractor/VariableExtractor.h"
+#include "sp/DesignExtractor/Extractor/EntityExtractor/ConstantExtractor.h"
+#include "sp/DesignExtractor/Extractor/PatternExtractor/IfsPatternExtractor.h"
+#include "sp/DesignExtractor/Extractor/PatternExtractor/WhilePatternExtractor.h"
 #include "sp/AST/ASTUtility.h"
 #include <stdexcept>
 
+constexpr int EXPR_LHS_INDEX = 0;
+constexpr int EXPR_RHS_INDEX = 1;
 
 /*
 * A visitor for the valid expression statement which should
@@ -20,7 +24,7 @@
 */
 class ExpressionVisitor : public IVisitor {
 public:
-	ExpressionVisitor(std::shared_ptr<ASTNode> root, std::shared_ptr<PKBWriterManager> pkbWriterManager);
+	ExpressionVisitor(std::shared_ptr<ASTNode> root, ASTNodeType caller, std::shared_ptr<PKBWriterManager> pkbWriterManager);
 	void visit() override;
 
 	/*
@@ -36,10 +40,32 @@ public:
 	*/
 	void setUsedContext(listnode contexts, std::shared_ptr<ASTNode> parent);
 
+private:
 	/*
 	* A vector to get the used contexts of the expression for
 	*/ 
 	listnode usedContexts;
+
+	/*
+	* The caller type of the expression
+	*/
+	ASTNodeType caller;
+
+	/*
+	* A method to handle the pattern extraction of the expression
+	* Works if the caller is either while or if statement, and do nothing otherwise
+	*/
+	void handlePatternExtraction(std::shared_ptr<ASTNode> variableNode);
+
+	/*
+	* A method to handle the variable visitor of the expression
+	*/
+	void handleVariableVisitor(std::shared_ptr<ASTNode> variableNode);
+
+	/*
+	* A method to handle the constant extraction of the expression
+	*/
+	void handleConstantExt(std::shared_ptr<ASTNode> constantNode);
 };
 
 // This class is prototype for future design considerations
