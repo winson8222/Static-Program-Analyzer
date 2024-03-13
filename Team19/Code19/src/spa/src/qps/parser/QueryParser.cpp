@@ -250,15 +250,6 @@ bool QueryParser::isCalls() {
 void QueryParser::parseCalls(SuchThatClause& clause) {
 
     currentSuchThatToken = currentToken();
-    if (currentToken().getValue() == "Calls") {
-        currentSuchThatToken.setType(TokenType::Calls);
-    }
-    else if (currentToken().getValue() == "Calls*") {
-        currentSuchThatToken.setType(TokenType::CallsT);
-    } else {
-        throwGrammarError();
-    }
-
     clause.setRelationship(currentSuchThatToken);
     advanceToken();
     if (match(TokenType::Lparenthesis)) {

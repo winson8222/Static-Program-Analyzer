@@ -758,6 +758,7 @@ TEST_CASE("src/qps/parser/QueryParser") {
         REQUIRE(parsingResult.getSuchThatClauses()[0].getRelationship().getType() == TokenType::Calls);
 
 
+
         // Additional checks can be performed here if needed, such as verifying the specific parsing output
     }
 
