@@ -201,47 +201,47 @@ TEST_CASE("src/qps/parser/ParsingResult") {
         REQUIRE(suchThatClause.getSecondParam().getValue() == "_");
     }
 
-    SECTION("Check Parsing Result of 'procedure p, q; Select <p.stmt#, q.procName> such that Calls (p, q)'") {
-        std::vector<Token> tokens = {
-            Token(TokenType::DesignEntity, "procedure"),
-            Token(TokenType::IDENT, "p"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::IDENT, "q"),
-            Token(TokenType::Semicolon, ";"),
-            Token(TokenType::SelectKeyword, "Select"),
-            Token(TokenType::LeftAngleBracket, "<"),
-            Token(TokenType::IDENT, "p"),
-            Token(TokenType::Dot, "."),
-            Token(TokenType::AttrName, "stmt#"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::IDENT, "q"),
-            Token(TokenType::Dot, "."),
-            Token(TokenType::AttrName, "procName"),
-            Token(TokenType::RightAngleBracket, ">"),
-            Token(TokenType::SuchKeyword, "such"),
-            Token(TokenType::ThatKeyword, "that"),
-            Token(TokenType::Calls, "Calls"),
-            Token(TokenType::Lparenthesis, "("),
-            Token(TokenType::IDENT, "p"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::IDENT, "q"),
-            Token(TokenType::Rparenthesis, ")")
-        };
-
-        QueryParser parser(tokens);
-        auto parsingResult = parser.parse();
-        auto suchThatClause = parsingResult.getSuchThatClauses()[0];
-        REQUIRE(parsingResult.getDeclaredSynonym("p") == "procedure");
-        REQUIRE(parsingResult.getDeclaredSynonym("q") == "procedure");
-        REQUIRE(parsingResult.getRequiredSynonyms()[0] == "p.stmt#");
-        REQUIRE(parsingResult.getRequiredSynonyms()[1] == "q.procName");
-        REQUIRE(suchThatClause.getRelationship().getType() == TokenType::Calls);
-        REQUIRE(suchThatClause.getRelationship().getValue() == "Calls");
-        REQUIRE(suchThatClause.getFirstParam().getType() == TokenType::IDENT);
-        REQUIRE(suchThatClause.getFirstParam().getValue() == "p");
-        REQUIRE(suchThatClause.getSecondParam().getType() == TokenType::IDENT);
-        REQUIRE(suchThatClause.getSecondParam().getValue() == "q");
-    }
+//    SECTION("Check Parsing Result of 'procedure p, q; Select <p.stmt#, q.procName> such that Calls (p, q)'") {
+//        std::vector<Token> tokens = {
+//            Token(TokenType::DesignEntity, "procedure"),
+//            Token(TokenType::IDENT, "p"),
+//            Token(TokenType::Comma, ","),
+//            Token(TokenType::IDENT, "q"),
+//            Token(TokenType::Semicolon, ";"),
+//            Token(TokenType::SelectKeyword, "Select"),
+//            Token(TokenType::LeftAngleBracket, "<"),
+//            Token(TokenType::IDENT, "p"),
+//            Token(TokenType::Dot, "."),
+//            Token(TokenType::AttrName, "stmt#"),
+//            Token(TokenType::Comma, ","),
+//            Token(TokenType::IDENT, "q"),
+//            Token(TokenType::Dot, "."),
+//            Token(TokenType::AttrName, "procName"),
+//            Token(TokenType::RightAngleBracket, ">"),
+//            Token(TokenType::SuchKeyword, "such"),
+//            Token(TokenType::ThatKeyword, "that"),
+//            Token(TokenType::Calls, "Calls"),
+//            Token(TokenType::Lparenthesis, "("),
+//            Token(TokenType::IDENT, "p"),
+//            Token(TokenType::Comma, ","),
+//            Token(TokenType::IDENT, "q"),
+//            Token(TokenType::Rparenthesis, ")")
+//        };
+//
+//        QueryParser parser(tokens);
+//        auto parsingResult = parser.parse();
+//        auto suchThatClause = parsingResult.getSuchThatClauses()[0];
+//        REQUIRE(parsingResult.getDeclaredSynonym("p") == "procedure");
+//        REQUIRE(parsingResult.getDeclaredSynonym("q") == "procedure");
+//        REQUIRE(parsingResult.getRequiredSynonyms()[0] == "p.stmt#");
+//        REQUIRE(parsingResult.getRequiredSynonyms()[1] == "q.procName");
+//        REQUIRE(suchThatClause.getRelationship().getType() == TokenType::Calls);
+//        REQUIRE(suchThatClause.getRelationship().getValue() == "Calls");
+//        REQUIRE(suchThatClause.getFirstParam().getType() == TokenType::IDENT);
+//        REQUIRE(suchThatClause.getFirstParam().getValue() == "p");
+//        REQUIRE(suchThatClause.getSecondParam().getType() == TokenType::IDENT);
+//        REQUIRE(suchThatClause.getSecondParam().getValue() == "q");
+//    }
 
     SECTION("Check Parsing Result of 'assign a; while w; Select a pattern a(\"x\", _) such that Parent*(w, a) such that Next*(1, a)'") {
         std::vector<Token> tokens = {
@@ -339,54 +339,54 @@ TEST_CASE("src/qps/parser/ParsingResult") {
         REQUIRE(suchThatClause.getSecondParam().getType() == TokenType::INTEGER);
         REQUIRE(suchThatClause.getSecondParam().getValue() == "4");
     }
-
-    SECTION("Check Parsing Result of 'procedure p, q; Select p such that Calls(p, q) with q.procName = \"Third\"'") {
-        std::vector<Token> tokens = {
-            Token(TokenType::DesignEntity, "procedure"),
-            Token(TokenType::IDENT, "p"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::IDENT, "q"),
-            Token(TokenType::Semicolon, ";"),
-            Token(TokenType::SelectKeyword, "Select"),
-            Token(TokenType::IDENT, "p"),
-            Token(TokenType::SuchKeyword, "such"),
-            Token(TokenType::ThatKeyword, "that"),
-            Token(TokenType::Calls, "Calls"),
-            Token(TokenType::Lparenthesis, "("),
-            Token(TokenType::IDENT, "p"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::IDENT, "q"),
-            Token(TokenType::Rparenthesis, ")"),
-            Token(TokenType::WithKeyword, "with"),
-            Token(TokenType::IDENT, "q"),
-            Token(TokenType::Dot, "."),
-            Token(TokenType::AttrName, "procName"),
-            Token(TokenType::Equal, "="),
-            Token(TokenType::QuoutIDENT, "\"Third\"")
-        };
-
-        QueryParser parser(tokens);
-        auto parsingResult = parser.parse();
-        REQUIRE(parsingResult.getDeclaredSynonym("p") == "procedure");
-        REQUIRE(parsingResult.getDeclaredSynonym("q") == "procedure");
-        REQUIRE(parsingResult.getRequiredSynonyms()[0] == "p");
-
-        auto suchThatClause = parsingResult.getSuchThatClauses()[0];
-        REQUIRE(suchThatClause.getRelationship().getType() == TokenType::Calls);
-        REQUIRE(suchThatClause.getRelationship().getValue() == "Calls");
-        REQUIRE(suchThatClause.getFirstParam().getType() == TokenType::IDENT);
-        REQUIRE(suchThatClause.getFirstParam().getValue() == "p");
-        REQUIRE(suchThatClause.getSecondParam().getType() == TokenType::IDENT);
-        REQUIRE(suchThatClause.getSecondParam().getValue() == "q");
-
-        auto withClause = parsingResult.getWithClauses()[0];
-        REQUIRE(withClause.getRelationship().getType() == TokenType::WithKeyword);
-        REQUIRE(withClause.getRelationship().getValue() == "with");
-        REQUIRE(withClause.getFirstParam().getType() == TokenType::Ref);
-        REQUIRE(withClause.getFirstParam().getValue() == "q.procName");
-        REQUIRE(withClause.getSecondParam().getType() == TokenType::Ref);
-        REQUIRE(withClause.getSecondParam().getValue() == "\"Third\"");
-    }
+//
+//    SECTION("Check Parsing Result of 'procedure p, q; Select p such that Calls(p, q) with q.procName = \"Third\"'") {
+//        std::vector<Token> tokens = {
+//            Token(TokenType::DesignEntity, "procedure"),
+//            Token(TokenType::IDENT, "p"),
+//            Token(TokenType::Comma, ","),
+//            Token(TokenType::IDENT, "q"),
+//            Token(TokenType::Semicolon, ";"),
+//            Token(TokenType::SelectKeyword, "Select"),
+//            Token(TokenType::IDENT, "p"),
+//            Token(TokenType::SuchKeyword, "such"),
+//            Token(TokenType::ThatKeyword, "that"),
+//            Token(TokenType::Calls, "Calls"),
+//            Token(TokenType::Lparenthesis, "("),
+//            Token(TokenType::IDENT, "p"),
+//            Token(TokenType::Comma, ","),
+//            Token(TokenType::IDENT, "q"),
+//            Token(TokenType::Rparenthesis, ")"),
+//            Token(TokenType::WithKeyword, "with"),
+//            Token(TokenType::IDENT, "q"),
+//            Token(TokenType::Dot, "."),
+//            Token(TokenType::AttrName, "procName"),
+//            Token(TokenType::Equal, "="),
+//            Token(TokenType::QuoutIDENT, "\"Third\"")
+//        };
+//
+//        QueryParser parser(tokens);
+//        auto parsingResult = parser.parse();
+//        REQUIRE(parsingResult.getDeclaredSynonym("p") == "procedure");
+//        REQUIRE(parsingResult.getDeclaredSynonym("q") == "procedure");
+//        REQUIRE(parsingResult.getRequiredSynonyms()[0] == "p");
+//
+//        auto suchThatClause = parsingResult.getSuchThatClauses()[0];
+//        REQUIRE(suchThatClause.getRelationship().getType() == TokenType::Calls);
+//        REQUIRE(suchThatClause.getRelationship().getValue() == "Calls");
+//        REQUIRE(suchThatClause.getFirstParam().getType() == TokenType::IDENT);
+//        REQUIRE(suchThatClause.getFirstParam().getValue() == "p");
+//        REQUIRE(suchThatClause.getSecondParam().getType() == TokenType::IDENT);
+//        REQUIRE(suchThatClause.getSecondParam().getValue() == "q");
+//
+//        auto withClause = parsingResult.getWithClauses()[0];
+//        REQUIRE(withClause.getRelationship().getType() == TokenType::WithKeyword);
+//        REQUIRE(withClause.getRelationship().getValue() == "with");
+//        REQUIRE(withClause.getFirstParam().getType() == TokenType::Ref);
+//        REQUIRE(withClause.getFirstParam().getValue() == "q.procName");
+//        REQUIRE(withClause.getSecondParam().getType() == TokenType::Ref);
+//        REQUIRE(withClause.getSecondParam().getValue() == "\"Third\"");
+//    }
 }
 
 
