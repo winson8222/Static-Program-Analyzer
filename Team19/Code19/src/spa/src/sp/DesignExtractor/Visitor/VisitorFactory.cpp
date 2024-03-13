@@ -4,7 +4,7 @@
 std::shared_ptr<StatementVisitor> StatementFactory::createVisitor(std::shared_ptr<ASTNode> node, 
 		listnode parent,
 		std::shared_ptr<PKBWriterManager> pkbWriterManager) {
-	switch (node->type) {
+	switch (node->getType()) {
 		case ASTNodeType::ASSIGN:
 			return std::make_shared<AssignVisitor>(node, parent, pkbWriterManager);
 		case ASTNodeType::READ:
@@ -19,12 +19,5 @@ std::shared_ptr<StatementVisitor> StatementFactory::createVisitor(std::shared_pt
 			return std::make_shared<IfElseThenVisitor>(node, parent, pkbWriterManager);
 		default:
 			throw std::invalid_argument("ERROR: Not a statement!");
-	}
-}
-
-std::shared_ptr<IVisitor> ExpressionFactory::createVisitor(std::shared_ptr<ASTNode> node, std::shared_ptr<PKBWriterManager> pkbWriterManager) {
-	switch (node->type) {
-		default:
-			throw std::invalid_argument("ExpressionFactory - node type not supported");
 	}
 }

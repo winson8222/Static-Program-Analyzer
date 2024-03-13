@@ -627,27 +627,19 @@ void QueryParser::parseStmtSynonyms() {
     }
 
 
-    if(currentSuchThatToken.getType() == TokenType::Uses) {
+    if(currentSuchThatToken.getType() == TokenType::Uses || currentSuchThatToken.getType() == TokenType::Modifies) {
         if (parsingResult.getDeclaredSynonym(currentToken().getValue()) != "stmt" &&
             parsingResult.getDeclaredSynonym(currentToken().getValue()) != "print" &&
             parsingResult.getDeclaredSynonym(currentToken().getValue()) != "while" &&
             parsingResult.getDeclaredSynonym(currentToken().getValue()) != "if" &&
             parsingResult.getDeclaredSynonym(currentToken().getValue()) != "assign" &&
-            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "call"){
+            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "call" &&
+            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "read") {
             throwSemanticError();
         }
     }
 
-    if (currentSuchThatToken.getType() == TokenType::Modifies) {
-        if (parsingResult.getDeclaredSynonym(currentToken().getValue()) != "stmt" &&
-            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "read" &&
-            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "while" &&
-            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "if" &&
-            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "assign" &&
-            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "call") {
-            throwSemanticError();
-        }
-    }
+
 
 }
 

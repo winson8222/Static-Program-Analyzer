@@ -197,5 +197,38 @@ TEST_CASE("sp/ast/ASTNode") {
 
         REQUIRE(ast9->getRPNForm() == "'a''b''+''c''d''/''e''f''*''-''*'");
     }
+
+    SECTION("Getter/Setter") {
+        std::shared_ptr<ASTNode> ast1 = std::make_shared<ASTNode>(ASTNodeType::ADD, 1, ASTUtility::getASTNodeType.find(ASTNodeType::ADD)->second);
+        REQUIRE(ast1->getType() == ASTNodeType::ADD);
+        REQUIRE(ast1->getLineNumber() == 1);
+        REQUIRE(ast1->getValue() == ASTUtility::getASTNodeType.find(ASTNodeType::ADD)->second);
+
+        std::shared_ptr<ASTNode> ast2 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 5, "x");
+        REQUIRE(ast2->getType() == ASTNodeType::VARIABLE);
+        REQUIRE(ast2->getLineNumber() == 5);
+        REQUIRE(ast2->getValue() == "x");
+
+        std::shared_ptr<ASTNode> ast3 = std::make_shared<ASTNode>(ASTNodeType::CONSTANT, 5, "0");
+        REQUIRE(ast3->getType() == ASTNodeType::CONSTANT);
+        REQUIRE(ast3->getLineNumber() == 5);
+        REQUIRE(ast3->getValue() == "0");
+
+        ast1->addChild(ast2);
+        ast1->addChild(ast3);
+
+        REQUIRE(ast1->getChildren() == std::vector<std::shared_ptr<ASTNode>>{ast2, ast3});
+        REQUIRE(ast1->getChildByIndex(0) == ast2);
+        REQUIRE(ast1->getChildByIndex(1) == ast3);
+
+        std::shared_ptr<ASTNode> ast4 = std::make_shared<ASTNode>(ASTNodeType::WHILE, 1, ASTUtility::getASTNodeType.find(ASTNodeType::WHILE)->second);
+        std::shared_ptr<ASTNode> ast5 = std::make_shared<ASTNode>(ASTNodeType::PROCEDURE, 1, ASTUtility::getASTNodeType.find(ASTNodeType::PROCEDURE)->second);
+        REQUIRE(ast4->equalType(ASTNodeType::WHILE));
+        REQUIRE(ast5->equalType(ASTNodeType::PROCEDURE));
+
+        ast1->setChildByIndex(0, ast4);
+        REQUIRE(ast1->getChildByIndex(0) == ast4);
+        REQUIRE(ast1->getChildByIndex(1) == ast3);
+    }
 }
 

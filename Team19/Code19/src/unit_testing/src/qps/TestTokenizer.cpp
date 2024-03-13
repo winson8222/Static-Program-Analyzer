@@ -885,43 +885,117 @@ TEST_CASE("procedure p, q;Select p such that Calls(p, q) with q.procName = 'Thir
 }
 
 
-//call c;
-//Select c such that Uses(c, " iter")
-TEST_CASE("call c; Select c such that Uses(c, \" iter\")") {
-    // Initialize tokenizer with the input string
-    Tokenizer tokenizer("call c; Select c such that Uses(c, \" iter\")");
+TEST_CASE("Tokenization of spaces in quoutes") {
+    Tokenizer tokenizer("assign a; Select a pattern a(_, _\" x\"_)");
     vector<Token> tokens = tokenizer.tokenize();
 
-    // Check the total number of tokens
-    REQUIRE(tokens.size() == 13);  // Expecting 22 tokens
+    std::vector<Token> tokensExpected = {
+            Token(TokenType::DesignEntity, "assign"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Semicolon, ";"),
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::PatternKeyword, "pattern"),
+            Token(TokenType::IDENT, "a"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::QuoutIDENT, "\"x\""),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Rparenthesis, ")")
 
-    // Validate each token against the expected output
+    };
+
+    REQUIRE(tokens.size() == 14);  // Expecting 14 tokens
     REQUIRE(tokens[0].getType() == TokenType::DesignEntity);
-    REQUIRE(tokens[0].getValue() == "call");
+    REQUIRE(tokens[0].getValue() == "assign");
+
     REQUIRE(tokens[1].getType() == TokenType::IDENT);
-    REQUIRE(tokens[1].getValue() == "c");
+    REQUIRE(tokens[1].getValue() == "a");
+
     REQUIRE(tokens[2].getType() == TokenType::Semicolon);
     REQUIRE(tokens[2].getValue() == ";");
+
     REQUIRE(tokens[3].getType() == TokenType::SelectKeyword);
     REQUIRE(tokens[3].getValue() == "Select");
+
     REQUIRE(tokens[4].getType() == TokenType::IDENT);
-    REQUIRE(tokens[4].getValue() == "c");
-    REQUIRE(tokens[5].getType() == TokenType::SuchKeyword);
-    REQUIRE(tokens[5].getValue() == "such");
-    REQUIRE(tokens[6].getType() == TokenType::ThatKeyword);
-    REQUIRE(tokens[6].getValue() == "that");
-    REQUIRE(tokens[7].getType() == TokenType::Uses);
-    REQUIRE(tokens[7].getValue() == "Uses");
-    REQUIRE(tokens[8].getType() == TokenType::Lparenthesis);
-    REQUIRE(tokens[8].getValue() == "(");
-    REQUIRE(tokens[9].getType() == TokenType::IDENT);
-    REQUIRE(tokens[9].getValue() == "c");
-    REQUIRE(tokens[10].getType() == TokenType::Comma);
-    REQUIRE(tokens[10].getValue() == ",");
+    REQUIRE(tokens[4].getValue() == "a");
+
+    REQUIRE(tokens[5].getType() == TokenType::PatternKeyword);
+    REQUIRE(tokens[5].getValue() == "pattern");
+
+    REQUIRE(tokens[6].getType() == TokenType::IDENT);
+    REQUIRE(tokens[6].getValue() == "a");
+
+    REQUIRE(tokens[7].getType() == TokenType::Lparenthesis);
+    REQUIRE(tokens[7].getValue() == "(");
+
+    REQUIRE(tokens[8].getType() == TokenType::Wildcard);
+    REQUIRE(tokens[8].getValue() == "_");
+
+    REQUIRE(tokens[9].getType() == TokenType::Comma);
+    REQUIRE(tokens[9].getValue() == ",");
+
+    REQUIRE(tokens[10].getType() == TokenType::Wildcard);
+    REQUIRE(tokens[10].getValue() == "_");
+
     REQUIRE(tokens[11].getType() == TokenType::QuoutIDENT);
-    REQUIRE(tokens[11].getValue() == "\" iter\"");
-    REQUIRE(tokens[12].getType() == TokenType::Rparenthesis);
-    REQUIRE(tokens[12].getValue() == ")");
+    REQUIRE(tokens[11].getValue() == "\"x\"");
+
+    REQUIRE(tokens[12].getType() == TokenType::Wildcard);
+    REQUIRE(tokens[12].getValue() == "_");
+
+    REQUIRE(tokens[13].getType() == TokenType::Rparenthesis);
+    REQUIRE(tokens[13].getValue() == ")");
+
+
+
+}
+
+TEST_CASE("Testing Select Select") {
+    Tokenizer tokenizer("assign Select; Select Select pattern Select(_, _)");
+    vector<Token> tokens = tokenizer.tokenize();
+
+    REQUIRE(tokens.size() == 12);  // Expecting 14 tokens
+    REQUIRE(tokens[0].getType() == TokenType::DesignEntity);
+    REQUIRE(tokens[0].getValue() == "assign");
+
+    REQUIRE(tokens[1].getType() == TokenType::IDENT);
+    REQUIRE(tokens[1].getValue() == "Select");
+
+    REQUIRE(tokens[2].getType() == TokenType::Semicolon);
+    REQUIRE(tokens[2].getValue() == ";");
+
+    REQUIRE(tokens[3].getType() == TokenType::SelectKeyword);
+    REQUIRE(tokens[3].getValue() == "Select");
+
+    REQUIRE(tokens[4].getType() == TokenType::IDENT);
+    REQUIRE(tokens[4].getValue() == "Select");
+
+    REQUIRE(tokens[5].getType() == TokenType::PatternKeyword);
+    REQUIRE(tokens[5].getValue() == "pattern");
+
+    REQUIRE(tokens[6].getType() == TokenType::IDENT);
+    REQUIRE(tokens[6].getValue() == "Select");
+
+    REQUIRE(tokens[7].getType() == TokenType::Lparenthesis);
+    REQUIRE(tokens[7].getValue() == "(");
+
+    REQUIRE(tokens[8].getType() == TokenType::Wildcard);
+    REQUIRE(tokens[8].getValue() == "_");
+
+    REQUIRE(tokens[9].getType() == TokenType::Comma);
+    REQUIRE(tokens[9].getValue() == ",");
+
+    REQUIRE(tokens[10].getType() == TokenType::Wildcard);
+    REQUIRE(tokens[10].getValue() == "_");
+
+
+    REQUIRE(tokens[11].getType() == TokenType::Rparenthesis);
+    REQUIRE(tokens[11].getValue() == ")");
+
 
 
 }

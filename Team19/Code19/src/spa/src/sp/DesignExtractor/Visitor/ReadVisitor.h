@@ -8,6 +8,8 @@
 
 #include <stdexcept>
 
+
+constexpr int READ_VARIABLE_INDEX = 0;
 /*
 * A visitor for the read statement which should
 * call on all relevant extractors and sub-visitors
@@ -23,4 +25,7 @@ public:
 		std::shared_ptr<PKBWriterManager> pkbWriterManager);
 
 	void visit() override;
+
+private:
+	std::shared_ptr<ASTNode> variableChild;
 };

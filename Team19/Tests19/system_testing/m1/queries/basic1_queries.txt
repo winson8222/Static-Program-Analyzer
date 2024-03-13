@@ -396,12 +396,12 @@ SyntaxError
 79 - Invalid Uses 3
 read r;
 Select r such that Uses(r, 1)
-SemanticError
+SyntaxError
 5000
 80 - Invalid Uses 4
 read r;
 Select r such that Uses(r, "print")
-SemanticError
+none
 5000
 81 - Invalid Uses 5
 stmt s;
@@ -466,7 +466,7 @@ SyntaxError
 93 - Invalid Modifies 3
 print p;
 Select p such that Modifies(p, "read")
-SemanticError
+none
 5000
 94 - Invalid Modifies 4
 stmt s;

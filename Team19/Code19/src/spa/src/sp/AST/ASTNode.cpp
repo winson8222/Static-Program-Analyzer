@@ -114,3 +114,7 @@ std::shared_ptr<ASTNode> ASTNode::getChildByIndex(int index) {
 void ASTNode::setChildByIndex(int index, std::shared_ptr<ASTNode> child) {
 	this->children[index] = child;
 }
+
+bool ASTNode::equalType(ASTNodeType type) {
+	return this->type == type;
+}
