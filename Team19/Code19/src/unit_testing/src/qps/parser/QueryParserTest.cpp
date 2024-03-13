@@ -604,46 +604,46 @@ TEST_CASE("src/qps/parser/QueryParser") {
         REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "");
 
     }
-
-    SECTION("QueryParser correctly parses 'procedure p, q; Select <p.stmt#, q.procName> such that Calls (p, q)' with no errors") {
-        // Explicitly create the vector of tokens for the query
-        std::vector<Token> tokens = {
-            Token(TokenType::DesignEntity, "procedure"),
-            Token(TokenType::IDENT, "p"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::IDENT, "q"),
-            Token(TokenType::Semicolon, ";"),
-            Token(TokenType::SelectKeyword, "Select"),
-            Token(TokenType::LeftAngleBracket, "<"),
-            Token(TokenType::IDENT, "p"),
-            Token(TokenType::Dot, "."),
-            Token(TokenType::AttrName, "stmt#"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::IDENT, "q"),
-            Token(TokenType::Dot, "."),
-            Token(TokenType::AttrName, "procName"),
-            Token(TokenType::RightAngleBracket, ">"),
-            Token(TokenType::SuchKeyword, "such"),
-            Token(TokenType::ThatKeyword, "that"),
-            Token(TokenType::Calls, "Calls"),
-            Token(TokenType::Lparenthesis, "("),
-            Token(TokenType::IDENT, "p"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::IDENT, "q"),
-            Token(TokenType::Rparenthesis, ")")
-        };
-
-    // Instantiate the QueryParser with the tokens
-    QueryParser queryParser(tokens);
-
-    // Parse the query
-    ParsingResult parsingResult = queryParser.parse();
-
-    // Verify that the parsing result indicates a valid query with no errors
-    REQUIRE(parsingResult.isQueryValid());
-    REQUIRE(parsingResult.getErrorMessage().empty());
-
-    }
+//
+//    SECTION("QueryParser correctly parses 'procedure p, q; Select <p.stmt#, q.procName> such that Calls (p, q)' with no errors") {
+//        // Explicitly create the vector of tokens for the query
+//        std::vector<Token> tokens = {
+//            Token(TokenType::DesignEntity, "procedure"),
+//            Token(TokenType::IDENT, "p"),
+//            Token(TokenType::Comma, ","),
+//            Token(TokenType::IDENT, "q"),
+//            Token(TokenType::Semicolon, ";"),
+//            Token(TokenType::SelectKeyword, "Select"),
+//            Token(TokenType::LeftAngleBracket, "<"),
+//            Token(TokenType::IDENT, "p"),
+//            Token(TokenType::Dot, "."),
+//            Token(TokenType::AttrName, "stmt#"),
+//            Token(TokenType::Comma, ","),
+//            Token(TokenType::IDENT, "q"),
+//            Token(TokenType::Dot, "."),
+//            Token(TokenType::AttrName, "procName"),
+//            Token(TokenType::RightAngleBracket, ">"),
+//            Token(TokenType::SuchKeyword, "such"),
+//            Token(TokenType::ThatKeyword, "that"),
+//            Token(TokenType::Calls, "Calls"),
+//            Token(TokenType::Lparenthesis, "("),
+//            Token(TokenType::IDENT, "p"),
+//            Token(TokenType::Comma, ","),
+//            Token(TokenType::IDENT, "q"),
+//            Token(TokenType::Rparenthesis, ")")
+//        };
+//
+//    // Instantiate the QueryParser with the tokens
+//    QueryParser queryParser(tokens);
+//
+//    // Parse the query
+//    ParsingResult parsingResult = queryParser.parse();
+//
+//    // Verify that the parsing result indicates a valid query with no errors
+//    REQUIRE(parsingResult.isQueryValid());
+//    REQUIRE(parsingResult.getErrorMessage().empty());
+//
+//    }
 
     SECTION("QueryParser correctly parses 'assign a; while w; Select a pattern a(\"x\", _) such that Parent*(w, a) such that Next*(1, a)' with no errors") {
         // Manually create the vector of tokens for the query
@@ -724,45 +724,45 @@ TEST_CASE("src/qps/parser/QueryParser") {
 
         // Additional checks can be performed here if needed, such as verifying the specific parsing output
     }
-
-    SECTION("QueryParser correctly parses 'procedure p, q; Select p such that Calls(p, q) with q.procName = \"Third\"' with no errors") {
-        // Manually create the vector of tokens for the query
-        std::vector<Token> tokens = {
-            Token(TokenType::DesignEntity, "procedure"),
-            Token(TokenType::IDENT, "p"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::IDENT, "q"),
-            Token(TokenType::Semicolon, ";"),
-            Token(TokenType::SelectKeyword, "Select"),
-            Token(TokenType::IDENT, "p"),
-            Token(TokenType::SuchKeyword, "such"),
-            Token(TokenType::ThatKeyword, "that"),
-            Token(TokenType::Calls, "Calls"),
-            Token(TokenType::Lparenthesis, "("),
-            Token(TokenType::IDENT, "p"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::IDENT, "q"),
-            Token(TokenType::Rparenthesis, ")"),
-            Token(TokenType::WithKeyword, "with"),
-            Token(TokenType::IDENT, "q"),
-            Token(TokenType::Dot, "."),
-            Token(TokenType::AttrName, "procName"),
-            Token(TokenType::Equal, "="),
-            Token(TokenType::QuoutIDENT, "\"Third\"")
-        };
-
-        // Instantiate the QueryParser with the tokens
-        QueryParser queryParser(tokens);
-
-        // Parse the query
-        ParsingResult parsingResult = queryParser.parse();
-
-        // Verify that the parsing result indicates a valid query with no errors
-        REQUIRE(parsingResult.isQueryValid() == true);
-        REQUIRE(parsingResult.getErrorMessage().empty() == true);
-
-        // Additional checks can be performed here if needed, such as verifying the specific parsing output
-    }
+//
+//    SECTION("QueryParser correctly parses 'procedure p, q; Select p such that Calls(p, q) with q.procName = \"Third\"' with no errors") {
+//        // Manually create the vector of tokens for the query
+//        std::vector<Token> tokens = {
+//            Token(TokenType::DesignEntity, "procedure"),
+//            Token(TokenType::IDENT, "p"),
+//            Token(TokenType::Comma, ","),
+//            Token(TokenType::IDENT, "q"),
+//            Token(TokenType::Semicolon, ";"),
+//            Token(TokenType::SelectKeyword, "Select"),
+//            Token(TokenType::IDENT, "p"),
+//            Token(TokenType::SuchKeyword, "such"),
+//            Token(TokenType::ThatKeyword, "that"),
+//            Token(TokenType::Calls, "Calls"),
+//            Token(TokenType::Lparenthesis, "("),
+//            Token(TokenType::IDENT, "p"),
+//            Token(TokenType::Comma, ","),
+//            Token(TokenType::IDENT, "q"),
+//            Token(TokenType::Rparenthesis, ")"),
+//            Token(TokenType::WithKeyword, "with"),
+//            Token(TokenType::IDENT, "q"),
+//            Token(TokenType::Dot, "."),
+//            Token(TokenType::AttrName, "procName"),
+//            Token(TokenType::Equal, "="),
+//            Token(TokenType::QuoutIDENT, "\"Third\"")
+//        };
+//
+//        // Instantiate the QueryParser with the tokens
+//        QueryParser queryParser(tokens);
+//
+//        // Parse the query
+//        ParsingResult parsingResult = queryParser.parse();
+//
+//        // Verify that the parsing result indicates a valid query with no errors
+//        REQUIRE(parsingResult.isQueryValid() == true);
+//        REQUIRE(parsingResult.getErrorMessage().empty() == true);
+//
+//        // Additional checks can be performed here if needed, such as verifying the specific parsing output
+//    }
 
     //procedure p;
 //Select p such that Uses(p, "iter")

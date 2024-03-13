@@ -16,8 +16,7 @@ TestWrapper::TestWrapper() {
 	pkbManager = std::make_shared<PKBManager>();
 	pkbReaderManager = pkbManager->getPKBReaderManager();
 	pkbWriterManager = pkbManager->getPKBWriterManager();
-
-    pkbWriterManager->getFollowsWriter();
+    pkbCacheManager = pkbManager->getPKBCacheManager();
 
 }
 
@@ -40,6 +39,7 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
 
 	// call your evaluator to evaluate the query here
     // ...code to evaluate query...
+    pkbCacheManager->populateCache();
 	Tokenizer tokenizer(query);
 	vector<Token> tokens = tokenizer.tokenize();
 	QueryParser parser(tokens);
@@ -48,22 +48,10 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
 	std::unordered_set<string> res = evaluator.evaluateQuery();
     int synCount = parsingResult.getRequiredSynonyms().size();
 
-    if (synCount == 1) {
-        for (auto & re : res) {
-            results.push_back(re);
-        }
-        return;
-    } else {
-        int resCount = 0;
-        for (auto & re : res) {
-            if (resCount != res.size() - 1 && !re.empty()) {
-                results.push_back(re + ",");
-                resCount++;
-            } else {
-                results.push_back(re);
-            }
-        }
+    for (auto & re : res) {
+        results.push_back(re);
     }
+    pkbCacheManager->clearCache();
 
 	// store the answers to the query in the results list (it is initially empty)
 	// each result must be a string.
