@@ -1,0 +1,10 @@
+1 - Finds all procedures that calls another procedure
+procedure p, q;
+Select p such that Calls(p, q)
+Main, Compute, Process, Finalize, Last
+5000
+2 - Finds all procedures that calls another procedure Transitively
+procedure p, q;
+Select p such that Calls*(p, "Last")
+Main, Compute, Finalize
+5000

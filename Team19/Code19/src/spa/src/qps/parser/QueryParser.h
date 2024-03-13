@@ -49,6 +49,7 @@ private:
 
     bool isUsesOrModifies();
     bool isStmtRefStmtRef();
+    bool isCalls();
     bool isVarName();
     bool isConstValue();
 
@@ -61,6 +62,7 @@ private:
     void parseDesignEntity();
     void parseUsesOrModifies(SuchThatClause& clause);
     void parseStmtRefStmtRef(SuchThatClause& clause);
+    void parseCalls(SuchThatClause& clause);
     void parseExpression();
     void parseTerm();
     void parseFactor();
@@ -84,6 +86,7 @@ private:
     void parseEntSynonym();
     void parseStmtSynonyms();
     void parseAssignSynonyms();
+
 
 
 

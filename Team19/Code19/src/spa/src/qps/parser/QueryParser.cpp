@@ -212,6 +212,8 @@ void QueryParser::parseRelRef(SuchThatClause& clause) {
         parseStmtRefStmtRef(clause);
     } else if (isUsesOrModifies()) {
         parseUsesOrModifies(clause);
+    } else if (isCalls()){
+        parseCalls(clause);
     } else {
         throwGrammarError();
     }
@@ -237,6 +239,51 @@ bool QueryParser::isUsesOrModifies() {
     return false;
 }
 
+bool QueryParser::isCalls() {
+    if (match(TokenType::Calls) || match(TokenType::CallsT)) {
+        return true;
+    }
+    return false;
+}
+
+
+void QueryParser::parseCalls(SuchThatClause& clause) {
+
+    currentSuchThatToken = currentToken();
+    if (currentToken().getValue() == "Calls") {
+        currentSuchThatToken.setType(TokenType::Calls);
+    }
+    else if (currentToken().getValue() == "Calls*") {
+        currentSuchThatToken.setType(TokenType::CallsT);
+    } else {
+        throwGrammarError();
+    }
+
+    clause.setRelationship(currentSuchThatToken);
+    advanceToken();
+    if (match(TokenType::Lparenthesis)) {
+        advanceToken();
+    }
+    else {
+        throwGrammarError();
+    }
+
+    parseEntRef();
+    clause.setFirstParam(currentToken());
+    advanceToken();
+
+    if (match(TokenType::Comma)) {
+        advanceToken();
+    }
+    else {
+        throwGrammarError();
+    }
+
+    parseEntRef();
+    clause.setSecondParam(currentToken());
+    advanceToken();
+    ensureToken(TokenType::Rparenthesis);
+}
 // Parses a 'Uses' or 'Modifies' relation in the query.
 // Ensures correct syntax and processes statement and entity references.
 // set the Token type for the such that clause relationship more specifically
