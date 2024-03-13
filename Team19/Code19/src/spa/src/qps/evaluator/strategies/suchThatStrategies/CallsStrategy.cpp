@@ -5,50 +5,48 @@ std::shared_ptr<ResultTable> CallsStrategy::evaluateQuery(PKBReaderManager& pkbR
 {
     auto resultTable = make_shared<ResultTable>();
     this->callsPReader = pkbReaderManager.getCallsReader();
-
+    this->callsTReader = pkbReaderManager.getCallsTReader();
 
     const SuchThatClause* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
-    const Token& suchThatFirstParam = suchClause->getFirstParam();
-    const Token& suchThatSecondParam = suchClause->getSecondParam();
+    this->firstParam = suchClause->getFirstParam();
+    this->secondParam = suchClause->getSecondParam();
     this-> variant = suchClause->getRelationship().getValue();
 
-    if (isBothParamsSynonym(suchThatFirstParam, suchThatSecondParam)) {
-        this->processBothSynonyms(suchThatFirstParam, suchThatSecondParam, parsingResult, resultTable, pkbReaderManager);
-    } else if (suchThatFirstParam.getType() == TokenType::IDENT) {
-        this->processFirstParam(suchThatFirstParam, suchThatSecondParam, parsingResult, resultTable, pkbReaderManager);
-    } else if (suchThatSecondParam.getType() == TokenType::IDENT) {
-        this->processSecondParam(suchThatFirstParam, suchThatSecondParam, parsingResult, resultTable, pkbReaderManager);
+    if (isBothParamsSynonym(this->firstParam, this->secondParam)) {
+        this->processBothSynonyms(parsingResult, resultTable);
+    } else if (this->firstParam.getType() == TokenType::IDENT) {
+        this->processFirstParam(parsingResult, resultTable);
+    } else if (this->secondParam.getType() == TokenType::IDENT) {
+        this->processSecondParam(parsingResult, resultTable);
     } else {
-        this->processBothConstants(suchThatFirstParam, suchThatSecondParam, parsingResult, resultTable, pkbReaderManager);
+        this->processBothConstants(parsingResult, resultTable);
     }
 
     return resultTable;
 }
 
-void CallsStrategy::processBothSynonyms(const Token &firstParam, const Token &secondParam,
-                                            const ParsingResult &parsingResult,
-                                            std::shared_ptr<ResultTable> resultTable,
-                                            PKBReaderManager &pkbReaderManager) {
+void CallsStrategy::processBothSynonyms(const ParsingResult &parsingResult,
+                                            std::shared_ptr<ResultTable> resultTable) {
     // get the types of both synonyms
-    string firstParamType = parsingResult.getDeclaredSynonym(firstParam.getValue());
-    string secondParamType = parsingResult.getDeclaredSynonym(secondParam.getValue());
-    insertColsToTable(firstParam, secondParam, resultTable);
+    string firstParamType = parsingResult.getDeclaredSynonym(this->firstParam.getValue());
+    string secondParamType = parsingResult.getDeclaredSynonym(this->secondParam.getValue());
+    insertColsToTable(this->firstParam, this->secondParam, resultTable);
     unordered_set<string> allCallees;
     if (this->variant == "Calls") {
         std::unordered_set<std::string> allCallers =
-                pkbReaderManager.getCallsReader()->getAllDirectCallers();
+                this->callsPReader->getAllDirectCallers();
         for (string caller : allCallers) {
             // copy the value of procs to a rvalue string
-            allCallees = pkbReaderManager.getCallsReader()->getDirectlyCalledProcedures(caller);
-            insertRowsWithMatchedResults(firstParam, secondParam, caller, allCallees, resultTable);
+            allCallees = this->callsPReader->getDirectlyCalledProcedures(caller);
+            insertRowsWithMatchedResults(this->firstParam, this->secondParam, caller, allCallees, resultTable);
         }
     } else {
         std::unordered_set<std::string> allCallers =
-                pkbReaderManager.getCallsTReader()->getAllTransitiveCallers();
+                this->callsTReader->getAllTransitiveCallers();
         for (string caller : allCallers) {
             // copy the value of procs to a rvalue string
-            allCallees = pkbReaderManager.getCallsTReader() -> getTransitivelyCalledProcedures(caller);
-            insertRowsWithMatchedResults(firstParam, secondParam, caller, allCallees, resultTable);
+            allCallees = this->callsTReader -> getTransitivelyCalledProcedures(caller);
+            insertRowsWithMatchedResults(this->firstParam, this->secondParam, caller, allCallees, resultTable);
         }
     }
 
@@ -56,33 +54,31 @@ void CallsStrategy::processBothSynonyms(const Token &firstParam, const Token &se
 }
 
 
-void CallsStrategy::processFirstParam(const Token &firstParam, const Token &secondParam,
-                                          const ParsingResult &parsingResult, std::shared_ptr<ResultTable> resultTable,
-                                          PKBReaderManager &pkbReaderManager) {
-    string colName = firstParam.getValue();
-    insertSingleColToTable(firstParam, resultTable);
+void CallsStrategy::processFirstParam(const ParsingResult &parsingResult, std::shared_ptr<ResultTable> resultTable) {
+    string colName = this->firstParam.getValue();
+    insertSingleColToTable(this->firstParam, resultTable);
     std::unordered_set<std::string> allCallers;
     if (this->variant == "Calls"){
-        if (secondParam.getType() == TokenType::QuoutIDENT) {
-            string secondParamValue = extractQuotedExpression(secondParam);
+        if (this->secondParam.getType() == TokenType::QuoutIDENT) {
+            string secondParamValue = extractQuotedExpression(this->secondParam);
 
-            allCallers = pkbReaderManager.getCallsReader()->getDirectCallersOfProcedure(secondParamValue);
+            allCallers = this->callsPReader->getDirectCallersOfProcedure(secondParamValue);
 
         } else {
             // it is a wildcard
-            allCallers = pkbReaderManager.getCallsReader()->getAllDirectCallers();
+            allCallers = this->callsPReader->getAllDirectCallers();
 
 
         }
     } else {
-        if (secondParam.getType() == TokenType::QuoutIDENT) {
-            string secondParamValue = extractQuotedExpression(secondParam);
+        if (this->secondParam.getType() == TokenType::QuoutIDENT) {
+            string secondParamValue = extractQuotedExpression(this->secondParam);
 
-            allCallers = pkbReaderManager.getCallsTReader()->getTransitiveCallersOfProcedure(secondParamValue);
+            allCallers = this->callsTReader->getTransitiveCallersOfProcedure(secondParamValue);
 
         } else {
             // it is a wildcard
-            allCallers = pkbReaderManager.getCallsTReader()->getAllTransitiveCallers();
+            allCallers = this->callsTReader->getAllTransitiveCallers();
 
         }
 
@@ -91,50 +87,47 @@ void CallsStrategy::processFirstParam(const Token &firstParam, const Token &seco
 
 }
 
-void CallsStrategy::processSecondParam(const Token &firstParam, const Token &secondParam,
-                                           const ParsingResult &parsingResult, std::shared_ptr<ResultTable> resultTable,
-                                           PKBReaderManager &pkbReaderManager) {
-    string colName = secondParam.getValue();
-    insertSingleColToTable(secondParam, resultTable);
+void CallsStrategy::processSecondParam(const ParsingResult &parsingResult, std::shared_ptr<ResultTable> resultTable) {
+    string colName = this->secondParam.getValue();
+    insertSingleColToTable(this->secondParam, resultTable);
     std::unordered_set<std::string> allCallees;
     if (this->variant == "Calls"){
-        if (firstParam.getType() == TokenType::QuoutIDENT) {
-            string firstParamValue = extractQuotedExpression(firstParam);
-            allCallees = pkbReaderManager.getCallsReader()->getDirectlyCalledProcedures(firstParamValue);
+        if (this->firstParam.getType() == TokenType::QuoutIDENT) {
+            string firstParamValue = extractQuotedExpression(this->firstParam);
+            allCallees = this->callsPReader->getDirectlyCalledProcedures(firstParamValue);
         } else {
             // it is a wildcard
-            allCallees = pkbReaderManager.getCallsReader()-> getAllDirectCallees();
+            allCallees = this->callsPReader-> getAllDirectCallees();
         }
     } else {
-        if (firstParam.getType() == TokenType::QuoutIDENT) {
-            string firstParamValue = extractQuotedExpression(firstParam);
-            allCallees = pkbReaderManager.getCallsTReader()->getTransitivelyCalledProcedures(firstParamValue);
+        if (this->firstParam.getType() == TokenType::QuoutIDENT) {
+            string firstParamValue = extractQuotedExpression(this->firstParam);
+            allCallees = this->callsTReader->getTransitivelyCalledProcedures(firstParamValue);
         } else {
             // it is a wildcard
-            allCallees = pkbReaderManager.getCallsTReader()->getAllTransitiveCallees();
+            allCallees = this->callsTReader->getAllTransitiveCallees();
         }
     }
     insertRowsWithSingleColumn(colName, allCallees, resultTable);
 }
 
-void CallsStrategy::processBothConstants(const Token &firstParam, const Token &secondParam,
-                                             const ParsingResult &parsingResult,
-                                             std::shared_ptr<ResultTable> resultTable, PKBReaderManager &pkbReaderManager) {
+void CallsStrategy::processBothConstants(const ParsingResult &parsingResult,
+                                             std::shared_ptr<ResultTable> resultTable) {
     if (this->variant == "Calls"){
-        if (isBothParamsWildcard(firstParam, secondParam)) {
-            if (!pkbReaderManager.getCallsReader()->getAllDirectCallers().empty()) {
+        if (isBothParamsWildcard(this->firstParam, this->secondParam)) {
+            if (!this->callsPReader->getAllDirectCallers().empty()) {
                 resultTable->setAsTruthTable();
             }
         } else {
-            setTrueIfRelationShipExist(firstParam, secondParam, pkbReaderManager.getCallsReader(), resultTable);
+            setTrueIfRelationShipExist(this->firstParam, this->secondParam, this->callsPReader, resultTable);
         }
     } else {
-        if (isBothParamsWildcard(firstParam, secondParam)) {
-            if (!pkbReaderManager.getCallsTReader()->getAllTransitiveCallers().empty()) {
+        if (isBothParamsWildcard(this->firstParam, this->secondParam)) {
+            if (!this->callsTReader->getAllTransitiveCallers().empty()) {
                 resultTable->setAsTruthTable();
             }
         } else {
-            setTrueIfRelationShipExist(firstParam, secondParam, pkbReaderManager.getCallsTReader(), resultTable);
+            setTrueIfRelationShipExist(this->firstParam, this->secondParam, this->callsTReader, resultTable);
         }
     }
 

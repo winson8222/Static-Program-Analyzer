@@ -7,90 +7,91 @@ std::shared_ptr<ResultTable> ModifiesPStrategy::evaluateQuery(PKBReaderManager& 
     this->modifiesPReader = pkbReaderManager.getModifiesPReader();
 
 
-    const SuchThatClause* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
-    const Token& suchThatFirstParam = suchClause->getFirstParam();
-    const Token& suchThatSecondParam = suchClause->getSecondParam();
 
-    if (isBothParamsSynonym(suchThatFirstParam, suchThatSecondParam)) {
-        this->processBothSynonyms(suchThatFirstParam, suchThatSecondParam, parsingResult, resultTable, pkbReaderManager);
-    } else if (suchThatFirstParam.getType() == TokenType::IDENT) {
-        this->processFirstParam(suchThatFirstParam, suchThatSecondParam, parsingResult, resultTable, pkbReaderManager);
-    } else if (suchThatSecondParam.getType() == TokenType::IDENT) {
-        this->processSecondParam(suchThatFirstParam, suchThatSecondParam, parsingResult, resultTable, pkbReaderManager);
+
+
+    const SuchThatClause* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
+    this->firstParam = suchClause->getFirstParam();
+    this->secondParam = suchClause->getSecondParam();
+
+
+    if (isBothParamsSynonym(this->firstParam, this->secondParam)) {
+        this->processBothSynonyms(parsingResult, resultTable);
+    } else if (this->firstParam.getType() == TokenType::IDENT) {
+        this->processFirstParam(parsingResult, resultTable);
+    } else if (this->secondParam.getType() == TokenType::IDENT) {
+        this->processSecondParam(parsingResult, resultTable);
     } else {
-        this->processBothConstants(suchThatFirstParam, suchThatSecondParam, parsingResult, resultTable, pkbReaderManager);
+        this->processBothConstants(parsingResult, resultTable);
     }
 
     return resultTable;
 }
 
-void ModifiesPStrategy::processBothSynonyms(const Token &firstParam, const Token &secondParam,
+void ModifiesPStrategy::processBothSynonyms(
                                             const ParsingResult &parsingResult,
-                                            std::shared_ptr<ResultTable> resultTable,
-                                            PKBReaderManager &pkbReaderManager) {
+                                            std::shared_ptr<ResultTable> resultTable) {
     // get the types of both synonyms
-    string firstParamType = parsingResult.getDeclaredSynonym(firstParam.getValue());
-    string secondParamType = parsingResult.getDeclaredSynonym(secondParam.getValue());
-    insertColsToTable(firstParam, secondParam, resultTable);
+    string firstParamType = parsingResult.getDeclaredSynonym(this->firstParam.getValue());
+    string secondParamType = parsingResult.getDeclaredSynonym(this->secondParam.getValue());
+    insertColsToTable(this->firstParam, this->secondParam, resultTable);
 
     if (firstParamType == "procedure") {
         std::unordered_set<std::string> allProcs =
-                pkbReaderManager.getModifiesPReader()->getAllProcsThatModifyAnyVariable();
+                this->modifiesPReader->getAllProcsThatModifyAnyVariable();
         for (string proc : allProcs) {
             std::unordered_set<std::string> allVars =
-                    pkbReaderManager.getModifiesPReader()->getAllVariablesModifiedByProc(proc);
+                    this->modifiesPReader->getAllVariablesModifiedByProc(proc);
             // copy the value of procs to a rvalue string
-            insertRowsWithMatchedResults(firstParam, secondParam, proc, allVars, resultTable);
+            insertRowsWithMatchedResults(this->firstParam, this->secondParam, proc, allVars, resultTable);
         }
     }
 
 }
 
 
-void ModifiesPStrategy::processFirstParam(const Token &firstParam, const Token &secondParam,
-                                          const ParsingResult &parsingResult, std::shared_ptr<ResultTable> resultTable,
-                                          PKBReaderManager &pkbReaderManager) {
-    string colName = firstParam.getValue();
-    insertSingleColToTable(firstParam, resultTable);
+void ModifiesPStrategy::processFirstParam(
+                                          const ParsingResult &parsingResult, std::shared_ptr<ResultTable> resultTable) {
+    string colName = this->firstParam.getValue();
+    insertSingleColToTable(this->firstParam, resultTable);
     std::unordered_set<std::string> allProcs;
-    if (secondParam.getType() == TokenType::QuoutIDENT) {
-        string secondParamValue = extractQuotedExpression(secondParam);
+    if (this->secondParam.getType() == TokenType::QuoutIDENT) {
+        string secondParamValue = extractQuotedExpression(this->secondParam);
 
-        allProcs = pkbReaderManager.getModifiesPReader()->getAllProcsThatModifyVariable(secondParamValue);
+        allProcs = this->modifiesPReader->getAllProcsThatModifyVariable(secondParamValue);
 
     } else {
         // it is a wildcard
-        allProcs = pkbReaderManager.getModifiesPReader()->getAllProcsThatModifyAnyVariable();
+        allProcs = this->modifiesPReader->getAllProcsThatModifyAnyVariable();
 
     }
     insertRowsWithSingleColumn(colName, allProcs, resultTable);
 }
 
-void ModifiesPStrategy::processSecondParam(const Token &firstParam, const Token &secondParam,
-                                           const ParsingResult &parsingResult, std::shared_ptr<ResultTable> resultTable,
-                                           PKBReaderManager &pkbReaderManager) {
-    string colName = secondParam.getValue();
-    insertSingleColToTable(secondParam, resultTable);
+void ModifiesPStrategy::processSecondParam(
+                                           const ParsingResult &parsingResult, std::shared_ptr<ResultTable> resultTable) {
+    string colName = this->secondParam.getValue();
+    insertSingleColToTable(this->secondParam, resultTable);
     std::unordered_set<std::string> allVars;
-    if (firstParam.getType() == TokenType::QuoutIDENT) {
-        string firstParamValue = extractQuotedExpression(firstParam);
-        allVars = pkbReaderManager.getModifiesPReader()->getAllVariablesModifiedByProc(firstParamValue);
+    if (this->firstParam.getType() == TokenType::QuoutIDENT) {
+        string firstParamValue = extractQuotedExpression(this->firstParam);
+        allVars = this->modifiesPReader->getAllVariablesModifiedByProc(firstParamValue);
     } else {
         // it is a wildcard
-        allVars = pkbReaderManager.getModifiesPReader()->getAllVariablesModifiedByAnyProc();
+        allVars = this->modifiesPReader->getAllVariablesModifiedByAnyProc();
     }
     insertRowsWithSingleColumn(colName, allVars, resultTable);
 }
 
-void ModifiesPStrategy::processBothConstants(const Token &firstParam, const Token &secondParam,
+void ModifiesPStrategy::processBothConstants(
                                              const ParsingResult &parsingResult,
-                                             std::shared_ptr<ResultTable> resultTable, PKBReaderManager &pkbReaderManager) {
-    if (isBothParamsWildcard(firstParam, secondParam)) {
-        if (!pkbReaderManager.getModifiesPReader()->getAllProcsThatModifyAnyVariable().empty()) {
+                                             std::shared_ptr<ResultTable> resultTable) {
+    if (isBothParamsWildcard(this->firstParam, this->secondParam)) {
+        if (!this->modifiesPReader->getAllProcsThatModifyAnyVariable().empty()) {
             resultTable->setAsTruthTable();
         }
     } else {
-        setTrueIfRelationShipExist(firstParam, secondParam, pkbReaderManager.getModifiesPReader(), resultTable);
+        setTrueIfRelationShipExist(this->firstParam, this->secondParam, this->modifiesPReader, resultTable);
     }
 
 }
