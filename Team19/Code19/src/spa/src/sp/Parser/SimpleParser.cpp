@@ -4,9 +4,6 @@
 #include <unordered_map>
 #include <functional>
 
-// ai-gen start(gpt,2,e)
-// Prompt: https://platform.openai.com/playground/p/cJLjmmneCEs4z6ms7ZkBSxJB?model=gpt-4&mode=chat
-
 /**
  * @brief Constructs a new Simple Parser object
  *
@@ -505,4 +502,3 @@ std::shared_ptr<ASTNode> SimpleParser::parseConstValue() {
 	this->assertToken(constant, LexicalTokenType::INTEGER);
 	return this->createNode(ASTNodeType::CONSTANT, this->lineManager->getLine(), constant.getValue());
 }
-// ai-gen end

@@ -1,0 +1,35 @@
+1 - Standard
+stmt s; variable v;
+Select <s, v>
+1 x, 1 y, 2 x, 2 y
+5000
+2 - Multiple of the same type
+stmt s, s1, s2;
+Select <s, s1, s2>
+1 1 1, 1 1 2, 1 2 1, 1 2 2, 2 1 1, 2 1 2, 2 2 1, 2 2 2
+5000
+3 - Single in tuple
+stmt s;
+Select <s>
+1, 2
+5000
+4 - Partial logic
+stmt s, s1; variable v;
+Select <s, v> such that Follows(s, s1)
+1 x, 1 y
+5000
+5 - Full logic
+stmt s; variable v;
+Select <s, v> such that Modifies(s, v)
+1 x, 2 y
+5000
+6 - Full logic with cross join
+stmt s; variable v, v1;
+Select <s, v, v1> such that Modifies(s, v)
+1 x x, 2 y x, 1 x y, 2 y y
+5000
+7 - Full logic with cross join
+stmt s, s1; variable v, v1;
+Select <s, s1, v, v1> such that Modifies(s, v)
+1 1 x x, 1 2 x x, 2 1 y x, 2 2 y x, 1 1 x y, 1 2 x y, 2 1 y y, 2 2 y y
+5000

@@ -1,7 +1,7 @@
 #include "catch.hpp"
 #include "sp/Parser/SimpleCallLinker.h"
 
-TEST_CASE("Testing SimpleCallLinker class", "[SimpleLineManager]") {
+TEST_CASE("Testing SimpleCallLinker class") {
 	std::shared_ptr<ASTNode> root = std::make_shared<ASTNode>(ASTNodeType::PROGRAMS, 0, "program");
 	std::shared_ptr<ASTNode> proc1 = std::make_shared<ASTNode>(ASTNodeType::PROCEDURE, 0, "proc1");
 	std::shared_ptr<ASTNode> stmtLst1 = std::make_shared<ASTNode>(ASTNodeType::STATEMENT_LIST, 0, "stmtLst1");

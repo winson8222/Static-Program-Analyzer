@@ -1,7 +1,7 @@
 #include "catch.hpp"
 #include "sp/Parser/SimpleLineManager.h"
 
-TEST_CASE("Testing SimpleLineManager class", "[SimpleLineManager]") {
+TEST_CASE("Testing SimpleLineManager class") {
     SimpleLineManager lineManager;
 
     SECTION("InitialState") {

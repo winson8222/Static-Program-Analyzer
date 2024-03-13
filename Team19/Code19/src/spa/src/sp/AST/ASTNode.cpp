@@ -118,3 +118,4 @@ void ASTNode::setChildByIndex(int index, std::shared_ptr<ASTNode> child) {
 bool ASTNode::equalType(ASTNodeType type) {
 	return this->type == type;
 }
+// ai-gen end

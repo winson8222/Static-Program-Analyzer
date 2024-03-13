@@ -10,6 +10,24 @@
 #include <unordered_set>
 #include <vector>
 
+TEST_CASE("Singular While Pattern Extractor") {
+	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
+	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
+	std::shared_ptr<PKBReaderManager> pkbReaderManager = pkb->getPKBReaderManager();
+
+	std::shared_ptr<ASTNode> whiles = std::make_shared<ASTNode>(ASTNode(ASTNodeType::WHILE, 2, "while"));
+	std::shared_ptr<ASTNode> var1 = std::make_shared<ASTNode>(ASTNode(ASTNodeType::VARIABLE, 2, "x"));
+
+	WhilePatternExtractor whilePatternExtractor(whiles, var1, pkbWriterManager->getWhilePatternWriter());
+	whilePatternExtractor.extract();
+
+	std::unordered_set<std::string> expectedWhile = { "x" };
+	std::unordered_set<int > expectedWhileInt = { 2 };
+	REQUIRE(pkbReaderManager->getWhilePatternReader()->getAllWhileControlVariables() == expectedWhile);
+	REQUIRE(pkbReaderManager->getWhilePatternReader()->getControlPatternsWithStatementNumber(2) == expectedWhile);
+	REQUIRE(pkbReaderManager->getWhilePatternReader()->getStatementNumbersOfWhileControlVariable("x") == expectedWhileInt);
+}
+
 TEST_CASE("While extract singular") {
 	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();

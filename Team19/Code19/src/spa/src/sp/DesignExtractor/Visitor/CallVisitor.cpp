@@ -29,21 +29,21 @@ std::vector<std::shared_ptr<ASTNode>> CallVisitor::getProcedureContexts() {
 		if (value->equalType(ASTNodeType::PROCEDURE)) {
 			procedureContexts.push_back(value);
 			mostRecentProcedure = value;
-			handleCallsP(value, calleeProcedure);
+			handleCallsT(value, calleeProcedure);
 		}
 		else if (value->equalType(value->getType())) {
 			procedureContexts.push_back(value);
 		}
 	}
 
-	handleCallsT(mostRecentProcedure, calleeProcedure);
+	handleCallsP(mostRecentProcedure, calleeProcedure);
 	procedureContexts.push_back(this->root);
 	return procedureContexts;
 }
 
 void CallVisitor::handleCallsP(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2) {
-	CallsTExtractor callsTExtractor(ast1, ast2, this->pkbWriterManager->getCallsTWriter());
-	callsTExtractor.extract();
+	CallsPExtractor callsPExtractor(ast1, ast2, this->pkbWriterManager->getCallsWriter());
+	callsPExtractor.extract();
 }
 
 void CallVisitor::handleCallsT(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2) {

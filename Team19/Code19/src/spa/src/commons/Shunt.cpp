@@ -2,6 +2,7 @@
 
 
 // ai-gen start(copilot, 0, e)
+// prompt: used copilot
 Shunt::Shunt() {
     postfixExpression = "";
     prevOperand = false;
