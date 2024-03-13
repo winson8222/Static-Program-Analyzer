@@ -13,25 +13,24 @@ WhileVisitor::WhileVisitor(std::shared_ptr<ASTNode> root,
 }
 
 void WhileVisitor::visit() {
-	// do nothing
-	handleWhileExtraction(this->root);
-	handleExpressionVisitor(this->expression);
-	handleStatementListVisitor(this->statementList);
+	handleWhileExtraction();
+	handleExpressionVisitor();
+	handleStatementListVisitor();
 	setParents(this->contexts, this->root, this->pkbWriterManager);
 }
 
-void WhileVisitor::handleWhileExtraction(std::shared_ptr<ASTNode> root) {
+void WhileVisitor::handleWhileExtraction() {
 	WhileExtractor whileExtractor(root, pkbWriterManager->getWhileWriter());
 	whileExtractor.extract();
 }
 
-void WhileVisitor::handleExpressionVisitor(std::shared_ptr<ASTNode> expression) {
-	ExpressionVisitor expressionVisitor(expression, pkbWriterManager);
+void WhileVisitor::handleExpressionVisitor() {
+	ExpressionVisitor expressionVisitor(this->expression, ASTNodeType::WHILE, pkbWriterManager);
 	expressionVisitor.setUsedContext(contexts, root);
 	expressionVisitor.visit();
 }
 
-void WhileVisitor::handleStatementListVisitor(std::shared_ptr<ASTNode> statementList) {
+void WhileVisitor::handleStatementListVisitor() {
 	StatementListVisitor statementListVisitor(statementList, pkbWriterManager);
 	statementListVisitor.setContext(contexts, root);
 	statementListVisitor.visit();

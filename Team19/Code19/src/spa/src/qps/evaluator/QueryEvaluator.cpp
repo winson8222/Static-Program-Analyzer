@@ -5,6 +5,8 @@
 
 using namespace std;
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 // Constructor for QueryEvaluator class.
 // Initializes the strategy and entity factories and sets up the PKB reader manager and parsing result.
 QueryEvaluator::QueryEvaluator(std::shared_ptr<PKBReaderManager> pkbReaderManager, ParsingResult& parsingResult)
@@ -18,8 +20,85 @@ void QueryEvaluator::addStrategy(std::unique_ptr<QueryEvaluationStrategy> strate
     strategies.push_back(std::move(strategy));
 }
 
-// Evaluates a query based on the strategies added.
-// It returns a vector of strings representing the query results.
+void QueryEvaluator::constructEntryString(std::string& entry, std::string& synonym, std::unordered_map<std::string, std::string>& map) {
+	entry.empty() ? entry = map.at(synonym) : entry += " " + map.at(synonym);
+}
+
+void QueryEvaluator::addEntriesToFinalWithResultOnly(std::unordered_set<std::string>& finalSet, std::vector<std::string> requiredSynonyms) {
+	for (auto row : result->getRows()) {
+		std::string toAdd;
+		for (auto requiredSynonym : requiredSynonyms) {
+			constructEntryString(toAdd, requiredSynonym, row);
+		}
+		finalSet.insert(toAdd);
+	}
+}
+void QueryEvaluator::addEntriesToFinalWithCrossJoinAndResult(std::unordered_set<std::string>& finalSet, std::vector<std::string> requiredSynonyms, std::unordered_map<std::string, std::string> crossJoinMap) {
+	for (auto row: result->getRows()) {
+		std::string toAdd;
+		for (auto requiredSynonym : requiredSynonyms) {
+			if (crossJoinMap.find(requiredSynonym) != crossJoinMap.end()) {
+				constructEntryString(toAdd, requiredSynonym, crossJoinMap);
+			} else {
+				constructEntryString(toAdd, requiredSynonym, row);
+			}
+		}
+		finalSet.insert(toAdd);
+	}
+}
+void QueryEvaluator::addEntriesToFinalWithOnlyCrossJoin(std::unordered_set<std::string>& finalSet, std::vector<std::string> requiredSynonyms, std::unordered_map<std::string, std::string> crossJoinMap) {
+	std::string toAdd;
+	for (auto requiredSynonym : requiredSynonyms) {
+		constructEntryString(toAdd, requiredSynonym, crossJoinMap);
+	}
+	finalSet.insert(toAdd);
+}
+
+std::vector<std::unordered_map<std::string, std::string>> QueryEvaluator::getCrossJoinMapList(
+		std::vector<std::string> requiredSynonyms) {
+	std::vector<std::unordered_map<std::string, std::string>> crossJoinMapList;
+	for (auto requiredSynonym: requiredSynonyms) {
+		if (result->hasColumn(requiredSynonym)) continue;
+		std::string requiredType = parsingResult.getRequiredSynonymType(requiredSynonym);
+		unordered_set<string> currentResult = getAllEntities(requiredType);
+		if (crossJoinMapList.empty()) {
+			for (auto entity : currentResult) {
+				std::unordered_map<std::string, std::string> tempMap;
+				tempMap[requiredSynonym] = entity;
+				crossJoinMapList.push_back(tempMap);
+			}
+			continue;
+		}
+		std::vector<std::unordered_map<std::string, std::string>> newCrossJoinMapList;
+		for (auto entity : currentResult) {
+			for (auto map : crossJoinMapList) {
+				std::unordered_map<std::string, std::string> tempMap = map;
+				tempMap[requiredSynonym] = entity;
+				newCrossJoinMapList.push_back(tempMap);
+			}
+		}
+		crossJoinMapList = newCrossJoinMapList;
+	}
+	return crossJoinMapList;
+}
+
+void QueryEvaluator::evaluateMultipleReturnValues(std::unordered_set<std::string>& finalSet, std::vector<std::string> requiredSynonyms) {
+	std::vector<std::unordered_map<std::string, std::string>> crossJoinMapList = getCrossJoinMapList(requiredSynonyms);
+	if (crossJoinMapList.empty()) {
+		// Case 1: All required synonyms are in the result table
+		addEntriesToFinalWithResultOnly(finalSet, requiredSynonyms);
+	}
+	for (auto map : crossJoinMapList) {
+		if (result->getRows().empty()) {
+			// Case 2: All required synonyms are not in the result table
+			addEntriesToFinalWithOnlyCrossJoin(finalSet, requiredSynonyms, map);
+		} else {
+			// Case 3: Some required synonyms are in the result table and some are not
+			addEntriesToFinalWithCrossJoinAndResult(finalSet, requiredSynonyms, map);
+		}
+	}
+}
+
 std::unordered_set<string> QueryEvaluator::evaluateQuery() {
 
     // Create a new result table for storing query results.
@@ -116,44 +195,16 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
         }
         return finalSet;
     } else {
-        if (result->isTableFalse()) {
-            return {};
-        }
-
-
-        for (auto requiredSynonym : requiredSynonyms) {
-            std::string requiredType = parsingResult.getRequiredSynonymType(requiredSynonym);
-
-            if (result->hasColumn(requiredSynonym)) {
-                unordered_set<string> currentResult = result->getColumnValues(requiredSynonym);
-                // Join the elements of currentResult with spaces and insert as the first element of finalSet.
-                string joinedResult = join(currentResult, " "); // You'll need to implement join or use an appropriate function
-                finalSet.insert(joinedResult);
-            }
-            else {
-                //return all statement/variables/whatever
-                if (result->isTableTrue() || !result->isEmpty() || isFirstStrategy) {
-                    unordered_set<string> currentResult = getAllEntities(requiredType);
-                    // Join the elements of currentResult with spaces and insert as the first element of finalSet.
-                    string joinedResult = join(currentResult, " ");
-                    finalSet.insert(joinedResult);
-                }
-
-            }
-        }
-
+        if (result->isTableFalse()) return {};
+		evaluateMultipleReturnValues(finalSet, requiredSynonyms);
     }
-
     return finalSet;
-    
- 
 }
 
 // Retrieves all entities of a specified type.
 // Returns a vector of strings representing these entities.
 std::unordered_set<std::string> QueryEvaluator::getAllEntities(const std::string& requiredType) {
     std::unordered_set<string> entities;
-
     // Find the entity retriever for the required type and get the entities.
     auto it = entityFactory.find(requiredType);
     if (it != entityFactory.end()) {
@@ -249,4 +300,4 @@ string QueryEvaluator::join(const unordered_set<string>& elements, const string&
     }
     return result;
 }
-
+// ai-gen end

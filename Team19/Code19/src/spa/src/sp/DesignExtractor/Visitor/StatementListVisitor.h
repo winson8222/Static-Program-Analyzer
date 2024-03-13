@@ -2,8 +2,8 @@
 
 #include "sp/DesignExtractor/Visitor/IVisitor.h"
 #include "sp/DesignExtractor/Visitor/VisitoryFactory.h"
-#include "sp/DesignExtractor/Extractor/FollowsExtractor.h"
-#include "sp/DesignExtractor/Extractor/StatementExtractor.h"
+#include "sp/DesignExtractor/Extractor/RelationshipExtractor/FollowsExtractor.h"
+#include "sp/DesignExtractor/Extractor/EntityExtractor/StatementExtractor.h"
 #include "sp/AST/ASTUtility.h"
 #include <stdexcept>
 #include <vector>

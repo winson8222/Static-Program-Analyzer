@@ -3,7 +3,7 @@
 #include "sp/DesignExtractor/Visitor/IVisitor.h"
 #include "sp/AST/ASTNode.h"
 #include "pkb/PKBWriterManager.h"
-#include "sp/DesignExtractor/Extractor/ProcedureExtractor.h"
+#include "sp/DesignExtractor/Extractor/EntityExtractor/ProcedureExtractor.h"
 #include "sp/DesignExtractor/Visitor/StatementListVisitor.h"
 
 constexpr int PROCEDURE_STATEMENT_LIST_INDEX = 0;

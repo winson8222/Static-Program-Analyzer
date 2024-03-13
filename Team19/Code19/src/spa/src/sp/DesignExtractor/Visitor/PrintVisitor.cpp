@@ -16,7 +16,6 @@ PrintVisitor::PrintVisitor(std::shared_ptr<ASTNode> root,
 
 
 void PrintVisitor::visit() {
-
 	PrintExtractor printExtractor(this->root, this->pkbWriterManager->getPrintWriter());
 	printExtractor.extract();
 

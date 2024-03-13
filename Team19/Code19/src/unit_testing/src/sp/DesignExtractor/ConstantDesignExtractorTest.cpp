@@ -1,5 +1,5 @@
 #include "sp/DesignExtractor/DesignExtractorFacade.h"
-#include "sp/DesignExtractor/Extractor/ConstantExtractor.h"
+#include "sp/DesignExtractor/Extractor/EntityExtractor/ConstantExtractor.h"
 #include "sp/AST/ASTNode.h"
 #include "pkb/PKBManager.h"
 #include "sp/AST/ASTUtility.h"

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "sp/DesignExtractor/Visitor/IVisitor.h"
-#include "sp/DesignExtractor/Extractor/WhileExtractor.h"
-#include "sp/DesignExtractor/Extractor/ParentExtractor.h"
+#include "sp/DesignExtractor/Extractor/EntityExtractor/WhileExtractor.h"
+#include "sp/DesignExtractor/Extractor/RelationshipExtractor/ParentExtractor.h"
 #include "sp/DesignExtractor/Visitor/ExpressionVisitor.h"
 #include "sp/DesignExtractor/Visitor/StatementListVisitor.h"
 #include <stdexcept>
@@ -35,15 +35,15 @@ private:
 	/*
 	* Invokes the WhileExtractor to extract the while statement
 	*/
-	void handleWhileExtraction(std::shared_ptr<ASTNode> root);
+	void handleWhileExtraction();
 
 	/*
 	* Invokes the ExpressionVisitor to visit the expression
 	*/
-	void handleExpressionVisitor(std::shared_ptr<ASTNode> expression);
+	void handleExpressionVisitor();
 
 	/*
 	* Invokes the StatementListVisitor to visit the statement list
 	*/
-	void handleStatementListVisitor(std::shared_ptr<ASTNode> statementList);
+	void handleStatementListVisitor();
 };

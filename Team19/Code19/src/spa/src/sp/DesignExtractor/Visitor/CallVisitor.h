@@ -1,10 +1,11 @@
 #pragma once
 
 #include "sp/DesignExtractor/Visitor/IVisitor.h"
-#include "sp/DesignExtractor/Extractor/CallExtractor.h"
-#include "sp/DesignExtractor/Extractor/ProcedureExtractor.h"
+#include "sp/DesignExtractor/Extractor/EntityExtractor/CallExtractor.h"
+#include "sp/DesignExtractor/Extractor/EntityExtractor/ProcedureExtractor.h"
 #include "sp/DesignExtractor/Visitor/ProcedureVisitor.h"
-#include "sp/DesignExtractor/Extractor/ParentExtractor.h"
+#include "sp/DesignExtractor/Extractor/RelationshipExtractor/ParentExtractor.h"
+#include "sp/DesignExtractor/Extractor/RelationshipExtractor/CallsPExtractor.h"
 
 // ai-gen starts
 // prompt: https://platform.openai.com/playground/p/WEPuYktjSFWSXYtIjbHMb5KZ?model=gpt-4&mode=chat

@@ -68,4 +68,31 @@ TEST_CASE("sp/SourceProcessor: UsesS") {
         REQUIRE(usesReader->getAllVariablesUsedByStmt(2) == std::unordered_set<std::string>({"x", "p"}));
         REQUIRE(usesReader->getAllVariablesUsedByStmt(10) == std::unordered_set<std::string>({"x", "y"}));
     }
+
+    SECTION("Edge cases UsesS") {
+        std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+        std::string filename = "sample.txt";
+        std::string sampleProgram = "procedure proc1 {"
+            "if (x > 0) then {"
+            "while (y <= 0) {"
+            "read z; } }" 
+            "else { print t; } }";
+        std::ofstream file;
+        file.open(filename);
+        file << sampleProgram;
+        file.close();
+        REQUIRE(std::filesystem::exists(filename));
+        SourceProcessor sp = SourceProcessor(filename, pkbManager);
+        sp.parseSIMPLE();
+        sp.extractAndPopulate();
+        std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr<UsesSReader> usesReader = pkbReaderManager->getUsesSReader();
+        std::shared_ptr<ModifiesSReader> modifiesReader = pkbReaderManager->getModifiesSReader();
+
+        REQUIRE(usesReader->doesStmtUseVariable(1, "x"));
+        REQUIRE(usesReader->getAllStmtsThatUseVariable("x") == std::unordered_set<int>({1}));
+        REQUIRE(usesReader->doesStmtUseVariable(1, "t"));
+        REQUIRE(modifiesReader->doesStmtModifyVariable(1, "z"));
+        REQUIRE(modifiesReader->doesStmtModifyVariable(2, "z"));
+    }
 }

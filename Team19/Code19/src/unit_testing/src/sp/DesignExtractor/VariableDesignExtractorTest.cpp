@@ -1,4 +1,4 @@
-#include "sp/DesignExtractor/Extractor/VariableExtractor.h"
+#include "sp/DesignExtractor/Extractor/EntityExtractor/VariableExtractor.h"
 #include "sp/AST/ASTNode.h"
 #include "pkb/PKBManager.h"
 #include "sp/AST/ASTUtility.h"
