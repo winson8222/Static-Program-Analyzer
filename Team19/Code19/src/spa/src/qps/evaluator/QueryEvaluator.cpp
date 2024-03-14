@@ -2,6 +2,7 @@
 #include "qps/evaluator/strategies/PatternStrategy.h"
 #include "qps/evaluator/ResultTable.h"
 #include <variant>
+#include "strategies/WithStrategy.h"
 
 using namespace std;
 
@@ -127,15 +128,16 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
         addStrategy(std::make_unique<PatternStrategy>());
     }
     
-    /*vector<WithClause> withClauses = parsingResult.getWithClauses();
+    vector<WithClause> withClauses = parsingResult.getWithClauses();
     for (auto cluase : withClauses) {
-
-    }*/
+        addStrategy(std::make_unique<WithStrategy>());
+    }
 
     // Evaluate the query using the strategies and compile the results.
     bool isFirstStrategy = true;
     int suchThatCounter = 0;
     int patternCounter = 0;
+    int withCounter = 0;
     for (auto& strategy : strategies) {
         shared_ptr<ResultTable> tempResult;
         if (suchThatCounter < suchThatClauses.size()) {
@@ -146,6 +148,11 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
             tempResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult, patternClauses[patternCounter]);
             patternCounter++;
         }
+        else if (withCounter < withClauses.size()) {
+            tempResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult, withClauses[withCounter], result);
+			withCounter++;
+		}
+      
         // if it is a true table skip to next strategy
         if (tempResult->isTableTrue()) {
             result = tempResult;
