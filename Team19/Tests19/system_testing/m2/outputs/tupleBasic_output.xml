@@ -1,56 +1,56 @@
 <?xml-stylesheet type="text/xsl" href="analysis.xsl"?>
 <test_results>
 <info>
-<name>m2</name><parsing_time_taken>4.130000</parsing_time_taken>
+<name>m2</name><parsing_time_taken>4.198000</parsing_time_taken>
 </info>
 <queries>
 <query>
 <id ReturnTuple="1" CondNum="1" RelNum="0" comment="Standard">1</id><querystr><![CDATA[stmt s; variable v; Select <s, v>]]></querystr>
 <stuans>1 y,1 x,2 x,2 y</stuans>
 <correct>1 x,1 y,2 x,2 y</correct>
-<time_taken>0.909000</time_taken>
+<time_taken>0.932000</time_taken>
 <passed/>
 </query>
 <query>
 <id ReturnTuple="1" CondNum="1" RelNum="0" comment="Multiple of the same type">2</id><querystr><![CDATA[stmt s, s1, s2; Select <s, s1, s2>]]></querystr>
 <stuans>1 1 1,2 1 1,1 2 1,1 1 2,2 1 2,2 2 2,2 2 1,1 2 2</stuans>
 <correct>1 1 1,1 1 2,1 2 1,1 2 2,2 1 1,2 1 2,2 2 1,2 2 2</correct>
-<time_taken>1.056000</time_taken>
+<time_taken>1.038000</time_taken>
 <passed/>
 </query>
 <query>
 <id ReturnTuple="1" CondNum="1" RelNum="0" comment="Single in tuple">3</id><querystr><![CDATA[stmt s; Select <s>]]></querystr>
 <stuans>1,2</stuans>
 <correct>1,2</correct>
-<time_taken>0.584000</time_taken>
+<time_taken>0.578000</time_taken>
 <passed/>
 </query>
 <query>
 <id ReturnTuple="1" Follows="1" SuchThat="1" CondNum="3" RelNum="1" comment="Partial logic">4</id><querystr><![CDATA[stmt s, s1; variable v; Select <s, v> such that Follows(s, s1)]]></querystr>
 <stuans>1 x,1 y</stuans>
 <correct>1 x,1 y</correct>
-<time_taken>1.199000</time_taken>
+<time_taken>1.220000</time_taken>
 <passed/>
 </query>
 <query>
 <id ReturnTuple="1" Modifies="1" SuchThat="1" CondNum="3" RelNum="1" comment="Full logic">5</id><querystr><![CDATA[stmt s; variable v; Select <s, v> such that Modifies(s, v)]]></querystr>
 <stuans>2 y,1 x</stuans>
 <correct>1 x,2 y</correct>
-<time_taken>1.170000</time_taken>
+<time_taken>1.184000</time_taken>
 <passed/>
 </query>
 <query>
 <id ReturnTuple="1" Modifies="1" SuchThat="1" CondNum="3" RelNum="1" comment="Full logic with cross join">6</id><querystr><![CDATA[stmt s; variable v, v1; Select <s, v, v1> such that Modifies(s, v)]]></querystr>
 <stuans>2 y x,1 x x,2 y y,1 x y</stuans>
 <correct>1 x x,2 y x,1 x y,2 y y</correct>
-<time_taken>1.339000</time_taken>
+<time_taken>1.412000</time_taken>
 <passed/>
 </query>
 <query>
 <id ReturnTuple="1" Modifies="1" SuchThat="1" CondNum="3" RelNum="1" comment="Full logic with cross join">7</id><querystr><![CDATA[stmt s, s1; variable v, v1; Select <s, s1, v, v1> such that Modifies(s, v)]]></querystr>
 <stuans>2 2 y x,2 1 y x,1 2 x x,2 1 y y,1 1 x x,1 1 x y,2 2 y y,1 2 x y</stuans>
 <correct>1 1 x x,1 2 x x,2 1 y x,2 2 y x,1 1 x y,1 2 x y,2 1 y y,2 2 y y</correct>
-<time_taken>1.600000</time_taken>
+<time_taken>1.579000</time_taken>
 <passed/>
 </query>
 </queries>
