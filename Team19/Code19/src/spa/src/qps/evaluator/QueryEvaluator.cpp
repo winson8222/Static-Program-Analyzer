@@ -137,28 +137,48 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
     int suchThatCounter = 0;
     int patternCounter = 0;
     for (auto& strategy : strategies) {
-        if (suchThatCounter < suchThatClauses.size()) {
-            result = strategy->evaluateQuery(*pkbReaderManager, parsingResult, suchThatClauses[suchThatCounter]);
-            suchThatCounter++;
-        }
-        else if (patternCounter < patternClauses.size()) {
-            result = strategy->evaluateQuery(*pkbReaderManager, parsingResult, patternClauses[patternCounter]);
-            patternCounter++;
-        }
+
         if (isFirstStrategy) {
-            
+            if (suchThatCounter < suchThatClauses.size()) {
+                result = strategy->evaluateQuery(*pkbReaderManager, parsingResult, suchThatClauses[suchThatCounter]);
+                suchThatCounter++;
+            }
+            else if (patternCounter < patternClauses.size()) {
+                result = strategy->evaluateQuery(*pkbReaderManager, parsingResult, patternClauses[patternCounter]);
+                patternCounter++;
+            }
             // if it is a false table, we can break early since the result will be false
             if (result->isTableFalse()) {
                 break;
             }
-
-            // if it is not a truth table we still need to populate the result table
-            if (!result->isTableTrue()) {
-                isFirstStrategy = false;
+            // if it is a true table skip to next strategy
+            if (result->isTableTrue()) {
+                continue;
             }
+            isFirstStrategy = false;
         }
         else {
-            result = result->joinOnColumns(result);
+            shared_ptr<ResultTable> tempResult;
+            if (suchThatCounter < suchThatClauses.size()) {
+                tempResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult, suchThatClauses[suchThatCounter]);
+                suchThatCounter++;
+            }
+            else if (patternCounter < patternClauses.size()) {
+                tempResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult, patternClauses[patternCounter]);
+                patternCounter++;
+            }
+            // if it is a false table, we can break early since the result will be false
+            if (tempResult->isTableFalse()) {
+                result = tempResult;
+                break;
+            }
+            // if it is a true table skip to next strategy and retain the result
+            if (tempResult->isTableTrue()) {
+                continue;
+            }
+
+            // if it is a non true and non empty table, join the result with the tempResult
+            result = result->joinOnColumns(tempResult);
         }
     }
 
