@@ -486,6 +486,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/11") {
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
     std::unordered_set<string> res = evaluator.evaluateQuery();
     REQUIRE(res == std::unordered_set<string>{"3 1", "2 1"});
+
 }
 
 TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/12") {
