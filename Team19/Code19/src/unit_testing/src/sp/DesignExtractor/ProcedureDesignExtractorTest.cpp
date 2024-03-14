@@ -14,8 +14,16 @@ TEST_CASE("sp/DesignExtractor/Extractor/ProcedureExtractor") {
 	std::shared_ptr<ASTNode> root = std::make_shared<ASTNode>(ASTNode());
 	std::shared_ptr<ASTNode> proc1 = std::make_shared<ASTNode>(ASTNode(ASTNodeType::PROCEDURE, 1, "proc1"));
 	std::shared_ptr<ASTNode> proc2 = std::make_shared<ASTNode>(ASTNode(ASTNodeType::PROCEDURE, 2, "proc2"));
-	proc1->addChild(std::make_shared<ASTNode>(ASTNode(ASTNodeType::STATEMENT_LIST, 1, "a")));
-	proc2->addChild(std::make_shared<ASTNode>(ASTNode(ASTNodeType::STATEMENT_LIST, 2, "b")));
+	std::shared_ptr<ASTNode> stmtLst1 = std::make_shared<ASTNode>(ASTNode(ASTNodeType::STATEMENT_LIST, 1, "a"));
+	std::shared_ptr<ASTNode> stmtLst2 = std::make_shared<ASTNode>(ASTNode(ASTNodeType::STATEMENT_LIST, 2, "b"));
+	std::shared_ptr<ASTNode> print1 = std::make_shared<ASTNode>(ASTNode(ASTNodeType::PRINT, 2, "print"));
+	print1->addChild(std::make_shared<ASTNode>(ASTNode(ASTNodeType::VARIABLE, 2, "x")));
+	std::shared_ptr<ASTNode> print2 = std::make_shared<ASTNode>(ASTNode(ASTNodeType::PRINT, 3, "print"));
+	print2->addChild(std::make_shared<ASTNode>(ASTNode(ASTNodeType::VARIABLE, 3, "y")));
+	stmtLst1->addChild(print1);
+	stmtLst2->addChild(print2);
+	proc1->addChild(stmtLst1);
+	proc2->addChild(stmtLst2);
 	root->addChild(proc1);
 	root->addChild(proc2);
 	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();

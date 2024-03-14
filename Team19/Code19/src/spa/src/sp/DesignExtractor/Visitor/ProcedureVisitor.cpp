@@ -14,11 +14,9 @@ ProcedureVisitor::ProcedureVisitor(std::shared_ptr<ASTNode> node, std::shared_pt
 }
 
 void ProcedureVisitor::visit() {
-	ProcedureExtractor extractor(this->root, this->pkbWriterManager->getProcedureWriter());
-	extractor.extract();
-	StatementListVisitor statementListVisitor(statementListNode, this->pkbWriterManager);
-	statementListVisitor.setContext(contexts, root);
-	statementListVisitor.visit();
+	handleProcedureExtractor();
+	handleStatementListVisitor();
+	handleControlFlowGraph();
 }
 
 void ProcedureVisitor::setIsVisited() {
@@ -31,4 +29,22 @@ bool ProcedureVisitor::checkIfVisited() {
 
 void ProcedureVisitor::addContexts(std::vector<std::shared_ptr<ASTNode>> contexts) {
 	this->contexts.insert(this->contexts.end(), contexts.begin(), contexts.end());
+}
+
+void ProcedureVisitor::handleProcedureExtractor() {
+	ProcedureExtractor extractor(this->root, this->pkbWriterManager->getProcedureWriter());
+	extractor.extract();
+}
+
+void ProcedureVisitor::handleStatementListVisitor() {
+	StatementListVisitor statementListVisitor(statementListNode, this->pkbWriterManager);
+	statementListVisitor.setContext(contexts, root);
+	statementListVisitor.visit();
+}
+
+void ProcedureVisitor::handleControlFlowGraph() {
+	SimpleControlFlow cfg(this->root);
+	std::vector<std::shared_ptr<CFGNode>> cfgGraphs = *(cfg.createControlFlowGraphs());
+	CFGVisitor cfgVisitor(cfgGraphs, this->pkbWriterManager);
+	cfgVisitor.visit();
 }

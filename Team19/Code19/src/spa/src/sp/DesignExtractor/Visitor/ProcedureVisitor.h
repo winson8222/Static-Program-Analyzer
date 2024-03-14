@@ -5,6 +5,8 @@
 #include "pkb/PKBWriterManager.h"
 #include "sp/DesignExtractor/Extractor/EntityExtractor/ProcedureExtractor.h"
 #include "sp/DesignExtractor/Visitor/StatementListVisitor.h"
+#include "sp/DesignExtractor/Visitor/CFGVIsitor.h"
+#include "sp/ControlFlow/SimpleControlFlow.h"
 
 constexpr int PROCEDURE_STATEMENT_LIST_INDEX = 0;
 
@@ -40,4 +42,19 @@ public:
 private:
 	std::shared_ptr<ASTNode> statementListNode;
 	bool wasVisited;
+
+	/*
+	* A method to handle the extraction of the procedure
+	*/
+	void handleProcedureExtractor();
+
+	/*
+	* A method to handle the visiting of the statement list node
+	*/
+	void handleStatementListVisitor();
+
+	/*
+	* A method to generate control flow graph for the procedure
+	*/
+	void handleControlFlowGraph();
 };
