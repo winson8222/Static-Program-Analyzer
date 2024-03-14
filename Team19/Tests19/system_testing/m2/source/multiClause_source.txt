@@ -22,10 +22,9 @@ procedure procedure {
       }
       }
     while (print != read) {
-        procedure = procedure - 1;
+        procedure = procedure -1;
         print = print + 1;
     }
     if = add + minus / procedure * read - print;
     print if;
 }
-

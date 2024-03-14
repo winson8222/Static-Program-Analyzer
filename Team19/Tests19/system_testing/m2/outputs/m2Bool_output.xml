@@ -1,115 +1,106 @@
 <?xml-stylesheet type="text/xsl" href="analysis.xsl"?>
 <test_results>
 <info>
-<name>m2</name><parsing_time_taken>60.877000</parsing_time_taken>
+<name>m2</name><parsing_time_taken>59.776000</parsing_time_taken>
 </info>
 <queries>
 <query>
 <id ReturnBoolean="1" Calls="1" SuchThat="1" CondNum="3" RelNum="1" comment="Finds boolean if there is procedure that calls another procedure">1</id><querystr><![CDATA[procedure p, q; Select BOOLEAN such that Calls(p, q)]]></querystr>
 <stuans>TRUE</stuans>
 <correct>TRUE</correct>
-<time_taken>1.174000</time_taken>
+<time_taken>1.235000</time_taken>
 <passed/>
 </query>
 <query>
 <id ReturnBoolean="1" Pattern="1" CondNum="2" RelNum="0" comment="Finds boolean if exact pattern exists">2</id><querystr><![CDATA[assign a; Select BOOLEAN pattern a ("x", "5")]]></querystr>
 <stuans>TRUE</stuans>
 <correct>TRUE</correct>
-<time_taken>0.810000</time_taken>
+<time_taken>0.740000</time_taken>
 <passed/>
 </query>
 <query>
 <id ReturnBoolean="1" UnnamedVar="1" Pattern="1" CondNum="3" RelNum="0" comment="Finds all if partial pattern exists">3</id><querystr><![CDATA[assign a; Select BOOLEAN pattern a ("count", _"1"_)]]></querystr>
 <stuans>TRUE</stuans>
 <correct>TRUE</correct>
-<time_taken>0.728000</time_taken>
+<time_taken>0.748000</time_taken>
 <passed/>
 </query>
 <query>
 <id ReturnBoolean="1" UnnamedVar="1" Pattern="1" CondNum="3" RelNum="0" comment="Finds all if partial pattern exists">4</id><querystr><![CDATA[assign a; Select BOOLEAN pattern a ("count", _"1"_)]]></querystr>
 <stuans>TRUE</stuans>
 <correct>TRUE</correct>
-<time_taken>0.714000</time_taken>
+<time_taken>0.699000</time_taken>
 <passed/>
 </query>
 <query>
 <id ReturnBoolean="1" UnnamedVar="1" Pattern="1" CondNum="3" RelNum="0" comment="Finds all if partial pattern exists">5</id><querystr><![CDATA[assign a; Select BOOLEAN pattern a ("y", _"y"_)]]></querystr>
 <stuans>TRUE</stuans>
 <correct>TRUE</correct>
-<time_taken>0.834000</time_taken>
+<time_taken>0.720000</time_taken>
 <passed/>
 </query>
 <query>
 <id ReturnBoolean="1" UnnamedVar="1" Pattern="1" CondNum="3" RelNum="0" comment="Finds all if partial pattern does not exist">6</id><querystr><![CDATA[assign a; Select BOOLEAN pattern a ("y", _"z"_)]]></querystr>
 <stuans>FALSE</stuans>
 <correct>FALSE</correct>
-<time_taken>0.704000</time_taken>
+<time_taken>0.663000</time_taken>
 <passed/>
 </query>
 <query>
 <id ReturnBoolean="1" Follows="1" SuchThat="1" CondNum="3" RelNum="1" comment="Finds all if Follows exists">7</id><querystr><![CDATA[assign a; Select BOOLEAN such that Follows (4, 5)]]></querystr>
 <stuans>TRUE</stuans>
 <correct>TRUE</correct>
-<time_taken>0.799000</time_taken>
+<time_taken>0.736000</time_taken>
 <passed/>
 </query>
 <query>
 <id ReturnBoolean="1" Follows="1" SuchThat="1" CondNum="3" RelNum="1" comment="Finds all if Follows does not exist">8</id><querystr><![CDATA[assign a; Select BOOLEAN such that Follows (5, 4)]]></querystr>
 <stuans>FALSE</stuans>
 <correct>FALSE</correct>
-<time_taken>0.762000</time_taken>
+<time_taken>0.749000</time_taken>
 <passed/>
 </query>
 <query>
 <id ReturnBoolean="1" Parent="1" SuchThat="1" CondNum="3" RelNum="1" comment="Finds all if Parent exists">9</id><querystr><![CDATA[while w; Select BOOLEAN such that Parent (w, 12)]]></querystr>
 <stuans>TRUE</stuans>
 <correct>TRUE</correct>
-<time_taken>0.758000</time_taken>
+<time_taken>0.849000</time_taken>
 <passed/>
 </query>
 <query>
 <id ReturnBoolean="1" Parent="1" SuchThat="1" CondNum="3" RelNum="1" comment="Finds all if Parent does not exist">10</id><querystr><![CDATA[while w; Select BOOLEAN such that Parent (w, 14)]]></querystr>
 <stuans>FALSE</stuans>
 <correct>FALSE</correct>
-<time_taken>0.824000</time_taken>
+<time_taken>0.855000</time_taken>
 <passed/>
 </query>
 <query>
 <id ReturnBoolean="1" Parentstar="1" SuchThat="1" CondNum="3" RelNum="1" comment="Finds all if ParentT exists">11</id><querystr><![CDATA[while w; Select BOOLEAN such that Parent* (w, 13)]]></querystr>
 <stuans>TRUE</stuans>
 <correct>TRUE</correct>
-<time_taken>0.749000</time_taken>
+<time_taken>0.834000</time_taken>
 <passed/>
 </query>
 <query>
 <id ReturnBoolean="1" Parent="1" SuchThat="1" CondNum="3" RelNum="1" comment="Finds all if Parent does not exist">12</id><querystr><![CDATA[while w; Select BOOLEAN such that Parent (w, 13)]]></querystr>
 <stuans>FALSE</stuans>
 <correct>FALSE</correct>
-<time_taken>0.815000</time_taken>
+<time_taken>0.776000</time_taken>
 <passed/>
 </query>
 <query>
 <id ReturnBoolean="1" Pattern="1" CondNum="2" RelNum="0" comment="Finds boolean if exact pattern does not exist">13</id><querystr><![CDATA[assign a; Select BOOLEAN pattern a ("x", "6")]]></querystr>
 <stuans>FALSE</stuans>
 <correct>FALSE</correct>
-<time_taken>0.737000</time_taken>
+<time_taken>0.750000</time_taken>
 <passed/>
 </query>
 <query>
 <id ReturnTuple="1" Parent="1" SuchThat="1" CondNum="3" RelNum="1" comment="Finds all if Parent does not exist with lower case boolean">14</id><querystr><![CDATA[while w; Select boolean such that Parent (w, 13)]]></querystr>
 <stuans>SemanticError</stuans>
-<correct>FALSE</correct>
-<time_taken>0.998000</time_taken>
-<failed>
-<missing>FALSE</missing>
-<additional>SemanticError</additional>
-<summary>
-<expected>1</expected>
-<matched>0</matched>
-<missing>1</missing>
-<additional>1</additional>
-</summary>
-</failed>
+<correct>SemanticError</correct>
+<time_taken>0.954000</time_taken>
+<passed/>
 </query>
 </queries>
 </test_results>

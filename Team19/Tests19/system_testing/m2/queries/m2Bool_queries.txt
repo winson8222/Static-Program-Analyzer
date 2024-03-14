@@ -66,5 +66,5 @@ FALSE
 14 - Finds all if Parent does not exist with lower case boolean
 while w;
 Select boolean such that Parent (w, 13)
-FALSE
+SemanticError
 5000
