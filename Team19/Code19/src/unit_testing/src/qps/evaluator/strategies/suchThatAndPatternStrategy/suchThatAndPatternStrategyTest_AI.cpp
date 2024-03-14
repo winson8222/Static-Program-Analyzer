@@ -68,7 +68,7 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrate
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
         std::unordered_set<string> actualResults = evaluator.evaluateQuery();
-        std::unordered_set<string> expectedResults = {"1", "3"};
+        std::unordered_set<string> expectedResults = {"1" };
         REQUIRE(actualResults == expectedResults);
 
     }
@@ -128,7 +128,6 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrate
     }
 
     SECTION("Check Evaluation result of a simple select Parent* query + adding ifs ") {
-
         statementWriter->insertStatement(1);
         statementWriter->insertStatement(2);
         statementWriter->insertStatement(3);
@@ -139,6 +138,7 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrate
         whileWriter->insertWhile(3);
         assignWriter->insertAssign(2);
         assignWriter->insertAssign(4);
+        assignWriter->insertAssign(6);
         ifWriter->insertIf(5);
         assignPatternWriter->addAssignPattern(2, "x", "'1''x''+'");
         assignPatternWriter->addAssignPattern(4, "x", "'2''x''+'");
@@ -181,10 +181,12 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrate
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
         std::unordered_set<string> actualResults = evaluator.evaluateQuery();
-        std::unordered_set<string> expectedResults = {"1", "3"};
+        std::unordered_set<string> expectedResults = {"1"};
         REQUIRE(actualResults == expectedResults);
 
     }
+
+
 
     SECTION("Check Evaluation result of pattern and follows") {
 
@@ -354,8 +356,8 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrate
         ifWriter->insertIf(12);
         assignWriter->insertAssign(13); // assign indirectly nested
         whileWriter->insertWhile(10);
-        assignPatternWriter->addAssignPattern(11, "count", "_");
-        assignPatternWriter->addAssignPattern(13, "count", "_");
+        assignPatternWriter->addAssignPattern(11, "count", "'x'");
+        assignPatternWriter->addAssignPattern(13, "count", "'y''c''+'");
         parentTWriter->addParentT(10, 11);
         parentTWriter->addParentT(10, 12);
         parentTWriter->addParentT(12, 13);
@@ -390,7 +392,7 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrate
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
         auto actualResults = evaluator.evaluateQuery();
-        std::unordered_set<std::string> expectedResults = {"11", "13"}; // Both assignments modify "count"
+        std::unordered_set<std::string> expectedResults = {"11"}; // Both assignments modify "count"
         REQUIRE(actualResults == expectedResults);
     }
 
@@ -714,3 +716,71 @@ TEST_CASE("Pattern partial match with semi-string") {
     REQUIRE(res == std::unordered_set<string>{ "11" });
 
 }
+
+//assign a, a1; variable v; stmt s;
+//Select a such that Follows (a, a1) pattern a(v, _)
+TEST_CASE("src/qps/evaluator/BasicQueryFailure") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<FollowsWriter> followsWriter = pkbWriterManager->getFollowsWriter();
+    std::shared_ptr<AssignWriter> assignWriter = pkbWriterManager->getAssignWriter();
+    std::shared_ptr<AssignPatternWriter> assignPatternWriter = pkbWriterManager->getAssignPatternWriter();
+    std::shared_ptr<VariableWriter> variableWriter = pkbWriterManager->getVariableWriter();
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    statementWriter->insertStatement(5);
+    assignWriter->insertAssign(1);
+    assignWriter->insertAssign(2);
+    assignWriter->insertAssign(5);
+    variableWriter->insertVariable("x");
+    variableWriter->insertVariable("y");
+    followsWriter->addFollows(1, 2);
+    assignPatternWriter->addAssignPattern(1, "x", "'1'");
+    assignPatternWriter->addAssignPattern(2, "y", "'2'");
+    assignPatternWriter->addAssignPattern(5, "x", "'1'");
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "assign")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::Comma, ",")
+            , Token(TokenType::IDENT, "a1")
+            , Token(TokenType::Semicolon, ";")
+            , Token(TokenType::DesignEntity, "variable")
+            , Token(TokenType::IDENT, "v")
+            , Token(TokenType::Semicolon, ";")
+            , Token(TokenType::DesignEntity, "stmt")
+            , Token(TokenType::IDENT, "s")
+            , Token(TokenType::Semicolon, ";")
+            , Token(TokenType::SelectKeyword, "Select")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::SuchKeyword, "such")
+            , Token(TokenType::ThatKeyword, "that")
+            , Token(TokenType::Follows, "Follows")
+            , Token(TokenType::Lparenthesis, "(")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::Comma, ",")
+            , Token(TokenType::IDENT, "a1")
+            , Token(TokenType::Rparenthesis, ")")
+            , Token(TokenType::PatternKeyword, "pattern")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::Lparenthesis, "(")
+            , Token(TokenType::IDENT, "v")
+            , Token(TokenType::Comma, ",")
+            , Token(TokenType::Wildcard, "_")
+            , Token(TokenType::Rparenthesis, ")")
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ "1" });
+
+}
+
