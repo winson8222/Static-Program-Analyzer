@@ -85,64 +85,61 @@ std::unordered_set<std::string> WithStrategy::processParam(Token param, const Pa
 
         if (synonymType == "stmt") {
             if (attribute == "stmt#") {
-				return 
+				return resultTable->getColumnValues(synonym);
 			}
 		}
         else if (synonymType == "read") {
             if (attribute == "varName") {
-				return pkbReaderManager.getReadReader()->getVarName(stoi(param.getValue()));
+				// use pkbReaderManager to get the variable name using the statement numbers found in the resultTable
 			}
             else if (attribute == "stmt#") {
-				return param.getValue();
+                return resultTable->getColumnValues(synonym);
 			}
 		}
         else if (synonymType == "print") {
             if (attribute == "varName") {
-				return pkbReaderManager.getPrintReader()->getVarName(stoi(param.getValue()));
+                // use pkbReaderManager to get the variable name using the statement numbers found in the resultTable
 			}
             else if (attribute == "stmt#") {
-				return param.getValue();
+                return resultTable->getColumnValues(synonym);
 			}
 		}
         else if (synonymType == "call") {
             if (attribute == "procName") {
-				return pkbReaderManager.getCallReader()->getProcName(stoi(param.getValue()));
+                // use pkbReaderManager to get the set of procedure names using the statement numbers found in the resultTable
 			}
             else if (attribute == "stmt#") {
-				return param.getValue();
+                return resultTable->getColumnValues(synonym);
 			}
 		}
         else if (synonymType == "while") {
             if (attribute == "stmt#") {
-				return param.getValue();
+                return resultTable->getColumnValues(synonym);
 			}
 		}
         else if (synonymType == "if") {
             if (attribute == "stmt#") {
-				return param.getValue();
+                return resultTable->getColumnValues(synonym);
 			}
 		}
         else if (synonymType == "assign") {
             if (attribute == "stmt#") {
-				return param.getValue();
+                return resultTable->getColumnValues(synonym);
 			}
 		}
         else if (synonymType == "variable") {
             if (attribute == "varName") {
-				return pkbReaderManager.getVariableReader()->getVarName(stoi(param.getValue()));
-			}
-            else if (attribute == "value") {
-				return param.getValue();
+                return resultTable->getColumnValues(synonym);
 			}
 		}
         else if (synonymType == "constant") {
             if (attribute == "value") {
-				return param.getValue();
+                return resultTable->getColumnValues(synonym);
 			}
 		}
         else if (synonymType == "procedure") {
             if (attribute == "procName") {
-				return pkbReaderManager.getProcedureReader()->getProcName(stoi(param.getValue()));
+                return resultTable->getColumnValues(synonym);
 			}
 		}
         
