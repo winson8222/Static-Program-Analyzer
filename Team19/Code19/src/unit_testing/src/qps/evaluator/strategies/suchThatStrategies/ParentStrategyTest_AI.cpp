@@ -31,6 +31,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ParentStrategy/1") {
     auto pkbReaderManager = std::make_shared<PKBReaderManager>(pkb);
     ParentStrategy ParentStrategy;
 
+
     SECTION("Direct Parent(1, 2) is true") {
         auto parsingResult = createParsingResultForParent(1, 2);
         auto result = ParentStrategy.evaluateQuery(*pkbReaderManager, parsingResult, parsingResult.getSuchThatClauses()[0]);
@@ -249,7 +250,7 @@ std::shared_ptr<ParentWriter> parentWriter = pkbWriterManager->getParentWriter()
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
         std::unordered_set<string> res = evaluator.evaluateQuery();
-//        REQUIRE(res == std::unordered_set<string>{ "1 2", "2 3"});
+        REQUIRE(res == std::unordered_set<string>{ "1 2", "1 3", "2 3"});
     }
 
     SECTION("Selecting true boolean") {
