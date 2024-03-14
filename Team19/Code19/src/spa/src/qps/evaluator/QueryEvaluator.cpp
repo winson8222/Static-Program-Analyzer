@@ -251,6 +251,8 @@ void QueryEvaluator::initializeStrategyFactory() {
             {TokenType::UsesP, []() { return std::make_unique<UsesPStrategy>(); }},
             {TokenType::Calls, []() { return std::make_unique<CallsStrategy>(); }},
             {TokenType::CallsT, []() { return std::make_unique<CallsStrategy>(); }},
+            {TokenType::Next, []() { return std::make_unique<NextStrategy>(); }},
+            {TokenType::NextT, []() { return std::make_unique<NextStrategy>(); }},
             // Additional strategies can be added here as needed.
     };
 }

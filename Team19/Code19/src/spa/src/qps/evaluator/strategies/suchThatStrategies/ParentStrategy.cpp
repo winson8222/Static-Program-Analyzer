@@ -23,24 +23,24 @@ std::shared_ptr<ResultTable> ParentStrategy::evaluateQuery(PKBReaderManager& pkb
     this->statementReader = pkbReaderManager.getStatementReader();
 
     const SuchThatClause* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
-    const Token& suchThatFirstParam = suchClause->getFirstParam();
-    const Token& suchThatSecondParam = suchClause->getSecondParam();
-    string variant = suchClause->getRelationship().getValue();
+    this->firstParam = suchClause->getFirstParam();
+    this->secondParam = suchClause->getSecondParam();
+    this->variant   = suchClause->getRelationship().getValue();
 
-    if (suchThatFirstParam.getType() == TokenType::IDENT && suchThatSecondParam.getType() == TokenType::IDENT) {
-        processSynonyms(suchThatFirstParam, suchThatSecondParam, variant, resultTable, parsingResult, pkbReaderManager);
+    if (this->firstParam.getType() == TokenType::IDENT && this->secondParam.getType() == TokenType::IDENT) {
+        processSynonyms(resultTable, parsingResult, pkbReaderManager);
     }
-    else if (suchThatFirstParam.getType() == TokenType::IDENT) {
-        processFirstParam(suchThatFirstParam, suchThatSecondParam, variant, resultTable, parsingResult, pkbReaderManager);
+    else if (this->firstParam.getType() == TokenType::IDENT) {
+        processFirstParam(resultTable, parsingResult, pkbReaderManager);
     }
-    else if (suchThatSecondParam.getType() == TokenType::IDENT) {
-        processSecondParam(suchThatFirstParam, suchThatSecondParam, variant, resultTable, parsingResult, pkbReaderManager);
+    else if (this->secondParam.getType() == TokenType::IDENT) {
+        processSecondParam(resultTable, parsingResult, pkbReaderManager);
     }
-    else if (isBothParamsWildcard(suchThatFirstParam, suchThatSecondParam)) {
+    else if (isBothParamsWildcard(this->firstParam, this->secondParam)) {
         resultTable->setAsTruthTable();
     }
-    else if (isBothParamsInteger(suchThatFirstParam, suchThatSecondParam)) {
-        processIntegerParams(suchThatFirstParam, suchThatSecondParam, resultTable);
+    else if (isBothParamsInteger(this->firstParam, this->secondParam)) {
+        processIntegerParams(resultTable);
     }
 
     return resultTable;
@@ -48,7 +48,7 @@ std::shared_ptr<ResultTable> ParentStrategy::evaluateQuery(PKBReaderManager& pkb
 
 
 
-void ParentStrategy::processSynonyms(const Token& firstParam, const Token& secondParam, const string& variant, std::shared_ptr<ResultTable> resultTable,
+void ParentStrategy::processSynonyms(std::shared_ptr<ResultTable> resultTable,
                                      const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager)
 {
     // Implementation for processing when both parameters are synonyms
@@ -58,7 +58,7 @@ void ParentStrategy::processSynonyms(const Token& firstParam, const Token& secon
 
     // Retrieve the relationships
     unordered_set<int> filteredParents;
-    const unordered_set<int>& parents = (variant == "Parent") ?
+    const unordered_set<int>& parents = (this->variant  == "Parent") ?
                                         parentReader->getAllParents() :
                                         parentTTReader->getAllParentTs();
 
@@ -66,7 +66,7 @@ void ParentStrategy::processSynonyms(const Token& firstParam, const Token& secon
     // Iterate through the preFollows set and find corresponding postFollows
     for (int stmt1 : filteredParents) {
         unordered_set<int> filteredChildren;
-        unordered_set<int> children = (variant == "Parent") ?
+        unordered_set<int> children = (this->variant    == "Parent") ?
             parentReader->getChild(stmt1) :
             parentTTReader->getChildT(stmt1);
 
@@ -82,8 +82,8 @@ void ParentStrategy::processSynonyms(const Token& firstParam, const Token& secon
 }
 
 // Additional helper methods for readability
-void ParentStrategy::processFirstParam(const Token& firstParam, const Token& secondParam, const string& variant,
-            std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
+void ParentStrategy::processFirstParam(
+        std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
     // Implementation of processing when the first parameter matches the required synonym
     string col1 = firstParam.getValue();
     string firstStatementType = parsingResult.getDeclaredSynonyms().at(col1);
@@ -92,7 +92,7 @@ void ParentStrategy::processFirstParam(const Token& firstParam, const Token& sec
     unordered_set<int> filteredParents;
     if (secondParam.getType() == TokenType::INTEGER) {
         int stmtNum = stoi(secondParam.getValue());
-        const unordered_set<int>& parents = (variant == "Parent") ?
+        const unordered_set<int>& parents = (this->variant  == "Parent") ?
                                             parentReader->getParent(stmtNum) :
                                             parentTTReader->getParentT(stmtNum);
         filteredParents = getFilteredStmtsNumByType(parents, firstStatementType, pkbReaderManager);
@@ -103,7 +103,7 @@ void ParentStrategy::processFirstParam(const Token& firstParam, const Token& sec
         }
     }
     else if (secondParam.getType() == TokenType::Wildcard) {
-        const unordered_set<int>& parents = (variant == "Parent") ?
+        const unordered_set<int>& parents = (this->variant  == "Parent") ?
                                             parentReader->getAllParents() :
                                             parentTTReader->getAllParentTs();
         filteredParents = getFilteredStmtsNumByType(parents, firstStatementType, pkbReaderManager);
@@ -115,7 +115,7 @@ void ParentStrategy::processFirstParam(const Token& firstParam, const Token& sec
     }
 }
 
-void ParentStrategy::processSecondParam(const Token& firstParam, const Token& secondParam, const string& variant,
+void ParentStrategy::processSecondParam(
             std::shared_ptr<ResultTable> resultTable,const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
     // Implementation of processing when the second parameter matches the required synonym
     string col2 = secondParam.getValue();
@@ -124,7 +124,7 @@ void ParentStrategy::processSecondParam(const Token& firstParam, const Token& se
     unordered_set<int> filteredParents;
     if (firstParam.getType() == TokenType::INTEGER) {
         int stmtNum = stoi(firstParam.getValue());
-        const unordered_set<int>& parents = (variant == "Parent") ?
+        const unordered_set<int>& parents = (this->variant  == "Parent") ?
                                             parentReader->getChild(stmtNum) :
                                             parentTTReader->getChildT(stmtNum);
         filteredParents = getFilteredStmtsNumByType(parents, secondStatementType, pkbReaderManager);
@@ -136,7 +136,7 @@ void ParentStrategy::processSecondParam(const Token& firstParam, const Token& se
         }
     }
     else if (firstParam.getType() == TokenType::Wildcard) {
-        const unordered_set<int>& parents = (variant == "Parent") ?
+        const unordered_set<int>& parents = (this->variant  == "Parent") ?
                                             parentReader->getAllChildren() :
                                             parentTTReader->getAllChildrenT();
         filteredParents = getFilteredStmtsNumByType(parents, secondStatementType, pkbReaderManager);
@@ -150,7 +150,7 @@ void ParentStrategy::processSecondParam(const Token& firstParam, const Token& se
 
 
 
-void ParentStrategy::processIntegerParams(const Token& firstParam, const Token& secondParam,
+void ParentStrategy::processIntegerParams(
             std::shared_ptr<ResultTable> resultTable) {
     // Implementation for processing when both parameters are integers
     int firstStmtNum = stoi(firstParam.getValue());

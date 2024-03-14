@@ -13,6 +13,7 @@
 #include "qps/evaluator/strategies/suchThatStrategies/UsesPStrategy.h" // Include UsesPStrategy
 #include "qps/evaluator/strategies/suchThatStrategies/ModifiesPStrategy.h" // Include ModifiesPStrategy
 #include "qps/evaluator/strategies/suchThatStrategies/CallsStrategy.h" // Include CallsStrategy
+#include "qps/evaluator/strategies/suchThatStrategies/NextStrategy.h" // Include CallsStarStrategy
 #include <variant>
 
 

@@ -1,0 +1,35 @@
+procedure Main {
+    x = 5;
+    count = 0;
+    call Compute;
+}
+
+procedure Compute {
+    y = x + 1;
+    count = count + 1 + x;
+    if (i == 0) then {
+        call Process; } else {
+        call Finalize; }
+    print y;
+}
+
+procedure Process {
+    while (x > 0) {
+        x = iter - 1;
+        if (iter == 0) then {
+            y = y + 1; } else {
+            z = iter + 1;
+        }
+    }
+}
+
+procedure Finalize {
+    x = iter + y;
+    z = 100;
+    call Last;
+}
+
+procedure Last {
+    x = iter + y;
+    z = 100;
+}
