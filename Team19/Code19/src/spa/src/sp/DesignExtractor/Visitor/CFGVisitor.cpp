@@ -13,13 +13,12 @@ void CFGVisitor::visit() {
 }
 
 void CFGVisitor::visitCFGNode(std::shared_ptr<CFGNode> cfgNode) {
-	if (cfgNode->isEndOfProcedure()) {
-		return;
-	}
+	if (cfgNode->isEndOfProcedure()) return;
 	// Extracts the next relationship for the current CFG node
 	for (auto childNode : cfgNode->getChildren()) {
+		if (childNode->isEndOfProcedure()) continue;
 		NextExtractor nextExtractor(cfgNode, childNode, pkbWriterManager->getNextWriter());
 		nextExtractor.extract();
-		visitCFGNode(cfgNode);
+		visitCFGNode(childNode);
 	}
 }

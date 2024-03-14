@@ -42,6 +42,13 @@ explicit ICFGExtractor(std::shared_ptr<CFGNode> cfg1,
 	*/
 	virtual void extract() = 0;
 
+	/*
+	* The parent (previous) node of the CFG
+	*/
 	std::shared_ptr<CFGNode> cfg1;
+
+	/*
+	* The child (next) node of the CFG
+	*/
 	std::shared_ptr<CFGNode> cfg2;
 };
