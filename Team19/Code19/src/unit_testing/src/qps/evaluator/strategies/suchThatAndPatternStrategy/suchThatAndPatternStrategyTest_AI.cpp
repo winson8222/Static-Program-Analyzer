@@ -73,7 +73,7 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrate
 
     }
 
-    SECTION("Check Evaluation result of a tuple select Parent* query with pattern ") {
+    SECTION("Check Evaluation result of a tuple select Parent* query with pattern") {
         statementWriter->insertStatement(1);
         statementWriter->insertStatement(2);
         statementWriter->insertStatement(3);
