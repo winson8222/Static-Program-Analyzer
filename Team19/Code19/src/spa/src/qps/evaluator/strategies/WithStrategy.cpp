@@ -16,7 +16,8 @@
  * @param parsingResult Contains the parsed query details.
  * @return A shared pointer to the populated result table.
  */
-std::shared_ptr<ResultTable> WithStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause, std::shared_ptr<ResultTable>& originalResultTable) {
+std::shared_ptr<ResultTable> WithStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause, const std::shared_ptr<ResultTable>& originalResultTable) {
+
     auto resultTable = std::make_shared<ResultTable>();
     // Initializing PKB readers for With clause
     const WithClause* withClause = dynamic_cast<const WithClause*>(&clause);
@@ -61,11 +62,16 @@ std::shared_ptr<ResultTable> WithStrategy::evaluateQuery(PKBReaderManager& pkbRe
 
 }
 
+std::shared_ptr<ResultTable> WithStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause)
+{
+    return std::shared_ptr<ResultTable>();
+}
+
 
 /**
  * Processes first parameter of the query.
  */
-std::unordered_set<std::string> WithStrategy::processParam(Token param, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager, std::shared_ptr<ResultTable>& resultTable) {
+std::unordered_set<std::string> WithStrategy::processParam(Token param, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager, const std::shared_ptr<ResultTable>& resultTable) {
     // check if param.getValue() is an integer or a quoted string
 
     if (isInteger(param.getValue())) {
@@ -142,6 +148,8 @@ std::unordered_set<std::string> WithStrategy::processParam(Token param, const Pa
                 return resultTable->getColumnValues(synonym);
 			}
 		}
+        return std::unordered_set<std::string>();
+
         
     }
     
@@ -191,7 +199,4 @@ std::unordered_set<std::string> WithStrategy::findIntersection(const std::unorde
     }
 
     return intersection;
-}
-
-
 }
