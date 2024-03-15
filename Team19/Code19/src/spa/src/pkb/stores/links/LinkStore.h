@@ -48,9 +48,6 @@ public:
     }
 
     LinkedType getLinked(LinkerType entity) override {
-        if (links.find(entity) == links.end()) {
-            return LinkedType();
-        }
         return links.at(entity);
     }
 };
