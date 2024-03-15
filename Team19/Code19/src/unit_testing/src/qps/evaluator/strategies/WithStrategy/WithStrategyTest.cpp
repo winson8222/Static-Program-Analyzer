@@ -27,6 +27,7 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
     statementWriter->insertStatement(1);
     statementWriter->insertStatement(2);
     statementWriter->insertStatement(3);
+    assignWriter->insertAssign(1);
 
     CallsWriter->addCalls("proc1", "proc3");
     CallsWriter->addCalls("proc2", "proc4");
@@ -48,6 +49,66 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
         std::unordered_set<string> actualResults = evaluator.evaluateQuery();
         std::unordered_set<string> expectedResults = { "proc1" };
+        REQUIRE(actualResults == expectedResults);
+
+    }
+
+    // Test case for evaluating a simple Parent* query with an assignment pattern
+    SECTION("Check Evaluation result of BOOLEAN  with clause") {
+
+        Tokenizer tokenizer("Select BOOLEAN with 1 = 1");
+        vector<Token> tokens = tokenizer.tokenize();
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
+        std::unordered_set<string> expectedResults = { "TRUE" };
+        REQUIRE(actualResults == expectedResults);
+
+    }
+
+    // Test case for evaluating a simple Parent* query with an assignment pattern
+    SECTION("Check Evaluation result of a with clause with select all statements") {
+
+        Tokenizer tokenizer("stmt s; Select s with 2 = 2");
+        vector<Token> tokens = tokenizer.tokenize();
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
+        std::unordered_set<string> expectedResults = { "1", "2", "3"};
+        REQUIRE(actualResults == expectedResults);
+
+    }
+
+    // Test case for evaluating a simple Parent* query with an assignment pattern
+    SECTION("Check Evaluation result of a with clause and procname ") {
+
+        Tokenizer tokenizer("Select BOOLEAN with \"q\" = \"s\"");
+        vector<Token> tokens = tokenizer.tokenize();
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
+        std::unordered_set<string> expectedResults = { "FALSE" };
+        REQUIRE(actualResults == expectedResults);
+
+    }
+
+    // Test case for evaluating a simple Parent* query with an assignment pattern
+    SECTION("Check Evaluation result of a with clause on attribute stmt#") {
+
+        Tokenizer tokenizer("stmt s; assign a; Select s with s.stmt# = a.stmt#");
+        vector<Token> tokens = tokenizer.tokenize();
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
+        std::unordered_set<string> expectedResults = { "1" };
         REQUIRE(actualResults == expectedResults);
 
     }
