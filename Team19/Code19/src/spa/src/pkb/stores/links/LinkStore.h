@@ -15,7 +15,7 @@
  * @tparam LinkedType The type of the entity being linked.
  */
 template <typename LinkerType, typename LinkedType>
-class EntityStore : public ILinkReader<LinkerType, LinkedType>, public ILinkWriter<LinkerType, LinkedType> {
+class LinkStore : public ILinkReader<LinkerType, LinkedType>, public ILinkWriter<LinkerType, LinkedType> {
 private:
     std::unordered_map<LinkerType, LinkedType> links;
     std::unordered_map<LinkedType, std::unordered_set<LinkerType>> reverseLinks;
@@ -49,7 +49,7 @@ public:
 
     LinkedType getLinked(LinkerType entity) const override {
         if (links.find(entity) == links.end()) {
-            return NULL;
+            return LinkedType();
         }
         return links.at(entity);
     }

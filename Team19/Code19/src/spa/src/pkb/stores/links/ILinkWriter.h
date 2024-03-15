@@ -14,7 +14,7 @@ template <typename LinkerType, typename LinkedType>
 class ILinkWriter {
 public:
     // Adds a link between two entities.
-    virtual void addLink(LinkerType linkerEntity, LinkedType linkedEntity) const = 0;
+    virtual void addLink(LinkerType linkerEntity, LinkedType linkedEntity) = 0;
 
     // Clears all links from the store.
     virtual void clear() = 0;
