@@ -6,9 +6,7 @@
 SimpleTokenStream::SimpleTokenStream(const std::shared_ptr<std::vector<LexicalToken>> token_ptr) 
 	: tokens(*token_ptr), tokenIndex(0) {}
 
-/**
- * Returns the next token from the token stream
- */
+
 LexicalToken SimpleTokenStream::getNextToken() {
 	if (this->hasNext()) {
 		LexicalToken token = this->tokens[this->tokenIndex];
@@ -25,9 +23,6 @@ LexicalToken SimpleTokenStream::getNextToken() {
 	}
 }
 
-/**
- * Returns the token that is 'lookahead' tokens from the start of the token stream
- */
 LexicalToken SimpleTokenStream::peekToken(int lookahead) {
 	if (lookahead <= 0) {
 		throw std::runtime_error("Error: PeekToken cannot have negative lookahead value");
