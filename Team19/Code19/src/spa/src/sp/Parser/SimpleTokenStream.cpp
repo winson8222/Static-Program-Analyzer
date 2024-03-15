@@ -50,3 +50,8 @@ bool SimpleTokenStream::hasTokensLeft() {
 	return this->tokenIndex < static_cast<int>(this->tokens.size());
 }
 // ai-gen end
+
+void SimpleTokenStream::popAndAssertToken(LexicalTokenType type) {
+	LexicalToken nextToken = this->getNextToken();
+	nextToken.assertToken(type);
+}
