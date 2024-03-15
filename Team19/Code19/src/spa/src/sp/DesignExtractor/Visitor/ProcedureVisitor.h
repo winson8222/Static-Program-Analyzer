@@ -52,9 +52,4 @@ private:
 	* A method to handle the visiting of the statement list node
 	*/
 	void handleStatementListVisitor();
-
-	/*
-	* A method to generate control flow graph for the procedure
-	*/
-	void handleControlFlowGraph();
 };

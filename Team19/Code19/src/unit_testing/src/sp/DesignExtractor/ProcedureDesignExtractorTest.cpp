@@ -55,10 +55,26 @@ TEST_CASE("sp/DesignExtractor/Extractor/ProcedureExtractor") {
 }
 
 TEST_CASE("sp/DesignExtractor/Visitor/ProcedureVisitor") {
-	std::shared_ptr<ASTNode> root = std::make_shared<ASTNode>(ASTNode(ASTNodeType::PROCEDURE, 0, "proc"));
+	std::shared_ptr<ASTNode> root = std::make_shared<ASTNode>();
 	std::shared_ptr<ASTNode> proc1 = std::make_shared<ASTNode>(ASTNode(ASTNodeType::PROCEDURE, 1, "proc1"));
-
+	std::shared_ptr<ASTNode> stmtLst1 = std::make_shared<ASTNode>(ASTNode(ASTNodeType::STATEMENT_LIST, 1, "a"));
+	std::shared_ptr<ASTNode> print1 = std::make_shared<ASTNode>(ASTNode(ASTNodeType::PRINT, 1, "print"));
+	print1->addChild(std::make_shared<ASTNode>(ASTNode(ASTNodeType::VARIABLE, 1, "x")));
+	stmtLst1->addChild(print1);
+	proc1->addChild(stmtLst1);
 	root->addChild(proc1);
+
 	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
+	ProcedureVisitor visitor(proc1, pkbWriterManager);
+	REQUIRE_NOTHROW(visitor.visit());
+
+	std::shared_ptr<PKBReaderManager> pkbReaderManager = pkb->getPKBReaderManager();
+	std::unordered_set<std::string> expectedProcNames = { "proc1" };
+	auto val = pkbReaderManager->getProcedureReader()->getAllProcedures();
+	REQUIRE(val == expectedProcNames);
+
+	std::unordered_set<int> expectedNext = {};
+	auto val2 = pkbReaderManager->getNextReader()->getAllNext();
+	REQUIRE(val2 == expectedNext);
 }

@@ -48,6 +48,17 @@ public:
 private:
     std::shared_ptr<ASTNode> root;
     std::shared_ptr<PKBWriterManager> pkbWriterManager;
+    std::vector<std::shared_ptr<CFGNode>> cfgGraphs;
+
+    /*
+    * Handles the procedure visitor, which all available designs abstractions from the procedure node.
+    */
+    void handleProcedureVisitor(std::shared_ptr<ASTNode> procedureNode);
+
+    /*
+    * Handles the CFG visitor, which extracts all available designs abstractions from the CFG node.
+    */
+    void handleCFGVisitor(std::shared_ptr<CFGNode> cfgNode);
 };
 
 // ai-gen end
