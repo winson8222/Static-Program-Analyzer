@@ -28,7 +28,7 @@ TEST_CASE("pkb/stores/links/LinkStore") {
 
         SECTION("getLinker and getLinked: Non-existent") {
             REQUIRE(linkStore.getLinker("non-existent").empty());
-            REQUIRE(linkStore.getLinked(1).empty());
+            REQUIRE_THROWS(linkStore.getLinked(1));
         }
     }
 
@@ -37,7 +37,7 @@ TEST_CASE("pkb/stores/links/LinkStore") {
 
         SECTION("getLinker and getLinked: Non-existent") {
             REQUIRE(linkStore.getLinker(1).empty());
-            REQUIRE(linkStore.getLinked(1) == 0);
+            REQUIRE_THROWS(linkStore.getLinked(1));
         }
     }
 }

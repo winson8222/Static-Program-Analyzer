@@ -31,6 +31,10 @@
 #include "pkb/writers/patterns/IfPatternWriter.h"
 #include "pkb/writers/patterns/WhilePatternWriter.h"
 
+#include "pkb/writers/links/CallProcNameWriter.h"
+#include "pkb/writers/links/PrintVarNameWriter.h"
+#include "pkb/writers/links/ReadVarNameWriter.h"
+
 // ai-gen start(copilot, 2, e)
 // prompt: used copilot
 class PKBWriterManager {
@@ -47,7 +51,7 @@ private:
     std::shared_ptr<ModifiesSWriter> modifiesSWriter;
     std::shared_ptr<CallsWriter> callsWriter;
     std::shared_ptr<CallsTWriter> callsTWriter;
-	  std::shared_ptr<NextWriter> nextWriter;
+    std::shared_ptr<NextWriter> nextWriter;
 
     std::shared_ptr<AssignWriter> assignWriter;
     std::shared_ptr<VariableWriter> variableWriter;
@@ -64,34 +68,42 @@ private:
     std::shared_ptr<IfPatternWriter> ifPatternWriter;
     std::shared_ptr<WhilePatternWriter> whilePatternWriter;
 
+    std::shared_ptr<CallProcNameWriter> callProcNameWriter;
+    std::shared_ptr<PrintVarNameWriter> printVarNameWriter;
+    std::shared_ptr<ReadVarNameWriter> readVarNameWriter;
+
 public:
     PKBWriterManager(const std::shared_ptr<PKB>& pkb): pkb(pkb) {
-      followsWriter = std::make_shared<FollowsWriter>(pkb->getFollowsStore());
-      followsTWriter = std::make_shared<FollowsTWriter>(pkb->getFollowsTStore());
-      parentWriter = std::make_shared<ParentWriter>(pkb->getParentStore());
-      parentTWriter = std::make_shared<ParentTWriter>(pkb->getParentTStore());
-      usesPWriter = std::make_shared<UsesPWriter>(pkb->getUsesPStore());
-      usesSWriter = std::make_shared<UsesSWriter>(pkb->getUsesSStore());
-      modifiesPWriter = std::make_shared<ModifiesPWriter>(pkb->getModifiesPStore());
-      modifiesSWriter = std::make_shared<ModifiesSWriter>(pkb->getModifiesSStore());
-      callsWriter = std::make_shared<CallsWriter>(pkb->getCallsStore());
-      callsTWriter = std::make_shared<CallsTWriter>(pkb->getCallsTStore());
-	    nextWriter = std::make_shared<NextWriter>(pkb->getNextStore());
+        followsWriter = std::make_shared<FollowsWriter>(pkb->getFollowsStore());
+        followsTWriter = std::make_shared<FollowsTWriter>(pkb->getFollowsTStore());
+        parentWriter = std::make_shared<ParentWriter>(pkb->getParentStore());
+        parentTWriter = std::make_shared<ParentTWriter>(pkb->getParentTStore());
+        usesPWriter = std::make_shared<UsesPWriter>(pkb->getUsesPStore());
+        usesSWriter = std::make_shared<UsesSWriter>(pkb->getUsesSStore());
+        modifiesPWriter = std::make_shared<ModifiesPWriter>(pkb->getModifiesPStore());
+        modifiesSWriter = std::make_shared<ModifiesSWriter>(pkb->getModifiesSStore());
+        callsWriter = std::make_shared<CallsWriter>(pkb->getCallsStore());
+        callsTWriter = std::make_shared<CallsTWriter>(pkb->getCallsTStore());
+        nextWriter = std::make_shared<NextWriter>(pkb->getNextStore());
 
-      assignWriter = std::make_shared<AssignWriter>(pkb->getAssignStore());
-      variableWriter = std::make_shared<VariableWriter>(pkb->getVariableStore());
-      constantWriter = std::make_shared<ConstantWriter>(pkb->getConstantStore());
-      procedureWriter = std::make_shared<ProcedureWriter>(pkb->getProcedureStore());
-      statementWriter = std::make_shared<StatementWriter>(pkb->getStatementStore());
-      ifWriter = std::make_shared<IfWriter>(pkb->getIfStore());
-      whileWriter = std::make_shared<WhileWriter>(pkb->getWhileStore());
-      callWriter = std::make_shared<CallWriter>(pkb->getCallStore());
-      readWriter = std::make_shared<ReadWriter>(pkb->getReadStore());
-      printWriter = std::make_shared<PrintWriter>(pkb->getPrintStore());
+        assignWriter = std::make_shared<AssignWriter>(pkb->getAssignStore());
+        variableWriter = std::make_shared<VariableWriter>(pkb->getVariableStore());
+        constantWriter = std::make_shared<ConstantWriter>(pkb->getConstantStore());
+        procedureWriter = std::make_shared<ProcedureWriter>(pkb->getProcedureStore());
+        statementWriter = std::make_shared<StatementWriter>(pkb->getStatementStore());
+        ifWriter = std::make_shared<IfWriter>(pkb->getIfStore());
+        whileWriter = std::make_shared<WhileWriter>(pkb->getWhileStore());
+        callWriter = std::make_shared<CallWriter>(pkb->getCallStore());
+        readWriter = std::make_shared<ReadWriter>(pkb->getReadStore());
+        printWriter = std::make_shared<PrintWriter>(pkb->getPrintStore());
 
-      assignPatternWriter = std::make_shared<AssignPatternWriter>(pkb->getAssignPatternStore());
-      ifPatternWriter = std::make_shared<IfPatternWriter>(pkb->getIfPatternStore());
-      whilePatternWriter = std::make_shared<WhilePatternWriter>(pkb->getWhilePatternStore());
+        assignPatternWriter = std::make_shared<AssignPatternWriter>(pkb->getAssignPatternStore());
+        ifPatternWriter = std::make_shared<IfPatternWriter>(pkb->getIfPatternStore());
+        whilePatternWriter = std::make_shared<WhilePatternWriter>(pkb->getWhilePatternStore());
+
+        callProcNameWriter = std::make_shared<CallProcNameWriter>(pkb->getCallProcNameStore());
+        printVarNameWriter = std::make_shared<PrintVarNameWriter>(pkb->getPrintVarNameStore());
+        readVarNameWriter = std::make_shared<ReadVarNameWriter>(pkb->getReadVarNameStore());
     }
     // Relationships
     std::shared_ptr<FollowsWriter> getFollowsWriter() {
@@ -190,6 +202,17 @@ public:
 
     std::shared_ptr<WhilePatternWriter> getWhilePatternWriter() {
       return whilePatternWriter;
+    }
+
+    // Links
+    std::shared_ptr<CallProcNameWriter> getCallProcNameWriter() {
+      return callProcNameWriter;
+    }
+    std::shared_ptr<PrintVarNameWriter> getPrintVarNameWriter() {
+      return printVarNameWriter;
+    }
+    std::shared_ptr<ReadVarNameWriter> getReadVarNameWriter() {
+      return readVarNameWriter;
     }
 };
 // ai-gen end
