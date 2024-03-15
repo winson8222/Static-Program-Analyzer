@@ -41,6 +41,12 @@ TEST_CASE("pkb/readers/links/CallProcNameReader") {
     SECTION("CallProcNameReader can check if doesn't exist") {
         std::shared_ptr<CallProcNameStore> callProcNameStore = std::make_shared<CallProcNameStore>();
         CallProcNameReader callProcNameReader(callProcNameStore);
-        REQUIRE_FALSE(callProcNameReader.hasLink(1, "foo"));
+        REQUIRE_FALSE(callProcNameReader.isCalled(1, "foo"));
+    }
+
+    SECTION("getCalledProcedureName returns empty set if statement does not call any procedure") {
+        std::shared_ptr<CallProcNameStore> callProcNameStore = std::make_shared<CallProcNameStore>();
+        CallProcNameReader callProcNameReader(callProcNameStore);
+        REQUIRE_THROWS(callProcNameReader.getCalledProcedureName(1));
     }
 }
