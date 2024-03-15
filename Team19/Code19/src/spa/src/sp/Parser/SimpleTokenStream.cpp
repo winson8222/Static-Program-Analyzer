@@ -10,7 +10,7 @@ SimpleTokenStream::SimpleTokenStream(const std::shared_ptr<std::vector<LexicalTo
  * Returns the next token from the token stream
  */
 LexicalToken SimpleTokenStream::getNextToken() {
-	if (this->hasTokensLeft()) {
+	if (this->hasNext()) {
 		LexicalToken token = this->tokens[this->tokenIndex];
 		this->tokenIndex++;
 
@@ -46,10 +46,15 @@ LexicalToken SimpleTokenStream::peekToken(int lookahead) {
 	return resultToken;
 }
 
-bool SimpleTokenStream::hasTokensLeft() {
+bool SimpleTokenStream::hasNext() {
 	return this->tokenIndex < static_cast<int>(this->tokens.size());
 }
 // ai-gen end
+
+bool SimpleTokenStream::hasTokensLeft() {
+	LexicalToken nextToken = this->peekToken();
+	return !nextToken.isType(LexicalTokenType::NULL_TOKEN);
+}
 
 void SimpleTokenStream::popAndAssertToken(LexicalTokenType type) {
 	LexicalToken nextToken = this->getNextToken();
