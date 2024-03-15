@@ -21,20 +21,40 @@ none
 5 - No Syntax Error from naming synonym Select
 assign Select;
 Select Select pattern Select(_, _)
-none
+3
 5000
 6 - Assign pattern allows space
 assign a;
 Select a pattern a("temp", _"temp "_)
 none
 5000
-6 - Assign pattern allows space 2
+7 - Assign pattern allows space 2
 assign a;
 Select a pattern a(_, _"1 "_)
 none
 5000
-7 - Assign pattern allows space 3
+8 - Assign pattern allows space 3
 assign a;
 Select a pattern a(_, _"quota      "_)
 none
+5000
+9 - select with extra ";"
+read r;
+Select r;
+SyntaxError
+5000
+10 - syntax error from spaces in double clause
+assign a;
+Select a such that Uses(a, "x") pattern a("x", _" x"_)
+none
+5000
+11 - variable calls iter
+variable v;
+Select v such that Uses(3, v)
+iter
+5000
+12 - stmt that uses iter
+stmt s;
+Select s such that Uses(s, "iter")
+3
 5000
