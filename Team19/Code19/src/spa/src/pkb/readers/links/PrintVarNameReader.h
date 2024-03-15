@@ -35,8 +35,8 @@ public:
     bool isPrinted(int statementNumber, std::string varName) const;
 
     // Inherited methods
-    bool isEmpty() const override;
+    bool isEmpty() override;
     bool hasLink(int statementNumber, std::string varName) override;
-    std::unordered_set<int> getLinker(std::string varName) const override;
-    std::string getLinked(int statementNumber) const override;
+    std::unordered_set<int> getLinker(std::string varName) override;
+    std::string getLinked(int statementNumber) override;
 };

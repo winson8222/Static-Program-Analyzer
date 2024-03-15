@@ -19,26 +19,26 @@ public:
      * @param procName The name of the procedure.
      * @return The set of all statement numbers that call the given procedure.
      */
-    std::unordered_set<int> getCallers(std::string procName) const;
+    std::unordered_set<int> getCallers(std::string procName);
 
     /**
      * @brief Get the name of the procedure called at a given statement.
      * @param statementNumber The statement number of the "Call" statement.
      * @return The name of the procedure called at the given statement.
      */
-    std::unordered_set<std::string> getCalledProcedureName(int statementNumber) const;
+    std::unordered_set<std::string> getCalledProcedureName(int statementNumber);
 
     /**
      * @brief Check if a given statement calls a given procedure.
      * @return True if the statement calls the procedure, false otherwise.
      */
-    bool isCalled(int statementNumber, std::string procName) const;
+    bool isCalled(int statementNumber, std::string procName);
 
     // Inherited methods
-    bool isEmpty() const override;
-    bool hasLink(int statementNumber, std::string procName) const override;
-    std::unordered_set<int> getLinker(std::string procName) const override;
-    std::string getLinked(int statementNumber) const override;
+    bool isEmpty() override;
+    bool hasLink(int statementNumber, std::string procName) override;
+    std::unordered_set<int> getLinker(std::string procName) override;
+    std::string getLinked(int statementNumber) override;
 
 
 };
