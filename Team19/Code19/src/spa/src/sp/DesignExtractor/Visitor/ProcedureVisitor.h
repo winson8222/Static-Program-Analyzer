@@ -5,7 +5,7 @@
 #include "pkb/PKBWriterManager.h"
 #include "sp/DesignExtractor/Extractor/EntityExtractor/ProcedureExtractor.h"
 #include "sp/DesignExtractor/Visitor/StatementListVisitor.h"
-#include "sp/DesignExtractor/Visitor/CFGVIsitor.h"
+#include "sp/DesignExtractor/Visitor/CFGVisitor.h"
 #include "sp/ControlFlow/SimpleControlFlow.h"
 
 constexpr int PROCEDURE_STATEMENT_LIST_INDEX = 0;

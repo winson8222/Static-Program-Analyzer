@@ -7,6 +7,7 @@
 #include "sp/AST/ASTNode.h"
 #include "sp/DesignExtractor/Visitor/IVisitor.h"
 #include "sp/DesignExtractor/Visitor/ProcedureVisitor.h"
+#include "sp/DesignExtractor/Visitor/CFGVisitor.h"
 
 // ai-gen start(copilot, 2, e)
 // prompt: GitHub Copilot

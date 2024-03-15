@@ -1,4 +1,4 @@
-#include "sp/DesignExtractor/Visitor/CFGVIsitor.h"
+#include "sp/DesignExtractor/Visitor/CFGVisitor.h"
 
 CFGVisitor::CFGVisitor(std::shared_ptr<CFGNode> cfg,
 	std::shared_ptr<PKBWriterManager> pkbWriterManager) {
