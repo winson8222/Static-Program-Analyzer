@@ -33,6 +33,8 @@
 #include "pkb/readers/patterns/IfPatternReader.h"
 #include "pkb/readers/patterns/WhilePatternReader.h"
 
+#include "pkb/readers/links/CallProcNameReader.h"
+
 // ai-gen start(copilot, 2, e)
 // prompt: used copilot
 class PKBReaderManager {
@@ -68,36 +70,40 @@ private:
     std::shared_ptr<IfPatternReader> ifPatternReader;
     std::shared_ptr<WhilePatternReader> whilePatternReader;
 
+    std::shared_ptr<CallProcNameReader> callProcNameReader;
+
 public:
     PKBReaderManager(const std::shared_ptr<PKB>& pkb): pkb(pkb) {
-      assignReader = std::make_shared<AssignReader>(pkb->getAssignStore());
-      variableReader = std::make_shared<VariableReader>(pkb->getVariableStore());
-      procedureReader = std::make_shared<ProcedureReader>(pkb->getProcedureStore());
-      statementReader = std::make_shared<StatementReader>(pkb->getStatementStore());
-      ifReader = std::make_shared<IfReader>(pkb->getIfStore());
-      whileReader = std::make_shared<WhileReader>(pkb->getWhileStore());
-      callReader = std::make_shared<CallReader>(pkb->getCallStore());
-      readReader = std::make_shared<ReadReader>(pkb->getReadStore());
-      constantReader = std::make_shared<ConstantReader>(pkb->getConstantStore());
-      printReader = std::make_shared<PrintReader>(pkb->getPrintStore());
+        assignReader = std::make_shared<AssignReader>(pkb->getAssignStore());
+        variableReader = std::make_shared<VariableReader>(pkb->getVariableStore());
+        procedureReader = std::make_shared<ProcedureReader>(pkb->getProcedureStore());
+        statementReader = std::make_shared<StatementReader>(pkb->getStatementStore());
+        ifReader = std::make_shared<IfReader>(pkb->getIfStore());
+        whileReader = std::make_shared<WhileReader>(pkb->getWhileStore());
+        callReader = std::make_shared<CallReader>(pkb->getCallStore());
+        readReader = std::make_shared<ReadReader>(pkb->getReadStore());
+        constantReader = std::make_shared<ConstantReader>(pkb->getConstantStore());
+        printReader = std::make_shared<PrintReader>(pkb->getPrintStore());
 
-      followsReader = std::make_shared<FollowsReader>(pkb->getFollowsStore());
-      followsTReader = std::make_shared<FollowsTReader>(pkb->getFollowsTStore());
-      parentReader = std::make_shared<ParentReader>(pkb->getParentStore());
-      parentTReader = std::make_shared<ParentTReader>(pkb->getParentTStore());
-      modifiesPReader = std::make_shared<ModifiesPReader>(pkb->getModifiesPStore());
-      modifiesSReader = std::make_shared<ModifiesSReader>(pkb->getModifiesSStore());
-      usesPReader = std::make_shared<UsesPReader>(pkb->getUsesPStore());
-      usesSReader = std::make_shared<UsesSReader>(pkb->getUsesSStore());
-      callsReader = std::make_shared<CallsReader>(pkb->getCallsStore());
-      callsTReader = std::make_shared<CallsTReader>(pkb->getCallsTStore());
-      nextReader = std::make_shared<NextReader>(pkb->getNextStore());
-      nextTReader = std::make_shared<NextTReader>(pkb->getNextTStore());
-      affectsReader = std::make_shared<AffectsReader>(pkb->getAffectsStore());
+        followsReader = std::make_shared<FollowsReader>(pkb->getFollowsStore());
+        followsTReader = std::make_shared<FollowsTReader>(pkb->getFollowsTStore());
+        parentReader = std::make_shared<ParentReader>(pkb->getParentStore());
+        parentTReader = std::make_shared<ParentTReader>(pkb->getParentTStore());
+        modifiesPReader = std::make_shared<ModifiesPReader>(pkb->getModifiesPStore());
+        modifiesSReader = std::make_shared<ModifiesSReader>(pkb->getModifiesSStore());
+        usesPReader = std::make_shared<UsesPReader>(pkb->getUsesPStore());
+        usesSReader = std::make_shared<UsesSReader>(pkb->getUsesSStore());
+        callsReader = std::make_shared<CallsReader>(pkb->getCallsStore());
+        callsTReader = std::make_shared<CallsTReader>(pkb->getCallsTStore());
+        nextReader = std::make_shared<NextReader>(pkb->getNextStore());
+        nextTReader = std::make_shared<NextTReader>(pkb->getNextTStore());
+        affectsReader = std::make_shared<AffectsReader>(pkb->getAffectsStore());
 
-      assignPatternReader = std::make_shared<AssignPatternReader>(pkb->getAssignPatternStore());
-      ifPatternReader = std::make_shared<IfPatternReader>(pkb->getIfPatternStore());
-      whilePatternReader = std::make_shared<WhilePatternReader>(pkb->getWhilePatternStore());
+        assignPatternReader = std::make_shared<AssignPatternReader>(pkb->getAssignPatternStore());
+        ifPatternReader = std::make_shared<IfPatternReader>(pkb->getIfPatternStore());
+        whilePatternReader = std::make_shared<WhilePatternReader>(pkb->getWhilePatternStore());
+
+        callProcNameReader = std::make_shared<CallProcNameReader>(pkb->getCallProcNameStore());
     }
 
     // Entity Readers
@@ -131,5 +137,8 @@ public:
     std::shared_ptr<AssignPatternReader> getAssignPatternReader() { return assignPatternReader; }
     std::shared_ptr<IfPatternReader> getIfPatternReader() { return ifPatternReader; }
     std::shared_ptr<WhilePatternReader> getWhilePatternReader() { return whilePatternReader; }
+
+    // Link Readers
+    std::shared_ptr<CallProcNameReader> getCallProcNameReader() { return callProcNameReader; }
 };
 // ai-gen end
