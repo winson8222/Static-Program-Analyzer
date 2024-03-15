@@ -1,4 +1,4 @@
-name: Build + Unit Tests (MacOS)
+name: Build + Autotester (MacOS)
 
 on:
   push:
@@ -14,7 +14,9 @@ env:
     BUILD_TYPE: Debug
     CMAKE_DIR: ${{ github.workspace }}/Team19/Code19
     BUILD_DIR: ${{ github.workspace }}/Team19/Code19/build
-    TEST_DIR: ${{ github.workspace }}/Team19/Code19/build/src/unit_testing
+    TEST_DIR: ${{ github.workspace }}/Team19/Code19/build/src/autotester
+    AUTOTESTER_M1_DIR: ${{ github.workspace }}/Team19/Tests19/system_testing/m1
+    AUTOTESTER_M2_DIR: ${{ github.workspace }}/Team19/Tests19/system_testing/m2
 
 jobs:
   build_unit_mac:
@@ -48,12 +50,13 @@ jobs:
           CXX: ${{ matrix.cxx-compilers }}
         run: |
             cmake --build . --config ${{ matrix.build-type }} -j 4
-            cmake --build . --target unit_testing --config ${BUILD_TYPE} -j 4
+            cmake --build . --target autotester --config ${BUILD_TYPE} -j 4
 
-      - name: Run Unit Tests
-        working-directory: ${{ env.TEST_DIR }}
+      - name: Run Autotester
+        working-directory: ${{ env.AUTOTESTER_M1_DIR }}
         run: |
-            ${{ env.TEST_DIR }}/unit_testing
+            chmod +x run_test.sh
+            ./run_test.sh
 
       - name: Cleanup Directory
         if: always()
