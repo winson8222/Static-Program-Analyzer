@@ -1,7 +1,8 @@
 #pragma once
 
-#include "pkb/stores/links/LinkStore.h"
+#include <string>
 
+#include "pkb/stores/links/LinkStore.h"
 // ai-gen start(copilot, 2, e)
 // prompt: used copilot
 /**
