@@ -32,22 +32,22 @@ public:
     }
 
     // ILinkReader implementation
-    bool isEmpty() const override {
+    bool isEmpty() override {
         return links.empty();
     }
 
-    bool hasLink(LinkerType linkerEntity, LinkedType linkedEntity) const override {
+    bool hasLink(LinkerType linkerEntity, LinkedType linkedEntity) override {
         return links.find(linkerEntity) != links.end() && links.at(linkerEntity) == linkedEntity;
     }
 
-    std::unordered_set<LinkerType> getLinker(LinkedType entity) const override {
+    std::unordered_set<LinkerType> getLinker(LinkedType entity) override {
         if (reverseLinks.find(entity) == reverseLinks.end()) {
             return std::unordered_set<LinkerType>();
         }
         return reverseLinks.at(entity);
     }
 
-    LinkedType getLinked(LinkerType entity) const override {
+    LinkedType getLinked(LinkerType entity) override {
         if (links.find(entity) == links.end()) {
             return LinkedType();
         }

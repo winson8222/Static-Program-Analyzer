@@ -14,15 +14,15 @@ template <typename LinkerType, typename LinkedType>
 class ILinkReader {
 public:
     // Checks if the store is empty.
-    virtual bool isEmpty() const = 0;
+    virtual bool isEmpty() = 0;
 
     // Checks if the store contains a given entity.
-    virtual bool hasLink(LinkerType linkerEntity, LinkedType linkedEntity) const = 0;
+    virtual bool hasLink(LinkerType linkerEntity, LinkedType linkedEntity) = 0;
 
     // Retrieves the set of entity linkers for a given linked entity.
-    virtual std::unordered_set<LinkerType> getLinker(LinkedType entity) const = 0;
+    virtual std::unordered_set<LinkerType> getLinker(LinkedType entity) = 0;
 
     // Retrieves the linked entity for a given linker entity.
-    virtual LinkedType getLinked(LinkerType entity) const = 0;
+    virtual LinkedType getLinked(LinkerType entity) = 0;
 };
 // ai-gen end
