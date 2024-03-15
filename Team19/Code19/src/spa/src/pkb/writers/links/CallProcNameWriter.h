@@ -3,7 +3,7 @@
 #include <memory>
 #include <string>
 #include "pkb/stores/links/ILinkWriter.h"
-#include "pkb/stores/links/types/CallProcNameStore.h" // Assumes the existence of CallsTStore for transitive calls
+#include "pkb/stores/links/types/CallProcNameStore.h"
 
 // ai-gen start(copilot, 1, e)
 // prompt: used copilot

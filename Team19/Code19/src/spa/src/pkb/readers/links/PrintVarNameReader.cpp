@@ -5,7 +5,7 @@
 PrintVarNameReader::PrintVarNameReader(std::shared_ptr<PrintVarNameStore> store) : printVarNameStore(std::move(store)) {}
 
 // Custom methods
-std::unordered_set<int> PrintVarNameReader::getPrinters(std::string varName) {
+std::unordered_set<int> PrintVarNameReader::getPrints(std::string varName) {
     return printVarNameStore->getLinker(varName);
 }
 

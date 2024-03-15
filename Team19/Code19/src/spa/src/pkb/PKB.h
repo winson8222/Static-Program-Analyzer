@@ -32,6 +32,8 @@
 #include "pkb/stores/patterns/control/WhilePatternStore.h"
 
 #include "pkb/stores/links/types/CallProcNameStore.h"
+#include "pkb/stores/links/types/ReadVarNameStore.h"
+#include "pkb/stores/links/types/PrintVarNameStore.h"
 
 #include <memory>
 
@@ -73,6 +75,8 @@ private:
 
     // Link stores
     std::shared_ptr<CallProcNameStore> callProcNameStore;
+    std::shared_ptr<ReadVarNameStore> readVarNameStore;
+    std::shared_ptr<PrintVarNameStore> printVarNameStore;
 public:
     PKB() {
 		// Initialize all entities stores
@@ -109,6 +113,8 @@ public:
 
         // Initialize all link stores
         callProcNameStore = std::make_shared<CallProcNameStore>();
+        readVarNameStore = std::make_shared<ReadVarNameStore>();
+        printVarNameStore = std::make_shared<PrintVarNameStore>();
     }
 
     // Relationship Getters
@@ -145,5 +151,7 @@ public:
 
     // Link Getters
     std::shared_ptr<CallProcNameStore> getCallProcNameStore() { return callProcNameStore; }
+    std::shared_ptr<ReadVarNameStore> getReadVarNameStore() { return readVarNameStore; }
+    std::shared_ptr<PrintVarNameStore> getPrintVarNameStore() { return printVarNameStore; }
 };
 // ai-gen end

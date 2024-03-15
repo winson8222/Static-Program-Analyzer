@@ -34,6 +34,9 @@
 #include "pkb/readers/patterns/WhilePatternReader.h"
 
 #include "pkb/readers/links/CallProcNameReader.h"
+#include "pkb/readers/links/ReadVarNameReader.h"
+#include "pkb/readers/links/PrintVarNameReader.h"
+
 
 // ai-gen start(copilot, 2, e)
 // prompt: used copilot
@@ -71,6 +74,8 @@ private:
     std::shared_ptr<WhilePatternReader> whilePatternReader;
 
     std::shared_ptr<CallProcNameReader> callProcNameReader;
+    std::shared_ptr<ReadVarNameReader> readVarNameReader;
+    std::shared_ptr<PrintVarNameReader> printVarNameReader;
 
 public:
     PKBReaderManager(const std::shared_ptr<PKB>& pkb): pkb(pkb) {
@@ -104,6 +109,8 @@ public:
         whilePatternReader = std::make_shared<WhilePatternReader>(pkb->getWhilePatternStore());
 
         callProcNameReader = std::make_shared<CallProcNameReader>(pkb->getCallProcNameStore());
+        readVarNameReader = std::make_shared<ReadVarNameReader>(pkb->getReadVarNameStore());
+        printVarNameReader = std::make_shared<PrintVarNameReader>(pkb->getPrintVarNameStore());
     }
 
     // Entity Readers
@@ -140,5 +147,7 @@ public:
 
     // Link Readers
     std::shared_ptr<CallProcNameReader> getCallProcNameReader() { return callProcNameReader; }
+    std::shared_ptr<ReadVarNameReader> getReadVarNameReader() { return readVarNameReader; }
+    std::shared_ptr<PrintVarNameReader> getPrintVarNameReader() { return printVarNameReader; }
 };
 // ai-gen end

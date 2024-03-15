@@ -32,6 +32,8 @@
 #include "pkb/writers/patterns/WhilePatternWriter.h"
 
 #include "pkb/writers/links/CallProcNameWriter.h"
+#include "pkb/writers/links/PrintVarNameWriter.h"
+#include "pkb/writers/links/ReadVarNameWriter.h"
 
 // ai-gen start(copilot, 2, e)
 // prompt: used copilot
@@ -67,6 +69,8 @@ private:
     std::shared_ptr<WhilePatternWriter> whilePatternWriter;
 
     std::shared_ptr<CallProcNameWriter> callProcNameWriter;
+    std::shared_ptr<PrintVarNameWriter> printVarNameWriter;
+    std::shared_ptr<ReadVarNameWriter> readVarNameWriter;
 
 public:
     PKBWriterManager(const std::shared_ptr<PKB>& pkb): pkb(pkb) {
@@ -98,6 +102,8 @@ public:
         whilePatternWriter = std::make_shared<WhilePatternWriter>(pkb->getWhilePatternStore());
 
         callProcNameWriter = std::make_shared<CallProcNameWriter>(pkb->getCallProcNameStore());
+        printVarNameWriter = std::make_shared<PrintVarNameWriter>(pkb->getPrintVarNameStore());
+        readVarNameWriter = std::make_shared<ReadVarNameWriter>(pkb->getReadVarNameStore());
     }
     // Relationships
     std::shared_ptr<FollowsWriter> getFollowsWriter() {
@@ -201,6 +207,12 @@ public:
     // Links
     std::shared_ptr<CallProcNameWriter> getCallProcNameWriter() {
       return callProcNameWriter;
+    }
+    std::shared_ptr<PrintVarNameWriter> getPrintVarNameWriter() {
+      return printVarNameWriter;
+    }
+    std::shared_ptr<ReadVarNameWriter> getReadVarNameWriter() {
+      return readVarNameWriter;
     }
 };
 // ai-gen end

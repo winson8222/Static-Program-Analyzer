@@ -31,4 +31,16 @@ TEST_CASE("pkb/readers/links/CallProcNameReader") {
         callProcNameStore->addLink(1, "foo");
         REQUIRE(callProcNameReader.isCalled(1, "foo"));
     }
+
+    SECTION("CallProcNameReader can check if it is empty") {
+        std::shared_ptr<CallProcNameStore> callProcNameStore = std::make_shared<CallProcNameStore>();
+        CallProcNameReader callProcNameReader(callProcNameStore);
+        REQUIRE(callProcNameReader.isEmpty());
+    }
+
+    SECTION("CallProcNameReader can check if doesn't exist") {
+        std::shared_ptr<CallProcNameStore> callProcNameStore = std::make_shared<CallProcNameStore>();
+        CallProcNameReader callProcNameReader(callProcNameStore);
+        REQUIRE_FALSE(callProcNameReader.hasLink(1, "foo"));
+    }
 }

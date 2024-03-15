@@ -19,7 +19,7 @@ public:
      * @param varName The name of the variable.
      * @return The set of all statement numbers that print the given variable.
      */
-    std::unordered_set<int> getPrinters(std::string varName);
+    std::unordered_set<int> getPrints(std::string varName);
 
     /**
      * @brief Get the name of the variable print at a given statement.
