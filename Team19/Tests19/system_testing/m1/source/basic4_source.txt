@@ -1,0 +1,29 @@
+procedure DFS {
+    read queue;
+    read priorityQueue;
+    start = 0;
+    end = n - 1;
+    total = 0;
+    while ((start < n) && (!(queue == 0))) {
+        middle = (start + end) / 2;
+        while (middle < end) {
+            if (start == 0) then {
+                print start;
+                middle = end; } else {
+                if (end == 0) then {
+                    print end;
+                    read middle;
+                    middle = start; } else {
+                    print middle;
+                    end = middle - 1; } }
+            start = middle + 1;
+            total = total + 1;
+            DFS = 0; } }
+    print total;
+    print DFS;
+    read BFS;
+    call BFS;
+} procedure BFS {
+    print Hello;
+}
+
