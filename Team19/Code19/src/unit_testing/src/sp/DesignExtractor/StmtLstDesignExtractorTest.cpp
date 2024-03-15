@@ -13,7 +13,11 @@
 TEST_CASE("sp/DesignExtractor/Visitor/StatementListVisitor") {
 	std::shared_ptr<ASTNode> root = std::make_shared<ASTNode>(ASTNode());
 	std::shared_ptr<ASTNode> proc1 = std::make_shared<ASTNode>(ASTNode(ASTNodeType::PROCEDURE, 1, "proc1"));
-	proc1->addChild(std::make_shared<ASTNode>(ASTNode(ASTNodeType::STATEMENT_LIST, 1, "statement lists")));
+	std::shared_ptr<ASTNode> stmtLst = std::make_shared<ASTNode>(ASTNode(ASTNodeType::STATEMENT_LIST, 1, "statement lists"));
+	std::shared_ptr<ASTNode> print = std::make_shared<ASTNode>(ASTNode(ASTNodeType::PRINT, 2, "print"));
+	print->addChild(std::make_shared<ASTNode>(ASTNode(ASTNodeType::VARIABLE, 2, "x")));
+	stmtLst->addChild(print);
+	proc1->addChild(stmtLst);
 	root->addChild(proc1);
 	std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
