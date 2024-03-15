@@ -19,20 +19,20 @@ public:
      * @param varName The name of the variable.
      * @return The set of all statement numbers that print the given variable.
      */
-    std::unordered_set<int> getPrinters(std::string varName) const;
+    std::unordered_set<int> getPrinters(std::string varName);
 
     /**
      * @brief Get the name of the variable print at a given statement.
      * @param statementNumber The statement number of the "Print" statement.
      * @return The name of the variable print at the given statement.
      */
-    std::unordered_set<std::string> getPrintVariableName(int statementNumber) const;
+    std::unordered_set<std::string> getPrintVariableName(int statementNumber);
 
     /**
      * @brief Check if a given statement prints a given variable.
      * @return True if the statement prints the variable, false otherwise.
      */
-    bool isPrinted(int statementNumber, std::string varName) const;
+    bool isPrinted(int statementNumber, std::string varName);
 
     // Inherited methods
     bool isEmpty() override;

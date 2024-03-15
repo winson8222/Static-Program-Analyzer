@@ -19,20 +19,20 @@ public:
      * @param varName The name of the variable.
      * @return The set of all statement numbers that read the given variable.
      */
-    std::unordered_set<int> getReaders(std::string varName) const;
+    std::unordered_set<int> getReaders(std::string varName);
 
     /**
      * @brief Get the name of the variable read at a given statement.
      * @param statementNumber The statement number of the "Read" statement.
      * @return The name of the variable read at the given statement.
      */
-    std::unordered_set<std::string> getReadVariableName(int statementNumber) const;
+    std::unordered_set<std::string> getReadVariableName(int statementNumber);
 
     /**
      * @brief Check if a given statement reads a given variable.
      * @return True if the statement reads the variable, false otherwise.
      */
-    bool isRead(int statementNumber, std::string varName) const;
+    bool isRead(int statementNumber, std::string varName);
 
     // Inherited methods
     bool isEmpty() override;
