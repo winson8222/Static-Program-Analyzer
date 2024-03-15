@@ -1,4 +1,4 @@
-echo "[System Test] Running all tests for Milestone 1";
+echo "[System Test] Running all tests for Milestone 2";
 EXIT_CODE="0";
 
 for file in source/*_source.txt; do

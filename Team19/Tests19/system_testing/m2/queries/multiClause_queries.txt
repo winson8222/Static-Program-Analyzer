@@ -36,12 +36,12 @@ procedure, print
 8 - Combining Parent, Follows, and Uses
 stmt s1, s2; variable v;
 Select s1 such that Parent(s1, s2) and Follows(s1, s2) and Uses(s1, v)
-
+none
 5000
 9 - Combining Follows*, Modifies, and Uses with Different Entities
 if i; assign a; variable v;
 Select i such that Follows*(i, a) and Modifies(i, v) and Uses(a, v)
-
+none
 5000
 10 - Multiple Uses Clauses with Different Variables
 variable v1, v2; assign a;
@@ -56,7 +56,7 @@ Select a such that Follows*(s, a) pattern a(_, _) such that Uses(a, v)
 12 - Nested Conditions with Parent and Follows
 if i; while w; stmt s;
 Select s such that Parent(i, w) and Follows(w, s)
-
+none
 5000
 13 - Combining All Clauses in a Single Query
 assign a; stmt s; if i; while w; variable v;
@@ -66,5 +66,5 @@ Select s such that Parent*(w, s) and Follows*(11, s) and Modifies(s, v)
 14 - Complex Query with Multiple Synonyms
 stmt s1, s2, s3; assign a1, a2; variable v;
 Select s1 such that Follows(s1, s2) and Parent(s2, a1) and Uses(a1, v) and Modifies(a2, v) and Pattern a2("variable", _)
-
+none
 5000
