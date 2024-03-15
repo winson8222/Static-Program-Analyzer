@@ -3,20 +3,18 @@
 #include "qps/evaluator/strategies/suchThatStrategies/StmtStmtStrategy.h"
 #include <memory> // For std::shared_ptr
 
+
 /**
- * @file FollowsStrategy.h
- * @brief Defines the FollowsStrategy class that implements evaluation for Follows and Follows* relationships.
+ * @file WithStrategy.h
+ * @brief Defines the WithStrategy class that implements equality between attributes.
  *
- * The FollowsStrategy class extends StmtStmtStrategy to evaluate queries related to the Follows and Follows*
- * relationships between statements in a program. It supports handling different types of parameters including
- * statement numbers, statement synonyms, and wildcards.
+ * The WithStrategy class extends QueryEvaluationStrategy to evaluate queries 
  */
 
 class WithStrategy : public QueryEvaluationStrategy {
 private:
     Token firstParam;
     Token secondParam;
-
 
 public:
     /**
@@ -42,5 +40,6 @@ public:
     bool isQuotedString(const std::string& str);
 
     std::unordered_set<std::string> findIntersection(const std::unordered_set<std::string>& set1, const std::unordered_set<std::string>& set2);
+
     
 };

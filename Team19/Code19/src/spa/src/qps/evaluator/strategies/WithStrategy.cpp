@@ -17,48 +17,58 @@
  * @return A shared pointer to the populated result table.
  */
 std::shared_ptr<ResultTable> WithStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause, const std::shared_ptr<ResultTable>& originalResultTable) {
-
-    auto resultTable = std::make_shared<ResultTable>();
-    // Initializing PKB readers for With clause
-    const WithClause* withClause = dynamic_cast<const WithClause*>(&clause);
-    this->firstParam = withClause->getFirstParam();
-    this->secondParam = withClause->getSecondParam();
-    if (isInteger(firstParam.getValue()) && isInteger(secondParam.getValue())) {
-        if (firstParam.getValue() == secondParam.getValue()) {
-			resultTable->setAsTruthTable();
-		}
-	}
-    else if (isQuotedString(firstParam.getValue()) && isQuotedString(secondParam.getValue())) {
-        if (firstParam.getValue() == secondParam.getValue()) {
-			resultTable->setAsTruthTable();
-		}
-	}
-    else {
-
-        std::unordered_set<std::string> lhsValue = processParam(firstParam, parsingResult, pkbReaderManager, originalResultTable);
-        std::unordered_set<std::string> rhsValue = processParam(secondParam, parsingResult, pkbReaderManager, originalResultTable);
-
-        std::unordered_set<std::string> intersection = findIntersection(lhsValue, rhsValue);
-
-        if (!isQuotedString(firstParam.getValue()) && !isInteger(firstParam.getValue())) {
-            pair<string, string> attributes = extractAttributes(firstParam, parsingResult, pkbReaderManager);
-            string synonym = attributes.first;
-            // insert column with value of synonym and rows with the intersection of the two sets
-            for (string elem : intersection) {
-                resultTable->insertNewRow({ {synonym, elem} });
-            }
-        }
-        if (!isQuotedString(secondParam.getValue()) && !isInteger(secondParam.getValue())) {
-            pair<string, string> attributes = extractAttributes(firstParam, parsingResult, pkbReaderManager);
-            string synonym = attributes.first;
-            // insert column with value of synonym and rows with the intersection of the two sets
-            for (string elem : intersection) {
-                resultTable->insertNewRow({ {synonym, elem} });
-            }
-        }
         
-	}
-    return resultTable;
+
+        auto resultTable = std::make_shared<ResultTable>();
+        // Initializing PKB readers for With clause
+        const WithClause* withClause = dynamic_cast<const WithClause*>(&clause);
+        Token firstParam = withClause->getFirstParam();
+        Token secondParam = withClause->getSecondParam();
+    
+        if (isInteger(firstParam.getValue()) && isInteger(secondParam.getValue())) {
+            if (firstParam.getValue() == secondParam.getValue()) {
+                resultTable->setAsTruthTable();
+            }
+        }
+        else if (isQuotedString(firstParam.getValue()) && isQuotedString(secondParam.getValue())) {
+            if (firstParam.getValue() == secondParam.getValue()) {
+                resultTable->setAsTruthTable();
+            }
+        }
+        else {
+
+            std::unordered_set<std::string> lhsValue = processParam(firstParam, parsingResult, pkbReaderManager, originalResultTable);
+            std::unordered_set<std::string> rhsValue = processParam(secondParam, parsingResult, pkbReaderManager, originalResultTable);
+
+            std::unordered_set<std::string> intersection = findIntersection(lhsValue, rhsValue);
+
+            if (!isQuotedString(firstParam.getValue()) && !isInteger(firstParam.getValue())) {
+                pair<string, string> attributes = extractAttributes(firstParam, parsingResult, pkbReaderManager);
+                string synonym = attributes.first;
+                // insert column with value of synonym and rows with the intersection of the two sets
+                resultTable->insertColumn(synonym);
+                for (string elem : intersection) {
+                    resultTable->insertNewRow({ {synonym, elem} });
+                }
+            }
+            if (!isQuotedString(secondParam.getValue()) && !isInteger(secondParam.getValue())) {
+                pair<string, string> attributes = extractAttributes(secondParam, parsingResult, pkbReaderManager);
+                string synonym = attributes.first;
+                // insert column with value of synonym and rows with the intersection of the two sets
+                if (resultTable->hasColumn(synonym)) {
+                    resultTable->insertColumn(synonym);
+                    for (string elem : intersection) {
+                        resultTable->insertNewRow({ {synonym, elem} });
+                    }
+                }
+            }
+
+        }
+        return resultTable;
+    
+    
+
+    
 
 }
 
@@ -91,7 +101,17 @@ std::unordered_set<std::string> WithStrategy::processParam(Token param, const Pa
 
         if (synonymType == "stmt") {
             if (attribute == "stmt#") {
-				return resultTable->getColumnValues(synonym);
+                if(resultTable->hasColumn(synonym)) {
+					return resultTable->getColumnValues(synonym);
+				}
+				else {
+                    unordered_set<int> list = pkbReaderManager.getStatementReader()->getAllEntities();
+                    unordered_set<string> entities;
+                    for (int entity : list) {
+                        entities.insert(std::to_string(entity));
+                    }
+                    return entities;
+				}
 			}
 		}
         else if (synonymType == "read") {
@@ -99,7 +119,17 @@ std::unordered_set<std::string> WithStrategy::processParam(Token param, const Pa
 				// use pkbReaderManager to get the variable name using the statement numbers found in the resultTable
 			}
             else if (attribute == "stmt#") {
-                return resultTable->getColumnValues(synonym);
+                if (resultTable->hasColumn(synonym)) {
+                    return resultTable->getColumnValues(synonym);
+                }
+                else {
+                    unordered_set<int> list = pkbReaderManager.getReadReader()->getAllEntities();
+                    unordered_set<string> entities;
+                    for (int entity : list) {
+                        entities.insert(std::to_string(entity));
+                    }
+                    return entities;
+                }
 			}
 		}
         else if (synonymType == "print") {
@@ -107,7 +137,17 @@ std::unordered_set<std::string> WithStrategy::processParam(Token param, const Pa
                 // use pkbReaderManager to get the variable name using the statement numbers found in the resultTable
 			}
             else if (attribute == "stmt#") {
-                return resultTable->getColumnValues(synonym);
+                if (resultTable->hasColumn(synonym)) {
+                    return resultTable->getColumnValues(synonym);
+                }
+                else {
+                    unordered_set<int> list = pkbReaderManager.getPrintReader()->getAllEntities();
+                    unordered_set<string> entities;
+                    for (int entity : list) {
+                        entities.insert(std::to_string(entity));
+                    }
+                    return entities;
+                }
 			}
 		}
         else if (synonymType == "call") {
@@ -115,37 +155,99 @@ std::unordered_set<std::string> WithStrategy::processParam(Token param, const Pa
                 // use pkbReaderManager to get the set of procedure names using the statement numbers found in the resultTable
 			}
             else if (attribute == "stmt#") {
-                return resultTable->getColumnValues(synonym);
+                if (resultTable->hasColumn(synonym)) {
+                    return resultTable->getColumnValues(synonym);
+                }
+                else {
+                    unordered_set<int> list = pkbReaderManager.getCallReader()->getAllEntities();
+                    unordered_set<string> entities;
+                    for (int entity : list) {
+                        entities.insert(std::to_string(entity));
+                    }
+                    return entities;
+                }
 			}
 		}
         else if (synonymType == "while") {
             if (attribute == "stmt#") {
-                return resultTable->getColumnValues(synonym);
+                if (resultTable->hasColumn(synonym)) {
+                    return resultTable->getColumnValues(synonym);
+                }
+                else {
+                    unordered_set<int> list = pkbReaderManager.getWhileReader()->getAllEntities();
+                    unordered_set<string> entities;
+                    for (int entity : list) {
+                        entities.insert(std::to_string(entity));
+                    }
+                    return entities;
+                }
 			}
 		}
         else if (synonymType == "if") {
             if (attribute == "stmt#") {
-                return resultTable->getColumnValues(synonym);
+                if (resultTable->hasColumn(synonym)) {
+                    return resultTable->getColumnValues(synonym);
+                }
+                else {
+                    unordered_set<int> list = pkbReaderManager.getIfReader()->getAllEntities();
+                    unordered_set<string> entities;
+                    for (int entity : list) {
+                        entities.insert(std::to_string(entity));
+                    }
+                    return entities;
+                }
 			}
 		}
         else if (synonymType == "assign") {
             if (attribute == "stmt#") {
-                return resultTable->getColumnValues(synonym);
+                if (resultTable->hasColumn(synonym)) {
+                    return resultTable->getColumnValues(synonym);
+                }
+                else {
+                    unordered_set<int> list = pkbReaderManager.getAssignReader()->getAllEntities();
+                    unordered_set<string> entities;
+                    for (int entity : list) {
+                        entities.insert(std::to_string(entity));
+                    }
+                    return entities;
+                }
 			}
 		}
         else if (synonymType == "variable") {
             if (attribute == "varName") {
-                return resultTable->getColumnValues(synonym);
+                if (resultTable->hasColumn(synonym)) {
+                    return resultTable->getColumnValues(synonym);
+                }
+                else {
+                    unordered_set<string> list = pkbReaderManager.getVariableReader()->getAllEntities();
+                    return list;
+                }
 			}
 		}
         else if (synonymType == "constant") {
             if (attribute == "value") {
-                return resultTable->getColumnValues(synonym);
+                if (resultTable->hasColumn(synonym)) {
+                    return resultTable->getColumnValues(synonym);
+                }
+                else {
+                    unordered_set<int> list = pkbReaderManager.getConstantReader()->getAllEntities();
+                    unordered_set<string> entities;
+                    for (int entity : list) {
+                        entities.insert(std::to_string(entity));
+                    }
+                    return entities;
+                }
 			}
 		}
         else if (synonymType == "procedure") {
             if (attribute == "procName") {
-                return resultTable->getColumnValues(synonym);
+                if (resultTable->hasColumn(synonym)) {
+                    return resultTable->getColumnValues(synonym);
+                }
+                else {
+                    unordered_set<string> list = pkbReaderManager.getProcedureReader()->getAllEntities();
+                    return list;
+                }
 			}
 		}
         return std::unordered_set<std::string>();
@@ -200,3 +302,4 @@ std::unordered_set<std::string> WithStrategy::findIntersection(const std::unorde
 
     return intersection;
 }
+
