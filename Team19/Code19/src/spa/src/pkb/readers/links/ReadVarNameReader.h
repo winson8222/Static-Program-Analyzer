@@ -26,7 +26,7 @@ public:
      * @param statementNumber The statement number of the "Read" statement.
      * @return The name of the variable read at the given statement.
      */
-    std::unordered_set<std::string> getReadVariableName(int statementNumber);
+    std::string getReadVariableName(int statementNumber);
 
     /**
      * @brief Check if a given statement reads a given variable.
@@ -40,3 +40,4 @@ public:
     std::unordered_set<int> getLinker(std::string varName) override;
     std::string getLinked(int statementNumber) override;
 };
+// ai-gen end

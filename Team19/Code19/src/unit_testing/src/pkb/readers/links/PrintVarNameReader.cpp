@@ -22,7 +22,7 @@ TEST_CASE("pkb/readers/links/PrintVarNameReader") {
         std::shared_ptr<PrintVarNameStore> printVarNameStore = std::make_shared<PrintVarNameStore>();
         PrintVarNameReader printVarNameReader(printVarNameStore);
         printVarNameStore->addLink(1, "foo");
-        REQUIRE(printVarNameReader.getPrintVariableName(1) == std::unordered_set<std::string>({"foo"}));
+        REQUIRE(printVarNameReader.getPrintVariableName(1) == "foo");
     }
 
     SECTION("PrintVarNameReader can check if a statement prints a procedure") {

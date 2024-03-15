@@ -26,7 +26,7 @@ public:
      * @param statementNumber The statement number of the "Call" statement.
      * @return The name of the procedure called at the given statement.
      */
-    std::unordered_set<std::string> getCalledProcedureName(int statementNumber);
+    std::string getCalledProcedureName(int statementNumber);
 
     /**
      * @brief Check if a given statement calls a given procedure.
@@ -39,6 +39,5 @@ public:
     bool hasLink(int statementNumber, std::string procName) override;
     std::unordered_set<int> getLinker(std::string procName) override;
     std::string getLinked(int statementNumber) override;
-
-
 };
+// ai-gen end

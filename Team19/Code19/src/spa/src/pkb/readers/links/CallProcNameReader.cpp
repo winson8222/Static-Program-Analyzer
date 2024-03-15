@@ -9,8 +9,8 @@ std::unordered_set<int> CallProcNameReader::getCallers(std::string procName) {
     return callProcNameStore->getLinker(procName);
 }
 
-std::unordered_set<std::string> CallProcNameReader::getCalledProcedureName(int statementNumber) {
-    return std::unordered_set<std::string>({callProcNameStore->getLinked(statementNumber)});
+std::string CallProcNameReader::getCalledProcedureName(int statementNumber) {
+    return callProcNameStore->getLinked(statementNumber);
 }
 
 bool CallProcNameReader::isCalled(int statementNumber, std::string procName) {

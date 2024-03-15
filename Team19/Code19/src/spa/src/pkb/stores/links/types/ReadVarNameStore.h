@@ -6,7 +6,7 @@
 // ai-gen start(copilot, 2, e)
 // prompt: used copilot
 /**
- * @class ReadVarNameStore
+ * @brief ReadVarNameStore
  * Specialization of LinkStore for linking "Read" statement numbers to variable names read
  * in a SIMPLE program.
  * This store manages the collection of links between "Read" statement numbers and

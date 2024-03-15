@@ -7,7 +7,7 @@
 // ai-gen start(copilot, 2, e)
 // prompt: used copilot
 /**
- * @class PrintVarNameStore
+ * @brief PrintVarNameStore
  * Specialization of LinkStore for linking "Print" statement numbers to variable names print
  * in a SIMPLE program.
  * This store manages the collection of links between "Print" statement numbers and

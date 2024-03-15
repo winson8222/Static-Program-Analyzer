@@ -7,7 +7,7 @@
 // ai-gen start(copilot, 2, e)
 // prompt: used copilot
 /**
- * @class CallProcNameStore
+ * @brief CallProcNameStore
  * Specialization of LinkStore for linking "Call" statement numbers to procedure names called
  * in a SIMPLE program.
  * This store manages the collection of links between "Call" statement numbers and

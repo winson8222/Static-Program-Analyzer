@@ -9,8 +9,8 @@ std::unordered_set<int> PrintVarNameReader::getPrints(std::string varName) {
     return printVarNameStore->getLinker(varName);
 }
 
-std::unordered_set<std::string> PrintVarNameReader::getPrintVariableName(int statementNumber) {
-    return std::unordered_set<std::string>({printVarNameStore->getLinked(statementNumber)});
+std::string PrintVarNameReader::getPrintVariableName(int statementNumber) {
+    return printVarNameStore->getLinked(statementNumber);
 }
 
 bool PrintVarNameReader::isPrinted(int statementNumber, std::string varName) {

@@ -22,7 +22,7 @@ TEST_CASE("pkb/readers/links/CallProcNameReader") {
         std::shared_ptr<CallProcNameStore> callProcNameStore = std::make_shared<CallProcNameStore>();
         CallProcNameReader callProcNameReader(callProcNameStore);
         callProcNameStore->addLink(1, "foo");
-        REQUIRE(callProcNameReader.getCalledProcedureName(1) == std::unordered_set<std::string>({"foo"}));
+        REQUIRE(callProcNameReader.getCalledProcedureName(1) == "foo");
     }
 
     SECTION("CallProcNameReader can check if a statement calls a procedure") {

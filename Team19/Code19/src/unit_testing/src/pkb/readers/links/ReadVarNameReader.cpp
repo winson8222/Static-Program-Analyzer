@@ -22,7 +22,7 @@ TEST_CASE("pkb/readers/links/ReadVarNameReader") {
         std::shared_ptr<ReadVarNameStore> readVarNameStore = std::make_shared<ReadVarNameStore>();
         ReadVarNameReader readVarNameReader(readVarNameStore);
         readVarNameStore->addLink(1, "foo");
-        REQUIRE(readVarNameReader.getReadVariableName(1) == std::unordered_set<std::string>({"foo"}));
+        REQUIRE(readVarNameReader.getReadVariableName(1) == "foo");
     }
 
     SECTION("ReadVarNameReader can check if a statement reads a procedure") {
