@@ -6,7 +6,7 @@
 
 TEST_CASE("Program parsing throws an error for missing curly brace after procedure end.") {
 	std::string filename = "sample.txt";
-	std::string sampleProgram = 
+	std::string sampleProgram =
 		"procedure proc1 {"
 		"	print x;"
 		""
@@ -66,9 +66,9 @@ TEST_CASE("Program parsing throws an error for extra variable in print statement
 
 TEST_CASE("Program parsing throws an error for missing parenthesis around !(cond_expr)") {
 	std::string filename = "sample.txt";
-	std::string sampleProgram = 
+	std::string sampleProgram =
 		"procedure procedure {"
-		"	while (!(read != 11) && !(read == while)) {" 
+		"	while (!(read != 11) && !(read == while)) {"
 		"		print = 0;"
 		"	}"
 		"}";
@@ -85,7 +85,7 @@ TEST_CASE("Program parsing throws an error for missing parenthesis around !(cond
 
 TEST_CASE("Program parsing throws an error for extra parenthesis around cond_expr.") {
 	std::string filename = "sample.txt";
-	std::string sampleProgram = 
+	std::string sampleProgram =
 		"procedure procedure {"
 		"	while ((read != 11)) {"
 		"		print = 0;"
@@ -158,7 +158,7 @@ TEST_CASE("Single procedure, with read statement") {
 
 TEST_CASE("Single procedure, all possible conditional expressions in while statements") {
 	std::string filename = "sample.txt";
-	std::string sampleProgram = 
+	std::string sampleProgram =
 		"procedure conditionalExpressions {"
 		"	while(x == 2) { read x; }"
 		"	while(x != 2) { read x; }"
@@ -213,7 +213,7 @@ TEST_CASE("Single procedure, all possible conditional expressions in while state
 TEST_CASE("Multiple procedures, all names that may be potential keywords.") {
 	// Generate test file
 	std::string filename = "sample.txt";
-	std::string sampleProgram = 
+	std::string sampleProgram =
 		"procedure assign { read x; }"
 		"procedure call { read x; }"
 		"procedure ant { read x; }"
@@ -263,7 +263,7 @@ TEST_CASE("Multiple procedures, all names that may be potential keywords.") {
 
 TEST_CASE("Parsing single program with all possible statements types.") {
 	std::string filename = "sample.txt";
-	std::string sampleProgram = 
+	std::string sampleProgram =
 		"procedure procedure {"
 		"	while (!(read > procedure)) {"
 		"	if = if;"
@@ -281,7 +281,7 @@ TEST_CASE("Parsing single program with all possible statements types.") {
 		"	print read;"
 		"	read print;"
 		"} procedure call { print k; }";
-	
+
 	std::ofstream file;
 	file.open(filename);
 	file << sampleProgram;
@@ -488,7 +488,7 @@ TEST_CASE("Parsing single program with all possible statements types.") {
 
 TEST_CASE("Calling parseProgram for complex procedure", "[parse][program]") {
 	std::string filename = "sample.txt";
-	std::string sampleProgram = 
+	std::string sampleProgram =
 		"procedure computeCentroid {"
 		"	count = 0;"
 		"	cenX = 0;"
@@ -630,7 +630,7 @@ TEST_CASE("Parsing single procedure that contains 20 nested while loops.") {
 
 TEST_CASE("Parsing single procedure with nested while and if.") {
 	std::string filename = "sample.txt";
-	std::string sampleProgram = 
+	std::string sampleProgram =
 		"procedure nestedIfWhile {"
 		"	while (x == y) {"
 		"		if (x == y) then {"
@@ -751,5 +751,36 @@ TEST_CASE("Parse program with whitespace in the token stream.") {
 	REQUIRE(statement->getLineNumber() == 1);
 	REQUIRE(statement->getChildByIndex(0)->getValue() == "helloWorld");
 
+	std::filesystem::remove(filename);
+}
+
+TEST_CASE("Simple program with a lot of white spaces") {
+	std::string filename = "sample.txt";
+	std::string sampleProgram = 
+		"\n\n\n\n\n\n procedure \n\n\n\n\n\n main \n\n\n\n\n\n { \n\n\n\n\n\n"
+		"\n\n\n\n\n\n\n\n read \n\n\n\n\n\n\n\n\n\n helloWorld \n\n\n\n\n\n ;"
+		"\n\n\n\n } \n\n\n\n\n\n\n\n\n\n\n\n";
+
+	std::ofstream file;
+	file.open(filename);
+	file << sampleProgram;
+	file.close();
+	REQUIRE(std::filesystem::exists(filename));
+	SimpleParserFacade parser(filename);
+	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
+
+	REQUIRE(tree_ptr->getType() == ASTNodeType::PROGRAMS);
+	REQUIRE(tree_ptr->getValue() == ASTUtility::getASTNodeType.find(ASTNodeType::PROGRAMS)->second);
+
+	std::vector<std::shared_ptr<ASTNode>> procedures = tree_ptr->getChildren();
+	REQUIRE(procedures.size() == 1);
+
+	REQUIRE(procedures[0]->getType() == ASTNodeType::PROCEDURE);
+	REQUIRE(procedures[0]->getValue() == "main");
+
+	std::shared_ptr<ASTNode> statement = procedures[0]->getChildByIndex(0)->getChildByIndex(0);
+	REQUIRE(statement->getType() == ASTNodeType::READ);
+	REQUIRE(statement->getLineNumber() == 1);
+	REQUIRE(statement->getChildByIndex(0)->getValue() == "helloWorld");
 	std::filesystem::remove(filename);
 }
