@@ -708,3 +708,35 @@ TEST_CASE("Parsing single procedure with nested while and if.") {
     }
     std::filesystem::remove(filename);
 }
+
+TEST_CASE("Parse program with whitespace in the token stream.") {
+    std::string filename = "sample.txt";
+    std::string sampleProgram = "procedure main {"
+        "read helloWorld;"
+        "}"
+        ""
+        "\n\n";
+    std::ofstream file;
+    file.open(filename);
+    file << sampleProgram;
+    file.close();
+    REQUIRE(std::filesystem::exists(filename));
+    SimpleParserFacade parser(filename);
+    std::shared_ptr<ASTNode> tree_ptr = parser.parse();
+
+    REQUIRE(tree_ptr->type == ASTNodeType::PROGRAMS);
+    REQUIRE(tree_ptr->value == ASTUtility::getASTNodeType.find(ASTNodeType::PROGRAMS)->second);
+
+    const auto& procedures = tree_ptr->children;
+    REQUIRE(procedures.size() == 1);
+
+    REQUIRE(procedures[0]->type == ASTNodeType::PROCEDURE);
+    REQUIRE(procedures[0]->value == "main");
+
+    const auto& statement = ((procedures[0]->children)[0]->children)[0];
+    REQUIRE(statement->type == ASTNodeType::READ);
+    REQUIRE(statement->lineNumber == 1);
+    REQUIRE(statement->children[0]->value == "helloWorld");
+
+    std::filesystem::remove(filename);
+}

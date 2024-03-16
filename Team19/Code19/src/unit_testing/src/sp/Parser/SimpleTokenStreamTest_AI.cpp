@@ -8,7 +8,7 @@ TEST_CASE("Check SimpleTokenStream behavior for Whitespace at the end.") {
 	SimpleTokenStream tokenStream(token_ptr);
 	REQUIRE(tokenStream.hasTokensLeft() == true);
 	REQUIRE_NOTHROW(tokenStream.popAndAssertToken(LexicalTokenType::INTEGER));
-	REQUIRE(tokenStream.hasTokensLeft() == true);
+	REQUIRE(tokenStream.hasTokensLeft() == false);
 	REQUIRE_NOTHROW(tokenStream.popAndAssertToken(LexicalTokenType::NULL_TOKEN));
 	REQUIRE(tokenStream.hasTokensLeft() == false);
 }
