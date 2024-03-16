@@ -442,26 +442,19 @@ void QueryParser::parsePatternClause() {
 
     string patternType = parsingResult.getDeclaredSynonym(clause.getRelationship().getValue());
     if (patternType == "if") {
-        ensureToken(TokenType::Wildcard);
-        clause.setSecondParam(currentToken());
-        advanceToken();
-        ensureToken(TokenType::Comma);
-        advanceToken();
-        ensureToken(TokenType::Wildcard);
-        clause.setThirdParam(currentToken());
+
     }
     else if (patternType == "while") {
-        ensureToken(TokenType::Wildcard);
-        clause.setSecondParam(currentToken());
-        advanceToken();
-        ensureToken(TokenType::Comma);
-    }
-    else {
+
+    } else if (patternType == "assign") {
+
         // This is a rudimentary approach to tokenize ExpressionSpec, probably change later
         // Store the current token index before parsing the expression spec
         size_t startIndex = currentTokenIndex;
         parseExpressionSpec(clause);
 
+    } else {
+        throwSemanticError();
     }
 
     advanceToken();
