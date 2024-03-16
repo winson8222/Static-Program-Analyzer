@@ -428,15 +428,15 @@ TEST_CASE("Parsing single program with all possible statements types.") {
 			REQUIRE(children[1]->getValue() == ASTUtility::getASTNodeType.find(ASTNodeType::ADD)->second);
 
 			SECTION("Testing expression of children") {
-				std::vector<std::shared_ptr<ASTNode>> ants = children[1]->getChildren();
-				REQUIRE(ants.size() == 2);
-				REQUIRE(ants[0]->getType() == ASTNodeType::CONSTANT);
-				REQUIRE(ants[0]->getLineNumber() == 6);
-				REQUIRE(ants[0]->getValue() == "1");
+				std::vector<std::shared_ptr<ASTNode>> constants = children[1]->getChildren();
+				REQUIRE(constants.size() == 2);
+				REQUIRE(constants[0]->getType() == ASTNodeType::CONSTANT);
+				REQUIRE(constants[0]->getLineNumber() == 6);
+				REQUIRE(constants[0]->getValue() == "1");
 
-				REQUIRE(ants[1]->getType() == ASTNodeType::VARIABLE);
-				REQUIRE(ants[1]->getLineNumber() == 6);
-				REQUIRE(ants[1]->getValue() == "program");
+				REQUIRE(constants[1]->getType() == ASTNodeType::VARIABLE);
+				REQUIRE(constants[1]->getLineNumber() == 6);
+				REQUIRE(constants[1]->getValue() == "program");
 			}
 		}
 	}
