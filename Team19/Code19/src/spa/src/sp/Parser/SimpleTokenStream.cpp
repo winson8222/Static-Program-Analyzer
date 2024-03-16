@@ -6,11 +6,9 @@
 SimpleTokenStream::SimpleTokenStream(const std::shared_ptr<std::vector<LexicalToken>> token_ptr) 
 	: tokens(*token_ptr), tokenIndex(0) {}
 
-/**
- * Returns the next token from the token stream
- */
+
 LexicalToken SimpleTokenStream::getNextToken() {
-	if (this->hasTokensLeft()) {
+	if (this->hasNext()) {
 		LexicalToken token = this->tokens[this->tokenIndex];
 		this->tokenIndex++;
 
@@ -25,9 +23,6 @@ LexicalToken SimpleTokenStream::getNextToken() {
 	}
 }
 
-/**
- * Returns the token that is 'lookahead' tokens from the start of the token stream
- */
 LexicalToken SimpleTokenStream::peekToken(int lookahead) {
 	if (lookahead <= 0) {
 		throw std::runtime_error("Error: PeekToken cannot have negative lookahead value");
@@ -46,7 +41,17 @@ LexicalToken SimpleTokenStream::peekToken(int lookahead) {
 	return resultToken;
 }
 
-bool SimpleTokenStream::hasTokensLeft() {
+bool SimpleTokenStream::hasNext() {
 	return this->tokenIndex < static_cast<int>(this->tokens.size());
 }
 // ai-gen end
+
+bool SimpleTokenStream::hasTokensLeft() {
+	LexicalToken nextToken = this->peekToken();
+	return !nextToken.isType(LexicalTokenType::NULL_TOKEN);
+}
+
+void SimpleTokenStream::popAndAssertToken(LexicalTokenType type) {
+	LexicalToken nextToken = this->getNextToken();
+	nextToken.assertToken(type);
+}

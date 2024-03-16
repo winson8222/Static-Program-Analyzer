@@ -7,6 +7,7 @@
 #include "sp/AST/ASTNode.h"
 #include "sp/DesignExtractor/Visitor/IVisitor.h"
 #include "sp/DesignExtractor/Visitor/ProcedureVisitor.h"
+#include "sp/DesignExtractor/Visitor/CFGVisitor.h"
 
 // ai-gen start(copilot, 2, e)
 // prompt: GitHub Copilot
@@ -48,6 +49,17 @@ public:
 private:
     std::shared_ptr<ASTNode> root;
     std::shared_ptr<PKBWriterManager> pkbWriterManager;
+    std::vector<std::shared_ptr<CFGNode>> cfgGraphs;
+
+    /*
+    * Handles the procedure visitor, which all available designs abstractions from the procedure node.
+    */
+    void handleProcedureVisitor(std::shared_ptr<ASTNode> procedureNode);
+
+    /*
+    * Handles the CFG visitor, which extracts all available designs abstractions from the CFG node.
+    */
+    void handleCFGVisitor(std::shared_ptr<CFGNode> cfgNode);
 };
 
 // ai-gen end

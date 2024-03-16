@@ -14,13 +14,6 @@ public:
 	SimpleTokenStream(const std::shared_ptr<std::vector<LexicalToken>> token_ptr);
 
 	/**
-	 * @brief Gets the token from the stream and advances the index by 1.
-	 *
-	 * @return LexicalToken The next token in the stream. Returns LexicalTokenType::NULL_TOKEN if there is no more tokens left.
-	 */
-	LexicalToken getNextToken();
-
-	/**
 	 * @brief Gets the token after the lookahead amount of token in the stream.
 	 * @param lookahead An optional input specifying lookahead amount. Default is 1.
 	 *
@@ -29,11 +22,22 @@ public:
 	LexicalToken peekToken(int lookahead = 1);
 
 	/**
-	 * Checks whether there are still tokens left in the stream
+	 * @brief Checks whether there are still tokens left in the stream.
+	 * 
+	 * @return A boolean signifying if there is still tokens in the stream.
 	 */
 	bool hasTokensLeft();
+
+	/**
+	* @brief Advances the index by 1, and check if it matches the given token type.
+	* 
+	* @throws An error if the next token does not match the given type.
+	*/
+	void popAndAssertToken(LexicalTokenType type);
 
 private:
 	std::vector<LexicalToken> tokens;
 	int tokenIndex;
+	LexicalToken getNextToken();
+	bool hasNext();
 };

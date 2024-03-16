@@ -1,0 +1,70 @@
+1 - Finds boolean if there is procedure that calls another procedure
+procedure p, q;
+Select BOOLEAN such that Calls(p, q)
+TRUE
+5000
+2 - Finds boolean if exact pattern exists
+assign a;
+Select BOOLEAN pattern a ("x", "5")
+TRUE
+5000
+3 - Finds all if partial pattern exists
+assign a;
+Select BOOLEAN pattern a ("count", _"1"_)
+TRUE
+5000
+4 - Finds all if partial pattern exists
+assign a;
+Select BOOLEAN pattern a ("count", _"1"_)
+TRUE
+5000
+5 - Finds all if partial pattern exists
+assign a;
+Select BOOLEAN pattern a ("y", _"y"_)
+TRUE
+5000
+6 - Finds all if partial pattern does not exist
+assign a;
+Select BOOLEAN pattern a ("y", _"z"_)
+FALSE
+5000
+7 - Finds all if Follows exists
+assign a;
+Select BOOLEAN such that Follows (4, 5)
+TRUE
+5000
+8 - Finds all if Follows does not exist
+assign a;
+Select BOOLEAN such that Follows (5, 4)
+FALSE
+5000
+9 - Finds all if Parent exists
+while w;
+Select BOOLEAN such that Parent (w, 12)
+TRUE
+5000
+10 - Finds all if Parent does not exist
+while w;
+Select BOOLEAN such that Parent (w, 14)
+FALSE
+5000
+11 - Finds all if ParentT exists
+while w;
+Select BOOLEAN such that Parent* (w, 13)
+TRUE
+5000
+12 - Finds all if Parent does not exist
+while w;
+Select BOOLEAN such that Parent (w, 13)
+FALSE
+5000
+13 - Finds boolean if exact pattern does not exist
+assign a;
+Select BOOLEAN pattern a ("x", "6")
+FALSE
+5000
+14 - Finds all if Parent does not exist with lower case boolean
+while w;
+Select boolean such that Parent (w, 13)
+SemanticError
+5000

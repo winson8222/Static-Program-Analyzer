@@ -30,6 +30,11 @@
 #include "pkb/stores/patterns/assign/AssignPatternStore.h"
 #include "pkb/stores/patterns/control/IfPatternStore.h"
 #include "pkb/stores/patterns/control/WhilePatternStore.h"
+
+#include "pkb/stores/links/types/CallProcNameStore.h"
+#include "pkb/stores/links/types/ReadVarNameStore.h"
+#include "pkb/stores/links/types/PrintVarNameStore.h"
+
 #include <memory>
 
 // ai-gen start(copilot, 2, e)
@@ -67,6 +72,11 @@ private:
     std::shared_ptr<AssignPatternStore> assignPatternStore;
     std::shared_ptr<IfPatternStore> ifPatternStore;
     std::shared_ptr<WhilePatternStore> whilePatternStore;
+
+    // Link stores
+    std::shared_ptr<CallProcNameStore> callProcNameStore;
+    std::shared_ptr<ReadVarNameStore> readVarNameStore;
+    std::shared_ptr<PrintVarNameStore> printVarNameStore;
 public:
     PKB() {
 		// Initialize all entities stores
@@ -100,6 +110,11 @@ public:
         assignPatternStore = std::make_shared<AssignPatternStore>();
         ifPatternStore = std::make_shared<IfPatternStore>();
         whilePatternStore = std::make_shared<WhilePatternStore>();
+
+        // Initialize all link stores
+        callProcNameStore = std::make_shared<CallProcNameStore>();
+        readVarNameStore = std::make_shared<ReadVarNameStore>();
+        printVarNameStore = std::make_shared<PrintVarNameStore>();
     }
 
     // Relationship Getters
@@ -133,5 +148,10 @@ public:
     std::shared_ptr<AssignPatternStore> getAssignPatternStore() { return assignPatternStore; }
     std::shared_ptr<IfPatternStore> getIfPatternStore() { return ifPatternStore; }
     std::shared_ptr<WhilePatternStore> getWhilePatternStore() { return whilePatternStore; }
+
+    // Link Getters
+    std::shared_ptr<CallProcNameStore> getCallProcNameStore() { return callProcNameStore; }
+    std::shared_ptr<ReadVarNameStore> getReadVarNameStore() { return readVarNameStore; }
+    std::shared_ptr<PrintVarNameStore> getPrintVarNameStore() { return printVarNameStore; }
 };
 // ai-gen end
