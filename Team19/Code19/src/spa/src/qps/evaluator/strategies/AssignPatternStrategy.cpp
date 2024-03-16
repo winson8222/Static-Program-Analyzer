@@ -66,7 +66,7 @@ void AssignPatternStrategy::processQuotedIdent(ParsingResult parsingResult, std:
     } else if (this->secondParam.getType() == TokenType::PartialExpressionSpec) {
         allStmts = assignPatternReader->getStatementNumbersWithLHSPartialRHS(firstParamValue, secondParamValue);
     } else {
-        allStmts = assignPatternReader->getStatementNumbersWithLHS(secondParam.getValue());
+        allStmts = assignPatternReader->getStatementNumbersWithLHS(firstParamValue);
     }
 
     std::unordered_set<string> allStmtInString;

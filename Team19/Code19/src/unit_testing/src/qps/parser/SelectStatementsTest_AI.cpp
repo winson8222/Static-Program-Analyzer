@@ -289,7 +289,7 @@ TEST_CASE("src/qps/parser/SelectStatements") {
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
         std::unordered_set<string> res = evaluator.evaluateQuery();
 
-        REQUIRE((res == std::unordered_set<string>{"3", "2"} || res == std::unordered_set<string>{"2", "3"}));
+        REQUIRE((res == std::unordered_set<string>{"2", "3"}));
 
     }
 
