@@ -1,0 +1,104 @@
+name: Build + Coverage
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  schedule:
+    - cron: "0 09,23 * * *"
+  
+env:
+    BUILD_TYPE: Debug
+    TEST_DIR: ${{ github.workspace }}/Team19/Code19/build/src/unit_testing
+
+jobs:
+  build_unit_window:
+    timeout-minutes: 20
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+    
+    steps:
+      - uses: actions/checkout@v2
+  
+      - name: Setup Build Environment
+        shell: bash
+        working-directory: ./Team19/Code19
+        run: cmake -E make_directory build
+
+      - name: Configure CMake
+        shell: bash
+        working-directory: ./Team19/Code19/build
+        run: cmake -A x64 .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
+
+      - name: Build Project
+        shell: bash
+        working-directory: ./Team19/Code19/build
+        run: | 
+          cmake --build . --config ${BUILD_TYPE} -j 4
+          cmake --build . --target unit_testing --config ${BUILD_TYPE} -j 4
+        
+      - name: Install OpenCppCoverage
+        shell: powershell
+        run: |
+          choco install opencppcoverage -y
+
+      # Add this step for test coverage
+      - name: Generate Test Coverage Report
+        shell: powershell
+        working-directory: ./Team19/Code19/build
+        run: |
+            & 'C:\Program Files\OpenCppCoverage\OpenCppCoverage.exe' --sources "${{github.workspace}}\Team19\Code19" --export_type cobertura:CoverageResults.xml -- ./src/unit_testing/${{ env.BUILD_TYPE }}/unit_testing.exe
+
+      # New step to upload the coverage report as an artifact
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-report
+          path: ./Team19/Code19/build/CoverageResults.xml
+          retention-days: 1
+
+      # Install ReportGenerator using Chocolatey
+      - name: Install ReportGenerator
+        run: dotnet tool install --global dotnet-reportgenerator-globaltool
+
+      # Generate HTML coverage report using ReportGenerator
+      - name: Generate HTML Coverage Report from Cobertura XML
+        shell: powershell
+        working-directory: ./Team19/Code19/build
+        run: |
+          reportgenerator "-reports:CoverageResults.xml" "-targetdir:html_coverage_report" "-reporttypes:Html"
+          
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+          
+      - name: Install Beautiful Soup
+        run: |
+          python -m pip install --upgrade pip
+          pip install beautifulsoup4
+          
+      - name: Combine HTML Reports into a Single File
+        run: |
+          python ./Team19/Code19/combine_reports.py 
+        working-directory: ./Team19/Code19/build/html_coverage_report
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+          
+      # Upload the HTML coverage report as an artifact
+      - name: Upload HTML Coverage Report
+        uses: actions/upload-artifact@v2
+        with:
+          name: html-coverage-report
+          path: ./Team19/Code19/build/html_coverage_report
+          
+      - name: Cleanup Directory
+        if: always()
+        shell: bash
+        run: |
+          rm -rf ./* || true
+          rm -rf ./.??* || true

@@ -55,7 +55,5 @@ jobs:
         if: always()
         shell: bash
         run: |
-          ls -la ./
           rm -rf ./* || true
           rm -rf ./.??* || true
-          ls -la ./
