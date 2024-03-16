@@ -41,20 +41,42 @@ std::shared_ptr<ResultTable> WithStrategy::evaluateQuery(PKBReaderManager& pkbRe
             if (!isQuotedString(firstParam.getValue()) && !isInteger(firstParam.getValue())) {
                 pair<string, string> attributes = extractAttributes(firstParam, parsingResult, pkbReaderManager);
                 string synonym = attributes.first;
-                // insert column with value of synonym and rows with the intersection of the two sets
+                string attribute = attributes.second;
+                string synonymType = parsingResult.getDeclaredSynonym(synonym);
                 resultTable->insertColumn(synonym);
-                for (string elem : intersection) {
-                    resultTable->insertNewRow({ {synonym, elem} });
+                if (isIntegerStored(synonymType, attribute)) {
+                    unordered_set<string> mappedIntersection = mapStringSetToIntSet(pkbReaderManager, intersection, synonymType);
+                    // insert column with value of synonym and rows with the intersection of the two sets
+                    for (string elem : mappedIntersection) {
+                        resultTable->insertNewRow({ {synonym, elem} });
+                    }
                 }
+                else {
+                    for (string elem : intersection) {
+                        resultTable->insertNewRow({ {synonym, elem} });
+                    }
+                }
+                
+                
             }
             if (!isQuotedString(secondParam.getValue()) && !isInteger(secondParam.getValue())) {
                 pair<string, string> attributes = extractAttributes(secondParam, parsingResult, pkbReaderManager);
                 string synonym = attributes.first;
+                string attribute = attributes.second;
+                string synonymType = parsingResult.getDeclaredSynonym(synonym);
                 // insert column with value of synonym and rows with the intersection of the two sets
                 if (resultTable->hasColumn(synonym)) {
-                    resultTable->insertColumn(synonym);
-                    for (string elem : intersection) {
-                        resultTable->insertNewRow({ {synonym, elem} });
+                    if (isIntegerStored(synonymType, attribute)) {
+                        unordered_set<string> mappedIntersection = mapStringSetToIntSet(pkbReaderManager, intersection, synonymType);
+                        // insert column with value of synonym and rows with the intersection of the two sets
+                        for (string elem : mappedIntersection) {
+                            resultTable->insertNewRow({ {synonym, elem} });
+                        }
+                    }
+                    else {
+                        for (string elem : intersection) {
+                            resultTable->insertNewRow({ {synonym, elem} });
+                        }
                     }
                 }
             }
@@ -112,6 +134,7 @@ std::unordered_set<std::string> WithStrategy::processParam(Token param, const Pa
     std::shared_ptr<ReadVarNameReader> readVarNameReader = pkbReaderManager.getReadVarNameReader();
     std::shared_ptr<PrintVarNameReader> printVarNameReader = pkbReaderManager.getPrintVarNameReader();
     std::shared_ptr<CallProcNameReader> callProcNameReader = pkbReaderManager.getCallProcNameReader();
+    
 
     std::shared_ptr<StatementReader> statementReader = pkbReaderManager.getStatementReader();
     std::shared_ptr<ReadReader> readReader = pkbReaderManager.getReadReader();
@@ -250,4 +273,55 @@ std::unordered_set<std::string> WithStrategy::findIntersection(const std::unorde
 
     return intersection;
 }
+
+bool WithStrategy::isIntegerStored(string synyonymType, string attribute)
+{
+    if ((synyonymType == "read" || synyonymType == "print" || synyonymType == "call")
+        && (attribute == "varName" || attribute == "procName"))
+    {
+        return true;
+	}
+    return false;
+}
+
+unordered_set<std::string> WithStrategy::mapStringSetToIntSet(PKBReaderManager& pkbReaderManager, unordered_set<string>& stringSet, string& synonymType)
+{
+    // function that takes in the string set and retrieves all the linked statements for each string within the set
+    // and returns a set of integers
+    unordered_set<int> intSet;
+    if (synonymType == "read")
+    {
+		auto readVarNameReader = pkbReaderManager.getReadVarNameReader();
+        for (string varName : stringSet)
+        {
+			unordered_set<int> linkedStmts = readVarNameReader->getLinker(varName);
+			intSet.insert(linkedStmts.begin(), linkedStmts.end());
+		}
+	}
+    else if (synonymType == "print")
+    {
+		auto printVarNameReader = pkbReaderManager.getPrintVarNameReader();
+        for (string varName : stringSet)
+        {
+			unordered_set<int> linkedStmts = printVarNameReader->getLinker(varName);
+			intSet.insert(linkedStmts.begin(), linkedStmts.end());
+		}
+	}
+    else if (synonymType == "call")
+    {
+		auto callProcNameReader = pkbReaderManager.getCallProcNameReader();
+        for (string procName : stringSet)
+        {
+			unordered_set<int> linkedStmts = callProcNameReader->getLinker(procName);
+			intSet.insert(linkedStmts.begin(), linkedStmts.end());
+		}
+	}
+    unordered_set<string> mappedIntSet;
+    for (int stmt : intSet) {
+	    mappedIntSet.insert(to_string(stmt));
+	}
+	return mappedIntSet;
+}
+
+
 
