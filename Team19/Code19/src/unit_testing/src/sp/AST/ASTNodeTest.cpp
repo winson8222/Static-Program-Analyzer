@@ -8,7 +8,6 @@
 #include "sp/AST/ASTNode.h"
 #include "sp/AST/ASTUtility.h"
 
-
 TEST_CASE("sp/ast/ASTNode") {
     SECTION("Check Type") {
         ASTNode astAdd = ASTNode(ASTNodeType::ADD, 1, ASTUtility::getASTNodeType.find(ASTNodeType::ADD)->second);
@@ -19,50 +18,50 @@ TEST_CASE("sp/ast/ASTNode") {
         ASTNode astVariable = ASTNode(ASTNodeType::VARIABLE, 3, "x");
 
         SECTION("ASTNodeType::Add") {
-            REQUIRE(astAdd.type == ASTNodeType::ADD);
-            REQUIRE(astAdd.lineNumber == 1);
+            REQUIRE(astAdd.getType() == ASTNodeType::ADD);
+            REQUIRE(astAdd.getLineNumber() == 1);
         }
 
         SECTION("ASTNodeType::Subtract") {
-            REQUIRE(astSubtract.type == ASTNodeType::SUBTRACT);
-            REQUIRE(astSubtract.lineNumber == 1);
+            REQUIRE(astSubtract.getType() == ASTNodeType::SUBTRACT);
+            REQUIRE(astSubtract.getLineNumber() == 1);
         }
 
         SECTION("ASTNodeType::Multiply") {
-            REQUIRE(astMultiply.type == ASTNodeType::MULTIPLY);
-            REQUIRE(astMultiply.lineNumber == 1);
+            REQUIRE(astMultiply.getType() == ASTNodeType::MULTIPLY);
+            REQUIRE(astMultiply.getLineNumber() == 1);
         }
 
         SECTION("ASTNodeType::Divide") {
-            REQUIRE(astDivide.type == ASTNodeType::DIVIDE);
-            REQUIRE(astDivide.lineNumber == 1);
+            REQUIRE(astDivide.getType() == ASTNodeType::DIVIDE);
+            REQUIRE(astDivide.getLineNumber() == 1);
         }
 
         SECTION("ASTNodeType::Modulo") {
-            REQUIRE(astModulo.type == ASTNodeType::MODULO);
-            REQUIRE(astModulo.lineNumber == 1);
+            REQUIRE(astModulo.getType() == ASTNodeType::MODULO);
+            REQUIRE(astModulo.getLineNumber() == 1);
         }
 
         SECTION("ASTNodeType::Variable") {
-            REQUIRE(astVariable.type == ASTNodeType::VARIABLE);
-            REQUIRE(astVariable.lineNumber == 3);
-            REQUIRE(astVariable.value == "x");
+            REQUIRE(astVariable.getType() == ASTNodeType::VARIABLE);
+            REQUIRE(astVariable.getLineNumber() == 3);
+            REQUIRE(astVariable.getValue() == "x");
             SECTION("setValue") {
                 astVariable.setValue("y");
-                REQUIRE(astVariable.value == "y");
+                REQUIRE(astVariable.getValue() == "y");
             }
             SECTION("addChild") {
                 auto ast2_ptr = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "x");
                 auto ast3_ptr = std::make_shared<ASTNode>(ASTNodeType::CONSTANT, 1, "1");
                 astVariable.addChild(std::move(ast2_ptr));
                 astVariable.addChild(std::move(ast3_ptr));
-                REQUIRE(astVariable.children.size() == 2);
-                REQUIRE(astVariable.children[0]->type == ASTNodeType::VARIABLE);
-                REQUIRE(astVariable.children[0]->value == "x");
-                REQUIRE(astVariable.children[0]->lineNumber == 1);
-                REQUIRE(astVariable.children[1]->type == ASTNodeType::CONSTANT);
-                REQUIRE(astVariable.children[1]->value == "1");
-                REQUIRE(astVariable.children[1]->lineNumber == 1);
+                REQUIRE(astVariable.getChildren().size() == 2);
+                REQUIRE(astVariable.getChildByIndex(0)->getType() == ASTNodeType::VARIABLE);
+                REQUIRE(astVariable.getChildByIndex(0)->getValue() == "x");
+                REQUIRE(astVariable.getChildByIndex(0)->getLineNumber() == 1);
+                REQUIRE(astVariable.getChildByIndex(1)->getType() == ASTNodeType::CONSTANT);
+                REQUIRE(astVariable.getChildByIndex(1)->getValue() == "1");
+                REQUIRE(astVariable.getChildByIndex(1)->getLineNumber() == 1);
             }
         }
     }

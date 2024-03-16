@@ -3,7 +3,7 @@
 StatementListVisitor::StatementListVisitor(std::shared_ptr<ASTNode> root,
 	std::shared_ptr<PKBWriterManager> pkbWriterManager)
 	: IVisitor(root, pkbWriterManager) {
-	if (!ASTUtility::nodeIsStatementList(root->type)) {
+	if (!ASTUtility::nodeIsStatementList(root->getType())) {
 		throw std::invalid_argument("ERROR: StatementListVisitor - input root is not of NodeType::STATEMENT_LIST");
 	}
 	this->statementLists = root->getChildren();

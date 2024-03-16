@@ -132,15 +132,14 @@ public:
     */
     bool equalType(ASTNodeType type);
 
-    // To be set as private in future, probably milestone 2
+private:
+    std::shared_ptr<ASTNode> root;
+
     ASTNodeType type;
     std::vector<std::shared_ptr<ASTNode>> children;
     int lineNumber;
     std::string value;
     bool visited;
-
-private:
-    std::shared_ptr<ASTNode> root;
 
     /**
      * @brief Generates a string representation of the AST node and its children recursively.
