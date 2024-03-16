@@ -2,7 +2,7 @@
 
 ProcedureVisitor::ProcedureVisitor(std::shared_ptr<ASTNode> node, std::shared_ptr<PKBWriterManager> pkbWriterManager)
 	: IVisitor(node, pkbWriterManager) {
-	if (!ASTUtility::nodeIsTarget(node->type, ASTNodeType::PROCEDURE)) {
+	if (!node->equalType(ASTNodeType::PROCEDURE)) {
 		throw std::invalid_argument("ProcedureVisitor - input node type must be of type PROCEDURE");
 	}
 	this->contexts = std::vector<std::shared_ptr<ASTNode>>();

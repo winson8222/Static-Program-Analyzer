@@ -7,5 +7,5 @@ CallExtractor::CallExtractor(std::shared_ptr<ASTNode> root, std::shared_ptr<Call
 
 void CallExtractor::extract() {
 	// Extract all the call statements
-	this->callWriter->insertCall(this->root->lineNumber);
+	this->callWriter->insertCall(this->root->getLineNumber());
 }

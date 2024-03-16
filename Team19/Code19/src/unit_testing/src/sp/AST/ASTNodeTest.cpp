@@ -56,12 +56,12 @@ TEST_CASE("sp/ast/ASTNode") {
                 astVariable.addChild(std::move(ast2_ptr));
                 astVariable.addChild(std::move(ast3_ptr));
                 REQUIRE(astVariable.getChildren().size() == 2);
-                REQUIRE(astVariable.getChildByIndex(0)->type == ASTNodeType::VARIABLE);
-                REQUIRE(astVariable.getChildByIndex(0)->value == "x");
-                REQUIRE(astVariable.getChildByIndex(0)->lineNumber == 1);
-                REQUIRE(astVariable.getChildByIndex(1)->type == ASTNodeType::CONSTANT);
-                REQUIRE(astVariable.getChildByIndex(1)->value == "1");
-                REQUIRE(astVariable.getChildByIndex(1)->lineNumber == 1);
+                REQUIRE(astVariable.getChildByIndex(0)->getType() == ASTNodeType::VARIABLE);
+                REQUIRE(astVariable.getChildByIndex(0)->getValue() == "x");
+                REQUIRE(astVariable.getChildByIndex(0)->getLineNumber() == 1);
+                REQUIRE(astVariable.getChildByIndex(1)->getType() == ASTNodeType::CONSTANT);
+                REQUIRE(astVariable.getChildByIndex(1)->getValue() == "1");
+                REQUIRE(astVariable.getChildByIndex(1)->getLineNumber() == 1);
             }
         }
     }

@@ -675,7 +675,7 @@ TEST_CASE("Parsing single procedure with nested while and if.") {
 	}
 
 	SECTION("Testing internal Else.") {
-		auto& elseStatementList = loop->children[2]->getChildren();
+		auto& elseStatementList = loop->getChildByIndex(2)->getChildren();
 		REQUIRE(elseStatementList.size() == 2);
 
 		SECTION("Testing first if-else.") {

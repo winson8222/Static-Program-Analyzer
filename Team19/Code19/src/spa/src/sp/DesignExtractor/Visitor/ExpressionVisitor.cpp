@@ -2,7 +2,7 @@
 
 ExpressionVisitor::ExpressionVisitor(std::shared_ptr<ASTNode> root, ASTNodeType caller, std::shared_ptr<PKBWriterManager> pkbWriterManager)
 	: IVisitor(root, pkbWriterManager) {
-	if (!ASTUtility::nodeCanFormValidExpression(root->type)) {
+	if (!ASTUtility::nodeCanFormValidExpression(root->getType())) {
 		throw std::invalid_argument("Invalid root node type for ExpressionVisitor");
 	}
 	this->caller = caller;
