@@ -21,12 +21,21 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
     auto assignPatternWriter = pkbWriterManager->getAssignPatternWriter();
     auto ifWriter = pkbWriterManager->getIfWriter();
     auto followsWriter = pkbWriterManager->getFollowsWriter();
+
+    auto readWriter = pkbWriterManager->getReadWriter();
+    auto printWriter = pkbWriterManager->getPrintWriter();
+    auto callWriter = pkbWriterManager->getCallWriter();
+    auto readVarWriter = pkbWriterManager->getReadVarNameWriter();
+    auto printVarWriter = pkbWriterManager->getPrintVarNameWriter();
+    auto callProcWriter = pkbWriterManager->getCallProcNameWriter();
     std::shared_ptr<CallsWriter> CallsWriter = pkbWriterManager->getCallsWriter();
     std::shared_ptr<ProcedureWriter> procedureWriter = pkbWriterManager->getProcedureWriter();
     std::shared_ptr<CallsTWriter> CallsTWriter = pkbWriterManager->getCallsTWriter();
     statementWriter->insertStatement(1);
     statementWriter->insertStatement(2);
     statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    statementWriter->insertStatement(5);
     assignWriter->insertAssign(1);
 
     CallsWriter->addCalls("proc1", "proc3");
@@ -37,6 +46,20 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
     procedureWriter->insertProcedure("proc2");
     procedureWriter->insertProcedure("proc3");
     procedureWriter->insertProcedure("proc4");
+
+    readWriter->insertRead(4);
+    readVarWriter->addReadVarName(4, "x");
+    readWriter->insertRead(5);
+    readVarWriter->addReadVarName(5, "z");
+    
+
+    printWriter->insertPrint(3);
+    printVarWriter->addPrintVarName(3, "y");
+
+    
+    callProcWriter->addCallProcName(1, "proc3");
+
+
 
     // Test case for evaluating a simple Parent* query with an assignment pattern
     SECTION("Check Evaluation result of a with clause and procname ") {
@@ -78,7 +101,7 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
         std::unordered_set<string> actualResults = evaluator.evaluateQuery();
-        std::unordered_set<string> expectedResults = { "1", "2", "3"};
+        std::unordered_set<string> expectedResults = { "1", "2", "3", "4", "5"};
         REQUIRE(actualResults == expectedResults);
 
     }
@@ -109,6 +132,90 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
         std::unordered_set<string> actualResults = evaluator.evaluateQuery();
         std::unordered_set<string> expectedResults = { "1" };
+        REQUIRE(actualResults == expectedResults);
+
+    }
+    //
+    SECTION("Check Evaluation result of a with clause on attribute stmt#") {
+
+        Tokenizer tokenizer("call c; Select BOOLEAN with c.procName = \"proc3\"");
+        vector<Token> tokens = tokenizer.tokenize();
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
+        std::unordered_set<string> expectedResults = { "TRUE" };
+        REQUIRE(actualResults == expectedResults);
+
+    }
+
+    SECTION("Check Evaluation result of a with clause on attribute stmt#") {
+
+        Tokenizer tokenizer("print p; Select BOOLEAN with p.varName = \"y\"");
+        vector<Token> tokens = tokenizer.tokenize();
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
+        std::unordered_set<string> expectedResults = { "TRUE" };
+        REQUIRE(actualResults == expectedResults);
+
+    }
+
+    SECTION("Check Evaluation result of a with clause on attribute stmt#") {
+
+        Tokenizer tokenizer("print p; Select BOOLEAN with p.varName = \"x\"");
+        vector<Token> tokens = tokenizer.tokenize();
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
+        std::unordered_set<string> expectedResults = { "FALSE" };
+        REQUIRE(actualResults == expectedResults);
+
+    }
+
+    SECTION("Check Evaluation result of a with clause on attribute stmt#") {
+
+        Tokenizer tokenizer("read r; Select BOOLEAN with r.varName = \"x\"");
+        vector<Token> tokens = tokenizer.tokenize();
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
+        std::unordered_set<string> expectedResults = { "TRUE" };
+        REQUIRE(actualResults == expectedResults);
+
+    }
+
+    SECTION("Check Evaluation result of a with clause on attribute stmt#") {
+
+        Tokenizer tokenizer("read r; Select BOOLEAN with r.varName = \"y\"");
+        vector<Token> tokens = tokenizer.tokenize();
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
+        std::unordered_set<string> expectedResults = { "FALSE" };
+        REQUIRE(actualResults == expectedResults);
+
+    }
+
+    SECTION("Check Evaluation result of a with clause on attribute stmt#") {
+
+        Tokenizer tokenizer("read r; Select r with r.varName = \"z\"");
+        vector<Token> tokens = tokenizer.tokenize();
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
+        std::unordered_set<string> expectedResults = { "5" };
         REQUIRE(actualResults == expectedResults);
 
     }
