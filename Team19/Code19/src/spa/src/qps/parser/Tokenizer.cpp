@@ -92,7 +92,7 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     }
     //
     else if (regex_match(tokenStr, regex("\".*\""))) {
-        return TokenType::DoubleQuote;
+        return TokenType::ExpressionSpec;
     }
     // Lparenthesis: '('
     else if (tokenStr == "(") {
