@@ -630,49 +630,31 @@ void QueryParser::parseEntSynonym() {
     }
 }
 
+// Define a mapping of token types to their valid statement synonyms
+const std::unordered_map<TokenType, std::unordered_set<std::string>> validStmtSynonymsMap = {
+        {TokenType::Parent, {"stmt", "assign", "while", "if", "print", "read"}},
+        {TokenType::ParentT, {"stmt", "assign", "while", "if", "print", "read"}},
+        {TokenType::Follows, {"stmt", "assign", "while", "if", "print", "read"}},
+        {TokenType::FollowsT, {"stmt", "assign", "while", "if", "print", "read"}},
+        {TokenType::Uses, {"stmt", "print", "while", "if", "assign", "call", "read"}},
+        {TokenType::Modifies, {"stmt", "print", "while", "if", "assign", "call", "read"}}
+};
 
-
-
-// Parses a statement synonym in the query.
 void QueryParser::parseStmtSynonyms() {
     ensureToken(TokenType::IDENT);
-    if(currentSuchThatToken.getType() == TokenType::Parent || currentSuchThatToken.getType() == TokenType::ParentT) {
-        if (parsingResult.getDeclaredSynonym(currentToken().getValue()) != "stmt" &&
-                parsingResult.getDeclaredSynonym(currentToken().getValue()) != "assign" &&
-                parsingResult.getDeclaredSynonym(currentToken().getValue()) != "while" &&
-                parsingResult.getDeclaredSynonym(currentToken().getValue()) != "if" &&
-                parsingResult.getDeclaredSynonym(currentToken().getValue()) != "print" &&
-                parsingResult.getDeclaredSynonym(currentToken().getValue()) != "read") {
+    const auto& currentTokenType = currentSuchThatToken.getType();
+    const auto& currentValue = parsingResult.getDeclaredSynonym(currentToken().getValue());
+
+    // Check if the current token type is in the map
+    auto validTypesIt = validStmtSynonymsMap.find(currentTokenType);
+    if (validTypesIt != validStmtSynonymsMap.end()) {
+        // Found the token type, now check if the current value is in the set of valid synonyms for this type
+        const auto& validSynonyms = validTypesIt->second;
+        if (validSynonyms.find(currentValue) == validSynonyms.end()) {
+            // The current value is not a valid synonym for the current token type
             throwSemanticError();
         }
     }
-
-    if(currentSuchThatToken.getType() == TokenType::Follows || currentSuchThatToken.getType() == TokenType::FollowsT) {
-        if (parsingResult.getDeclaredSynonym(currentToken().getValue()) != "stmt" &&
-           parsingResult.getDeclaredSynonym(currentToken().getValue()) != "assign" &&
-           parsingResult.getDeclaredSynonym(currentToken().getValue()) != "while" &&
-           parsingResult.getDeclaredSynonym(currentToken().getValue()) != "if" &&
-           parsingResult.getDeclaredSynonym(currentToken().getValue()) != "print" &&
-           parsingResult.getDeclaredSynonym(currentToken().getValue()) != "read") {
-            throwSemanticError();
-        }
-    }
-
-
-    if(currentSuchThatToken.getType() == TokenType::Uses || currentSuchThatToken.getType() == TokenType::Modifies) {
-        if (parsingResult.getDeclaredSynonym(currentToken().getValue()) != "stmt" &&
-            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "print" &&
-            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "while" &&
-            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "if" &&
-            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "assign" &&
-            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "call" &&
-            parsingResult.getDeclaredSynonym(currentToken().getValue()) != "read") {
-            throwSemanticError();
-        }
-    }
-
-
-
 }
 
 
@@ -760,30 +742,30 @@ void QueryParser::parseAttrRef() {
     ensureToken(TokenType::AttrName);
 }
 
+#include <unordered_set>
+
 bool QueryParser::checkIfStmt() {
+    static const std::unordered_set<std::string> stmtTypes = {
+            "stmt", "assign", "while", "if", "print", "call", "read"
+    };
+
     if (match(TokenType::INTEGER)) {
         return true;
     }
-    if (parsingResult.getDeclaredSynonym(currentToken().getValue()) == "stmt" ||
-        parsingResult.getDeclaredSynonym(currentToken().getValue()) == "assign" ||
-        parsingResult.getDeclaredSynonym(currentToken().getValue()) == "while" ||
-        parsingResult.getDeclaredSynonym(currentToken().getValue()) == "if" ||
-        parsingResult.getDeclaredSynonym(currentToken().getValue()) == "print" ||
-        parsingResult.getDeclaredSynonym(currentToken().getValue()) == "call" ||
-        parsingResult.getDeclaredSynonym(currentToken().getValue()) == "read") {
-        return true;
-    }
-    return false;
+
+    const auto& currentValue = parsingResult.getDeclaredSynonym(currentToken().getValue());
+    return stmtTypes.find(currentValue) != stmtTypes.end();
 }
 
 bool QueryParser::checkIfEnt() {
+    static const std::unordered_set<std::string> entTypes = {
+            "variable", "constant", "procedure"
+    };
+
     if (match(TokenType::QuoutIDENT)) {
         return true;
     }
-    if (parsingResult.getDeclaredSynonym(currentToken().getValue()) == "variable" ||
-        parsingResult.getDeclaredSynonym(currentToken().getValue()) == "constant" ||
-        parsingResult.getDeclaredSynonym(currentToken().getValue()) == "procedure") {
-        return true;
-    }
-    return false;
+
+    const auto& currentValue = parsingResult.getDeclaredSynonym(currentToken().getValue());
+    return entTypes.find(currentValue) != entTypes.end();
 }
