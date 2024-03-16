@@ -16,6 +16,32 @@ private:
     Token firstParam;
     Token secondParam;
 
+    /**
+     * Retrieves the entities from the result table based on the given synonym and entity reader for integer entities.
+     * @param synonym The synonym to retrieve the entities for.
+     * @param resultTable The result table to retrieve the entities from.
+     * @param entityReader The entity reader to use for retrieving the entities.
+     * @return The set of entities retrieved from the result table.
+     */
+    std::unordered_set<std::string> retrieveIntEntities(std::string synonym, const std::shared_ptr<ResultTable>& resultTable, const std::shared_ptr<IEntityReader<int>>& entityReader);
+
+    /**
+     * Retrieves the entities from the result table based on the given synonym and entity reader for string entities.
+     * @param synonym The synonym to retrieve the entities for.
+     * @param resultTable The result table to retrieve the entities from.
+     * @param entityReader The entity reader to use for retrieving the entities.
+     * @return The set of entities retrieved from the result table.
+     */
+    std::unordered_set<std::string> retrieveStringEntities(std::string synonym, const std::shared_ptr<ResultTable>& resultTable, const std::shared_ptr<IEntityReader<std::string>>& entityReader);
+
+    /**
+     * Retrieves the links from the result table based on the given synonym and link reader for integer to string links.
+     * @param synonym The synonym to retrieve the links for.
+     * @param resultTable The result table to retrieve the links from.
+     * @param linkReader The link reader to use for retrieving the links.
+     * @return The set of links retrieved from the result table.
+     */
+    std::unordered_set<std::string> retrieveIntStringLinks(std::string synonym, const std::shared_ptr<ResultTable>& resultTable, const std::shared_ptr<ILinkReader<int, std::string>> linkReader);
 public:
     /**
      * Evaluates a query based on the with clause.

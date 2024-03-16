@@ -17,8 +17,6 @@
  * @return A shared pointer to the populated result table.
  */
 std::shared_ptr<ResultTable> WithStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause, const std::shared_ptr<ResultTable>& originalResultTable) {
-        
-
         auto resultTable = std::make_shared<ResultTable>();
         // Initializing PKB readers for With clause
         const WithClause* withClause = dynamic_cast<const WithClause*>(&clause);
@@ -36,10 +34,8 @@ std::shared_ptr<ResultTable> WithStrategy::evaluateQuery(PKBReaderManager& pkbRe
             }
         }
         else {
-
             std::unordered_set<std::string> lhsValue = processParam(firstParam, parsingResult, pkbReaderManager, originalResultTable);
             std::unordered_set<std::string> rhsValue = processParam(secondParam, parsingResult, pkbReaderManager, originalResultTable);
-
             std::unordered_set<std::string> intersection = findIntersection(lhsValue, rhsValue);
 
             if (!isQuotedString(firstParam.getValue()) && !isInteger(firstParam.getValue())) {
@@ -62,18 +58,48 @@ std::shared_ptr<ResultTable> WithStrategy::evaluateQuery(PKBReaderManager& pkbRe
                     }
                 }
             }
-
         }
         return resultTable;
-    
-    
-
-    
-
 }
 
-std::shared_ptr<ResultTable> WithStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause)
-{
+std::unordered_set<std::string> WithStrategy::retrieveIntStringLinks(std::string synonym, const std::shared_ptr<ResultTable>& resultTable, const std::shared_ptr<ILinkReader<int, std::string>> linkReader) {
+    if (resultTable->hasColumn(synonym)) {
+        std::unordered_set<std::string> callStmts = resultTable->getColumnValues(synonym);
+        std::unordered_set<std::string> callProcNames;
+        for (const std::string& stmt : callStmts) {
+            callProcNames.insert(linkReader->getLinked(std::stoi(stmt)));
+        }
+        return callProcNames;
+    }
+    else {
+        return linkReader->getAllLinked();
+    }
+}
+
+std::unordered_set<std::string> WithStrategy::retrieveIntEntities(std::string synonym, const std::shared_ptr<ResultTable>& resultTable, const std::shared_ptr<IEntityReader<int>>& entityReader) {
+    if (resultTable->hasColumn(synonym)) {
+        return resultTable->getColumnValues(synonym);
+    }
+    else {
+        unordered_set<int> list = entityReader->getAllEntities();
+        unordered_set<string> entities;
+        for (int entity : list) {
+            entities.insert(std::to_string(entity));
+        }
+        return entities;
+    }
+}
+
+std::unordered_set<std::string> WithStrategy::retrieveStringEntities(std::string synonym, const std::shared_ptr<ResultTable>& resultTable, const std::shared_ptr<IEntityReader<std::string>>& entityReader) {
+    if (resultTable->hasColumn(synonym)) {
+        return resultTable->getColumnValues(synonym);
+    }
+    else {
+        return entityReader->getAllEntities();
+    }
+}
+
+std::shared_ptr<ResultTable> WithStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) {
     return std::shared_ptr<ResultTable>();
 }
 
@@ -86,6 +112,17 @@ std::unordered_set<std::string> WithStrategy::processParam(Token param, const Pa
     std::shared_ptr<ReadVarNameReader> readVarNameReader = pkbReaderManager.getReadVarNameReader();
     std::shared_ptr<PrintVarNameReader> printVarNameReader = pkbReaderManager.getPrintVarNameReader();
     std::shared_ptr<CallProcNameReader> callProcNameReader = pkbReaderManager.getCallProcNameReader();
+
+    std::shared_ptr<StatementReader> statementReader = pkbReaderManager.getStatementReader();
+    std::shared_ptr<ReadReader> readReader = pkbReaderManager.getReadReader();
+    std::shared_ptr<PrintReader> printReader = pkbReaderManager.getPrintReader();
+    std::shared_ptr<CallReader> callReader = pkbReaderManager.getCallReader();
+    std::shared_ptr<WhileReader> whileReader = pkbReaderManager.getWhileReader();
+    std::shared_ptr<IfReader> ifReader = pkbReaderManager.getIfReader();
+    std::shared_ptr<AssignReader> assignReader = pkbReaderManager.getAssignReader();
+    std::shared_ptr<VariableReader> variableReader = pkbReaderManager.getVariableReader();
+    std::shared_ptr<ConstantReader> constantReader = pkbReaderManager.getConstantReader();
+    std::shared_ptr<ProcedureReader> procedureReader = pkbReaderManager.getProcedureReader();
 
     if (isInteger(param.getValue())) {
         //return vector of param.getValue()
@@ -104,163 +141,61 @@ std::unordered_set<std::string> WithStrategy::processParam(Token param, const Pa
 
         if (synonymType == "stmt") {
             if (attribute == "stmt#") {
-                if(resultTable->hasColumn(synonym)) {
-					return resultTable->getColumnValues(synonym);
-				}
-				else {
-                    unordered_set<int> list = pkbReaderManager.getStatementReader()->getAllEntities();
-                    unordered_set<string> entities;
-                    for (int entity : list) {
-                        entities.insert(std::to_string(entity));
-                    }
-                    return entities;
-				}
+                return retrieveIntEntities(synonym, resultTable, statementReader);
 			}
 		}
         else if (synonymType == "read") {
             if (attribute == "varName") {
-				// use pkbReaderManager to get the variable name using the statement numbers found in the resultTable
+                return retrieveIntStringLinks(synonym, resultTable, readVarNameReader);
 			}
             else if (attribute == "stmt#") {
-                if (resultTable->hasColumn(synonym)) {
-                    return resultTable->getColumnValues(synonym);
-                }
-                else {
-                    unordered_set<int> list = pkbReaderManager.getReadReader()->getAllEntities();
-                    unordered_set<string> entities;
-                    for (int entity : list) {
-                        entities.insert(std::to_string(entity));
-                    }
-                    return entities;
-                }
+                return retrieveIntEntities(synonym, resultTable, readReader);
 			}
 		}
         else if (synonymType == "print") {
             if (attribute == "varName") {
-                // use pkbReaderManager to get the variable name using the statement numbers found in the resultTable
-                if (resultTable->hasColumn(synonym)) {
-                    std::unordered_set<std::string> printStmts = resultTable->getColumnValues(synonym);
-                    std::unordered_set<std::string> printVarNames;
-                    for (std::string stmt : printStmts) {
-                        printVarNames.insert(printVarNameReader->getLinked(std::stoi(stmt)));
-                    }
-                    return printVarNames;
-                } else {
-                    unordered_set<std::string> list = printVarNameReader->getAllPrintVariables();
-                }
+                return retrieveIntStringLinks(synonym, resultTable, printVarNameReader);
 			}
             else if (attribute == "stmt#") {
-                if (resultTable->hasColumn(synonym)) {
-                    return resultTable->getColumnValues(synonym);
-                }
-                else {
-                    unordered_set<int> list = pkbReaderManager.getPrintReader()->getAllEntities();
-                    unordered_set<string> entities;
-                    for (int entity : list) {
-                        entities.insert(std::to_string(entity));
-                    }
-                    return entities;
-                }
+                return retrieveIntEntities(synonym, resultTable, printReader);
 			}
 		}
         else if (synonymType == "call") {
             if (attribute == "procName") {
-                // use pkbReaderManager to get the set of procedure names using the statement numbers found in the resultTable
-			}
+                return retrieveIntStringLinks(synonym, resultTable, callProcNameReader);
+            }
             else if (attribute == "stmt#") {
-                if (resultTable->hasColumn(synonym)) {
-                    return resultTable->getColumnValues(synonym);
-                }
-                else {
-                    unordered_set<int> list = pkbReaderManager.getCallReader()->getAllEntities();
-                    unordered_set<string> entities;
-                    for (int entity : list) {
-                        entities.insert(std::to_string(entity));
-                    }
-                    return entities;
-                }
+                return retrieveIntEntities(synonym, resultTable, callReader);
 			}
 		}
         else if (synonymType == "while") {
             if (attribute == "stmt#") {
-                if (resultTable->hasColumn(synonym)) {
-                    return resultTable->getColumnValues(synonym);
-                }
-                else {
-                    unordered_set<int> list = pkbReaderManager.getWhileReader()->getAllEntities();
-                    unordered_set<string> entities;
-                    for (int entity : list) {
-                        entities.insert(std::to_string(entity));
-                    }
-                    return entities;
-                }
+                return retrieveIntEntities(synonym, resultTable, whileReader);
 			}
 		}
         else if (synonymType == "if") {
             if (attribute == "stmt#") {
-                if (resultTable->hasColumn(synonym)) {
-                    return resultTable->getColumnValues(synonym);
-                }
-                else {
-                    unordered_set<int> list = pkbReaderManager.getIfReader()->getAllEntities();
-                    unordered_set<string> entities;
-                    for (int entity : list) {
-                        entities.insert(std::to_string(entity));
-                    }
-                    return entities;
-                }
+                return retrieveIntEntities(synonym, resultTable, ifReader);
 			}
 		}
         else if (synonymType == "assign") {
             if (attribute == "stmt#") {
-                if (resultTable->hasColumn(synonym)) {
-                    return resultTable->getColumnValues(synonym);
-                }
-                else {
-                    unordered_set<int> list = pkbReaderManager.getAssignReader()->getAllEntities();
-                    unordered_set<string> entities;
-                    for (int entity : list) {
-                        entities.insert(std::to_string(entity));
-                    }
-                    return entities;
-                }
+                return retrieveIntEntities(synonym, resultTable, assignReader);
 			}
 		}
         else if (synonymType == "variable") {
             if (attribute == "varName") {
-                if (resultTable->hasColumn(synonym)) {
-                    return resultTable->getColumnValues(synonym);
-                }
-                else {
-                    unordered_set<string> list = pkbReaderManager.getVariableReader()->getAllEntities();
-                    return list;
-                }
+                return retrieveStringEntities(synonym, resultTable, variableReader);
 			}
 		}
         else if (synonymType == "constant") {
             if (attribute == "value") {
-                if (resultTable->hasColumn(synonym)) {
-                    return resultTable->getColumnValues(synonym);
-                }
-                else {
-                    unordered_set<int> list = pkbReaderManager.getConstantReader()->getAllEntities();
-                    unordered_set<string> entities;
-                    for (int entity : list) {
-                        entities.insert(std::to_string(entity));
-                    }
-                    return entities;
-                }
+                return retrieveIntEntities(synonym, resultTable, constantReader);
 			}
 		}
         else if (synonymType == "procedure") {
             if (attribute == "procName") {
-                if (resultTable->hasColumn(synonym)) {
-                    return resultTable->getColumnValues(synonym);
-                }
-                else {
-                    unordered_set<string> list = pkbReaderManager.getProcedureReader()->getAllEntities();
-                    return list;
-                }
+                return retrieveStringEntities(synonym, resultTable, procedureReader);
 			}
 		}
         return std::unordered_set<std::string>();
