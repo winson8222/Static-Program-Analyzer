@@ -83,6 +83,9 @@ std::shared_ptr<ResultTable> WithStrategy::evaluateQuery(PKBReaderManager& pkbRe
  */
 std::unordered_set<std::string> WithStrategy::processParam(Token param, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager, const std::shared_ptr<ResultTable>& resultTable) {
     // check if param.getValue() is an integer or a quoted string
+    std::shared_ptr<ReadVarNameReader> readVarNameReader = pkbReaderManager.getReadVarNameReader();
+    std::shared_ptr<PrintVarNameReader> printVarNameReader = pkbReaderManager.getPrintVarNameReader();
+    std::shared_ptr<CallProcNameReader> callProcNameReader = pkbReaderManager.getCallProcNameReader();
 
     if (isInteger(param.getValue())) {
         //return vector of param.getValue()
@@ -135,6 +138,16 @@ std::unordered_set<std::string> WithStrategy::processParam(Token param, const Pa
         else if (synonymType == "print") {
             if (attribute == "varName") {
                 // use pkbReaderManager to get the variable name using the statement numbers found in the resultTable
+                if (resultTable->hasColumn(synonym)) {
+                    std::unordered_set<std::string> printStmts = resultTable->getColumnValues(synonym);
+                    std::unordered_set<std::string> printVarNames;
+                    for (std::string stmt : printStmts) {
+                        printVarNames.insert(printVarNameReader->getLinked(std::stoi(stmt)));
+                    }
+                    return printVarNames;
+                } else {
+                    unordered_set<std::string> list = printVarNameReader->getAllPrintVariables();
+                }
 			}
             else if (attribute == "stmt#") {
                 if (resultTable->hasColumn(synonym)) {
