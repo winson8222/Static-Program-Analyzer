@@ -33,7 +33,8 @@ TEST_CASE("Program parsing throws an error for missing closing curly brace.") {
     REQUIRE(std::filesystem::exists(filename));
     SimpleParserFacade parser(filename);
     CHECK_THROWS_AS(parser.parse(), std::runtime_error);
-    std::filesystem::remove(filename);}
+    std::filesystem::remove(filename);
+}
 
 TEST_CASE("Program parsing throws an error for missing curly braces.") {
     std::string filename = "sample.txt";
@@ -176,13 +177,13 @@ TEST_CASE("Single procedure, all possible conditional expressions in while state
     REQUIRE(std::filesystem::exists(filename));
     SimpleParserFacade parser(filename);
 	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
-	auto& procedure = (tree_ptr->children)[0];
+	auto& procedure = tree_ptr->getChildByIndex(0);
 
 	// Checking procedure node
 	REQUIRE(procedure->getType() == ASTNodeType::PROCEDURE);
 	REQUIRE(procedure->getValue() == "conditionalExpressions");
 
-	const auto& statements = (procedure->children)[0]->children;
+	const auto& statements = procedure->getChildByIndex(0)->getChildren();
 
 	REQUIRE(statements.size() == 20);
 
@@ -190,9 +191,9 @@ TEST_CASE("Single procedure, all possible conditional expressions in while state
 		auto& statement = statements[i];
 		REQUIRE(statement->getType() == ASTNodeType::WHILE);
 
-		auto& contents = ((statement->children)[1]->children)[0];
+		auto& contents = statement->getChildByIndex(1)->getChildByIndex(0);
 		REQUIRE(contents->getType() == ASTNodeType::READ);
-		REQUIRE((contents->children)[0]->getValue() == "x");
+		REQUIRE(contents->getChildByIndex(0)->getValue() == "x");
 	}
     std::filesystem::remove(filename);
 }
@@ -242,7 +243,7 @@ TEST_CASE("Multiple procedures, all names that may be potential keywords.") {
 	REQUIRE(tree_ptr->getLineNumber() == -1);
 	REQUIRE(tree_ptr->getValue() == ASTUtility::getASTNodeType.find(ASTNodeType::PROGRAMS)->second);
 
-	REQUIRE(tree_ptr->children.size() == 30);
+	REQUIRE(tree_ptr->getChildren().size() == 30);
     std::filesystem::remove(filename);
 }
 
@@ -275,7 +276,7 @@ TEST_CASE("Parsing single program with all possible statements types.") {
     SimpleParserFacade parser(filename);
 	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
 
-	auto& statements = (((tree_ptr->children)[0]->children)[0]->children);
+	auto& statements = tree_ptr->getChildByIndex(0)->getChildren();
 	REQUIRE(statements.size() == 6);
 
 	SECTION("Testing While Statement") {
@@ -284,19 +285,19 @@ TEST_CASE("Parsing single program with all possible statements types.") {
 		REQUIRE(whileStatement->getLineNumber() == 1);
 		REQUIRE(whileStatement->getValue() == ASTUtility::getASTNodeType.find(ASTNodeType::WHILE)->second);
 
-		auto& whileChildren = whileStatement->children;
+		auto& whileChildren = whileStatement->getChildren();
 		REQUIRE(whileChildren.size() == 2);
 
 		SECTION("Testing predicates tree child node") {
 			REQUIRE(whileChildren[0]->getType() == ASTNodeType::NOT);
 
-			auto& cond_expr = (whileChildren[0]->children)[0];
+			auto& cond_expr = whileChildren[0]->getChildByIndex(0);
 
 			REQUIRE(cond_expr->getType() == ASTNodeType::GREATER);
 			REQUIRE(cond_expr->getLineNumber() == 1);
 			REQUIRE(cond_expr->getValue() == ASTUtility::getASTNodeType.find(ASTNodeType::GREATER)->second);
 
-			const auto& children = cond_expr->children;
+			const auto& children = cond_expr->getChildren();
 			REQUIRE(children.size() == 2);
 			REQUIRE(children[0]->getType() == ASTNodeType::VARIABLE);
 			REQUIRE(children[0]->getLineNumber() == 1);
@@ -309,13 +310,13 @@ TEST_CASE("Parsing single program with all possible statements types.") {
 
 		SECTION("Testing Statement List tree child node") {
 			REQUIRE(whileChildren[1]->getType() == ASTNodeType::STATEMENT_LIST);
-			auto& statement = (whileChildren[1]->children)[0];
+			auto& statement = whileChildren[1]->getChildByIndex(0);
 
 			REQUIRE(statement->getType() == ASTNodeType::ASSIGN);
 			REQUIRE(statement->getLineNumber() == 2);
 			REQUIRE(statement->getValue() == ASTUtility::getASTNodeType.find(ASTNodeType::ASSIGN)->second);
 
-			const auto& children = statement->children;
+			const auto& children = statement->getChildren();
 			REQUIRE(children.size() == 2);
 			REQUIRE(children[0]->getType() == ASTNodeType::VARIABLE);
 			REQUIRE(children[0]->getLineNumber() == 2);
@@ -334,7 +335,7 @@ TEST_CASE("Parsing single program with all possible statements types.") {
 		REQUIRE(ifStatement->getLineNumber() == 3);
 		REQUIRE(ifStatement->getValue() == ASTUtility::getASTNodeType.find(ASTNodeType::IF_ELSE_THEN)->second);
 
-		auto& ifChildren = ifStatement->children;
+		auto& ifChildren = ifStatement->getChildren();
 		REQUIRE(ifChildren.size() == 3);
 
 		SECTION("Testing predicates tree child node") {
@@ -344,7 +345,7 @@ TEST_CASE("Parsing single program with all possible statements types.") {
 			REQUIRE(cond_expr->getLineNumber() == 3);
 			REQUIRE(cond_expr->getValue() == ASTUtility::getASTNodeType.find(ASTNodeType::LESSER)->second);
 
-			const auto& children = cond_expr->children;
+			const auto& children = cond_expr->getChildren();
 			REQUIRE(children.size() == 2);
 			REQUIRE(children[0]->getType() == ASTNodeType::VARIABLE);
 			REQUIRE(children[0]->getLineNumber() == 3);
@@ -357,13 +358,13 @@ TEST_CASE("Parsing single program with all possible statements types.") {
 
 		SECTION("Testing If-then statement list node") {
 			REQUIRE(ifChildren[1]->getType() == ASTNodeType::STATEMENT_LIST);
-			auto& statement = (ifChildren[1]->children)[0];
+			auto& statement = ifChildren[1]->getChildByIndex(0);
 
 			REQUIRE(statement->getType() == ASTNodeType::ASSIGN);
 			REQUIRE(statement->getLineNumber() == 4);
 			REQUIRE(statement->getValue() == ASTUtility::getASTNodeType.find(ASTNodeType::ASSIGN)->second);
 
-			const auto& children = statement->children;
+			const auto& children = statement->getChildren();
 			REQUIRE(children.size() == 2);
 			REQUIRE(children[0]->getType() == ASTNodeType::VARIABLE);
 			REQUIRE(children[0]->getLineNumber() == 4);
@@ -376,18 +377,18 @@ TEST_CASE("Parsing single program with all possible statements types.") {
 
 		SECTION("Testing Else statement list node") {
 			REQUIRE(ifChildren[1]->getType() == ASTNodeType::STATEMENT_LIST);
-			auto& statement = (ifChildren[2]->children)[0];
+			auto& statement = ifChildren[2]->getChildByIndex(0);
 
 			REQUIRE(statement->getType() == ASTNodeType::ASSIGN);
 			REQUIRE(statement->getLineNumber() == 5);
 			REQUIRE(statement->getValue() == ASTUtility::getASTNodeType.find(ASTNodeType::ASSIGN)->second);
 
-			const auto& children = statement->children;
+			const auto& children = statement->getChildren();
 			REQUIRE(children.size() == 2);
 			REQUIRE(children[0]->getType() == ASTNodeType::VARIABLE);
-			REQUIRE(children[0]->getLineNumber() == 5);
-			REQUIRE(children[0]->getValue() == "while");
-
+            REQUIRE(children[0]->getLineNumber() == 5);
+            REQUIRE(children[0]->getValue() == "while");
+            
 			REQUIRE(children[1]->getType() == ASTNodeType::VARIABLE);
 			REQUIRE(children[1]->getLineNumber() == 5);
 			REQUIRE(children[1]->getValue() == "then");
@@ -402,40 +403,40 @@ TEST_CASE("Parsing single program with all possible statements types.") {
 		REQUIRE(assignStatement->getValue() == ASTUtility::getASTNodeType.find(ASTNodeType::ASSIGN)->second);
 
 		SECTION("Testing tree child node") {
-			const auto& children = assignStatement->children;
+			const auto& children = assignStatement->getChildren();
 			REQUIRE(children.size() == 2);
 			REQUIRE(children[0]->getType() == ASTNodeType::VARIABLE);
-			REQUIRE(children[0]->getLineNumber() == 6);
-			REQUIRE(children[0]->getValue() == "read");
+            REQUIRE(children[0]->getLineNumber() == 6);
+            REQUIRE(children[0]->getValue() == "read");
 
-			REQUIRE(children[1]->getType() == ASTNodeType::ADD);
-			REQUIRE(children[1]->getLineNumber() == 6);
-			REQUIRE(children[1]->getValue() == ASTUtility::getASTNodeType.find(ASTNodeType::ADD)->second);
+            REQUIRE(children[1]->getType() == ASTNodeType::ADD);
+            REQUIRE(children[1]->getLineNumber() == 6);
+            REQUIRE(children[1]->getValue() == ASTUtility::getASTNodeType.find(ASTNodeType::ADD)->second);
 
-			SECTION("Testing expression of children") {
-				const auto& constants = children[1]->children;
-				REQUIRE(constants.size() == 2);
-				REQUIRE(constants[0]->getType() == ASTNodeType::CONSTANT);
-				REQUIRE(constants[0]->getLineNumber() == 6);
-				REQUIRE(constants[0]->getValue() == "1");
+            SECTION("Testing expression of children") {
+                const auto& constants = children[1]->getChildren();
+                REQUIRE(constants.size() == 2);
+                REQUIRE(constants[0]->getType() == ASTNodeType::CONSTANT);
+                REQUIRE(constants[0]->getLineNumber() == 6);
+                REQUIRE(constants[0]->getValue() == "1");
 
-				REQUIRE(constants[1]->getType() == ASTNodeType::VARIABLE);
-				REQUIRE(constants[1]->getLineNumber() == 6);
-				REQUIRE(constants[1]->getValue() == "program");
-			}
-		}
-	}
+                REQUIRE(constants[1]->getType() == ASTNodeType::VARIABLE);
+                REQUIRE(constants[1]->getLineNumber() == 6);
+                REQUIRE(constants[1]->getValue() == "program");
+            }
+        }
+    }
 
-	SECTION("Testing call statement") {
-		auto& callStatement = statements[3];
-		REQUIRE(callStatement->getType() == ASTNodeType::CALL);
-		REQUIRE(callStatement->getLineNumber() == 7);
-		REQUIRE(callStatement->getValue() == ASTUtility::getASTNodeType.find(ASTNodeType::CALL)->second);
+    SECTION("Testing call statement") {
+        auto& callStatement = statements[3];
+        REQUIRE(callStatement->getType() == ASTNodeType::CALL);
+        REQUIRE(callStatement->getLineNumber() == 7);
+        REQUIRE(callStatement->getValue() == ASTUtility::getASTNodeType.find(ASTNodeType::CALL)->second);
 
-		SECTION("Testing tree child node") {
-			const auto& children = callStatement->children;
-			REQUIRE(children.size() == 1);
-			REQUIRE(children[0]->getType() == ASTNodeType::PROCEDURE);
+        SECTION("Testing tree child node") {
+            const auto& children = callStatement->getChildren();
+            REQUIRE(children.size() == 1);
+            REQUIRE(children[0]->getType() == ASTNodeType::PROCEDURE);
 		}
 	}
 
@@ -446,26 +447,26 @@ TEST_CASE("Parsing single program with all possible statements types.") {
 		REQUIRE(printStatement->getValue() == ASTUtility::getASTNodeType.find(ASTNodeType::PRINT)->second);
 
 		SECTION("Testing tree child node") {
-			const auto& children = printStatement->children;
+			const auto& children = printStatement->getChildren();
 			REQUIRE(children.size() == 1);
 			REQUIRE(children[0]->getType() == ASTNodeType::VARIABLE);
-			REQUIRE(children[0]->getLineNumber() == 8);
-			REQUIRE(children[0]->getValue() == "read");
-		}
-	}
+            REQUIRE(children[0]->getLineNumber() == 8);
+            REQUIRE(children[0]->getValue() == "read");
+        }
+    }
 
-	SECTION("Testing read statement") {
-		auto& readStatement = statements[5];
-		REQUIRE(readStatement->getType() == ASTNodeType::READ);
-		REQUIRE(readStatement->getLineNumber() == 9);
-		REQUIRE(readStatement->getValue() == ASTUtility::getASTNodeType.find(ASTNodeType::READ)->second);
+    SECTION("Testing read statement") {
+        auto& readStatement = statements[5];
+        REQUIRE(readStatement->getType() == ASTNodeType::READ);
+        REQUIRE(readStatement->getLineNumber() == 9);
+        REQUIRE(readStatement->getValue() == ASTUtility::getASTNodeType.find(ASTNodeType::READ)->second);
 
-		SECTION("Testing tree child node") {
-			const auto& children = readStatement->children;
-			REQUIRE(children.size() == 1);
-			REQUIRE(children[0]->getType() == ASTNodeType::VARIABLE);
-			REQUIRE(children[0]->getLineNumber() == 9);
-			REQUIRE(children[0]->getValue() == "print");
+        SECTION("Testing tree child node") {
+            const auto& children = readStatement->getChildren();
+            REQUIRE(children.size() == 1);
+            REQUIRE(children[0]->getType() == ASTNodeType::VARIABLE);
+            REQUIRE(children[0]->getLineNumber() == 9);
+            REQUIRE(children[0]->getValue() == "print");
 		}
 	}
     std::filesystem::remove(filename);
@@ -509,13 +510,13 @@ TEST_CASE("Calling parseProgram for complex procedure", "[parse][program]") {
 	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
 
 	REQUIRE(tree_ptr->getType() == ASTNodeType::PROGRAMS);
-	auto& procedure = (tree_ptr->children)[0];
+	auto& procedure = tree_ptr->getChildByIndex(0);
 
 	// Checking procedure node
 	REQUIRE(procedure->getType() == ASTNodeType::PROCEDURE);
 	REQUIRE(procedure->getValue() == "computeCentroid");
 
-	auto statements = (procedure->children)[0]->children;
+    auto statements = procedure->getChildByIndex(0)->getChildren();
 
 	// Check the statements of the parsed code
 	REQUIRE(statements.size() == 6);
@@ -524,7 +525,7 @@ TEST_CASE("Calling parseProgram for complex procedure", "[parse][program]") {
 
 	// Check the first statement
 	REQUIRE(firstStmt->getType() == ASTNodeType::ASSIGN);
-	auto firstStmtChildren = firstStmt->children;
+	auto firstStmtChildren = firstStmt->getChildren();
 	REQUIRE(firstStmtChildren.size() == 2);
 	REQUIRE(firstStmtChildren[0]->getType() == ASTNodeType::VARIABLE);
 	REQUIRE(firstStmtChildren[0]->getValue() == "count");
@@ -535,25 +536,25 @@ TEST_CASE("Calling parseProgram for complex procedure", "[parse][program]") {
 
 	// Check the last statement
 	REQUIRE(lastStmt->getType() == ASTNodeType::ASSIGN);
-	auto& lastStmtChildren = lastStmt->children;
+	auto& lastStmtChildren = lastStmt->getChildren();
 	REQUIRE(lastStmtChildren.size() == 2);
 	REQUIRE(lastStmtChildren[0]->getType() == ASTNodeType::VARIABLE);
 	REQUIRE(lastStmtChildren[0]->getValue() == "normSq");
 	REQUIRE(lastStmtChildren[1]->getType() == ASTNodeType::ADD);
 
-	auto& additionValues = lastStmtChildren[1]->children;
+	auto& additionValues = lastStmtChildren[1]->getChildren();
 	REQUIRE(additionValues.size() == 2);
 	REQUIRE(additionValues[0]->getType() == ASTNodeType::MULTIPLY);
 	REQUIRE(additionValues[1]->getType() == ASTNodeType::MULTIPLY);
 
-	auto& firstExpr = additionValues[0]->children;
+	auto& firstExpr = additionValues[0]->getChildren();
 	REQUIRE(firstExpr.size() == 2);
 	REQUIRE(firstExpr[0]->getType() == ASTNodeType::VARIABLE);
 	REQUIRE(firstExpr[0]->getValue() == "cenX");
 	REQUIRE(firstExpr[1]->getType() == ASTNodeType::VARIABLE);
 	REQUIRE(firstExpr[1]->getValue() == "cenX");
 
-	auto& lastExpr = additionValues[1]->children;
+	auto& lastExpr = additionValues[1]->getChildren();
 	REQUIRE(lastExpr.size() == 2);
 	REQUIRE(lastExpr[0]->getType() == ASTNodeType::VARIABLE);
 	REQUIRE(lastExpr[0]->getValue() == "cenY");
@@ -596,13 +597,13 @@ TEST_CASE("Parsing single procedure that contains 20 nested while loops.") {
     SimpleParserFacade parser(filename);
 	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
 
-	auto& loop = ((tree_ptr->children)[0]->children)[0]->children[0];
+	auto& loop = tree_ptr->getChildByIndex(0)->getChildByIndex(0);
 	int line = 1;
 
 	while (line <= 20) {
 		REQUIRE(loop->getType() == ASTNodeType::WHILE);
 		REQUIRE(loop->getLineNumber() == line);
-		loop = (loop->children)[1]->children[0];
+		loop = loop->getChildByIndex(1)->getChildByIndex(0);
 		line++;
 	}
 
@@ -657,13 +658,13 @@ TEST_CASE("Parsing single procedure with nested while and if.") {
     auto& loop = tree_ptr->getChildByIndex(0)->getChildByIndex(0)->getChildByIndex(0);
 	REQUIRE(loop->getType() == ASTNodeType::WHILE);
 	REQUIRE(loop->getLineNumber() == 1);
-	loop = (loop->children)[1]->children[0];
+	loop = loop->getChildByIndex(1)->getChildByIndex(0);
 
 	REQUIRE(loop->getType() == ASTNodeType::IF_ELSE_THEN);
 	REQUIRE(loop->getLineNumber() == 2);
 
 	SECTION("Testing internal If-then.") {
-		auto& ifThenStatementList = (loop->children)[1]->children;
+		auto& ifThenStatementList = loop->getChildByIndex(1)->getChildren();
 		REQUIRE(ifThenStatementList.size() == 2);
 
 		REQUIRE(ifThenStatementList[0]->getType() == ASTNodeType::WHILE);
@@ -674,7 +675,7 @@ TEST_CASE("Parsing single procedure with nested while and if.") {
 	}
 
 	SECTION("Testing internal Else.") {
-		auto& elseStatementList = (loop->children)[2]->children;
+		auto& elseStatementList = loop->children[2]->getChildren();
 		REQUIRE(elseStatementList.size() == 2);
 
 		SECTION("Testing first if-else.") {
@@ -682,11 +683,11 @@ TEST_CASE("Parsing single procedure with nested while and if.") {
 			REQUIRE(if1->getType() == ASTNodeType::IF_ELSE_THEN);
 			REQUIRE(if1->getLineNumber() == 7);
 			
-			auto& if1while1 = if1->children[1]->children[0];
+			auto& if1while1 = if1->getChildByIndex(1)->getChildByIndex(0);
 			REQUIRE(if1while1->getType() == ASTNodeType::WHILE);
 			REQUIRE(if1while1->getLineNumber() == 8);
 
-			auto& if1while2 = if1->children[2]->children[0];
+			auto& if1while2 = if1->getChildByIndex(2)->getChildByIndex(0);
 			REQUIRE(if1while2->getType() == ASTNodeType::WHILE);
 			REQUIRE(if1while2->getLineNumber() == 10);
 		}
@@ -696,11 +697,11 @@ TEST_CASE("Parsing single procedure with nested while and if.") {
 			REQUIRE(if2->getType() == ASTNodeType::IF_ELSE_THEN);
 			REQUIRE(if2->getLineNumber() == 12);
 
-			auto& if2while1 = if2->children[1]->children[0];
+			auto& if2while1 = if2->getChildByIndex(1)->getChildByIndex(0);
 			REQUIRE(if2while1->getType() == ASTNodeType::WHILE);
 			REQUIRE(if2while1->getLineNumber() == 13);
 
-			auto& if2while2 = if2->children[2]->children[0];
+			auto& if2while2 = if2->getChildByIndex(2)->getChildByIndex(0);
 			REQUIRE(if2while2->getType() == ASTNodeType::WHILE);
 			REQUIRE(if2while2->getLineNumber() == 15);
 		}
