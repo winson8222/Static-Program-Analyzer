@@ -1,8 +1,12 @@
 #include "CFGNode.h"
 
-CFGNode::CFGNode() : lineNumber(PROCEDURE_END_LINE_NUMBER), children(std::vector<std::shared_ptr<CFGNode>>()) {}
+CFGNode::CFGNode() : lineNumber(PROCEDURE_END_LINE_NUMBER), children(std::vector<std::shared_ptr<CFGNode>>()) {
+	
+}
 
-CFGNode::CFGNode(int lineNumber) : lineNumber(lineNumber), children(std::vector<std::shared_ptr<CFGNode>>()) {}
+CFGNode::CFGNode(int lineNumber) : lineNumber(lineNumber), children(std::vector<std::shared_ptr<CFGNode>>()) {
+	
+}
 
 void CFGNode::addChild(std::shared_ptr<CFGNode> child) {
 	this->children.push_back(child);

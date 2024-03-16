@@ -374,10 +374,18 @@ TEST_CASE("NextTStrategy/Verify NextT Relationship") {
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
     std::shared_ptr<NextWriter> nextWriter = pkbWriterManager->getNextWriter();
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    statementWriter->insertStatement(5);
+    statementWriter->insertStatement(6);
     nextWriter->addNext(1, 2); // Direct relationships to simulate NextT
     nextWriter->addNext(2, 3);
     nextWriter->addNext(3, 4);
     nextWriter->addNext(1, 4);
+    nextWriter->addNext(5, 6);
     pkbManager->getPKBCacheManager()->populateCache();
 
     // Define tokens for the query testing transitive relationship
@@ -390,7 +398,7 @@ TEST_CASE("NextTStrategy/Verify NextT Relationship") {
             Token(TokenType::Lparenthesis, "("),
             Token(TokenType::INTEGER, "1"),
             Token(TokenType::Comma, ","),
-            Token(TokenType::INTEGER, "4"),
+            Token(TokenType::INTEGER, "5"),
             Token(TokenType::Rparenthesis, ")")
     };
 
@@ -398,7 +406,49 @@ TEST_CASE("NextTStrategy/Verify NextT Relationship") {
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
     std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{"TRUE"});
+    REQUIRE(res == std::unordered_set<string>{"FALSE"});
+}
+
+TEST_CASE("NextTStrategy/Verify False NextT Relationship") {
+    // Setup PKB with NextT relationships
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<NextWriter> nextWriter = pkbWriterManager->getNextWriter();
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    statementWriter->insertStatement(5);
+    statementWriter->insertStatement(6);
+    nextWriter->addNext(1, 2); // Direct relationships to simulate NextT
+    nextWriter->addNext(2, 3);
+    nextWriter->addNext(3, 4);
+    nextWriter->addNext(1, 4);
+    nextWriter->addNext(5, 6);
+    pkbManager->getPKBCacheManager()->populateCache();
+
+    // Define tokens for the query testing transitive relationship
+    std::vector<Token> tokens = {
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::BooleanKeyword, "BOOLEAN"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::NextT, "Next*"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::INTEGER, "2"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::INTEGER, "6"),
+            Token(TokenType::Rparenthesis, ")")
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{"FALSE"});
 }
 
 TEST_CASE("NextTStrategy/Verify NextT Relationship with 1 Int and 1 IDENT (FALSE)") {
@@ -525,6 +575,7 @@ TEST_CASE("Select stmt from NextT Relationship with 1 wild card and 1 Integer") 
     statementWriter->insertStatement(2);
     statementWriter->insertStatement(3);
     statementWriter->insertStatement(4);
+    statementWriter->insertStatement(5);
     nextWriter->addNext(1, 2); // Direct relationships to simulate NextT
     nextWriter->addNext(2, 3);
     nextWriter->addNext(3, 4);
@@ -552,7 +603,7 @@ TEST_CASE("Select stmt from NextT Relationship with 1 wild card and 1 Integer") 
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
     std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{"3", "1", "2", "4"});
+    REQUIRE(res == std::unordered_set<string>{"3", "1", "2", "4", "5"});
 }
 
 TEST_CASE("Select stmt from NextT Relationship with 2 stmt and multiple Select") {
