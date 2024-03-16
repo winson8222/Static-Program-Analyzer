@@ -4,7 +4,7 @@ std::shared_ptr<ResultTable> NextStrategy::evaluateQuery(PKBReaderManager& pkbRe
     auto resultTable = std::make_shared<ResultTable>();
 
     // Determine if we're dealing with Next or Next*
-    const SuchThatClause* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
+    const auto* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
     this->variant = suchClause->getRelationship().getValue();
     this->nextReader = pkbReaderManager.getNextReader();
     this->nextTReader = pkbReaderManager.getNextTReader();
@@ -36,9 +36,9 @@ void NextStrategy::processSynonyms(std::shared_ptr<ResultTable> resultTable, con
     // Choose the correct reader based on the variant indicating "Next" or "Next*"
     std::shared_ptr<IRelationshipReader<int, int>> reader;
     if (variant == "Next") {
-        reader = pkbReaderManager.getNextReader();
+        reader = this->nextReader;
     } else if (variant == "Next*") {
-        reader = pkbReaderManager.getNextTReader();
+        reader = this->nextTReader;
     } else {
         // Handle unexpected variant
         return;
@@ -70,10 +70,10 @@ void NextStrategy::processFirstParam(std::shared_ptr<ResultTable> resultTable, c
     if (secondParam.getType() == TokenType::Wildcard) {
         // If the second param is a wildcard, we can just fetch all the next statements
         if (variant == "Next") {
-            auto reader = pkbReaderManager.getNextReader();
+            auto reader = this->nextReader;
             previousStatements = reader->getAllPrevious();
         } else if (variant == "Next*") {
-            auto reader = pkbReaderManager.getNextTReader();
+            auto reader = this->nextTReader;
             previousStatements = reader->getAllPreviousT();
         } else {
             // Handle unexpected scenario where neither isNext nor isNextT is true
@@ -82,10 +82,10 @@ void NextStrategy::processFirstParam(std::shared_ptr<ResultTable> resultTable, c
     } else {
         // Determine the reader based on isNext or isNextT and fetch the next statements accordingly
         if (variant == "Next") {
-            auto reader = pkbReaderManager.getNextReader();
+            auto reader = this->nextReader;
             previousStatements = reader->getPrevious(std::stoi(secondParam.getValue()));
         } else if (variant == "Next*"){
-            auto reader = pkbReaderManager.getNextTReader();
+            auto reader = this->nextTReader;
             previousStatements = reader->getPreviousT(std::stoi(secondParam.getValue()));
         } else {
             // Handle unexpected scenario where neither isNext nor isNextT is true
@@ -109,10 +109,10 @@ void NextStrategy::processSecondParam(std::shared_ptr<ResultTable> resultTable, 
     if (firstParam.getType() == TokenType::Wildcard) {
         // If the first param is a wildcard, we can just fetch all the next statements
         if (variant == "Next") {
-            auto reader = pkbReaderManager.getNextReader();
+            auto reader = this->nextReader;
             nextStatements = reader->getAllNext();
         } else if (variant == "Next*") {
-            auto reader = pkbReaderManager.getNextTReader();
+            auto reader = this->nextTReader;
             nextStatements = reader->getAllNextT();
         } else {
             // Handle unexpected scenario where neither isNext nor isNextT is true
@@ -121,10 +121,10 @@ void NextStrategy::processSecondParam(std::shared_ptr<ResultTable> resultTable, 
     } else {
         // Determine the reader based on isNext or isNextT and fetch the next statements accordingly
         if (variant == "Next") {
-            auto reader = pkbReaderManager.getNextReader();
+            auto reader = this->nextReader;
             nextStatements = reader->getNext(std::stoi(firstParam.getValue()));
         } else if (variant == "Next*"){
-            auto reader = pkbReaderManager.getNextTReader();
+            auto reader = this->nextTReader;
             nextStatements = reader->getNextT(std::stoi(firstParam.getValue()));
         } else {
             // Handle unexpected scenario where neither isNext nor isNextT is true
