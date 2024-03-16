@@ -784,3 +784,518 @@ TEST_CASE("src/qps/evaluator/BasicQueryFailure") {
 
 }
 
+
+TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/AssignPatternStrategy/1") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<AssignPatternWriter> assignPatternWriter = pkbWriterManager->getAssignPatternWriter();
+    std::shared_ptr<AssignWriter> assignWriter = pkbWriterManager->getAssignWriter();
+
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    assignWriter->insertAssign(1);
+    assignWriter->insertAssign(3);
+    assignPatternWriter->addAssignPattern(1, "x", "'1'");
+    assignPatternWriter->addAssignPattern(3, "x", "'2'");
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "assign")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::Semicolon, ";")
+            , Token(TokenType::SelectKeyword, "Select")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::PatternKeyword, "pattern")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::Lparenthesis, "(")
+            , Token(TokenType::QuoutIDENT, "\"x\"")
+            , Token(TokenType::Comma, ",")
+            , Token(TokenType::QuoutConst, "\"1\"")
+            , Token(TokenType::Rparenthesis, ")")
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ "1" });
+}
+
+TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/AssignPatternStrategy/2") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<AssignPatternWriter> assignPatternWriter = pkbWriterManager->getAssignPatternWriter();
+    std::shared_ptr<AssignWriter> assignWriter = pkbWriterManager->getAssignWriter();
+
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    assignWriter->insertAssign(1);
+    assignWriter->insertAssign(2);
+    assignWriter->insertAssign(3);
+    assignPatternWriter->addAssignPattern(1, "x", "'1'");
+    assignPatternWriter->addAssignPattern(2, "y", "'1'");
+    assignPatternWriter->addAssignPattern(3, "x", "'2'");
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "assign")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::Semicolon, ";")
+            , Token(TokenType::DesignEntity, "variable")
+            , Token(TokenType::IDENT, "v")
+            , Token(TokenType::Semicolon, ";")
+            , Token(TokenType::SelectKeyword, "Select")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::PatternKeyword, "pattern")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::Lparenthesis, "(")
+            , Token(TokenType::IDENT, "v")
+            , Token(TokenType::Comma, ",")
+            , Token(TokenType::QuoutConst, "\"1\"")
+            , Token(TokenType::Rparenthesis, ")")
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ "1", "2" });
+}
+
+TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/AssignPatternStrategy/3") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<AssignPatternWriter> assignPatternWriter = pkbWriterManager->getAssignPatternWriter();
+    std::shared_ptr<AssignWriter> assignWriter = pkbWriterManager->getAssignWriter();
+
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    assignWriter->insertAssign(1);
+    assignWriter->insertAssign(2);
+    assignWriter->insertAssign(3);
+    assignPatternWriter->addAssignPattern(1, "x", "'1'");
+    assignPatternWriter->addAssignPattern(2, "y", "'1'");
+    assignPatternWriter->addAssignPattern(3, "x", "'2'");
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "assign")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::Semicolon, ";")
+            , Token(TokenType::DesignEntity, "variable")
+            , Token(TokenType::IDENT, "v")
+            , Token(TokenType::Semicolon, ";")
+            , Token(TokenType::SelectKeyword, "Select")
+            , Token(TokenType::IDENT, "v")
+            , Token(TokenType::PatternKeyword, "pattern")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::Lparenthesis, "(")
+            , Token(TokenType::IDENT, "v")
+            , Token(TokenType::Comma, ",")
+            , Token(TokenType::QuoutConst, "\"1\"")
+            , Token(TokenType::Rparenthesis, ")")
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ "x", "y" });
+}
+
+
+TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/AssignPatternStrategy/4") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<AssignPatternWriter> assignPatternWriter = pkbWriterManager->getAssignPatternWriter();
+    std::shared_ptr<AssignWriter> assignWriter = pkbWriterManager->getAssignWriter();
+
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    assignWriter->insertAssign(1);
+    assignWriter->insertAssign(2);
+    assignWriter->insertAssign(3);
+    assignPatternWriter->addAssignPattern(1, "x", "'1'");
+    assignPatternWriter->addAssignPattern(2, "y", "'1'");
+    assignPatternWriter->addAssignPattern(3, "x", "'2'");
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "assign")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::Semicolon, ";")
+            , Token(TokenType::DesignEntity, "variable")
+            , Token(TokenType::IDENT, "v")
+            , Token(TokenType::Semicolon, ";")
+            , Token(TokenType::SelectKeyword, "Select")
+            , Token(TokenType::IDENT, "v")
+            , Token(TokenType::PatternKeyword, "pattern")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::Lparenthesis, "(")
+            , Token(TokenType::IDENT, "v")
+            , Token(TokenType::Comma, ",")
+            , Token(TokenType::QuoutConst, "\"1\"")
+            , Token(TokenType::Rparenthesis, ")")
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ "x", "y" });
+}
+
+TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/AssignPatternStrategy/5") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<AssignPatternWriter> assignPatternWriter = pkbWriterManager->getAssignPatternWriter();
+    std::shared_ptr<AssignWriter> assignWriter = pkbWriterManager->getAssignWriter();
+
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    assignWriter->insertAssign(1);
+    assignWriter->insertAssign(2);
+    assignWriter->insertAssign(3);
+    assignPatternWriter->addAssignPattern(1, "x", "'1'");
+    assignPatternWriter->addAssignPattern(2, "y", "'1'");
+    assignPatternWriter->addAssignPattern(3, "x", "'2'");
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "assign")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::Semicolon, ";")
+            , Token(TokenType::DesignEntity, "variable")
+            , Token(TokenType::IDENT, "v")
+            , Token(TokenType::Semicolon, ";")
+            , Token(TokenType::SelectKeyword, "Select")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::PatternKeyword, "pattern")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::Lparenthesis, "(")
+            , Token(TokenType::Wildcard, "_")
+            , Token(TokenType::Comma, ",")
+            , Token(TokenType::QuoutConst, "\"2\"")
+            , Token(TokenType::Rparenthesis, ")")
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ "3" });
+}
+
+TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/AssignPatternStrategy/6") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<AssignPatternWriter> assignPatternWriter = pkbWriterManager->getAssignPatternWriter();
+    std::shared_ptr<AssignWriter> assignWriter = pkbWriterManager->getAssignWriter();
+
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    assignWriter->insertAssign(1);
+    assignWriter->insertAssign(2);
+    assignWriter->insertAssign(3);
+    assignPatternWriter->addAssignPattern(1, "x", "'x''1''+''y''+''2''+'");
+    assignPatternWriter->addAssignPattern(2, "y", "'1'");
+    assignPatternWriter->addAssignPattern(3, "x", "'2'");
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "assign")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::Semicolon, ";")
+            , Token(TokenType::DesignEntity, "variable")
+            , Token(TokenType::IDENT, "v")
+            , Token(TokenType::Semicolon, ";")
+            , Token(TokenType::SelectKeyword, "Select")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::PatternKeyword, "pattern")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::Lparenthesis, "(")
+            , Token(TokenType::IDENT, "v")
+            , Token(TokenType::Comma, ",")
+            , Token(TokenType::Wildcard, "_")
+            , Token(TokenType::QuoutConst, "\"2\"")
+            , Token(TokenType::Wildcard, "_")
+            , Token(TokenType::Rparenthesis, ")")
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ "1", "3" });
+}
+
+TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/AssignPatternStrategy/7") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<AssignPatternWriter> assignPatternWriter = pkbWriterManager->getAssignPatternWriter();
+    std::shared_ptr<AssignWriter> assignWriter = pkbWriterManager->getAssignWriter();
+
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    assignWriter->insertAssign(1);
+    assignWriter->insertAssign(2);
+    assignWriter->insertAssign(3);
+    assignPatternWriter->addAssignPattern(1, "x", "'x''1''+''y''+''2''+'");
+    assignPatternWriter->addAssignPattern(2, "y", "'1'");
+    assignPatternWriter->addAssignPattern(3, "x", "'2'");
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "assign")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::Semicolon, ";")
+            , Token(TokenType::DesignEntity, "variable")
+            , Token(TokenType::IDENT, "v")
+            , Token(TokenType::Semicolon, ";")
+            , Token(TokenType::SelectKeyword, "Select")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::PatternKeyword, "pattern")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::Lparenthesis, "(")
+            , Token(TokenType::IDENT, "v")
+            , Token(TokenType::Comma, ",")
+            , Token(TokenType::Wildcard, "_")
+            , Token(TokenType::QuoutConst, "\"x+1\"")
+            , Token(TokenType::Wildcard, "_")
+            , Token(TokenType::Rparenthesis, ")")
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ "1" });
+}
+
+TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/AssignPatternStrategy/8") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<AssignPatternWriter> assignPatternWriter = pkbWriterManager->getAssignPatternWriter();
+    std::shared_ptr<AssignWriter> assignWriter = pkbWriterManager->getAssignWriter();
+
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    assignWriter->insertAssign(1);
+    assignWriter->insertAssign(2);
+    assignWriter->insertAssign(3);
+    assignPatternWriter->addAssignPattern(1, "x", "'x''1''+''y''+''2''+'");
+    assignPatternWriter->addAssignPattern(2, "y", "'1'");
+    assignPatternWriter->addAssignPattern(3, "x", "'2'");
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "assign")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::Semicolon, ";")
+            , Token(TokenType::DesignEntity, "variable")
+            , Token(TokenType::IDENT, "v")
+            , Token(TokenType::Semicolon, ";")
+            , Token(TokenType::SelectKeyword, "Select")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::PatternKeyword, "pattern")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::Lparenthesis, "(")
+            , Token(TokenType::IDENT, "v")
+            , Token(TokenType::Comma, ",")
+            , Token(TokenType::Wildcard, "_")
+            , Token(TokenType::QuoutConst, "\"x+1+y\"")
+            , Token(TokenType::Wildcard, "_")
+            , Token(TokenType::Rparenthesis, ")")
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ "1" });
+}
+
+TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/AssignPatternStrategy/9") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<AssignPatternWriter> assignPatternWriter = pkbWriterManager->getAssignPatternWriter();
+    std::shared_ptr<AssignWriter> assignWriter = pkbWriterManager->getAssignWriter();
+
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    assignWriter->insertAssign(1);
+    assignWriter->insertAssign(2);
+    assignWriter->insertAssign(3);
+    assignPatternWriter->addAssignPattern(1, "x", "'x''1''+''y''+''2''+'");
+    assignPatternWriter->addAssignPattern(2, "y", "'1'");
+    assignPatternWriter->addAssignPattern(3, "x", "'4''x''-''z''+'");
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "assign")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::Semicolon, ";")
+            , Token(TokenType::DesignEntity, "variable")
+            , Token(TokenType::IDENT, "v")
+            , Token(TokenType::Semicolon, ";")
+            , Token(TokenType::SelectKeyword, "Select")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::PatternKeyword, "pattern")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::Lparenthesis, "(")
+            , Token(TokenType::IDENT, "v")
+            , Token(TokenType::Comma, ",")
+            , Token(TokenType::Wildcard, "_")
+            , Token(TokenType::QuoutConst, "\"x+1+y+z\"")
+            , Token(TokenType::Wildcard, "_")
+            , Token(TokenType::Rparenthesis, ")")
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ });
+}
+
+
+TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/AssignPatternStrategy/10") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<AssignPatternWriter> assignPatternWriter = pkbWriterManager->getAssignPatternWriter();
+    std::shared_ptr<AssignWriter> assignWriter = pkbWriterManager->getAssignWriter();
+
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    assignWriter->insertAssign(1);
+    assignWriter->insertAssign(2);
+    assignWriter->insertAssign(3);
+    assignPatternWriter->addAssignPattern(1, "x", "'x''1''+''y''+''2''+'");
+    assignPatternWriter->addAssignPattern(2, "y", "'1''y''+'");
+    assignPatternWriter->addAssignPattern(3, "z", "'4''x''-''z''+'");
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "assign")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::Semicolon, ";")
+            , Token(TokenType::DesignEntity, "variable")
+            , Token(TokenType::IDENT, "v")
+            , Token(TokenType::Semicolon, ";")
+            , Token(TokenType::SelectKeyword, "Select")
+            , Token(TokenType::IDENT, "v")
+            , Token(TokenType::PatternKeyword, "pattern")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::Lparenthesis, "(")
+            , Token(TokenType::IDENT, "v")
+            , Token(TokenType::Comma, ",")
+            , Token(TokenType::Wildcard, "_")
+            , Token(TokenType::QuoutConst, "\"y\"")
+            , Token(TokenType::Wildcard, "_")
+            , Token(TokenType::Rparenthesis, ")")
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ "x", "y"});
+}
+
+TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/AssignPatternStrategy/11") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<AssignPatternWriter> assignPatternWriter = pkbWriterManager->getAssignPatternWriter();
+    std::shared_ptr<AssignWriter> assignWriter = pkbWriterManager->getAssignWriter();
+
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    assignWriter->insertAssign(1);
+    assignWriter->insertAssign(2);
+    assignWriter->insertAssign(3);
+    assignPatternWriter->addAssignPattern(1, "x", "'x''1''+''y''+''2''+'");
+    assignPatternWriter->addAssignPattern(2, "y", "'1''y''+'");
+    assignPatternWriter->addAssignPattern(3, "z", "'x''2''+''y''+''x''1''+''+'");
+
+    std::vector<Token> tokens = {
+            Token(TokenType::DesignEntity, "assign")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::Semicolon, ";")
+            , Token(TokenType::DesignEntity, "variable")
+            , Token(TokenType::IDENT, "v")
+            , Token(TokenType::Semicolon, ";")
+            , Token(TokenType::SelectKeyword, "Select")
+            , Token(TokenType::IDENT, "v")
+            , Token(TokenType::PatternKeyword, "pattern")
+            , Token(TokenType::IDENT, "a")
+            , Token(TokenType::Lparenthesis, "(")
+            , Token(TokenType::IDENT, "v")
+            , Token(TokenType::Comma, ",")
+            , Token(TokenType::Wildcard, "_")
+            , Token(TokenType::QuoutConst, "\"x+1\"")
+            , Token(TokenType::Wildcard, "_")
+            , Token(TokenType::Rparenthesis, ")")
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ "x", "z"});
+}
