@@ -276,7 +276,7 @@ TEST_CASE("Parsing single program with all possible statements types.") {
     SimpleParserFacade parser(filename);
 	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
 
-	auto& statements = tree_ptr->getChildByIndex(0)->getChildren();
+	auto& statements = tree_ptr->getChildByIndex(0)->getChildByIndex(0)->getChildren();
 	REQUIRE(statements.size() == 6);
 
 	SECTION("Testing While Statement") {
@@ -597,7 +597,7 @@ TEST_CASE("Parsing single procedure that contains 20 nested while loops.") {
     SimpleParserFacade parser(filename);
 	std::shared_ptr<ASTNode> tree_ptr = parser.parse();
 
-	auto& loop = tree_ptr->getChildByIndex(0)->getChildByIndex(0);
+	auto& loop = tree_ptr->getChildByIndex(0)->getChildByIndex(0)->getChildByIndex(0);
 	int line = 1;
 
 	while (line <= 20) {
