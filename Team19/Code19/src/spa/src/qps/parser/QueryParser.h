@@ -55,7 +55,7 @@ private:
 
     void parseSynonym();
     void parseEntRef();
-    void parseExpressionSpec();
+    void parseExpressionSpec(PatternClause &clause);
     void parseQuotedExpression();
     void parseRelRef(SuchThatClause& clause);
     void parseStmtRef();

@@ -1,5 +1,4 @@
 #include "QueryEvaluator.h"
-#include "qps/evaluator/strategies/PatternStrategy.h"
 #include "qps/evaluator/ResultTable.h"
 #include <variant>
 
@@ -115,8 +114,8 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
     // Add such-that-strategies based on the relationship specified in the query.
     for (auto clause : suchThatClauses) {
         TokenType suchThatRelationship = clause.getRelationship().getType();
-        auto it = strategyFactory.find(suchThatRelationship);
-        if (it != strategyFactory.end()) {
+        auto it = suchThatStrategyFactory.find(suchThatRelationship);
+        if (it != suchThatStrategyFactory.end()) {
             addStrategy(it->second());
         }
     }
@@ -124,7 +123,11 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
     vector<PatternClause> patternClauses = parsingResult.getPatternClauses();
     // Add PatternStrategy if pattern clause exists in the query.
     for (auto clause : patternClauses) {
-        addStrategy(std::make_unique<PatternStrategy>());
+        string patternType = parsingResult.getPatternClauseType(clause);
+        auto it = patternStrategyFactory.find(patternType);
+        if (it != patternStrategyFactory.end()) {
+            addStrategy(it->second());
+        }
     }
     
     /*vector<WithClause> withClauses = parsingResult.getWithClauses();
@@ -240,7 +243,7 @@ std::unordered_set<std::string> QueryEvaluator::getAllEntities(const std::string
 void QueryEvaluator::initializeStrategyFactory() {
 
     // Mapping of query types to their corresponding strategies.
-    QueryEvaluator::strategyFactory = {
+    QueryEvaluator::suchThatStrategyFactory = {
             {TokenType::Follows, []() { return std::make_unique<FollowsStrategy>(); }},
             {TokenType::FollowsT, []() { return std::make_unique<FollowsStrategy>(); }},
             {TokenType::Parent, []() { return std::make_unique<ParentStrategy>(); }},
@@ -254,6 +257,10 @@ void QueryEvaluator::initializeStrategyFactory() {
             {TokenType::Next, []() { return std::make_unique<NextStrategy>(); }},
             {TokenType::NextT, []() { return std::make_unique<NextStrategy>(); }},
             // Additional strategies can be added here as needed.
+    };
+
+    QueryEvaluator::patternStrategyFactory = {
+            {"assign", []() { return std::make_unique<AssignPatternStrategy>(); }},
     };
 }
 

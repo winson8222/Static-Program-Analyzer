@@ -996,6 +996,36 @@ TEST_CASE("Testing Select Select") {
     REQUIRE(tokens[11].getType() == TokenType::Rparenthesis);
     REQUIRE(tokens[11].getValue() == ")");
 
+}
 
+TEST_CASE("Testing Pattern with expressionSpec") {
+    Tokenizer tokenizer("assign a; Select a pattern a(_, \"x+1+r\")");
+    vector<Token> tokens = tokenizer.tokenize();
+
+    REQUIRE(tokens.size() == 12);  // Expecting 11 tokens
+    REQUIRE(tokens[0].getType() == TokenType::DesignEntity);
+    REQUIRE(tokens[0].getValue() == "assign");
+    REQUIRE(tokens[1].getType() == TokenType::IDENT);
+    REQUIRE(tokens[1].getValue() == "a");
+    REQUIRE(tokens[2].getType() == TokenType::Semicolon);
+    REQUIRE(tokens[2].getValue() == ";");
+    REQUIRE(tokens[3].getType() == TokenType::SelectKeyword);
+    REQUIRE(tokens[3].getValue() == "Select");
+    REQUIRE(tokens[4].getType() == TokenType::IDENT);
+    REQUIRE(tokens[4].getValue() == "a");
+    REQUIRE(tokens[5].getType() == TokenType::PatternKeyword);
+    REQUIRE(tokens[5].getValue() == "pattern");
+    REQUIRE(tokens[6].getType() == TokenType::IDENT);
+    REQUIRE(tokens[6].getValue() == "a");
+    REQUIRE(tokens[7].getType() == TokenType::Lparenthesis);
+    REQUIRE(tokens[7].getValue() == "(");
+    REQUIRE(tokens[8].getType() == TokenType::Wildcard);
+    REQUIRE(tokens[8].getValue() == "_");
+    REQUIRE(tokens[9].getType() == TokenType::Comma);
+    REQUIRE(tokens[9].getValue() == ",");
+    REQUIRE(tokens[10].getType() == TokenType::ExpressionSpec);
+    REQUIRE(tokens[10].getValue() == "\"x+1+r\"");
+    REQUIRE(tokens[11].getType() == TokenType::Rparenthesis);
+    REQUIRE(tokens[11].getValue() == ")");
 
 }
