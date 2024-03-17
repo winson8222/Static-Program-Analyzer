@@ -1,4 +1,7 @@
-name: Build + Integration Tests (MacOS)
+name: Integration Tests (MacOS)
+
+# ai-gen start (copilot, 5, e)
+# prompt: used copilot
 
 on:
   push:
@@ -17,14 +20,13 @@ env:
     TEST_DIR: ${{ github.workspace }}/Team19/Code19/build/src/integration_testing
 
 jobs:
-  build_unit_mac:
+  build_integration_mac:
     runs-on: macos-latest
     timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
         os: [macos-latest]
-        build-type: [Debug]
         cc-compilers: [clang]
         cxx-compilers: [clang++]
 
@@ -38,17 +40,15 @@ jobs:
       - name: Configure CMake
         shell: bash
         working-directory: ${{ env.BUILD_DIR }}
-        run: cmake ${{ env.CMAKE_DIR }} -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
+        run: cmake ${{ env.CMAKE_DIR }} -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
 
+      # Build projects on MacOS and build Integration test
       - name: Build Project
         shell: bash
         working-directory: ${{ env.BUILD_DIR }}
-        env:
-          CC: ${{ matrix.cc-compilers }}
-          CXX: ${{ matrix.cxx-compilers }}
         run: | 
-            cmake --build . --config ${{ matrix.build-type }} -j 4
-            cmake --build . --target integration_testing --config ${BUILD_TYPE} -j 4
+            cmake --build . --config ${{ env.BUILD_TYPE }} -j 4
+            cmake --build . --target integration_testing --config ${{ env.BUILD_TYPE }} -j 4
 
       - name: Run Unit Tests
         working-directory: ${{ env.TEST_DIR }}
@@ -58,7 +58,7 @@ jobs:
       - name: Cleanup Directory
         if: always()
         run: |
-          ls -la ./
-          rm -rf ./* || true
-          rm -rf ./.??* || true
-          ls -la ./
+          shopt -s dotglob
+          rm -rf ./Team19/Code19/build || true
+
+# ai-gen end

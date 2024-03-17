@@ -1,4 +1,4 @@
-name: Build + Integration Tests (Windows)
+name: Integration Tests (Windows)
 
 on:
   push:
@@ -22,6 +22,8 @@ jobs:
     runs-on: windows-latest
     strategy:
       fail-fast: false # Do NOT cancel other workflows even if this one fails
+      matrix:
+        os: [window-latest]
     
     steps:
       - uses: actions/checkout@v2
@@ -52,7 +54,5 @@ jobs:
         if: always()
         shell: bash
         run: |
-          ls -la ./
-          rm -rf ./* || true
-          rm -rf ./.??* || true
-          ls -la ./
+          shopt -s dotglob
+          rm -rf ./Team19/Code19/build || true

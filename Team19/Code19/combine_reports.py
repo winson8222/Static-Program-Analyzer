@@ -1,3 +1,6 @@
+# ai-gen start (gpt, 2, e)
+# prompt: https://chat.openai.com/share/889297a9-013e-4b5c-a215-ac8fcd331431
+
 import os
 from bs4 import BeautifulSoup
 
@@ -25,3 +28,5 @@ if __name__ == "__main__":
     report_dir = os.getcwd()
     print(report_dir)
     combine_html_reports(report_dir)
+
+# ai-gen end
