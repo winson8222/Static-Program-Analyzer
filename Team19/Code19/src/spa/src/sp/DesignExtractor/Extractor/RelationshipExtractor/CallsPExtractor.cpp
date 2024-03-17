@@ -21,3 +21,14 @@ void CallsTExtractor::extract() {
 	// Extract all the call statements
 	this->callWriter->addCallsT(this->ast1->getValue(), this->ast2->getValue());
 }
+
+CallProcNameExtractor::CallProcNameExtractor(std::shared_ptr<ASTNode> ast1,
+	std::shared_ptr<ASTNode> ast2, std::shared_ptr<CallProcNameWriter> callWriter)
+	: IRelationshipExtractor(ast1, ast2) {
+	this->callWriter = callWriter;
+}
+
+void CallProcNameExtractor::extract() {
+	// Extract all the call line number to values
+	this->callWriter->addCallProcName(this->ast1->getLineNumber(), this->ast2->getValue());
+}

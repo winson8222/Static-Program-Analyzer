@@ -30,6 +30,13 @@ public:
 	void visit() override;
 
 private:
+	std::shared_ptr<ASTNode> procNode;
+
+	/*
+	* Handle invokations of procedure visitor
+	*/
+	void handleProcedureVisitor();
+
 	/*
 	* Get the list of all procedure node and call node within the contexts
 	* (only those relevant in the Call Visitor)
@@ -45,6 +52,16 @@ private:
 	* Handle invokations of call procedure extractor transitively
 	*/
 	void handleCallsT(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2);
+
+	/*
+	* Handle invokations of call extractor
+	*/
+	void handleCallExtractor();
+
+	/*
+	* Handle invokations of call extractor to procedure name
+	*/
+	void handleCallProcNameExtractor();
 };
 
 // ai-gen ends
