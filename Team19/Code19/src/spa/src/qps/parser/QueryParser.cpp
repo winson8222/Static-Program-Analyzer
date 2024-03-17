@@ -447,7 +447,6 @@ void QueryParser::parsePatternClause() {
     else if (patternType == "while") {
 
     } else if (patternType == "assign") {
-
         // This is a rudimentary approach to tokenize ExpressionSpec, probably change later
         // Store the current token index before parsing the expression spec
         size_t startIndex = currentTokenIndex;

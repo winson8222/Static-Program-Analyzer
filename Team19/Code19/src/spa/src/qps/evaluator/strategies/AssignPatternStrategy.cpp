@@ -1,4 +1,3 @@
-#pragma once
 #include "qps/evaluator/strategies/AssignPatternStrategy.h"
 
 
