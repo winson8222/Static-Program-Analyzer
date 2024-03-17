@@ -36,6 +36,7 @@ public:
     const string& getDeclaredSynonym(const string& key) const;
     const vector<string>& getRequiredSynonyms() const;
     const string& getRequiredSynonymType(const string& requiredSynonym) const;
+    const string& getPatternClauseType(const PatternClause& clause) const;
 
     // New methods to get clause by index
     const vector<SuchThatClause>& getSuchThatClauses() const;

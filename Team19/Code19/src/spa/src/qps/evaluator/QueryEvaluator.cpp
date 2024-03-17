@@ -123,8 +123,7 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
     vector<PatternClause> patternClauses = parsingResult.getPatternClauses();
     // Add PatternStrategy if pattern clause exists in the query.
     for (auto clause : patternClauses) {
-
-        string patternType = parsingResult.getRequiredSynonymType(clause.getRelationship().getValue());
+        string patternType = parsingResult.getPatternClauseType(clause);
         auto it = patternStrategyFactory.find(patternType);
         if (it != patternStrategyFactory.end()) {
             addStrategy(it->second());
@@ -262,9 +261,6 @@ void QueryEvaluator::initializeStrategyFactory() {
 
     QueryEvaluator::patternStrategyFactory = {
             {"assign", []() { return std::make_unique<AssignPatternStrategy>(); }},
-//            {"if", []() { return std::make_unique<IfPatternStrategy>(); }},
-//            {"while", []() { return std::make_unique<WhilePatternStrategy>(); }},
-            // Additional strategies can be added here as needed.
     };
 }
 
