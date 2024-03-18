@@ -152,7 +152,9 @@ std::unordered_set<std::string> WithStrategy::processParam(Token param, PKBReade
     }
     else if (isQuotedString(param.getValue())) {
         // Extracts the value within the quotes
-        string extractedValue = param.getValue().substr(1, param.getValue().length() - 2);
+        size_t QUOTE_OFFSET = 1;
+        size_t QUOTE_PAIR_LENGTH = 2;
+        string extractedValue = param.getValue().substr(QUOTE_OFFSET, param.getValue().length() - QUOTE_PAIR_LENGTH);
         return {extractedValue};
 	}
     else if (param.getType() == TokenType::Ref) {
@@ -161,64 +163,44 @@ std::unordered_set<std::string> WithStrategy::processParam(Token param, PKBReade
         string attribute = attributes.second;
         string synonymType = parsingResult.getDeclaredSynonym(synonym);
 
-        if (synonymType == "stmt") {
-            if (attribute == "stmt#") {
-                return retrieveIntEntities(synonym, resultTable, statementReader);
-			}
+        if (synonymType == "stmt" && attribute == "stmt#") {
+            return retrieveIntEntities(synonym, resultTable, statementReader);
 		}
-        else if (synonymType == "read") {
-            if (attribute == "varName") {
-                return retrieveIntStringLinks(synonym, resultTable, readVarNameReader);
-			}
-            else if (attribute == "stmt#") {
-                return retrieveIntEntities(synonym, resultTable, readReader);
-			}
+        else if (synonymType == "read" && attribute == "varName") {
+            return retrieveIntStringLinks(synonym, resultTable, readVarNameReader);
 		}
-        else if (synonymType == "print") {
-            if (attribute == "varName") {
-                return retrieveIntStringLinks(synonym, resultTable, printVarNameReader);
-			}
-            else if (attribute == "stmt#") {
-                return retrieveIntEntities(synonym, resultTable, printReader);
-			}
+        else if (synonymType == "read" && attribute == "stmt#") {
+            return retrieveIntEntities(synonym, resultTable, readReader);
 		}
-        else if (synonymType == "call") {
-            if (attribute == "procName") {
-                return retrieveIntStringLinks(synonym, resultTable, callProcNameReader);
-            }
-            else if (attribute == "stmt#") {
-                return retrieveIntEntities(synonym, resultTable, callReader);
-			}
+        else if (synonymType == "print" && attribute == "varName") {
+            return retrieveIntStringLinks(synonym, resultTable, printVarNameReader);
 		}
-        else if (synonymType == "while") {
-            if (attribute == "stmt#") {
-                return retrieveIntEntities(synonym, resultTable, whileReader);
-			}
+        else if (synonymType == "print" && attribute == "stmt#") {
+            return retrieveIntEntities(synonym, resultTable, printReader);
 		}
-        else if (synonymType == "if") {
-            if (attribute == "stmt#") {
-                return retrieveIntEntities(synonym, resultTable, ifReader);
-			}
+        else if (synonymType == "call" && attribute == "procName") {
+            return retrieveIntStringLinks(synonym, resultTable, callProcNameReader);
+        }
+        else if (synonymType == "call" && attribute == "stmt#") {
+            return retrieveIntEntities(synonym, resultTable, callReader);
 		}
-        else if (synonymType == "assign") {
-            if (attribute == "stmt#") {
+        else if (synonymType == "while" && attribute == "stmt#") {
+            return retrieveIntEntities(synonym, resultTable, whileReader);
+		}
+        else if (synonymType == "if" && attribute == "stmt#") {
+            return retrieveIntEntities(synonym, resultTable, ifReader);
+		}
+        else if (synonymType == "assign" && attribute == "stmt#") {
                 return retrieveIntEntities(synonym, resultTable, assignReader);
-			}
 		}
-        else if (synonymType == "variable") {
-            if (attribute == "varName") {
-                return retrieveStringEntities(synonym, resultTable, variableReader);
-			}
+        else if (synonymType == "variable" && attribute == "varName") {
+            return retrieveStringEntities(synonym, resultTable, variableReader);
 		}
-        else if (synonymType == "constant") {
-            if (attribute == "value") {
-                return retrieveIntEntities(synonym, resultTable, constantReader);
-			}
+        else if (synonymType == "constant" && attribute == "value") {
+            return retrieveIntEntities(synonym, resultTable, constantReader);
 		}
-        else if (synonymType == "procedure") {
-            if (attribute == "procName") {
-                return retrieveStringEntities(synonym, resultTable, procedureReader);
-			}
+        else if (synonymType == "procedure" && attribute == "procName") {
+            return retrieveStringEntities(synonym, resultTable, procedureReader);
 		}
         return std::unordered_set<std::string>();
 
