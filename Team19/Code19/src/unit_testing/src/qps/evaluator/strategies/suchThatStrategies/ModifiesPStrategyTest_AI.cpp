@@ -56,7 +56,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesPStrategy/1") {
 
 }
 
-
 TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesPStrategy/2") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
@@ -103,7 +102,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesPStrategy/2") {
     REQUIRE(res == std::unordered_set<string>{ "proc1", "proc2" });
 
 }
-
 
 TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesPStrategy/3") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
@@ -155,7 +153,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesPStrategy/3") {
 
 }
 
-TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesPStrategy/5") {
+TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesPStrategy/4") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
@@ -205,7 +203,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesPStrategy/5") {
 
 }
 
-TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesPStrategy/6") {
+TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesPStrategy/5") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
@@ -255,7 +253,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesPStrategy/6") {
 
 }
 
-TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesPStrategy/7") {
+TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesPStrategy/6") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();

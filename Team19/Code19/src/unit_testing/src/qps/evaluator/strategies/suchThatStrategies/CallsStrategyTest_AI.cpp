@@ -123,7 +123,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/1.1*") {
 
 }
 
-
 TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/2") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
@@ -172,7 +171,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/2") {
     REQUIRE(res == std::unordered_set<string>{ "proc1", "proc2" });
 
 }
-
 
 TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/3") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
@@ -465,7 +463,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/1*") {
 
 }
 
-
 TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/2*") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
@@ -516,7 +513,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/2*") {
     REQUIRE(res == std::unordered_set<string>{ "proc1", "proc2", "proc3"});
 
 }
-
 
 TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/3*") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
