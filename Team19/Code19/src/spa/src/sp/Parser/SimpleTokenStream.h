@@ -39,4 +39,5 @@ private:
 	std::vector<LexicalToken> tokens;
 	int tokenIndex;
 	LexicalToken getNextToken();
+	bool hasNext();
 };

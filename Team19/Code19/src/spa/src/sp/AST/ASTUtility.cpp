@@ -50,6 +50,7 @@ bool ASTUtility::nodeIsCondExpression(ASTNodeType t) {
 	return t == ASTNodeType::AND || t == ASTNodeType::OR 
 		|| t == ASTNodeType::NOT;
 }
+
 bool ASTUtility::nodeIsValidOperator(ASTNodeType t) {
 	return t == ASTNodeType::ADD || t == ASTNodeType::SUBTRACT 
 		|| t == ASTNodeType::MULTIPLY || t == ASTNodeType::DIVIDE 
