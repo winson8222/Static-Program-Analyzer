@@ -294,83 +294,6 @@ TEST_CASE("src/qps/parser/QueryParser") {
     }
 
 
-    SECTION("Check Grammars of Pattern with variable and constant") {
-        std::vector<Token> tokens = {
-                Token(TokenType::DesignEntity, "assign"),
-                Token(TokenType::IDENT, "a"),
-                Token(TokenType::Semicolon, ";"),
-                Token(TokenType::SelectKeyword, "Select"),
-                Token(TokenType::IDENT, "a"),
-                Token(TokenType::PatternKeyword, "pattern"),
-                Token(TokenType::IDENT, "a"),
-                Token(TokenType::Lparenthesis, "("),
-                Token(TokenType::QuoutIDENT, "\"x\""),
-                Token(TokenType::Comma, ","),
-                Token(TokenType::QuoutConst, "\"1\""),
-                Token(TokenType::Rparenthesis, ")")
-        };
-
-        QueryParser parser(tokens);
-        auto result = parser.parse();
-        bool x = true; //will not reach this line unless parse is successful
-        REQUIRE(x);
-
-    }
-
-    SECTION("Check Grammars of Pattern with variable and an expressionSpec") {
-        std::vector<Token> tokens = {
-                Token(TokenType::DesignEntity, "assign"),
-                Token(TokenType::IDENT, "a"),
-                Token(TokenType::Semicolon, ";"),
-                Token(TokenType::SelectKeyword, "Select"),
-                Token(TokenType::IDENT, "a"),
-                Token(TokenType::PatternKeyword, "pattern"),
-                Token(TokenType::IDENT, "a"),
-                Token(TokenType::Lparenthesis, "("),
-                Token(TokenType::QuoutIDENT, "\"x\""),
-                Token(TokenType::Comma, ","),
-                Token(TokenType::DoubleQuote, "\""),
-                Token(TokenType::INTEGER, "1"),
-                Token(TokenType::Operator, "*"),
-                Token(TokenType::INTEGER, "3"),
-                Token(TokenType::DoubleQuote, "\""),
-                Token(TokenType::Rparenthesis, ")")
-        };
-
-        QueryParser parser(tokens);
-        auto result = parser.parse();
-        bool x = true; //will not reach this line unless parse is successful
-        REQUIRE(x);
-    }
-
-    SECTION("Check Grammars of Pattern with variable and an expressionSpec that contains an expression of _\"expr\"_ format") {
-        std::vector<Token> tokens = {
-                Token(TokenType::DesignEntity, "assign"),
-                Token(TokenType::IDENT, "a"),
-                Token(TokenType::Semicolon, ";"),
-                Token(TokenType::SelectKeyword, "Select"),
-                Token(TokenType::IDENT, "a"),
-                Token(TokenType::PatternKeyword, "pattern"),
-                Token(TokenType::IDENT, "a"),
-                Token(TokenType::Lparenthesis, "("),
-                Token(TokenType::QuoutIDENT, "\"x\""),
-                Token(TokenType::Comma, ","),
-                Token(TokenType::Wildcard, "_"),
-                Token(TokenType::DoubleQuote, "\""),
-                Token(TokenType::INTEGER, "1"),
-                Token(TokenType::Operator, "*"),
-                Token(TokenType::INTEGER, "3"),
-                Token(TokenType::DoubleQuote, "\""),
-                Token(TokenType::Wildcard, "_"),
-                Token(TokenType::Rparenthesis, ")")
-        };
-
-        QueryParser parser(tokens);
-        auto result = parser.parse();
-        bool x = true; //will not reach this line unless parse is successful
-        REQUIRE(x);
-
-    }
 
 
     SECTION("Check Grammars of valid tokens have Modifies and pattern clauses") {
@@ -931,10 +854,8 @@ TEST_CASE("src/qps/parser/QueryParser/M1FailedCases/3") {
                 Token(TokenType::Comma, ","),
                 Token(TokenType::INTEGER, "1"),
                 Token(TokenType::Rparenthesis, ")")
-
         };
         QueryParser queryParser(tokens);
-
         // Parse the query
         ParsingResult parsingResult = queryParser.parse();
 
@@ -942,5 +863,33 @@ TEST_CASE("src/qps/parser/QueryParser/M1FailedCases/3") {
         // Verify that the parsing result indicates a valid query with no errors
         REQUIRE(parsingResult.isQueryValid() == false);
         REQUIRE(parsingResult.getErrorMessage() == "SyntaxError");
+    }
+}
+
+TEST_CASE("src/qps/parser/QueryParser/4") {
+    //Select r such that Uses(r, 1)
+    SECTION("QueryParser correctly parses Pattern with expressionSpec") {
+        // Manually create the vector of tokens for the query
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "assign"),
+                Token(TokenType::IDENT, "a"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::IDENT, "a"),
+                Token(TokenType::PatternKeyword, "pattern"),
+                Token(TokenType::IDENT, "a"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::QuoutIDENT, "\"x\""),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::ExpressionSpec, "\"x+1\""),
+                Token(TokenType::Rparenthesis, ")")
+        };
+        QueryParser queryParser(tokens);
+        // Parse the query
+        ParsingResult parsingResult = queryParser.parse();
+
+
+        // Verify that the parsing result indicates a valid query with no errors
+        REQUIRE(parsingResult.isQueryValid() == true);
     }
 }

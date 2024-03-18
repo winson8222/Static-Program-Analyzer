@@ -442,32 +442,19 @@ void QueryParser::parsePatternClause() {
 
     string patternType = parsingResult.getDeclaredSynonym(clause.getRelationship().getValue());
     if (patternType == "if") {
-        ensureToken(TokenType::Wildcard);
-        clause.setSecondParam(currentToken());
-        advanceToken();
-        ensureToken(TokenType::Comma);
-        advanceToken();
-        ensureToken(TokenType::Wildcard);
-        clause.setThirdParam(currentToken());
+
     }
     else if (patternType == "while") {
-        ensureToken(TokenType::Wildcard);
-        clause.setSecondParam(currentToken());
-        advanceToken();
-        ensureToken(TokenType::Comma);
-    }
-    else {
+
+    } else if (patternType == "assign") {
+
         // This is a rudimentary approach to tokenize ExpressionSpec, probably change later
         // Store the current token index before parsing the expression spec
         size_t startIndex = currentTokenIndex;
-        parseExpressionSpec();
+        parseExpressionSpec(clause);
 
-        // Concatenate all token values from startIndex to the current index
-        string concatenatedTokens;
-        for (size_t i = startIndex; i <= currentTokenIndex; ++i) {
-            concatenatedTokens += tokens[i].getValue();
-        }
-        clause.setSecondParam(Token(TokenType::ExpressionSpec, concatenatedTokens));
+    } else {
+        throwSemanticError();
     }
 
     advanceToken();
@@ -477,29 +464,30 @@ void QueryParser::parsePatternClause() {
 
 // Parses the expression specification in the query.
 // Handles different forms of expressions like quoted constants, wildcards, or quoted expressions.
-void QueryParser::parseExpressionSpec() {
+void QueryParser::parseExpressionSpec(PatternClause &clause) {
 
     if (match(TokenType::QuoutConst) || match(TokenType::QuoutIDENT) || match(TokenType::ExpressionSpec)) {
+        clause.setSecondParam(Token(TokenType::ExpressionSpec, currentToken().getValue()));
         return;
     } else if (match(TokenType::Wildcard)) {
+
         if (peekNextToken(TokenType::Rparenthesis)) {
+            clause.setSecondParam(Token(TokenType::Wildcard, currentToken().getValue()));
             return;
         }
         advanceToken();
 
-
-
-
         if (!match(TokenType::QuoutIDENT) && !match(TokenType::QuoutConst) && !match(TokenType::ExpressionSpec)) {
             throwGrammarError();
         }
+        string partialMatchValue = currentToken().getValue();
 
         advanceToken();
 
         ensureToken(TokenType::Wildcard);
+        clause.setSecondParam(Token(TokenType::PartialExpressionSpec, partialMatchValue));
 
-    } else if (match(TokenType::QuoutIDENT)) {
-        return parseQuotedExpression();
+        // building expressionspec with wildcards
     } else {
         throwGrammarError();
     }

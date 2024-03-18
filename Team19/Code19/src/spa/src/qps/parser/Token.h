@@ -38,6 +38,7 @@ enum class TokenType {
     ModifiesS,
     ModifiesP,
     ExpressionSpec,
+    PartialExpressionSpec,
     SyntaxError,
     //M2
     Calls,

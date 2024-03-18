@@ -290,7 +290,7 @@ TEST_CASE("src/qps/parser/ParsingResult") {
         REQUIRE(patternClause.getRelationship().getValue() == "a");
         REQUIRE(patternClause.getFirstParam().getType() == TokenType::QuoutIDENT);
         REQUIRE(patternClause.getFirstParam().getValue() == "\"x\"");
-        REQUIRE(patternClause.getSecondParam().getType() == TokenType::ExpressionSpec);
+        REQUIRE(patternClause.getSecondParam().getType() == TokenType::Wildcard);
         REQUIRE(patternClause.getSecondParam().getValue() == "_");
 
         auto suchThatClause = parsingResult.getSuchThatClauses()[0];
