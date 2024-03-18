@@ -14,7 +14,9 @@
 #include "qps/evaluator/strategies/suchThatStrategies/ModifiesPStrategy.h" // Include ModifiesPStrategy
 #include "qps/evaluator/strategies/suchThatStrategies/CallsStrategy.h" // Include CallsStrategy
 #include "qps/evaluator/strategies/suchThatStrategies/NextStrategy.h" // Include CallsStarStrategy
-#include "qps/evaluator/strategies/AssignPatternStrategy.h" // Include FollowsStarStrategy
+#include "qps/evaluator/strategies/patternStrategies/AssignPatternStrategy.h" // Include AssignPatternStrategy
+#include "qps/evaluator/strategies/patternStrategies/WhilePatternStrategy.h" // Include WhilePatternStrategy
+#include "qps/evaluator/strategies/patternStrategies/IfPatternStrategy.h" // Include IfPatternStrategy
 #include <variant>
 
 
