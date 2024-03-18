@@ -127,6 +127,17 @@ jobs:
 
             exit $EXIT_CODE
 
+      - name: Upload autotester logs for Milestone 1
+        uses: actions/upload-artifact@v2
+        with:
+          name: autotester-logs
+          path: ${{ env.AUTOTESTER_M1_DIR }}/outputs
+
+      - name: Upload autotester logs for Milestone 2
+        uses: actions/upload-artifact@v2
+        with:
+          name: autotester-logs
+          path: ${{ env.AUTOTESTER_M2_DIR }}/outputs
 
       - name: Cleanup Directory
         if: always()
