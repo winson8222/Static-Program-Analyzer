@@ -26,6 +26,26 @@ TEST_CASE("Calls") {
 		REQUIRE(pkbReaderManager->getCallReader()->getAllCalls() == expectedCalls);
 	}
 
+	SECTION("Test call proc name statement") {
+		std::shared_ptr<ASTNode> call = std::make_shared<ASTNode>(ASTNodeType::CALL, 1, "call");
+		std::shared_ptr<ASTNode> proc = std::make_shared<ASTNode>(ASTNodeType::PROCEDURE, 1, "proc");
+		call->addChild(proc);
+		CallProcNameExtractor callProcNameExtractor(call, proc, pkbWriterManager->getCallProcNameWriter());
+		callProcNameExtractor.extract();
+
+		std::string expectedCalls = "proc";
+		REQUIRE(pkbReaderManager->getCallProcNameReader()->getCalledProcedureName(1) == expectedCalls);
+
+		std::shared_ptr<ASTNode> call1 = std::make_shared<ASTNode>(ASTNodeType::CALL, 2, "call");
+		call1->addChild(proc);
+		CallProcNameExtractor callProcNameExtractor1(call1, proc, pkbWriterManager->getCallProcNameWriter());
+		callProcNameExtractor1.extract();
+
+		std::unordered_set<int> expectedCalls1 = { 1, 2 };
+		REQUIRE(pkbReaderManager->getCallProcNameReader()->getCallers("proc") == expectedCalls1);
+		REQUIRE(pkbReaderManager->getCallProcNameReader()->isCalled(1, "proc"));
+	}
+
 	SECTION("Test call statements") {
 		std::shared_ptr<ASTNode> proc1 = std::make_shared<ASTNode>(ASTNodeType::PROCEDURE, 1, "proc1");
 		std::shared_ptr<ASTNode> proc2 = std::make_shared<ASTNode>(ASTNodeType::PROCEDURE, 2, "proc2");
@@ -36,6 +56,7 @@ TEST_CASE("Calls") {
 		std::unordered_set<std::string> expectedCallees = { "proc2" };
 		REQUIRE(pkbReaderManager->getCallsReader()->getAllDirectCallees() == expectedCallees);
 		REQUIRE(pkbReaderManager->getCallsReader()->getAllDirectCallers() == expectedCallers);
+		REQUIRE(pkbReaderManager->getCallsReader()->getDirectCallersOfProcedure("proc2") == expectedCallers);
 	}
 
 	SECTION("Test call transitive statements") {
@@ -48,5 +69,6 @@ TEST_CASE("Calls") {
 		std::unordered_set<std::string> expectedCallees = { "proc2" };
 		REQUIRE(pkbReaderManager->getCallsTReader()->getAllTransitiveCallees() == expectedCallees);
 		REQUIRE(pkbReaderManager->getCallsTReader()->getAllTransitiveCallers() == expectedCallers);
+		REQUIRE(pkbReaderManager->getCallsTReader()->getTransitivelyCalledProcedures("proc1") == expectedCallees);
 	}
 }

@@ -45,6 +45,30 @@ TEST_CASE("sp/SourceProcessor: Calls Procedure") {
         std::shared_ptr<CallReader> callReader = pkbReaderManager->getCallReader();
         std::shared_ptr<CallsReader> callsReader = pkbReaderManager->getCallsReader();
         std::shared_ptr<CallsTReader> callsTReader = pkbReaderManager->getCallsTReader();
+        std::shared_ptr<CallProcNameReader> callProcNameReader = pkbReaderManager->getCallProcNameReader();
 
+        std::string expectedCall1 = "proc2";
+        REQUIRE(callProcNameReader->getCalledProcedureName(16) == expectedCall1);
+
+        std::string expectedCall2 = "proc3";
+        REQUIRE(callProcNameReader->getCalledProcedureName(17) == expectedCall2);
+
+        std::unordered_set<int> expectedCallers1 = {15, 16};
+        REQUIRE(callProcNameReader->getCallers("proc2") == expectedCallers1);
+
+        std::string expectedCall3 = "proc1";
+        REQUIRE(callProcNameReader->isCalled(13, expectedCall3));
+
+        std::unordered_set<std::string> expectedCalls = {"proc2", "proc3", "proc4"};
+        REQUIRE(callsTReader->getTransitiveCallersOfProcedure("proc1") == expectedCalls);
+
+        std::unordered_set<std::string> expectedCalls2 = { "proc1", "proc2", "proc3" };
+        REQUIRE(callsTReader->getTransitivelyCalledProcedures("proc4") == expectedCalls2);
+
+        std::unordered_set<std::string> expectedCalls3 = { "proc1" };
+        REQUIRE(callsReader->getDirectlyCalledProcedures("proc2") == expectedCalls3);
+
+        std::unordered_set<std::string> expectedCalls4 = { "proc4" };
+        REQUIRE(callsReader->getDirectCallersOfProcedure("proc3") == expectedCalls4);
     }
 }
