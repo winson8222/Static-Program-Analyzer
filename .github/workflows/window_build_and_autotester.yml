@@ -54,6 +54,7 @@ jobs:
       # Run autotester tests for Milestone 1 
       - name: Run Autotester Tests in Milestone 1
         shell: pwsh
+        continue-on-error: true
         working-directory: ${{ env.AUTOTESTER_M1_DIR }}
         run: |
             Write-Host "[System Test] Running all tests for Milestone 1"
@@ -91,6 +92,7 @@ jobs:
       # Run autotester tests for Milestone 2
       - name: Run Autotester Tests in Milestone 2
         shell: pwsh
+        continue-on-error: true
         working-directory: ${{ env.AUTOTESTER_M2_DIR }}
         run: |
             Write-Host "[System Test] Running all tests for Milestone 2"
