@@ -5,6 +5,19 @@
 #include "sp/ControlFlow/SimpleControlFlow.h"
 #include "sp/Parser/SimpleParserFacade.h"
 
+TEST_CASE("Throw error for non-program type node") {
+	std::string filename = "sample.txt";
+	std::string sampleProgram = "procedure procedure { read = 1 + program; }";
+	std::ofstream file;
+	file.open(filename);
+	file << sampleProgram;
+	file.close();
+	REQUIRE(std::filesystem::exists(filename));
+	SimpleParserFacade parser(filename);
+	std::shared_ptr<ASTNode> ast = parser.parse();
+	REQUIRE_THROWS(SimpleControlFlow{ ast->getChildByIndex(0) });
+}
+
 TEST_CASE("CFG for single program with all possible statements types.") {
 	std::string filename = "sample.txt";
 	std::string sampleProgram = "procedure procedure {"
