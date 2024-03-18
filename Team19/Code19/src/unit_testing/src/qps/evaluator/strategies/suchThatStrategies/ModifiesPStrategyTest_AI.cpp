@@ -25,22 +25,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesPStrategy/1") {
     procedureWriter->insertProcedure("proc1");
     procedureWriter->insertProcedure("proc2");
 
-//    std::vector<Token> tokens = {
-//            Token(TokenType::DesignEntity, "procedure"),
-//            Token(TokenType::IDENT, "p"),
-//            Token(TokenType::Semicolon, ";"),
-//            Token(TokenType::SelectKeyword, "Select"),
-//            Token(TokenType::IDENT, "p"),
-//            Token(TokenType::SuchKeyword, "such"),
-//            Token(TokenType::ThatKeyword, "that"),
-//            Token(TokenType::Modifies, "Modifies"),
-//            Token(TokenType::Lparenthesis, "("),
-//            Token(TokenType::IDENT, "p"),
-//            Token(TokenType::Comma, ","),
-//            Token(TokenType::QuoutIDENT, "\"x\""),
-//            Token(TokenType::Rparenthesis, ")")
-//    };
-
     ParsingResult parsingResult;
     parsingResult.addDeclaredSynonym("p", "procedure");
     parsingResult.setRequiredSynonym("p" );
@@ -71,22 +55,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesPStrategy/2") {
     modifiesPWriter->addModifiesP("proc2", "y");
     procedureWriter->insertProcedure("proc1");
     procedureWriter->insertProcedure("proc2");
-
-//    std::vector<Token> tokens = {
-//            Token(TokenType::DesignEntity, "procedure"),
-//            Token(TokenType::IDENT, "p"),
-//            Token(TokenType::Semicolon, ";"),
-//            Token(TokenType::SelectKeyword, "Select"),
-//            Token(TokenType::IDENT, "p"),
-//            Token(TokenType::SuchKeyword, "such"),
-//            Token(TokenType::ThatKeyword, "that"),
-//            Token(TokenType::Modifies, "Modifies"),
-//            Token(TokenType::Lparenthesis, "("),
-//            Token(TokenType::IDENT, "p"),
-//            Token(TokenType::Comma, ","),
-//            Token(TokenType::Wildcard, "_"),
-//            Token(TokenType::Rparenthesis, ")")
-//    };
 
     ParsingResult parsingResult;
     parsingResult.addDeclaredSynonym("p", "procedure");
@@ -122,22 +90,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesPStrategy/3") {
     variableWriter->insertVariable("x");
     variableWriter->insertVariable("y");
 
-//    std::vector<Token> tokens = {
-//            Token(TokenType::DesignEntity, "procedure"),
-//            Token(TokenType::IDENT, "p"),
-//            Token(TokenType::Semicolon, ";"),
-//            Token(TokenType::SelectKeyword, "Select"),
-//            Token(TokenType::IDENT, "p"),
-//            Token(TokenType::SuchKeyword, "such"),
-//            Token(TokenType::ThatKeyword, "that"),
-//            Token(TokenType::Modifies, "Modifies"),
-//            Token(TokenType::Lparenthesis, "("),
-//            Token(TokenType::IDENT, "p"),
-//            Token(TokenType::Comma, ","),
-//            Token(TokenType::Wildcard, "_"),
-//            Token(TokenType::Rparenthesis, ")")
-//    };
-
     ParsingResult parsingResult;
     parsingResult.addDeclaredSynonym("v", "variable");
     parsingResult.setRequiredSynonym("v" );
@@ -171,22 +123,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesPStrategy/4") {
     procedureWriter->insertProcedure("proc2");
     variableWriter->insertVariable("x");
     variableWriter->insertVariable("y");
-
-//    std::vector<Token> tokens = {
-//            Token(TokenType::DesignEntity, "procedure"),
-//            Token(TokenType::IDENT, "p"),
-//            Token(TokenType::Semicolon, ";"),
-//            Token(TokenType::SelectKeyword, "Select"),
-//            Token(TokenType::IDENT, "p"),
-//            Token(TokenType::SuchKeyword, "such"),
-//            Token(TokenType::ThatKeyword, "that"),
-//            Token(TokenType::Modifies, "Modifies"),
-//            Token(TokenType::Lparenthesis, "("),
-//            Token(TokenType::Wildcard, "_"),
-//            Token(TokenType::Comma, ","),
-//            Token(TokenType::Wildcard, "_"),
-//            Token(TokenType::Rparenthesis, ")")
-//    };
 
     ParsingResult parsingResult;
     parsingResult.addDeclaredSynonym("v", "variable");
@@ -222,22 +158,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesPStrategy/5") {
     variableWriter->insertVariable("x");
     variableWriter->insertVariable("y");
 
-//    std::vector<Token> tokens = {
-//            Token(TokenType::DesignEntity, "procedure"),
-//            Token(TokenType::IDENT, "p"),
-//            Token(TokenType::Semicolon, ";"),
-//            Token(TokenType::SelectKeyword, "Select"),
-//            Token(TokenType::IDENT, "p"),
-//            Token(TokenType::SuchKeyword, "such"),
-//            Token(TokenType::ThatKeyword, "that"),
-//            Token(TokenType::Modifies, "Modifies"),
-//            Token(TokenType::Lparenthesis, "("),
-//            Token(TokenType::Wildcard, "_"),
-//            Token(TokenType::Comma, ","),
-//            Token(TokenType::QuoutIDENT, "\"z\""),
-//            Token(TokenType::Rparenthesis, ")")
-//    };
-
     ParsingResult parsingResult;
     parsingResult.addDeclaredSynonym("v", "variable");
     parsingResult.setRequiredSynonym("v" );
@@ -271,22 +191,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesPStrategy/6") {
     procedureWriter->insertProcedure("proc2");
     variableWriter->insertVariable("x");
     variableWriter->insertVariable("y");
-
-//    std::vector<Token> tokens = {
-//            Token(TokenType::DesignEntity, "procedure"),
-//            Token(TokenType::IDENT, "p"),
-//            Token(TokenType::Semicolon, ";"),
-//            Token(TokenType::SelectKeyword, "Select"),
-//            Token(TokenType::IDENT, "p"),
-//            Token(TokenType::SuchKeyword, "such"),
-//            Token(TokenType::ThatKeyword, "that"),
-//            Token(TokenType::Modifies, "Modifies"),
-//            Token(TokenType::Lparenthesis, "("),
-//            Token(TokenType::QuoutIDENT, "\"proc1\""),
-//            Token(TokenType::Comma, ","),
-//            Token(TokenType::IDENT, "x"),
-//            Token(TokenType::Rparenthesis, ")")
-//    };
 
     ParsingResult parsingResult;
     parsingResult.addDeclaredSynonym("p", "procedure");
