@@ -68,6 +68,8 @@ private:
     void parseFactor();
     void parseRef();
     void parseAttrRef();
+    void parseIfParms();
+    void parseWhileParams();
 
     // Method to get the current token.
     // Returns a constant reference to the current Token object.

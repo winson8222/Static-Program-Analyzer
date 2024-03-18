@@ -461,6 +461,21 @@ void QueryParser::parsePatternClause() {
     parsingResult.addPatternClause(clause);
 }
 
+void QueryParser::parseIfParams() {
+    if (match(TokenType::QuoutIDENT) || match(TokenType::Wildcard)) {
+        return;
+    } else {
+        parseEntSynonym();
+    }
+    advanceToken();
+    ensureToken(TokenType::Lparenthesis);
+    advanceToken();
+    parseQuotedExpression();
+    ensureToken(TokenType::Rparenthesis);
+
+
+
+
 // Parses the expression specification in the query.
 // Handles different forms of expressions like quoted constants, wildcards, or quoted expressions.
 void QueryParser::parseExpressionSpec(PatternClause &clause) {
