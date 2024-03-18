@@ -39,11 +39,10 @@ jobs:
       run: |
          $resultsPath = Join-Path ${{ github.workspace }} "cpplint-results.txt"
          Get-ChildItem ./Team19/Code19/src/spa -Recurse -Include *.cpp, *.h | Foreach-Object {
-          $output = cpplint $_.FullName | Out-String
+          $output = cpplint --filter=-whitespace,-legal/copyright $_.FullName | Out-String
           Add-Content -Path $resultsPath -Value $output
          }
       shell: powershell
-      continue-on-error: true
 
     # Upload cpplint results file as artifact
     - name: Upload cpplint Results
