@@ -55,7 +55,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesPStrategy/1") {
 
 }
 
-
 TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesPStrategy/2") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
@@ -102,7 +101,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesPStrategy/2") {
     REQUIRE(res == std::unordered_set<string>{ "proc1", "proc2" });
 
 }
-
 
 TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesPStrategy/3") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
@@ -154,7 +152,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesPStrategy/3") {
 
 }
 
-TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesPStrategy/5") {
+TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesPStrategy/4") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
@@ -204,7 +202,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesPStrategy/5") {
 
 }
 
-TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesPStrategy/6") {
+TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesPStrategy/5") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
@@ -254,7 +252,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesPStrategy/6") {
 
 }
 
-TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesPStrategy/7") {
+TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesPStrategy/6") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
@@ -304,7 +302,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesPStrategy/7") {
 
 }
 
-TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesPStrategy/8") {
+TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesPStrategy/7") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();

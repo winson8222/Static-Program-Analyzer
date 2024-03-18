@@ -383,7 +383,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/2") {
 }
 
 // M1 Test Fix for Uses
-TEST_CASE("UsesStrategy - Comprehensive Test with Various Scenarios") {
+TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/3") {
     auto pkb = std::make_shared<PKB>();
     auto pkbReaderManager = std::make_shared<PKBReaderManager>(pkb);
     auto pkbWriterManager = std::make_shared<PKBWriterManager>(pkb);
@@ -467,6 +467,72 @@ TEST_CASE("UsesStrategy - Comprehensive Test with Various Scenarios") {
     // Verify that all necessary statements are returned
     std::unordered_set<std::string> expected{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
 //    REQUIRE(res == expected);
+}
+
+//call c;
+//Select c such that Uses(c, "iter")
+TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/4") {
+    //Select c such that Uses(c, "iter")
+    SECTION("QueryParser correctly parses 'call c; Select c such that Uses(c, \"iter\")' with no errors") {
+        // Manually create the vector of tokens for the query
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "call"),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Uses, "Uses"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::QuoutIDENT, "\"iter\""),
+                Token(TokenType::Rparenthesis, ")")
+
+        };
+
+
+        // Instantiate the QueryParser with the tokens
+        QueryParser queryParser(tokens);
+
+        // Parse the query
+        ParsingResult parsingResult = queryParser.parse();
+
+        // Verify that the parsing result indicates a valid query with no errors
+        REQUIRE(parsingResult.isQueryValid() == true);
+        REQUIRE(parsingResult.getErrorMessage().empty() == true);
+
+        // Additional checks can be performed here if needed, such as verifying the specific parsing output
+    }
+
+    SECTION("QueryParser correctly parses 'read r; Select r such that Uses(r, 1)' with no errors") {
+        // Manually create the vector of tokens for the query
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "read"),
+                Token(TokenType::IDENT, "r"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::IDENT, "r"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Uses, "Uses"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::IDENT, "r"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::INTEGER, "1"),
+                Token(TokenType::Rparenthesis, ")")
+        };
+        QueryParser queryParser(tokens);
+        // Parse the query
+        ParsingResult parsingResult = queryParser.parse();
+
+
+        // Verify that the parsing result indicates a valid query with no errors
+        REQUIRE(parsingResult.isQueryValid() == false);
+        REQUIRE(parsingResult.getErrorMessage() == "SyntaxError");
+    }
+
 }
 
 
