@@ -15,6 +15,7 @@ class WithStrategy : public QueryEvaluationStrategy {
 private:
     Token firstParam;
     Token secondParam;
+    ParsingResult parsingResult;
 
     /**
      * Retrieves the entities from the result table based on the given synonym and entity reader for integer entities.
@@ -58,10 +59,10 @@ public:
      * @param pkbReaderManager Reference to the PKB reader manager for accessing program knowledge.
      * @param parsingResult The parsing result containing the details of the query.
      */
-    std::unordered_set<std::string> processParam(Token param, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager, const std::shared_ptr<ResultTable>& resultTable);
+    std::unordered_set<std::string> processParam(Token param, PKBReaderManager& pkbReaderManager, const std::shared_ptr<ResultTable>& resultTable);
 
 
-    pair<string, string> extractAttributes(Token param, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager);
+    pair<string, string> extractAttributes(Token param, PKBReaderManager& pkbReaderManager);
     bool isInteger(const std::string& str);
     bool isQuotedString(const std::string& str);
 

@@ -20,8 +20,9 @@ std::shared_ptr<ResultTable> WithStrategy::evaluateQuery(PKBReaderManager& pkbRe
         auto resultTable = std::make_shared<ResultTable>();
         // Initializing PKB readers for With clause
         const WithClause* withClause = dynamic_cast<const WithClause*>(&clause);
-        Token firstParam = withClause->getFirstParam();
-        Token secondParam = withClause->getSecondParam();
+        this->firstParam = withClause->getFirstParam();
+        this->secondParam = withClause->getSecondParam();
+        this->parsingResult = parsingResult;
     
         if (isInteger(firstParam.getValue()) && isInteger(secondParam.getValue())) {
             if (firstParam.getValue() == secondParam.getValue()) {
@@ -34,12 +35,12 @@ std::shared_ptr<ResultTable> WithStrategy::evaluateQuery(PKBReaderManager& pkbRe
             }
         }
         else {
-            std::unordered_set<std::string> lhsValue = processParam(firstParam, parsingResult, pkbReaderManager, originalResultTable);
-            std::unordered_set<std::string> rhsValue = processParam(secondParam, parsingResult, pkbReaderManager, originalResultTable);
+            std::unordered_set<std::string> lhsValue = processParam(firstParam, pkbReaderManager, originalResultTable);
+            std::unordered_set<std::string> rhsValue = processParam(secondParam, pkbReaderManager, originalResultTable);
             std::unordered_set<std::string> intersection = findIntersection(lhsValue, rhsValue);
 
             if (!isQuotedString(firstParam.getValue()) && !isInteger(firstParam.getValue())) {
-                pair<string, string> attributes = extractAttributes(firstParam, parsingResult, pkbReaderManager);
+                pair<string, string> attributes = extractAttributes(firstParam, pkbReaderManager);
                 string synonym = attributes.first;
                 string attribute = attributes.second;
                 string synonymType = parsingResult.getDeclaredSynonym(synonym);
@@ -60,7 +61,7 @@ std::shared_ptr<ResultTable> WithStrategy::evaluateQuery(PKBReaderManager& pkbRe
                 
             }
             if (!isQuotedString(secondParam.getValue()) && !isInteger(secondParam.getValue())) {
-                pair<string, string> attributes = extractAttributes(secondParam, parsingResult, pkbReaderManager);
+                pair<string, string> attributes = extractAttributes(secondParam, pkbReaderManager);
                 string synonym = attributes.first;
                 string attribute = attributes.second;
                 string synonymType = parsingResult.getDeclaredSynonym(synonym);
@@ -105,9 +106,7 @@ std::unordered_set<std::string> WithStrategy::retrieveIntEntities(std::string sy
     else {
         unordered_set<int> list = entityReader->getAllEntities();
         unordered_set<string> entities;
-        for (int entity : list) {
-            entities.insert(std::to_string(entity));
-        }
+        convertIntSetToStringSet(list, entities);
         return entities;
     }
 }
@@ -129,7 +128,7 @@ std::shared_ptr<ResultTable> WithStrategy::evaluateQuery(PKBReaderManager& pkbRe
 /**
  * Processes first parameter of the query.
  */
-std::unordered_set<std::string> WithStrategy::processParam(Token param, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager, const std::shared_ptr<ResultTable>& resultTable) {
+std::unordered_set<std::string> WithStrategy::processParam(Token param, PKBReaderManager& pkbReaderManager, const std::shared_ptr<ResultTable>& resultTable) {
     // check if param.getValue() is an integer or a quoted string
     std::shared_ptr<ReadVarNameReader> readVarNameReader = pkbReaderManager.getReadVarNameReader();
     std::shared_ptr<PrintVarNameReader> printVarNameReader = pkbReaderManager.getPrintVarNameReader();
@@ -157,7 +156,7 @@ std::unordered_set<std::string> WithStrategy::processParam(Token param, const Pa
         return {extractedValue};
 	}
     else if (param.getType() == TokenType::Ref) {
-        pair<string, string> attributes = extractAttributes(param, parsingResult, pkbReaderManager);
+        pair<string, string> attributes = extractAttributes(param, pkbReaderManager);
         string synonym = attributes.first;
         string attribute = attributes.second;
         string synonymType = parsingResult.getDeclaredSynonym(synonym);
@@ -226,17 +225,12 @@ std::unordered_set<std::string> WithStrategy::processParam(Token param, const Pa
         
     }
     
-    string col1 = firstParam.getValue();
-    
-    string firstStatementType = parsingResult.getDeclaredSynonym(firstParam.getValue());
-
-    
 }
 
 /**
  * Extracts the synonym of the parameter and the attribute of the parameter which are split by a dot.
  */
-pair<string, string> WithStrategy::extractAttributes(Token param, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager)
+pair<string, string> WithStrategy::extractAttributes(Token param, PKBReaderManager& pkbReaderManager)
 {
     string paramValue = param.getValue();
 	size_t dotPosition = paramValue.find(".");
@@ -317,9 +311,7 @@ unordered_set<std::string> WithStrategy::mapStringSetToIntSet(PKBReaderManager& 
 		}
 	}
     unordered_set<string> mappedIntSet;
-    for (int stmt : intSet) {
-	    mappedIntSet.insert(to_string(stmt));
-	}
+    convertIntSetToStringSet(intSet, mappedIntSet);
 	return mappedIntSet;
 }
 
