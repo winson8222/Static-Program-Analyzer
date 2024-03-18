@@ -1,0 +1,125 @@
+name: Build + Coverage
+
+# ai-gen start (gpt, 2, e)
+# prompt: https://chat.openai.com/share/889297a9-013e-4b5c-a215-ac8fcd331431
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  schedule:
+    - cron: "0 09,23 * * *"
+  
+env:
+    BUILD_TYPE: Debug
+    TEST_DIR: ${{ github.workspace }}/Team19/Code19/build/src/unit_testing
+    PY_DIR: ${{ github.workspace }}/Team19/Code19
+
+jobs:
+  coverage-reports:
+    timeout-minutes: 20
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest]
+    
+    steps:
+      - uses: actions/checkout@v2
+  
+      - name: Setup Build Environment
+        shell: bash
+        working-directory: ./Team19/Code19
+        run: cmake -E make_directory build
+
+      - name: Configure CMake
+        shell: bash
+        working-directory: ./Team19/Code19/build
+        run: cmake -A x64 .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
+      
+      # Build the project and unit test files
+      - name: Build Project
+        shell: bash
+        working-directory: ./Team19/Code19/build
+        run: | 
+          cmake --build . --config ${BUILD_TYPE} -j 4
+          cmake --build . --target unit_testing --config ${BUILD_TYPE} -j 4
+        
+      # Install OpenCppCoverage using Chocolatey
+      - name: Install OpenCppCoverage
+        shell: powershell
+        run: |
+          choco install opencppcoverage -y
+
+      # Generate Test Coverage Report using OpenCppCoverage
+      - name: Generate Test Coverage Report
+        shell: powershell
+        working-directory: ./Team19/Code19/build
+        run: |
+            & 'C:\Program Files\OpenCppCoverage\OpenCppCoverage.exe' --sources "${{github.workspace}}\Team19\Code19" --export_type cobertura:CoverageResults.xml -- ./src/unit_testing/${{ env.BUILD_TYPE }}/unit_testing.exe
+
+      # Upload original coverage report as an artifact
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-report
+          path: ./Team19/Code19/build/CoverageResults.xml
+          retention-days: 1
+
+      # Install ReportGenerator using Chocolatey
+      - name: Install ReportGenerator
+        run: dotnet tool install --global dotnet-reportgenerator-globaltool
+
+      # Generate HTML coverage report using ReportGenerator for human readability
+      - name: Generate HTML Coverage Report from Cobertura XML
+        shell: powershell
+        working-directory: ./Team19/Code19/build
+        run: |
+          reportgenerator "-reports:CoverageResults.xml" "-targetdir:html_coverage_report" "-reporttypes:Html"
+          
+      # Setup Python for combining HTML reports
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      
+      # Install Beautiful Soup
+      - name: Install Beautiful Soup
+        run: |
+          python -m pip install --upgrade pip
+          pip install beautifulsoup4
+          
+      # Combine HTML reports into a single file
+      - name: Combine HTML Reports into a Single File
+        run: |
+          python ${{ env.PY_DIR }}/combine_reports.py 
+        working-directory: ./Team19/Code19/build/html_coverage_report
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+          
+      # Upload the HTML summary coverage report as an artifact
+      - name: Upload HTML Summary Coverage Report
+        uses: actions/upload-artifact@v2
+        with:
+          name: summary_reports.html
+          path: ./Team19/Code19/build/html_coverage_report/index.html
+
+      # Upload the combined HTML coverage report as an artifact
+      - name: Upload HTML All combined Coverage Report
+        uses: actions/upload-artifact@v2
+        with:
+          name: all_reports.html
+          path: ./Team19/Code19/build/html_coverage_report/combined_report.html
+      
+      # Remove the build directory
+      - name: Remove Build Directory
+        if: always()
+        shell: bash
+        run: |
+          shopt -s dotglob
+          rm -rf ./Team19/Code19/build || true
+
+# ai-gen end
