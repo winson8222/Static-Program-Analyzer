@@ -67,9 +67,11 @@ jobs:
                 & ${{ env.TEST_DIR }}/${{ env.BUILD_TYPE }}/autotester.exe "source/${test_name}_source.txt" "queries/${test_name}_queries.txt" "outputs/${test_name}_output.xml" > "logs/log_${test_name}.txt"
     
                 if ($LASTEXITCODE -ne 0) {
+                    Write-Host "[System Test] Test $test_name cannot compile"
                     $EXIT_CODE = 1
                 }
                 else {
+                    Write-Host "[System Test] Test $test_name can compile"
                     $firstLine = Get-Content "logs/log_${test_name}.txt" -First 1
                     Write-Host $firstLine
                     $FILENAME = "outputs/${test_name}_output.xml"
