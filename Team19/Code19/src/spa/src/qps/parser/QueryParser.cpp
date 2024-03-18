@@ -440,7 +440,7 @@ void QueryParser::parsePatternClause() {
     advanceToken();
     
 
-    string patternType = parsingResult.getDeclaredSynonym(clause.getRelationship().getValue());
+    string patternType = parsingResult.getPatternClauseType(clause);
     if (patternType == "if") {
 
     }
