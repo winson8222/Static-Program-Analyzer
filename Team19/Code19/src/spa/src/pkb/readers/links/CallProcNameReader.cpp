@@ -17,6 +17,10 @@ bool CallProcNameReader::isCalled(int statementNumber, std::string procName) {
     return callProcNameStore->hasLink(statementNumber, procName);
 }
 
+std::unordered_set<std::string> CallProcNameReader::getAllCalledProcedures() {
+    return callProcNameStore->getAllLinked();
+}
+
 // Inherited methods
 bool CallProcNameReader::isEmpty() {
     return callProcNameStore->isEmpty();
@@ -32,5 +36,9 @@ std::unordered_set<int> CallProcNameReader::getLinker(std::string procName) {
 
 std::string CallProcNameReader::getLinked(int statementNumber) {
     return callProcNameStore->getLinked(statementNumber);
+}
+
+std::unordered_set<std::string> CallProcNameReader::getAllLinked() {
+    return callProcNameStore->getAllLinked();
 }
 // ai-gen end
