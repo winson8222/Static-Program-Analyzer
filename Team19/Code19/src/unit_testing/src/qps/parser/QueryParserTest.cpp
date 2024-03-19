@@ -893,3 +893,13 @@ TEST_CASE("src/qps/parser/QueryParser/4") {
         REQUIRE(parsingResult.isQueryValid() == true);
     }
 }
+
+TEST_CASE("Testing parsing of undeclared variables") {
+    Tokenizer tokenizer("stmt s1; Select s1 such that Follows(2, s)");
+    vector<Token> tokens = tokenizer.tokenize();
+    QueryParser queryParser(tokens);
+    ParsingResult parsingResult = queryParser.parse();
+
+    // Verify that the parsing result indicates a valid query with no errors
+    REQUIRE(parsingResult.isQueryValid() == false);
+}
