@@ -1,0 +1,131 @@
+<?xml-stylesheet type="text/xsl" href="analysis.xsl"?>
+<test_results>
+<info>
+<name>m2</name><parsing_time_taken>71.200000</parsing_time_taken>
+</info>
+<queries>
+<query>
+<id ReturnTuple="1" Follows="2" SuchThat="2" CondNum="5" RelNum="2" comment="Select multi-follows single synonym">1</id><querystr><![CDATA[stmt s1, s2; Select s1 such that Follows(1,s1) such that Follows(s1,3)]]></querystr>
+<stuans>2</stuans>
+<correct>2</correct>
+<time_taken>3.132000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Modifies="1" Uses="1" SuchThat="1" CondNum="4" RelNum="2" comment="Combining Follows and Parent Clauses">2</id><querystr><![CDATA[assign a; variable v; Select a such that Uses(a, v) and Modifies(a, v)]]></querystr>
+<stuans>18,19</stuans>
+<correct>18,19</correct>
+<time_taken>3.227000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Follows="1" Parent="1" SuchThat="1" CondNum="4" RelNum="2" comment="Combining Follows and Parent Clauses">3</id><querystr><![CDATA[stmt s1, s2; while w; Select s1 such that Follows(s1, s2) and Parent(w, s1)]]></querystr>
+<stuans>18</stuans>
+<correct>18</correct>
+<time_taken>3.195000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Parent="1" UnnamedVar="2" Pattern="1" SuchThat="1" CondNum="6" RelNum="1" comment="Combining Parent and Pattern Matching">4</id><querystr><![CDATA[if i; assign a; Select i such that Parent(i, a) pattern a(_, _"add"_)]]></querystr>
+<stuans>9</stuans>
+<correct>9</correct>
+<time_taken>2.993000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Followsstar="1" UnnamedVar="1" Uses="1" SuchThat="1" CondNum="5" RelNum="2" comment="Combining Follows* and Uses">5</id><querystr><![CDATA[stmt s; variable v; Select s such that Follows*(s, _) and Uses(s, v)]]></querystr>
+<stuans>14,18,20,11,6,12,17,7,5,1,4,8</stuans>
+<correct>4,5,6,7,8,17,20,12,14,18</correct>
+<time_taken>3.333000</time_taken>
+<failed>
+<missing></missing>
+<additional>1,11</additional>
+<summary>
+<expected>10</expected>
+<matched>10</matched>
+<missing>0</missing>
+<additional>2</additional>
+</summary>
+</failed>
+</query>
+<query>
+<id ReturnTuple="1" Modifies="1" Parentstar="1" UnnamedVar="1" SuchThat="1" CondNum="5" RelNum="2" comment="Combining Modifies and Parent*">6</id><querystr><![CDATA[while w; variable v; Select w such that Modifies(w, v) and Parent*(w, _)]]></querystr>
+<stuans>17,8</stuans>
+<correct>8,17</correct>
+<time_taken>2.915000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Modifies="1" Uses="1" SuchThat="1" CondNum="4" RelNum="2" comment="Combining Uses, Modifies, and Pattern Matching">7</id><querystr><![CDATA[assign a; variable v; Select v such that Uses(a, v) and Modifies(a, v)]]></querystr>
+<stuans>procedure,print</stuans>
+<correct>procedure,print</correct>
+<time_taken>3.134000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Follows="1" Parent="1" Uses="1" SuchThat="1" CondNum="5" RelNum="3" comment="Combining Parent, Follows, and Uses">8</id><querystr><![CDATA[stmt s1, s2; variable v; Select s1 such that Parent(s1, s2) and Follows(s1, s2) and Uses(s1, v)]]></querystr>
+<stuans></stuans>
+<correct></correct>
+<time_taken>3.624000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Followsstar="1" Modifies="1" Uses="1" SuchThat="1" CondNum="5" RelNum="3" comment="Combining Follows*, Modifies, and Uses with Different Entities">9</id><querystr><![CDATA[if i; assign a; variable v; Select i such that Follows*(i, a) and Modifies(i, v) and Uses(a, v)]]></querystr>
+<stuans></stuans>
+<correct></correct>
+<time_taken>3.320000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Uses="2" SuchThat="1" CondNum="4" RelNum="2" comment="Multiple Uses Clauses with Different Variables">10</id><querystr><![CDATA[variable v1, v2; assign a; Select a such that Uses(a, v1) and Uses(a, v2)]]></querystr>
+<stuans>12,6,4,14,18,7,5,19,20</stuans>
+<correct>12,5,14,6,7,20</correct>
+<time_taken>3.537000</time_taken>
+<failed>
+<missing></missing>
+<additional>18,19,4</additional>
+<summary>
+<expected>6</expected>
+<matched>6</matched>
+<missing>0</missing>
+<additional>3</additional>
+</summary>
+</failed>
+</query>
+<query>
+<id ReturnTuple="1" Followsstar="1" UnnamedVar="2" Uses="1" Pattern="1" SuchThat="2" CondNum="8" RelNum="2" comment="Follows* with Pattern and Uses Clauses">11</id><querystr><![CDATA[assign a; stmt s; variable v; Select a such that Follows*(s, a) pattern a(_, _) such that Uses(a, v)]]></querystr>
+<stuans>4,6,5,7,20,12,19</stuans>
+<correct>12,4,20,19,5,6,7</correct>
+<time_taken>4.531000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Follows="1" Parent="1" SuchThat="1" CondNum="4" RelNum="2" comment="Nested Conditions with Parent and Follows">12</id><querystr><![CDATA[if i; while w; stmt s; Select s such that Parent(i, w) and Follows(w, s)]]></querystr>
+<stuans></stuans>
+<correct></correct>
+<time_taken>3.104000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Followsstar="1" Modifies="1" Parentstar="1" SuchThat="1" CondNum="5" RelNum="3" comment="Combining All Clauses in a Single Query">13</id><querystr><![CDATA[assign a; stmt s; if i; while w; variable v; Select s such that Parent*(w, s) and Follows*(11, s) and Modifies(s, v)]]></querystr>
+<stuans>12,13</stuans>
+<correct>12,13</correct>
+<time_taken>3.794000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Follows="1" Modifies="1" Parent="1" Uses="1" Pattern="1" SuchThat="1" CondNum="7" RelNum="4" comment="Complex Query with Multiple Synonyms">14</id><querystr><![CDATA[stmt s1, s2, s3; assign a1, a2; variable v; Select s1 such that Follows(s1, s2) and Parent(s2, a1) and Uses(a1, v) and Modifies(a2, v) pattern a2 ("variable", "hi")]]></querystr>
+<stuans></stuans>
+<correct></correct>
+<time_taken>4.678000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Follows="1" Modifies="1" Parent="1" Uses="1" Pattern="1" SuchThat="1" CondNum="7" RelNum="4" comment="Complex Query with Multiple Synonyms with wrong and">15</id><querystr><![CDATA[stmt s1, s2, s3; assign a1, a2; variable v; Select s1 such that Follows(s1, s2) and Parent(s2, a1) and Uses(a1, v) and Modifies(a2, v) and pattern a2 ("variable", "hi")]]></querystr>
+<stuans>SyntaxError</stuans>
+<correct>SyntaxError</correct>
+<time_taken>4.401000</time_taken>
+<passed/>
+</query>
+</queries>
+</test_results>
