@@ -1,0 +1,56 @@
+name: SPA C++ Linting (Windows)
+
+# ai-gen start (gpt, 2, e)
+# prompt: https://chat.openai.com/share/889297a9-013e-4b5c-a215-ac8fcd331431
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  schedule:
+    - cron: "0 09,23 * * *"
+
+env:
+  BUILD_TYPE: Debug
+
+jobs:
+  lint:
+    name: Lint C++ Code
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    
+    # Install cpplint on Python
+    - name: Install cpplint
+      run: pip install cpplint
+
+    # Run cpplint and generate results file
+    # by recursively searching for .cpp and .h files
+    # then concatenate cpplint file output to results file
+    - name: Run cpplint and Generate Results File
+      run: |
+         $resultsPath = Join-Path ${{ github.workspace }} "cpplint-results.txt"
+         Get-ChildItem ./Team19/Code19/src/spa -Recurse -Include *.cpp, *.h | Foreach-Object {
+          $output = cpplint --filter=-whitespace,-legal/copyright,-readability,-build/c++11,-runtime/references $_.FullName | Out-String
+          Add-Content -Path $resultsPath -Value $output
+         }
+      shell: powershell
+
+    # Upload cpplint results file as artifact
+    - name: Upload cpplint Results
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+        name: cpplint-results
+        path: ${{ github.workspace }}/cpplint-results.txt
+
+
+# ai-gen end

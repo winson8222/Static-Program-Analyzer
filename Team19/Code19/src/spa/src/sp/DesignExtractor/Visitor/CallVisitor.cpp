@@ -5,19 +5,21 @@ CallVisitor::CallVisitor(std::shared_ptr<ASTNode> root,
 	std::shared_ptr<PKBWriterManager> pkbWriterManager)
 	: StatementVisitor(root, context, pkbWriterManager) {
 	this->contexts = listnode(context.begin(), context.end());
+	this->procNode = root->getChildByIndex(CALLS_VARIABLE_INDEX);
 }
 
 void CallVisitor::visit() {
-	// TODO
-	CallExtractor callExtractor(this->root, this->pkbWriterManager->getCallWriter());
-	callExtractor.extract();
+	handleCallExtractor();
+	handleCallProcNameExtractor();
+	handleProcedureVisitor();
+	setParents(this->contexts, this->root, this->pkbWriterManager);
+}
 
-	ProcedureVisitor procedureVisitor(this->root->getChildByIndex(CALLS_VARIABLE_INDEX), this->pkbWriterManager);
+void CallVisitor::handleProcedureVisitor() {
+	ProcedureVisitor procedureVisitor(this->procNode, this->pkbWriterManager);
 	procedureVisitor.addContexts(getProcedureContexts());
 	procedureVisitor.visit();
 	procedureVisitor.setIsVisited();
-
-	setParents(this->contexts, this->root, this->pkbWriterManager);
 }
 
 std::vector<std::shared_ptr<ASTNode>> CallVisitor::getProcedureContexts() {
@@ -39,6 +41,16 @@ std::vector<std::shared_ptr<ASTNode>> CallVisitor::getProcedureContexts() {
 	handleCallsP(mostRecentProcedure, calleeProcedure);
 	procedureContexts.push_back(this->root);
 	return procedureContexts;
+}
+
+void CallVisitor::handleCallExtractor() {
+	CallExtractor callExtractor(this->root, this->pkbWriterManager->getCallWriter());
+	callExtractor.extract();
+}
+
+void CallVisitor::handleCallProcNameExtractor() {
+	CallProcNameExtractor callProcNameExtractor(this->root, this->procNode, this->pkbWriterManager->getCallProcNameWriter());
+	callProcNameExtractor.extract();
 }
 
 void CallVisitor::handleCallsP(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2) {

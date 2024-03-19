@@ -143,7 +143,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/3") {
 
 }
 
-
 TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/4") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
@@ -222,7 +221,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/5") {
     REQUIRE((res == std::unordered_set<string>{ "1", "2" } || res == std::unordered_set<string>{"2", "1"}));
 
 }
-
 
 TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/6") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
@@ -389,7 +387,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/9") {
 
 }
 
-
 TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/10") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
@@ -447,6 +444,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/11") {
     statementWriter->insertStatement(2);
     statementWriter->insertStatement(3);
     followWriter->addFollows(1, 2);
+    followWriter->addFollows(1, 3);
     followWriter->addFollows(2, 3);
 
     std::vector<Token> tokens = {
@@ -484,7 +482,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/11") {
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
     std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{"1", "2"});
+    REQUIRE(res == std::unordered_set<string>{"3 1", "2 1"});
+
 }
 
 TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/12") {

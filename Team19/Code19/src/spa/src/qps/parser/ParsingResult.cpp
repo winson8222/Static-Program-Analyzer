@@ -86,4 +86,8 @@ bool ParsingResult::isSynonymDeclared(const string& synonym) {
     return declaredSynonyms.find(synonym) != declaredSynonyms.end();
 }
 
+const string& ParsingResult::getPatternClauseType(const PatternClause &clause) const {
+    return getDeclaredSynonym(clause.getRelationship().getValue());
+}
+
 

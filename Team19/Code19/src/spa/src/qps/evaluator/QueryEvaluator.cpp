@@ -1,7 +1,7 @@
 #include "QueryEvaluator.h"
-#include "qps/evaluator/strategies/PatternStrategy.h"
 #include "qps/evaluator/ResultTable.h"
 #include <variant>
+#include "strategies/WithStrategy.h"
 
 using namespace std;
 
@@ -115,8 +115,8 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
     // Add such-that-strategies based on the relationship specified in the query.
     for (auto clause : suchThatClauses) {
         TokenType suchThatRelationship = clause.getRelationship().getType();
-        auto it = strategyFactory.find(suchThatRelationship);
-        if (it != strategyFactory.end()) {
+        auto it = suchThatStrategyFactory.find(suchThatRelationship);
+        if (it != suchThatStrategyFactory.end()) {
             addStrategy(it->second());
         }
     }
@@ -124,59 +124,56 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
     vector<PatternClause> patternClauses = parsingResult.getPatternClauses();
     // Add PatternStrategy if pattern clause exists in the query.
     for (auto clause : patternClauses) {
-        addStrategy(std::make_unique<PatternStrategy>());
+        string patternType = parsingResult.getPatternClauseType(clause);
+        auto it = patternStrategyFactory.find(patternType);
+        if (it != patternStrategyFactory.end()) {
+            addStrategy(it->second());
+        }
     }
     
-    /*vector<WithClause> withClauses = parsingResult.getWithClauses();
+    vector<WithClause> withClauses = parsingResult.getWithClauses();
     for (auto cluase : withClauses) {
-
-    }*/
+        addStrategy(std::make_unique<WithStrategy>());
+    }
 
     // Evaluate the query using the strategies and compile the results.
     bool isFirstStrategy = true;
     int suchThatCounter = 0;
     int patternCounter = 0;
+    int withCounter = 0;
     for (auto& strategy : strategies) {
+        shared_ptr<ResultTable> tempResult;
+        if (suchThatCounter < suchThatClauses.size()) {
+            tempResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult, suchThatClauses[suchThatCounter]);
+            suchThatCounter++;
+        }
+        else if (patternCounter < patternClauses.size()) {
+            tempResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult, patternClauses[patternCounter]);
+            patternCounter++;
+        }
+        else if (withCounter < withClauses.size()) {
+            tempResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult, withClauses[withCounter], result);
+			withCounter++;
+		}
+      
+        // if it is a true table skip to next strategy
+        if (tempResult->isTableTrue()) {
+            result = tempResult;
+            continue;
+        }
+
+        // if it is a false table, we can break early since the result will be false
+        if (tempResult->isTableFalse()) {
+            result = tempResult;
+            break;
+        }
 
         if (isFirstStrategy) {
-            if (suchThatCounter < suchThatClauses.size()) {
-                result = strategy->evaluateQuery(*pkbReaderManager, parsingResult, suchThatClauses[suchThatCounter]);
-                suchThatCounter++;
-            }
-            else if (patternCounter < patternClauses.size()) {
-                result = strategy->evaluateQuery(*pkbReaderManager, parsingResult, patternClauses[patternCounter]);
-                patternCounter++;
-            }
             // if it is a false table, we can break early since the result will be false
-            if (result->isTableFalse()) {
-                break;
-            }
-            // if it is a true table skip to next strategy
-            if (result->isTableTrue()) {
-                continue;
-            }
             isFirstStrategy = false;
+            result = tempResult;
         }
         else {
-            shared_ptr<ResultTable> tempResult;
-            if (suchThatCounter < suchThatClauses.size()) {
-                tempResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult, suchThatClauses[suchThatCounter]);
-                suchThatCounter++;
-            }
-            else if (patternCounter < patternClauses.size()) {
-                tempResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult, patternClauses[patternCounter]);
-                patternCounter++;
-            }
-            // if it is a false table, we can break early since the result will be false
-            if (tempResult->isTableFalse()) {
-                result = tempResult;
-                break;
-            }
-            // if it is a true table skip to next strategy and retain the result
-            if (tempResult->isTableTrue()) {
-                continue;
-            }
-
             // if it is a non true and non empty table, join the result with the tempResult
             result = result->joinOnColumns(tempResult);
         }
@@ -253,7 +250,7 @@ std::unordered_set<std::string> QueryEvaluator::getAllEntities(const std::string
 void QueryEvaluator::initializeStrategyFactory() {
 
     // Mapping of query types to their corresponding strategies.
-    QueryEvaluator::strategyFactory = {
+    QueryEvaluator::suchThatStrategyFactory = {
             {TokenType::Follows, []() { return std::make_unique<FollowsStrategy>(); }},
             {TokenType::FollowsT, []() { return std::make_unique<FollowsStrategy>(); }},
             {TokenType::Parent, []() { return std::make_unique<ParentStrategy>(); }},
@@ -267,6 +264,12 @@ void QueryEvaluator::initializeStrategyFactory() {
             {TokenType::Next, []() { return std::make_unique<NextStrategy>(); }},
             {TokenType::NextT, []() { return std::make_unique<NextStrategy>(); }},
             // Additional strategies can be added here as needed.
+    };
+
+    QueryEvaluator::patternStrategyFactory = {
+            {"assign", []() { return std::make_unique<AssignPatternStrategy>(); }},
+            {"while", []() { return std::make_unique<WhilePatternStrategy>();}},
+            {"if", []() { return std::make_unique<IfPatternStrategy>();}}
     };
 }
 

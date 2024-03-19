@@ -1,12 +1,13 @@
 #include "sp/DesignExtractor/Visitor/AssignVisitor.h"
 
-AssignVisitor::AssignVisitor(std::shared_ptr<ASTNode> root, 
+AssignVisitor::AssignVisitor(std::shared_ptr<ASTNode> root,
 	listnode context,
 	std::shared_ptr<PKBWriterManager> pkbWriterManager)
 	: StatementVisitor(root, context, pkbWriterManager) {
-	if (root->type != ASTNodeType::ASSIGN) {
+	if (!root->equalType(ASTNodeType::ASSIGN)) {
 		throw std::invalid_argument("ERROR: AssignVisitor - not an assign node");
 	}
+
 	this->contexts = listnode(context.begin(), context.end());
 	this->lhsExpr = root->getChildByIndex(ASSIGN_LHS);
 	this->rhsExpr = root->getChildByIndex(ASSIGN_RHS);

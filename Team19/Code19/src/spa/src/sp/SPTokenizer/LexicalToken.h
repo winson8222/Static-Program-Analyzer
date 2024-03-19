@@ -70,4 +70,12 @@ public:
 	* @brief Prints the lexical token to the console.
 	*/
 	void print();
+
+	/**
+	 * @brief Assert Token to check if the token's type matches the expected one.
+	 *
+	 * @param type A expected lexical token type.
+	 * @throws Retrieves a runtime_error if the token's type doesn't match the expected type.
+	 */
+	void assertToken(LexicalTokenType type);
 };

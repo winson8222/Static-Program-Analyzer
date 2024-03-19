@@ -1,0 +1,75 @@
+1 - Select multi-follows single synonym
+stmt s1, s2;
+Select s1 such that Follows(1,s1) such that Follows(s1,3)
+2
+5000
+2 - Combining Follows and Parent Clauses
+assign a; variable v;
+Select a such that Uses(a, v) and Modifies(a, v)
+18, 19
+5000
+3 - Combining Follows and Parent Clauses
+stmt s1, s2; while w;
+Select s1 such that Follows(s1, s2) and Parent(w, s1)
+18
+5000
+4 - Combining Parent and Pattern Matching
+if i; assign a;
+Select i such that Parent(i, a) pattern a(_, _"add"_)
+9
+5000
+5 - Combining Follows* and Uses
+stmt s; variable v;
+Select s such that Follows*(s, _) and Uses(s, v)
+4, 5, 6, 7, 8, 17, 20, 12, 14, 18
+5000
+6 - Combining Modifies and Parent*
+while w; variable v;
+Select w such that Modifies(w, v) and Parent*(w, _)
+8, 17
+5000
+7 - Combining Uses, Modifies, and Pattern Matching
+assign a; variable v;
+Select v such that Uses(a, v) and Modifies(a, v)
+procedure, print
+5000
+8 - Combining Parent, Follows, and Uses
+stmt s1, s2; variable v;
+Select s1 such that Parent(s1, s2) and Follows(s1, s2) and Uses(s1, v)
+none
+5000
+9 - Combining Follows*, Modifies, and Uses with Different Entities
+if i; assign a; variable v;
+Select i such that Follows*(i, a) and Modifies(i, v) and Uses(a, v)
+none
+5000
+10 - Multiple Uses Clauses with Different Variables
+variable v1, v2; assign a;
+Select a such that Uses(a, v1) and Uses(a, v2)
+12, 5, 14, 6, 7, 20
+5000
+11 - Follows* with Pattern and Uses Clauses
+assign a; stmt s; variable v;
+Select a such that Follows*(s, a) pattern a(_, _) such that Uses(a, v)
+12, 4, 20, 19, 5, 6, 7
+5000
+12 - Nested Conditions with Parent and Follows
+if i; while w; stmt s;
+Select s such that Parent(i, w) and Follows(w, s)
+none
+5000
+13 - Combining All Clauses in a Single Query
+assign a; stmt s; if i; while w; variable v;
+Select s such that Parent*(w, s) and Follows*(11, s) and Modifies(s, v)
+12, 13
+5000
+14 - Complex Query with Multiple Synonyms
+stmt s1, s2, s3; assign a1, a2; variable v;
+Select s1 such that Follows(s1, s2) and Parent(s2, a1) and Uses(a1, v) and Modifies(a2, v) pattern a2 ("variable", "hi")
+none
+5000
+15 - Complex Query with Multiple Synonyms with wrong and
+stmt s1, s2, s3; assign a1, a2; variable v;
+Select s1 such that Follows(s1, s2) and Parent(s2, a1) and Uses(a1, v) and Modifies(a2, v) and pattern a2 ("variable", "hi")
+SyntaxError
+5000

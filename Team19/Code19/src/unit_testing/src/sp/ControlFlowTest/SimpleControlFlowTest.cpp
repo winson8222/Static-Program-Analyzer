@@ -340,4 +340,3 @@ TEST_CASE("CFG for complex nested if-while constructs") {
 	}
 	std::filesystem::remove(filename);
 }
-
