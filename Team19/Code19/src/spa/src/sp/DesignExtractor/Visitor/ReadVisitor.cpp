@@ -19,5 +19,5 @@ void ReadVisitor::visit() {
 	variableVisitor.setModifiedContext(this->contexts, this->root);
 	variableVisitor.visit();
 
-	setParents(this->contexts, this->root, this->pkbWriterManager);
+	// setParents(this->contexts, this->root, this->pkbWriterManager);
 }

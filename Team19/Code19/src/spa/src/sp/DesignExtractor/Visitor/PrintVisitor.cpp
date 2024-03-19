@@ -25,5 +25,5 @@ void PrintVisitor::visit() {
 	variableVisitor.setUsedContext(contexts, root);
 	variableVisitor.visit();
 
-	setParents(this->contexts, this->root, this->pkbWriterManager);
+	// setParents(this->contexts, this->root, this->pkbWriterManager);
 }

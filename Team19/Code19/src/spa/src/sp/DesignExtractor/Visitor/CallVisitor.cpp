@@ -12,7 +12,7 @@ void CallVisitor::visit() {
 	handleCallExtractor();
 	handleCallProcNameExtractor();
 	handleProcedureVisitor();
-	setParents(this->contexts, this->root, this->pkbWriterManager);
+	// setParents(this->contexts, this->root, this->pkbWriterManager);
 }
 
 void CallVisitor::handleProcedureVisitor() {

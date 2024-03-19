@@ -18,7 +18,9 @@ void StatementListVisitor::visit() {
 	for (auto statement : statementLists) {
 		std::shared_ptr<StatementVisitor> statementVisitor = statementFactory.createVisitor(statement, this->contexts, this->pkbWriterManager);
 		statementVisitor->visit();
+		statementVisitor->setParents(this->contexts, statement, this->pkbWriterManager);
 		handleStatementExtraction(statement);
+		// setParents(this->contexts, this->root, this->pkbWriterManager);
 	}
 
 	handleAllFollows();

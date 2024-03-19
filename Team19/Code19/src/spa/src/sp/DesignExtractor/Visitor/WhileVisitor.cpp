@@ -16,7 +16,7 @@ void WhileVisitor::visit() {
 	handleWhileExtraction();
 	handleExpressionVisitor();
 	handleStatementListVisitor();
-	setParents(this->contexts, this->root, this->pkbWriterManager);
+	// setParents(this->contexts, this->root, this->pkbWriterManager);
 }
 
 void WhileVisitor::handleWhileExtraction() {
