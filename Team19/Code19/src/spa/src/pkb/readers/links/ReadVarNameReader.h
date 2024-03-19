@@ -34,10 +34,17 @@ public:
      */
     bool isRead(int statementNumber, std::string varName);
 
+    /**
+     * @brief Gets the set of all variables read by any statement.
+     * @return The set of all variables read by any statement.
+     */
+    std::unordered_set<std::string> getAllReadVariables();
+
     // Inherited methods
     bool isEmpty() override;
     bool hasLink(int statementNumber, std::string varName) override;
     std::unordered_set<int> getLinker(std::string varName) override;
     std::string getLinked(int statementNumber) override;
+    std::unordered_set<std::string> getAllLinked() override;
 };
 // ai-gen end

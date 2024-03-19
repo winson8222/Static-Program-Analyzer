@@ -19,11 +19,13 @@ class LinkStore : public ILinkReader<LinkerType, LinkedType>, public ILinkWriter
 private:
     std::unordered_map<LinkerType, LinkedType> links;
     std::unordered_map<LinkedType, std::unordered_set<LinkerType>> reverseLinks;
+    std::unordered_set<LinkedType> allLinked;
 public:
     // ILinkWriter implementation
     void addLink(LinkerType linkerEntity, LinkedType linkedEntity) override {
         links[linkerEntity] = linkedEntity;
         reverseLinks[linkedEntity].insert(linkerEntity);
+        allLinked.insert(linkedEntity);
     }
 
     void clear() override {
@@ -49,6 +51,10 @@ public:
 
     LinkedType getLinked(LinkerType entity) override {
         return links.at(entity);
+    }
+
+    std::unordered_set<LinkedType> getAllLinked() override {
+        return allLinked;
     }
 };
 // ai-gen end
