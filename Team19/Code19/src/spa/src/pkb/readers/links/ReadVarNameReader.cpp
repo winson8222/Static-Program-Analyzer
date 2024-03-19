@@ -17,6 +17,11 @@ bool ReadVarNameReader::isRead(int statementNumber, std::string varName) {
     return readVarNameStore->hasLink(statementNumber, varName);
 }
 
+std::unordered_set<std::string> ReadVarNameReader::getAllReadVariables() {
+    return readVarNameStore->getAllLinked();
+}
+
+
 // Inherited methods
 bool ReadVarNameReader::isEmpty() {
     return readVarNameStore->isEmpty();
@@ -32,5 +37,9 @@ std::unordered_set<int> ReadVarNameReader::getLinker(std::string varName) {
 
 std::string ReadVarNameReader::getLinked(int statementNumber) {
     return readVarNameStore->getLinked(statementNumber);
+}
+
+std::unordered_set<std::string> ReadVarNameReader::getAllLinked() {
+    return readVarNameStore->getAllLinked();
 }
 // ai-gen end

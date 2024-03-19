@@ -30,6 +30,17 @@ TEST_CASE("pkb/stores/links/LinkStore") {
             REQUIRE(linkStore.getLinker("non-existent").empty());
             REQUIRE_THROWS(linkStore.getLinked(1));
         }
+
+        SECTION("getAllLinked: Basic") {
+            linkStore.addLink(1, "one");
+            linkStore.addLink(2, "two");
+            linkStore.addLink(3, "three");
+            REQUIRE(linkStore.getAllLinked() == std::unordered_set<std::string>{"one", "two", "three"});
+        }
+
+        SECTION("getAllLinked: Empty") {
+            REQUIRE(linkStore.getAllLinked().empty());
+        }
     }
 
     SECTION("int to int") {

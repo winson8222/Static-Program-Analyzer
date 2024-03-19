@@ -34,10 +34,17 @@ public:
      */
     bool isCalled(int statementNumber, std::string procName);
 
+    /**
+     * @brief Gets the set of all procedures called by any statement.
+     * @return The set of all procedures called by any statement.
+     */
+    std::unordered_set<std::string> getAllCalledProcedures();
+
     // Inherited methods
     bool isEmpty() override;
     bool hasLink(int statementNumber, std::string procName) override;
     std::unordered_set<int> getLinker(std::string procName) override;
     std::string getLinked(int statementNumber) override;
+    std::unordered_set<std::string> getAllLinked() override;
 };
 // ai-gen end
