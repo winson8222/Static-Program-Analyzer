@@ -6,6 +6,7 @@
 #include "../../spa/src/qps/parser/Token.h"
 #include <vector>
 #include <string>
+#include <unordered_set>
 #include "../../spa/src/qps/parser/Tokenizer.h"
 #include "../../spa/src/qps/parser/ParsingResult.h"
 
