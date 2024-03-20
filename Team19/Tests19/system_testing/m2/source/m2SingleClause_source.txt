@@ -29,5 +29,5 @@ procedure Finalize {
 
 procedure Last {
     x = iter + y;
-    z = 100;
+    z = 100 + x;
 }

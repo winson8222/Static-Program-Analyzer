@@ -224,10 +224,11 @@ void QueryParser::parseRelRef(SuchThatClause& clause) {
 bool QueryParser::isStmtRefStmtRef() {
     if (match(TokenType::Parent) || match(TokenType::ParentT) ||
         match(TokenType::Follows) || match(TokenType::FollowsT) ||
-        match(TokenType::Next) || match(TokenType::NextT)) {
+        match(TokenType::Next) || match(TokenType::NextT) || match(TokenType::Affects)) {
         currentSuchThatToken = currentToken();
         return true;
     }
+
     return false;
 }
 
