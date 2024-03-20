@@ -101,4 +101,9 @@ public:
     void initializeStrategyFactory(); // Method to initialize the strategy factory
     void initializeEntityFactory(); // Method to initialize the entity factory
     string join(const unordered_set<string>& elements, const string& delimiter);
+    bool isSynAttrRef(const string& ref);
+    string convertToAttr(string synonym ,string ref);
+    string convertToStmtNumber(string synonym ,string ref);
+    string convertToVarName(string synonym ,string ref);
+    string convertToProcName(const string& synonym ,string ref);
 };

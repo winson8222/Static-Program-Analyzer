@@ -326,4 +326,50 @@ string QueryEvaluator::join(const unordered_set<string>& elements, const string&
     }
     return result;
 }
+
+bool QueryEvaluator::isSynAttrRef(const string& ref) {
+    return ref.find(".") != string::npos;
+}
+
+string QueryEvaluator::convertToAttr(string synonym , string ref) {
+    string declaredSynonym = ParsingResult::getSynFromAttrRef(synonym);
+    string attrType = ParsingResult::getAttrFromAttrRef(synonym);
+    if (attrType == "stmt#" || attrType == "value") {
+            return ref;
+    } else if (attrType == "procName") {
+        return convertToProcName(declaredSynonym, ref);
+    } else if (attrType == "varName") {
+        return convertToVarName(declaredSynonym, ref);
+    }
+    return "";
+}
+
+
+string QueryEvaluator::convertToProcName(const std::string& declaredSynonym, std::string ref) {
+    if (declaredSynonym == "procedure") {
+        return ref;
+    }
+
+    if (declaredSynonym == "call") {
+        return pkbReaderManager->getCallProcNameReader()->getCalledProcedureName(stoi(ref));
+    } else {
+        return "";
+    }
+}
+
+
+string QueryEvaluator::convertToVarName(std::string declaredSynonym, std::string ref) {
+    if (declaredSynonym == "variable") {
+        return ref;
+    }
+
+    if (declaredSynonym == "read") {
+        return pkbReaderManager->getReadVarNameReader()->getReadVariableName(stoi(ref));
+    }
+
+    if (declaredSynonym == "print") {
+        return pkbReaderManager->getPrintVarNameReader()->getPrintVariableName(stoi(ref));
+    }
+    return "";
+}
 // ai-gen end
