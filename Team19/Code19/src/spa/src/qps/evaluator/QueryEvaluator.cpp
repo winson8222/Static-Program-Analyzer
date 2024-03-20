@@ -21,6 +21,9 @@ void QueryEvaluator::addStrategy(std::unique_ptr<QueryEvaluationStrategy> strate
 }
 
 void QueryEvaluator::constructEntryString(std::string& entry, std::string& synonym, std::unordered_map<std::string, std::string>& map) {
+    // check if synonym is a AttrRef
+    // entry.empty() ? entry = map.at(synonym) : entry += " " + map.at(synonym);
+    // convert map.at(synonym) to attrValue needed
 	entry.empty() ? entry = map.at(synonym) : entry += " " + map.at(synonym);
 }
 
@@ -200,12 +203,14 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
 
         if (result->hasColumn(requiredSynonyms[0])) {
             unordered_set<string> currentResult = result->getColumnValues(requiredSynonyms[0]);
+            // if it is an attr, convert into attrValue
             finalSet.insert(currentResult.begin(), currentResult.end());
         }
         else {
             //return all statement/variables/whatever
             if (result->isTableTrue() || !result->isEmpty() || isFirstStrategy) {
-                unordered_set<string> currentResult = getAllEntities(requiredType);;
+                unordered_set<string> currentResult = getAllEntities(requiredType);
+                // if it is an attr, convert into attrValue
                 finalSet.insert(currentResult.begin(), currentResult.end());
             }
 
