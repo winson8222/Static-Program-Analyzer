@@ -268,6 +268,8 @@ void QueryEvaluator::initializeStrategyFactory() {
 
     QueryEvaluator::patternStrategyFactory = {
             {"assign", []() { return std::make_unique<AssignPatternStrategy>(); }},
+            {"while", []() { return std::make_unique<WhilePatternStrategy>();}},
+            {"if", []() { return std::make_unique<IfPatternStrategy>();}}
     };
 }
 
