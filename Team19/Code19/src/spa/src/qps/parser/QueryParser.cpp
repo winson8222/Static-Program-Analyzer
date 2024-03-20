@@ -653,13 +653,14 @@ void QueryParser::parseEntSynonym() {
 void QueryParser::parseStmtSynonyms() {
     ensureToken(TokenType::IDENT);
     const auto& currentTokenType = currentSuchThatToken.getType();
-    const auto& currentValue = parsingResult.getDeclaredSynonym(currentToken().getValue());
+    const std::string currentValue = parsingResult.getDeclaredSynonym(currentToken().getValue());
 
     // Check if the current token type is in the map
     auto validTypesIt = validStmtSynonymsMap.find(currentTokenType);
     if (validTypesIt != validStmtSynonymsMap.end()) {
         // Found the token type, now check if the current value is in the set of valid synonyms for this type
-        const auto& validSynonyms = validTypesIt->second;
+        std::unordered_set<std::string> validSynonyms = validTypesIt->second;
+
         if (validSynonyms.find(currentValue) == validSynonyms.end()) {
             // The current value is not a valid synonym for the current token type
             throwSemanticError();
