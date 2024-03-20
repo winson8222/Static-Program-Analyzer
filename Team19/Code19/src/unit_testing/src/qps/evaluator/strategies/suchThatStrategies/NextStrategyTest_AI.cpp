@@ -373,6 +373,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/NextStrategy/2") {
     auto pkbManager = std::make_shared<PKBManager>();
     auto pkbReaderManager = pkbManager->getPKBReaderManager();
     auto pkbWriterManager = pkbManager->getPKBWriterManager();
+    auto whileWriter = pkbWriterManager->getWhileWriter();
     auto nextWriter = pkbWriterManager->getNextWriter();
     auto statementWriter = pkbWriterManager->getStatementWriter();
 
@@ -382,6 +383,9 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/NextStrategy/2") {
     statementWriter->insertStatement(2);
     statementWriter->insertStatement(3);
     statementWriter->insertStatement(4);
+    whileWriter->insertWhile(1);
+    whileWriter->insertWhile(2);
+    whileWriter->insertWhile(4);
     nextWriter->addNext(1, 2);
     nextWriter->addNext(2, 3);
     nextWriter->addNext(3, 4);
@@ -433,11 +437,30 @@ std::vector<Token> tokens = {
         Token(TokenType::Rparenthesis, ")")
 };
 
-QueryParser parser(tokens);
-auto parsingResult = parser.parse();
-QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-std::unordered_set<string> res = evaluator.evaluateQuery();
-REQUIRE(res == std::unordered_set<string>{});
+        SECTION("Select while from NextT Relationship with 1 SYN and 1 Integer result none") {
+
+// Define tokens for the query testing transitive relationship
+            std::vector<Token> tokens = {
+                    Token(TokenType::DesignEntity, "while"),
+                    Token(TokenType::IDENT, "w"),
+                    Token(TokenType::Semicolon, ";"),
+                    Token(TokenType::SelectKeyword, "Select"),
+                    Token(TokenType::IDENT, "w"),
+                    Token(TokenType::SuchKeyword, "such"),
+                    Token(TokenType::ThatKeyword, "that"),
+                    Token(TokenType::NextT, "Next*"),
+                    Token(TokenType::Lparenthesis, "("),
+                    Token(TokenType::IDENT, "w"),
+                    Token(TokenType::Comma, ","),
+                    Token(TokenType::INTEGER, "3"),
+                    Token(TokenType::Rparenthesis, ")")
+            };
+
+            QueryParser parser(tokens);
+            auto parsingResult = parser.parse();
+            QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+            std::unordered_set<string> res = evaluator.evaluateQuery();
+            REQUIRE(res == std::unordered_set<string>{"1", "2"});
 }
 
 SECTION("Select stmt from Next Relationship with 1 wild card and 1 Integer"){
@@ -529,6 +552,7 @@ REQUIRE(res == std::unordered_set<string>{"3 4", "2 4", "1 3", "1 4", "2 3", "1 
 
 
 }
+}
 
 TEST_CASE("src/qps/evaluator/suchThatStrategies/NextStrategy/3") {
     // Setup PKB with NextT relationships
@@ -574,4 +598,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/NextStrategy/3") {
         std::unordered_set<string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<string>{"3", "1", "2", "4", "5"});
     }
+
+
 }

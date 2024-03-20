@@ -35,7 +35,10 @@ private:
             {TokenType::Follows, {"stmt", "assign", "while", "if", "print", "read"}},
             {TokenType::FollowsT, {"stmt", "assign", "while", "if", "print", "read"}},
             {TokenType::Uses, {"stmt", "print", "while", "if", "assign", "call", "read"}},
-            {TokenType::Modifies, {"stmt", "print", "while", "if", "assign", "call", "read"}}
+            {TokenType::Modifies, {"stmt", "print", "while", "if", "assign", "call", "read"}},
+            {TokenType::Next, {"stmt", "assign", "while", "if", "print", "read", "call"}},
+            {TokenType::NextT, {"stmt", "assign", "while", "if", "print", "read", "call"}},
+            {TokenType::Affects, {"stmt", "assign", "while", "if", "print", "read", "call"}},
     };
     // Vector of tokens to be parsed.
     vector<Token> tokens;

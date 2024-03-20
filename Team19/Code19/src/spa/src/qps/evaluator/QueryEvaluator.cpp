@@ -263,6 +263,7 @@ void QueryEvaluator::initializeStrategyFactory() {
             {TokenType::CallsT, []() { return std::make_unique<CallsStrategy>(); }},
             {TokenType::Next, []() { return std::make_unique<NextStrategy>(); }},
             {TokenType::NextT, []() { return std::make_unique<NextStrategy>(); }},
+            {TokenType::Affects, []() { return std::make_unique<AffectsStrategy>(); }},
             // Additional strategies can be added here as needed.
     };
 

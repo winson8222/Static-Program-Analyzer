@@ -134,7 +134,7 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
         }
     }
     // RelRef: Specific keywords.
-    else if (regex_match(tokenStr, regex("^(Follows|Follows\\*|Parent|Parent\\*|Uses|Modifies|Next|Next\\*|Calls|Calls\\*)$"))) {
+    else if (regex_match(tokenStr, regex("^(Follows|Follows\\*|Parent|Parent\\*|Uses|Modifies|Next|Next\\*|Calls|Calls\\*|Affects)$"))) {
         if (!tokens.empty() && (tokens.back().getType() == TokenType::SelectKeyword 
             || checkIfDeclaration() || tokens.back().getType() == TokenType::Lparenthesis 
             || tokens.back().getType() == TokenType::Comma)) {
@@ -169,6 +169,8 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
         }
         else if (tokenStr == "Calls*") {
             return TokenType::CallsT;
+        } else if (tokenStr == "Affects") {
+            return TokenType::Affects;
         }
     }
     // AttrName: Specific attributes.
