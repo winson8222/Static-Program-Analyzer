@@ -1,7 +1,7 @@
 // Include the parser class header.
 #include "../../spa/src/qps/parser/QueryParser.h"
 #include <stdexcept>
-#include <unordered_set>std::unordered_set<std::string>
+#include <unordered_set>
 #include <iostream>
 
 using namespace std;
