@@ -121,7 +121,7 @@ Select s such that Affects(16, s)
 25 - Finds which statement Affects statement
 stmt s;
 Select s such that Affects(3, s)
-122
+none
 5000
 26 - Finds which statement Affects statement
 stmt s;
