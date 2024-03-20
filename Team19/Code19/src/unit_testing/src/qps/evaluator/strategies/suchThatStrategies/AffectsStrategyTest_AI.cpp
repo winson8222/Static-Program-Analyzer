@@ -86,8 +86,6 @@ REQUIRE(res
 }
 
 SECTION("AffectsStrategy/Verify Affects Relationship") {
-
-
 // Define tokens for the query testing transitive relationship
 std::vector <Token> tokens = {
         Token(TokenType::SelectKeyword, "Select"),
@@ -112,10 +110,7 @@ REQUIRE(res
 }
 
 SECTION("AffectsStrategy/Verify Affects Relationship with 1 Int and 1 IDENT (FALSE)") {
-
 // Define tokens for the query testing transitive relationship
-
-
 std::vector <Token> tokens = {
         Token(TokenType::DesignEntity, "stmt"),
         Token(TokenType::IDENT, "s"),
@@ -142,8 +137,6 @@ REQUIRE(res
 }
 
 SECTION("AffectsStrategy/Verify Affects Relationship with 1 Int and 1 IDENT (TRUE)") {
-
-
 // Define tokens for the query testing transitive relationship
 std::vector <Token> tokens = {
         Token(TokenType::DesignEntity, "stmt"),
@@ -171,8 +164,6 @@ REQUIRE(res
 }
 
 SECTION("Select stmt from AffectsT Relationship") {
-
-
 // Define tokens for the query testing transitive relationship
 std::vector <Token> tokens = {
         Token(TokenType::DesignEntity, "stmt"),
@@ -200,8 +191,6 @@ REQUIRE(res
 }
 
 SECTION("Select stmt from Affects Relationship with 1 Int and 1 IDENT") {
-
-
 // Define tokens for the query testing transitive relationship
 std::vector <Token> tokens = {
         Token(TokenType::DesignEntity, "assign"),
@@ -231,24 +220,22 @@ REQUIRE(res
     SECTION("Select all affected stmt") {
 
     string query = "stmt s; Select s such that Affects(_, s)";
-    Tokenizer tokenizer(query);
-    auto tokens = tokenizer.tokenize();
-// Define tokens for the query testing transitive relationship
-//        std::vector <Token> tokens = {
-//                Token(TokenType::DesignEntity, "stmt"),
-//                Token(TokenType::IDENT, "s"),
-//                Token(TokenType::Semicolon, ";"),
-//                Token(TokenType::SelectKeyword, "Select"),
-//                Token(TokenType::IDENT, "s"),
-//                Token(TokenType::SuchKeyword, "such"),
-//                Token(TokenType::ThatKeyword, "that"),
-//                Token(TokenType::Affects, "Affects"),
-//                Token(TokenType::Lparenthesis, "("),
-//                Token(TokenType::Wildcard, "_"),
-//                Token(TokenType::Comma, ","),
-//                Token(TokenType::IDENT, "s"),
-//                Token(TokenType::Rparenthesis, ")")
-//        };
+ // Define tokens for the query testing transitive relationship
+        std::vector <Token> tokens = {
+                Token(TokenType::DesignEntity, "stmt"),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Affects, "Affects"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::Wildcard, "_"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Rparenthesis, ")")
+        };
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
@@ -262,24 +249,22 @@ REQUIRE(res
     SECTION("Select all affected stmt") {
 
         string query = "stmt s; Select s such that Affects(s, _)";
-        Tokenizer tokenizer(query);
-        auto tokens = tokenizer.tokenize();
-// Define tokens for the query testing transitive relationship
-//        std::vector <Token> tokens = {
-//                Token(TokenType::DesignEntity, "stmt"),
-//                Token(TokenType::IDENT, "s"),
-//                Token(TokenType::Semicolon, ";"),
-//                Token(TokenType::SelectKeyword, "Select"),
-//                Token(TokenType::IDENT, "s"),
-//                Token(TokenType::SuchKeyword, "such"),
-//                Token(TokenType::ThatKeyword, "that"),
-//                Token(TokenType::Affects, "Affects"),
-//                Token(TokenType::Lparenthesis, "("),
-//                Token(TokenType::IDENT, "s"),
-//                Token(TokenType::Comma, ","),
-//                Token(TokenType::Wildcard, "_"),
-//                Token(TokenType::Rparenthesis, ")")
-//        };
+ // Define tokens for the query testing transitive relationship
+        std::vector <Token> tokens = {
+                Token(TokenType::DesignEntity, "stmt"),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Affects, "Affects"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::Wildcard, "_"),
+                Token(TokenType::Rparenthesis, ")")
+        };
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
@@ -289,35 +274,33 @@ REQUIRE(res
                 == std::unordered_set <string>{
                 "2", "1"});
     }
-    SECTION("Select stmt affecting print") {
 
+    SECTION("Select stmt affecting print") {
         string query = "stmt s; print p; Select s such that Affects(s, p)";
-        Tokenizer tokenizer(query);
-        auto tokens = tokenizer.tokenize();
 // Define tokens for the query testing transitive relationship
-//        std::vector <Token> tokens = {
-//                Token(TokenType::DesignEntity, "stmt"),
-//                Token(TokenType::IDENT, "s"),
-//                Token(TokenType::Semicolon, ";"),
-//                Token(TokenType::SelectKeyword, "Select"),
-//                Token(TokenType::IDENT, "s"),
-//                Token(TokenType::SuchKeyword, "such"),
-//                Token(TokenType::ThatKeyword, "that"),
-//                Token(TokenType::Affects, "Affects"),
-//                Token(TokenType::Lparenthesis, "("),
-//                Token(TokenType::IDENT, "s"),
-//                Token(TokenType::Comma, ","),
-//                Token(TokenType::Wildcard, "_"),
-//                Token(TokenType::Rparenthesis, ")")
-//        };
+        std::vector <Token> tokens = {
+                Token(TokenType::DesignEntity, "stmt"),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Affects, "Affects"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::Wildcard, "p"),
+                Token(TokenType::Rparenthesis, ")")
+        };
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
         std::unordered_set <string> res = evaluator.evaluateQuery();
-//        REQUIRE(res
-//                == std::unordered_set <string>{
-//                "4", "1"});
+        REQUIRE(res
+                == std::unordered_set <string>{
+                "1", "2"});
     }
 }
 
