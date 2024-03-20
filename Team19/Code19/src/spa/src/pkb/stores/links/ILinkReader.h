@@ -24,5 +24,8 @@ public:
 
     // Retrieves the linked entity for a given linker entity.
     virtual LinkedType getLinked(LinkerType entity) = 0;
+
+    // Retrieves the set of all linked entities.
+    virtual std::unordered_set<LinkedType> getAllLinked() = 0;
 };
 // ai-gen end

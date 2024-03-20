@@ -38,8 +38,29 @@ procedure p;
 Select p such that Calls("Last", "Finalize")
 none
 5000
-8 - Finds if it is true that a procedure that calls Last
+9 - Finds if it is true that a procedure that calls Last
 procedure p;
 Select p such that Calls("Last", _)
 none
 5000
+10 - Finds which while statement uses variable "x"
+while w;
+Select w pattern w ("x", _)
+8
+5000
+11 - Finds which while statement uses variable "y"
+while w;
+Select w pattern w ("y", _)
+none
+5000
+12 - Finds which if statement uses variable "x"
+if if;
+Select if pattern if ("x", _, _)
+none
+5000
+13 - Finds which if statement uses variable "i"
+if if;
+Select if pattern if ("i", _, _)
+4
+5000
+

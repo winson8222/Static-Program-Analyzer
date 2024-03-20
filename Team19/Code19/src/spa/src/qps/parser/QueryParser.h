@@ -28,6 +28,14 @@ public:
     void throwIncompleteQueryError();
 
 private:
+    const std::unordered_map<TokenType, std::unordered_set<std::string>> validStmtSynonymsMap = {
+            {TokenType::Parent, {"stmt", "assign", "while", "if", "print", "read"}},
+            {TokenType::ParentT, {"stmt", "assign", "while", "if", "print", "read"}},
+            {TokenType::Follows, {"stmt", "assign", "while", "if", "print", "read"}},
+            {TokenType::FollowsT, {"stmt", "assign", "while", "if", "print", "read"}},
+            {TokenType::Uses, {"stmt", "print", "while", "if", "assign", "call", "read"}},
+            {TokenType::Modifies, {"stmt", "print", "while", "if", "assign", "call", "read"}}
+    };
     // Vector of tokens to be parsed.
     vector<Token> tokens;
 
@@ -68,6 +76,8 @@ private:
     void parseFactor();
     void parseRef();
     void parseAttrRef();
+    void parseIfParams(PatternClause &clause);
+    void parseWhileParams(PatternClause &clause);
 
     // Method to get the current token.
     // Returns a constant reference to the current Token object.
@@ -85,7 +95,7 @@ private:
 
     void parseEntSynonym();
     void parseStmtSynonyms();
-    void parseAssignSynonyms();
+    void parsePatternSynonym();
 
 
 
@@ -100,6 +110,7 @@ private:
     bool checkValidStmtNum();
     bool checkIfStmt();
     bool checkIfEnt();
+    bool checkIfPatternSyn();
 
 
 

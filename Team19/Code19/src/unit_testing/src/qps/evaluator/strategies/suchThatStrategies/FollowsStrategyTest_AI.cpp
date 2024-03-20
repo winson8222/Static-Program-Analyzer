@@ -143,7 +143,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/3") {
 
 }
 
-
 TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/4") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
@@ -222,7 +221,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/5") {
     REQUIRE((res == std::unordered_set<string>{ "1", "2" } || res == std::unordered_set<string>{"2", "1"}));
 
 }
-
 
 TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/6") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
@@ -388,7 +386,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/9") {
     REQUIRE(res == std::unordered_set<string>{ });
 
 }
-
 
 TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/10") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
