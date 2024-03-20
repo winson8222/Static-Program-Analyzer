@@ -1126,9 +1126,5 @@ TEST_CASE("Testing with clause with attributes") {
     REQUIRE(tokens[14].getValue() == ".");
 
     REQUIRE(tokens[15].getType() == TokenType::AttrName);
-    REQUIRE(tokens[15].getValue() == "stmt#");
-
-
-
-
+    REQUIRE(tokens[15].getValue() == "stmt#"); 
 }

@@ -6,6 +6,7 @@
 #include "../../spa/src/qps/parser/Token.h"
 #include <vector>
 #include <string>
+#include <unordered_set>
 #include "../../spa/src/qps/parser/Tokenizer.h"
 #include "../../spa/src/qps/parser/ParsingResult.h"
 
@@ -34,7 +35,30 @@ private:
             {TokenType::Follows, {"stmt", "assign", "while", "if", "print", "read"}},
             {TokenType::FollowsT, {"stmt", "assign", "while", "if", "print", "read"}},
             {TokenType::Uses, {"stmt", "print", "while", "if", "assign", "call", "read"}},
-            {TokenType::Modifies, {"stmt", "print", "while", "if", "assign", "call", "read"}}
+            {TokenType::Modifies, {"stmt", "print", "while", "if", "assign", "call", "read"}},
+            {TokenType::Next, {"stmt", "assign", "while", "if", "print", "read", "call"}},
+            {TokenType::NextT, {"stmt", "assign", "while", "if", "print", "read", "call"}},
+            {TokenType::Affects, {"stmt", "assign", "while", "if", "print", "read", "call"}},
+    };
+
+    const std::unordered_map<string, std::unordered_set<std::string>> validAttrMap = {
+            {"stmt", {"stmt#"}},
+            {"assign", {"stmt#"}},
+            {"while", {"stmt#"}},
+            {"if", {"stmt#"}},
+            {"print", {"stmt#", "varName"}},
+            {"read", {"stmt#", "varName"}},
+            {"call", {"stmt#", "procName"}},
+            {"variable", {"varName"}},
+            {"procedure", {"procName"}},
+            {"constant", {"value"}}
+    };
+
+    const std::unordered_map<string, TokenType> attrToTypeMap = {
+            {"stmt#", TokenType::INTEGER},
+            {"varName", TokenType::QuoutIDENT},
+            {"procName", TokenType::QuoutIDENT},
+            {"value", TokenType::INTEGER}
     };
     // Vector of tokens to be parsed.
     vector<Token> tokens;
@@ -74,8 +98,9 @@ private:
     void parseExpression();
     void parseTerm();
     void parseFactor();
-    void parseRef();
+    TokenType parseRef();
     void parseAttrRef();
+    void parseAttr();
     void parseIfParams(PatternClause &clause);
     void parseWhileParams(PatternClause &clause);
 
@@ -98,16 +123,19 @@ private:
     void parsePatternSynonym();
 
 
+    // helper function to replace concatenation of tokens
+    string concatTokens(size_t start, size_t end);
+
+
 
 
 
 
     void ensureToken(TokenType expected);
 
-    string getGrammarError();
-    string getSemanticError();
 
     bool checkValidStmtNum();
+    bool checkValidAttr(Token synToken);
     bool checkIfStmt();
     bool checkIfEnt();
     bool checkIfPatternSyn();

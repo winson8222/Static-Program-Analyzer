@@ -91,3 +91,18 @@ const string& ParsingResult::getPatternClauseType(const PatternClause &clause) c
 }
 
 
+string ParsingResult::getSynFromAttrRef(const string &attrRef) {
+    size_t pos = attrRef.find('.');
+    if (pos != std::string::npos) { // Check if the period is found
+        return attrRef.substr(0, pos); // Extract substring from the beginning to the position of the period
+    }
+    return "";
+}
+
+string ParsingResult::getAttrFromAttrRef(const string &attrRef) {
+    size_t pos = attrRef.find('.');
+    if (pos != std::string::npos) { // Check if the period is found
+        return attrRef.substr(pos + 1); // Extract substring from just after the position of the period to the end
+    }
+    return "";
+}
