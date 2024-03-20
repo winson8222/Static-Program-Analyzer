@@ -424,7 +424,7 @@ void QueryParser::parsePatternClause() {
     // check if it is a syn-assign
     ensureToken(TokenType::IDENT);
     clause.setRelationship(currentToken());
-    parseAssignSynonyms();
+    parsePatternSynonym();
 
 
     ensureToken(TokenType::Lparenthesis);
@@ -438,19 +438,18 @@ void QueryParser::parsePatternClause() {
     ensureToken(TokenType::Comma);
 
     advanceToken();
-    
+
 
     string patternType = parsingResult.getPatternClauseType(clause);
     if (patternType == "if") {
-
+        parseIfParams(clause);
     }
     else if (patternType == "while") {
+        parseWhileParams(clause);
 
     } else if (patternType == "assign") {
-
         // This is a rudimentary approach to tokenize ExpressionSpec, probably change later
         // Store the current token index before parsing the expression spec
-        size_t startIndex = currentTokenIndex;
         parseExpressionSpec(clause);
 
     } else {
@@ -461,6 +460,30 @@ void QueryParser::parsePatternClause() {
     ensureToken(TokenType::Rparenthesis);
     parsingResult.addPatternClause(clause);
 }
+
+void QueryParser::parseIfParams(PatternClause &clause) {
+    if (!match(TokenType::Wildcard)) {
+        throwSemanticError();
+    }
+    clause.setSecondParam(currentToken());
+    advanceToken();
+    ensureToken(TokenType::Comma);
+    advanceToken();
+    if (!match(TokenType::Wildcard)) {
+        throwSemanticError();
+    }
+    clause.setThirdParam(currentToken());
+}
+
+void QueryParser::parseWhileParams(PatternClause &clause) {
+    if (!match(TokenType::Wildcard)) {
+        throwSemanticError();
+    }
+    clause.setSecondParam(currentToken());
+}
+
+
+
 
 // Parses the expression specification in the query.
 // Handles different forms of expressions like quoted constants, wildcards, or quoted expressions.
@@ -624,14 +647,7 @@ void QueryParser::parseEntSynonym() {
 }
 
 // Define a mapping of token types to their valid statement synonyms
-const std::unordered_map<TokenType, std::unordered_set<std::string>> validStmtSynonymsMap = {
-        {TokenType::Parent, {"stmt", "assign", "while", "if", "print", "read"}},
-        {TokenType::ParentT, {"stmt", "assign", "while", "if", "print", "read"}},
-        {TokenType::Follows, {"stmt", "assign", "while", "if", "print", "read"}},
-        {TokenType::FollowsT, {"stmt", "assign", "while", "if", "print", "read"}},
-        {TokenType::Uses, {"stmt", "print", "while", "if", "assign", "call", "read"}},
-        {TokenType::Modifies, {"stmt", "print", "while", "if", "assign", "call", "read"}}
-};
+
 
 void QueryParser::parseStmtSynonyms() {
     ensureToken(TokenType::IDENT);
@@ -652,10 +668,11 @@ void QueryParser::parseStmtSynonyms() {
 }
 
 
+
 // Parses an assignment synonym in the query.
-void QueryParser::parseAssignSynonyms() {
+void QueryParser::parsePatternSynonym() {
     ensureToken(TokenType::IDENT);
-    if (parsingResult.getDeclaredSynonym(currentToken().getValue()) != "assign") {
+    if (!checkIfPatternSyn()) {
         throwSemanticError();
     }
     advanceToken();
@@ -762,4 +779,12 @@ bool QueryParser::checkIfEnt() {
 
     const auto& currentValue = parsingResult.getDeclaredSynonym(currentToken().getValue());
     return entTypes.find(currentValue) != entTypes.end();
+}
+
+bool QueryParser::checkIfPatternSyn() {
+    static const std::unordered_set<std::string> patternTypes = {
+            "assign", "while", "if"
+    };
+    const auto& currentValue = parsingResult.getDeclaredSynonym(currentToken().getValue());
+    return patternTypes.find(currentValue) != patternTypes.end();
 }

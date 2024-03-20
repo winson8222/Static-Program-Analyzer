@@ -759,7 +759,6 @@ TEST_CASE("src/qps/parser/QueryParser") {
     }
 }
 
-
 //call c;
 //Select c such that Uses(c, "iter")
 TEST_CASE("src/qps/parser/QueryParser/M1FailedCases/1") {
