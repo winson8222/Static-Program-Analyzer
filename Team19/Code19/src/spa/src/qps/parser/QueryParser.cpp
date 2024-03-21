@@ -314,6 +314,8 @@ void QueryParser::parseUsesOrModifies(SuchThatClause& clause) {
         clause.setRelationship(currentSuchThatToken);
         clause.setFirstParam(currentToken());
         advanceToken();
+    } else {
+        throwSemanticError();
     }
 
 
@@ -797,7 +799,7 @@ bool QueryParser::checkIfStmt() {
 
 bool QueryParser::checkIfEnt() {
     static const std::unordered_set<std::string> entTypes = {
-            "variable", "constant", "procedure"
+            "variable", "procedure"
     };
 
     if (match(TokenType::QuoutIDENT)) {

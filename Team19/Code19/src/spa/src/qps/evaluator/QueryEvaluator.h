@@ -101,4 +101,10 @@ public:
     void initializeStrategyFactory(); // Method to initialize the strategy factory
     void initializeEntityFactory(); // Method to initialize the entity factory
     string join(const unordered_set<string>& elements, const string& delimiter);
+    string convertToAttr(const string& synonym ,string ref);
+    string convertToStmtNumber(string synonym ,string ref);
+    string convertToVarName(string synonym ,string ref);
+    string convertToProcName(const string& synonym ,string ref);
+    void convertToAttrSet(const string& synonym, std::unordered_set<std::string>& valueSet, std::unordered_set<std::string>& attrSet);
+    std::vector<std::string> removeAllAttrRefs(const std::vector<std::string>& requiredSynonyms);
 };
