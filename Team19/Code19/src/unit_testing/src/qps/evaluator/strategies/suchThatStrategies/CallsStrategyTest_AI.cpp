@@ -485,18 +485,21 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/14") {
     procedureWriter->insertProcedure("proc4");
     procedureWriter->insertProcedure("proc5");
 
-    ParsingResult parsingResult;
-    parsingResult.addDeclaredSynonym("p", "procedure");
-    parsingResult.setRequiredSynonym("p" );
-    SuchThatClause clause;
-    clause.setRelationship(Token(TokenType::CallsT, "Calls*"));
-    clause.setFirstParam(Token(TokenType::QuoutIDENT, "\"proc2\""));
-    clause.setSecondParam(Token(TokenType::QuoutIDENT, "\"proc4\""));
-    parsingResult.addSuchThatClause(clause);
+//    ParsingResult parsingResult;
+//    parsingResult.addDeclaredSynonym("p", "procedure");
+//    parsingResult.setRequiredSynonym("p" );
+//    SuchThatClause clause;
+//    clause.setRelationship(Token(TokenType::CallsT, "Calls*"));
+//    clause.setFirstParam(Token(TokenType::QuoutIDENT, "\"proc2\""));
+//    clause.setSecondParam(Token(TokenType::QuoutIDENT, "\"proc4\""));
+//    parsingResult.addSuchThatClause(clause);
+    string query = "Select BOOLEAN such that Calls*(\"proc2\", \"proc4\")";
+    Tokenizer tokenizer(query);
+    ParsingResult parsingResult = QueryParser(tokenizer.tokenize()).parse();
 
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
     std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{"proc1" , "proc2", "proc3", "proc4", "proc5"});
+    REQUIRE(res == std::unordered_set<string>{"TRUE"});
 
 }
 
