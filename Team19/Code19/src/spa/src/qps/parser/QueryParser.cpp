@@ -747,6 +747,9 @@ TokenType QueryParser::parseRef() {
 
 void QueryParser::parseAttrRef() {
     ensureToken(TokenType::IDENT);
+    if (!parsingResult.isSynonymDeclared(currentToken().getValue())) {
+        throwSemanticError();
+    }
     parseAttr();
 }
 

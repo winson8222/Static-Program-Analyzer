@@ -1443,6 +1443,39 @@ TEST_CASE("Testing parsing of attrName") {
     }
 
 
+    SECTION("QueryParser correctly parses read r; Select d.varName with 1 = d.stmt# with error") {
+        // Manually create the vector of tokens for the query
+        std::vector tokens = {
+                Token(TokenType::DesignEntity, "read"),
+                Token(TokenType::IDENT, "r"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::IDENT, "d"),
+                Token(TokenType::Dot, "."),
+                Token(TokenType::AttrName, "varName"),
+                Token(TokenType::WithKeyword, "with"),
+                Token(TokenType::INTEGER, "1"),
+                Token(TokenType::Equal, "="),
+                Token(TokenType::IDENT, "d"),
+                Token(TokenType::Dot, "."),
+                Token(TokenType::AttrName, "stmt#"),
+        };
+
+        // Instantiate the QueryParser with the tokens
+        QueryParser queryParser(tokens);
+
+        // Parse the query
+        ParsingResult parsingResult = queryParser.parse();
+
+        // Verify that the parsing result indicates a valid query with no errors
+        REQUIRE(parsingResult.isQueryValid() == false);
+        REQUIRE(parsingResult.getErrorMessage() == "SemanticError");
+
+
+        // Additional checks can be performed here if needed, such as verifying the specific parsing output
+    }
+
+
 
 }
 
