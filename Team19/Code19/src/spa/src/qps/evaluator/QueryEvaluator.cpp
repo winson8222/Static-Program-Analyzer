@@ -390,7 +390,7 @@ string QueryEvaluator::convertToAttr(const string& synonym , string ref) {
     // check the type of Attr
     string attrType = ParsingResult::getAttrFromAttrRef(synonym);
     if (attrType == "stmt#" || attrType == "value") {
-            return ref;
+        return ref;
     } else if (attrType == "procName") {
         return convertToProcName(declaredSynonymType, ref);
     } else if (attrType == "varName") {
@@ -401,30 +401,66 @@ string QueryEvaluator::convertToAttr(const string& synonym , string ref) {
 
 
 string QueryEvaluator::convertToProcName(const std::string& declaredSynonym, std::string ref) {
+    initializeProcNameMap();
+    // find from the map the corresponding method based on the declaredSynonym and call the method to return the string
     if (declaredSynonym == "procedure") {
         return ref;
     }
-
-    if (declaredSynonym == "call") {
-        return pkbReaderManager->getCallProcNameReader()->getCalledProcedureName(stoi(ref));
+    int refInt = stoi(ref);
+    // add a check if exists first
+    if (procNameMap.find(declaredSynonym) != procNameMap.end()) {
+            return procNameMap.at(declaredSynonym)(refInt);
     } else {
-        return "";
+        throwNoSuchMethodException();
     }
+
 }
 
 
-string QueryEvaluator::convertToVarName(std::string declaredSynonym, std::string ref) {
+string QueryEvaluator::convertToVarName(const std::string& declaredSynonym, std::string ref) {
+    initializeVarNameMap();
+    // find from the map the corresponding method based on the declaredSynonym and call the method to return the string
     if (declaredSynonym == "variable") {
         return ref;
     }
-
-    if (declaredSynonym == "read") {
-        return pkbReaderManager->getReadVarNameReader()->getReadVariableName(stoi(ref));
+    int refInt = stoi(ref);
+    if (varNameMap.find(declaredSynonym) != varNameMap.end()) {
+        return varNameMap.at(declaredSynonym)(refInt);
+    } else {
+        throwNoSuchMethodException();
     }
-
-    if (declaredSynonym == "print") {
-        return pkbReaderManager->getPrintVarNameReader()->getPrintVariableName(stoi(ref));
-    }
-    return "";
 }
+
+void QueryEvaluator::throwNoSuchMethodException() {
+    throw "No such method for the declared synonym";
+}
+
+
+void QueryEvaluator::initializeProcNameMap() {
+    this->procNameMap = {
+            {"call",      [this](int ref) -> std::string {
+                // Assuming getCallProcName is a valid method for demonstration
+                shared_ptr<CallProcNameReader> callProcNameReader = pkbReaderManager->getCallProcNameReader();
+                return callProcNameReader->getCalledProcedureName(ref);
+            }}
+    };
+}
+
+void QueryEvaluator::initializeVarNameMap() {
+    this->varNameMap = {
+            {"read",     [this](int ref) -> std::string {
+                // Assuming getReadVarName is a valid method for demonstration
+                shared_ptr<ReadVarNameReader> readVarNameReader = pkbReaderManager->getReadVarNameReader();
+                return readVarNameReader->getReadVariableName(ref);
+            }},
+            {"print",    [this](int ref) -> std::string {
+                // Assuming getPrintVarName is a valid method for demonstration
+                shared_ptr<PrintVarNameReader> printVarNameReader = pkbReaderManager->getPrintVarNameReader();
+                return printVarNameReader->getPrintVariableName(ref);
+            }}
+    };
+}
+
+
+
 // ai-gen end
