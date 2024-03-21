@@ -47,6 +47,7 @@ public:
     bool isSynonymDeclared(const string& synonym);
     static string getSynFromAttrRef(const string &attrRef);
     static string getAttrFromAttrRef(const string &attrRef);
+    static const bool isAttrRef(const string &attrRef);
 
 
 private:

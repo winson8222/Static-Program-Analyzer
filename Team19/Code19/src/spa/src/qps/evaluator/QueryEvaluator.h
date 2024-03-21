@@ -31,6 +31,8 @@ private:
     std::map<string, std::function<std::unique_ptr<QueryEvaluationStrategy>()>> patternStrategyFactory; // Map of strategy factory
     std::map<std::string, std::function<std::variant<std::unordered_set<int>, std::unordered_set<std::string>>()>> entityFactory;
     std::vector<std::pair<std::unique_ptr<QueryEvaluationStrategy>, const Clause*>> strategyAndClausePairs;
+    std::unordered_map<std::string, std::function<std::string(int)>> procNameMap;
+    std::unordered_map<std::string, std::function<std::string(int)>> varNameMap;
 
 	/**
 	 * @brief Handles multiple return values in select clause
@@ -101,4 +103,14 @@ public:
     void initializeStrategyFactory(); // Method to initialize the strategy factory
     void initializeEntityFactory(); // Method to initialize the entity factory
     string join(const unordered_set<string>& elements, const string& delimiter);
+    string convertToAttr(const string& synonym ,string ref);
+    string convertToStmtNumber(string synonym ,string ref);
+    string convertToVarName(const string& synonym ,string ref);
+    string convertToProcName(const string& synonym ,string ref);
+    void convertToAttrSet(const string& synonym, std::unordered_set<std::string>& valueSet, std::unordered_set<std::string>& attrSet);
+    std::vector<std::string> removeAllAttrRefs(const std::vector<std::string>& requiredSynonyms);
+
+    void initializeProcNameMap();
+    void initializeVarNameMap();
+    void throwNoSuchMethodException();
 };

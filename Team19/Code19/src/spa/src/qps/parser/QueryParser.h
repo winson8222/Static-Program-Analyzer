@@ -140,10 +140,6 @@ private:
     bool checkIfEnt();
     bool checkIfPatternSyn();
 
-
-
-
-    
 };
 
 #endif // QUERYPARSER_H

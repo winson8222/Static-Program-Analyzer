@@ -60,6 +60,9 @@ const vector<string>& ParsingResult::getRequiredSynonyms() const {
 }
 
 const string& ParsingResult::getRequiredSynonymType(const string& requiredSynonym) const {
+    if (ParsingResult::isAttrRef(requiredSynonym)) {
+        return getDeclaredSynonym(getSynFromAttrRef(requiredSynonym));
+    }
     return getDeclaredSynonym(requiredSynonym);
 }
 
@@ -88,6 +91,13 @@ bool ParsingResult::isSynonymDeclared(const string& synonym) {
 
 const string& ParsingResult::getPatternClauseType(const PatternClause &clause) const {
     return getDeclaredSynonym(clause.getRelationship().getValue());
+}
+
+const bool ParsingResult::isAttrRef(const string &attrRef) {
+    // check if it has .
+    size_t pos = attrRef.find('.');
+    return pos != std::string::npos;
+
 }
 
 
