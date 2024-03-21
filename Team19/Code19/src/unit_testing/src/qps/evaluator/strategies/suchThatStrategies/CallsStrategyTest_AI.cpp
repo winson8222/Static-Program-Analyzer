@@ -15,16 +15,16 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/1") {
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
-    std::shared_ptr<CallsWriter> CallsWriter = pkbWriterManager->getCallsWriter();
+    std::shared_ptr<CallsWriter> callsWriter = pkbWriterManager->getCallsWriter();
     std::shared_ptr<ProcedureWriter> procedureWriter = pkbWriterManager->getProcedureWriter();
     std::shared_ptr<CallsTWriter> CallsTWriter = pkbWriterManager->getCallsTWriter();
     statementWriter->insertStatement(1);
     statementWriter->insertStatement(2);
     statementWriter->insertStatement(3);
 
-    CallsWriter->addCalls("proc1", "proc3");
-    CallsWriter->addCalls("proc2", "proc4");
-    CallsWriter->addCalls("proc4", "proc1");
+    callsWriter->addCalls("proc1", "proc3");
+    callsWriter->addCalls("proc2", "proc4");
+    callsWriter->addCalls("proc4", "proc1");
     CallsTWriter->addCallsT("proc4", "proc3");
     procedureWriter->insertProcedure("proc1");
     procedureWriter->insertProcedure("proc2");
@@ -52,13 +52,13 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/2") {
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
-    std::shared_ptr<CallsWriter> CallsWriter = pkbWriterManager->getCallsWriter();
+    std::shared_ptr<CallsWriter> callsWriter = pkbWriterManager->getCallsWriter();
     std::shared_ptr<ProcedureWriter> procedureWriter = pkbWriterManager->getProcedureWriter();
     statementWriter->insertStatement(1);
     statementWriter->insertStatement(2);
     statementWriter->insertStatement(3);
-    CallsWriter->addCalls("proc1", "proc3");
-    CallsWriter->addCalls("proc2", "proc4");
+    callsWriter->addCalls("proc1", "proc3");
+    callsWriter->addCalls("proc2", "proc4");
     procedureWriter->insertProcedure("proc1");
     procedureWriter->insertProcedure("proc2");
     procedureWriter->insertProcedure("proc3");
@@ -85,14 +85,14 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/3") {
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
-    std::shared_ptr<CallsWriter> CallsWriter = pkbWriterManager->getCallsWriter();
+    std::shared_ptr<CallsWriter> callsWriter = pkbWriterManager->getCallsWriter();
     std::shared_ptr<ProcedureWriter> procedureWriter = pkbWriterManager->getProcedureWriter();
     std::shared_ptr<VariableWriter> variableWriter = pkbWriterManager->getVariableWriter();
     statementWriter->insertStatement(1);
     statementWriter->insertStatement(2);
     statementWriter->insertStatement(3);
-    CallsWriter->addCalls("proc1", "proc3");
-    CallsWriter->addCalls("proc2", "proc4");
+    callsWriter->addCalls("proc1", "proc3");
+    callsWriter->addCalls("proc2", "proc4");
     procedureWriter->insertProcedure("proc1");
     procedureWriter->insertProcedure("proc2");
     variableWriter->insertVariable("proc3");
@@ -119,7 +119,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/4") {
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
-    std::shared_ptr<CallsWriter> CallsWriter = pkbWriterManager->getCallsWriter();
+    std::shared_ptr<CallsWriter> callsWriter = pkbWriterManager->getCallsWriter();
     std::shared_ptr<ProcedureWriter> procedureWriter = pkbWriterManager->getProcedureWriter();
     std::shared_ptr<CallsTWriter> CallsTWriter = pkbWriterManager->getCallsTWriter();
     statementWriter->insertStatement(1);
@@ -133,9 +133,9 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/4") {
     ParsingResult parsingResult = parser.parse();
 
 
-    CallsWriter->addCalls("proc1", "proc3");
-    CallsWriter->addCalls("proc2", "proc4");
-    CallsWriter->addCalls("proc4", "proc1");
+    callsWriter->addCalls("proc1", "proc3");
+    callsWriter->addCalls("proc2", "proc4");
+    callsWriter->addCalls("proc4", "proc1");
     CallsTWriter->addCallsT("proc4", "proc3");
     CallsTWriter->addCallsT("proc1", "proc4");
     procedureWriter->insertProcedure("proc1");
@@ -156,14 +156,14 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/5") {
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
-    std::shared_ptr<CallsWriter> CallsWriter = pkbWriterManager->getCallsWriter();
+    std::shared_ptr<CallsWriter> callsWriter = pkbWriterManager->getCallsWriter();
     std::shared_ptr<ProcedureWriter> procedureWriter = pkbWriterManager->getProcedureWriter();
     std::shared_ptr<VariableWriter> variableWriter = pkbWriterManager->getVariableWriter();
     statementWriter->insertStatement(1);
     statementWriter->insertStatement(2);
     statementWriter->insertStatement(3);
-    CallsWriter->addCalls("proc1", "proc3");
-    CallsWriter->addCalls("proc2", "proc4");
+    callsWriter->addCalls("proc1", "proc3");
+    callsWriter->addCalls("proc2", "proc4");
     procedureWriter->insertProcedure("proc1");
     procedureWriter->insertProcedure("proc2");
     procedureWriter->insertProcedure("proc3");
@@ -190,14 +190,14 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/6") {
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
-    std::shared_ptr<CallsWriter> CallsWriter = pkbWriterManager->getCallsWriter();
+    std::shared_ptr<CallsWriter> callsWriter = pkbWriterManager->getCallsWriter();
     std::shared_ptr<ProcedureWriter> procedureWriter = pkbWriterManager->getProcedureWriter();
     std::shared_ptr<VariableWriter> variableWriter = pkbWriterManager->getVariableWriter();
     statementWriter->insertStatement(1);
     statementWriter->insertStatement(2);
     statementWriter->insertStatement(3);
-    CallsWriter->addCalls("proc1", "proc3");
-    CallsWriter->addCalls("proc2", "proc4");
+    callsWriter->addCalls("proc1", "proc3");
+    callsWriter->addCalls("proc2", "proc4");
     procedureWriter->insertProcedure("proc1");
     procedureWriter->insertProcedure("proc2");
     procedureWriter->insertProcedure("proc3");
@@ -224,14 +224,14 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/7") {
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
-    std::shared_ptr<CallsWriter> CallsWriter = pkbWriterManager->getCallsWriter();
+    std::shared_ptr<CallsWriter> callsWriter = pkbWriterManager->getCallsWriter();
     std::shared_ptr<ProcedureWriter> procedureWriter = pkbWriterManager->getProcedureWriter();
     std::shared_ptr<VariableWriter> variableWriter = pkbWriterManager->getVariableWriter();
     statementWriter->insertStatement(1);
     statementWriter->insertStatement(2);
     statementWriter->insertStatement(3);
-    CallsWriter->addCalls("proc1", "proc3");
-    CallsWriter->addCalls("proc2", "proc4");
+    callsWriter->addCalls("proc1", "proc3");
+    callsWriter->addCalls("proc2", "proc4");
     procedureWriter->insertProcedure("proc1");
     procedureWriter->insertProcedure("proc2");
     variableWriter->insertVariable("proc3");
@@ -260,14 +260,14 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/8") {
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
-    std::shared_ptr<CallsWriter> CallsWriter = pkbWriterManager->getCallsWriter();
+    std::shared_ptr<CallsWriter> callsWriter = pkbWriterManager->getCallsWriter();
     std::shared_ptr<ProcedureWriter> procedureWriter = pkbWriterManager->getProcedureWriter();
     std::shared_ptr<VariableWriter> variableWriter = pkbWriterManager->getVariableWriter();
     statementWriter->insertStatement(1);
     statementWriter->insertStatement(2);
     statementWriter->insertStatement(3);
-    CallsWriter->addCalls("proc1", "proc3");
-    CallsWriter->addCalls("proc2", "proc4");
+    callsWriter->addCalls("proc1", "proc3");
+    callsWriter->addCalls("proc2", "proc4");
     procedureWriter->insertProcedure("proc1");
     procedureWriter->insertProcedure("proc2");
     procedureWriter->insertProcedure("proc3");
@@ -564,5 +564,121 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/16") {
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
     std::unordered_set<string> res = evaluator.evaluateQuery();
     REQUIRE(res == std::unordered_set<string>{ "proc2", "proc3", "proc1"});
+
+}
+
+
+TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/18") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    std::shared_ptr<CallWriter> callWriter = pkbWriterManager->getCallWriter();
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<CallsWriter> callsWriter = pkbWriterManager->getCallsWriter();
+    std::shared_ptr<ProcedureWriter> procedureWriter = pkbWriterManager->getProcedureWriter();
+    std::shared_ptr<CallProcNameWriter> callProcNameWriter = pkbWriterManager->getCallProcNameWriter();
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    statementWriter->insertStatement(5);
+    statementWriter->insertStatement(6);
+    callsWriter->addCalls("proc1", "proc5");
+    callsWriter->addCalls("proc2", "proc4");
+    callsWriter->addCalls("proc3", "proc4");
+    callWriter->insertCall(2);
+    callWriter->insertCall(3);
+    callWriter->insertCall(4);
+    callWriter->insertCall(6);
+    callWriter->insertCall(5);
+
+    procedureWriter->insertProcedure("proc1");
+    procedureWriter->insertProcedure("proc2");
+    procedureWriter->insertProcedure("proc3");
+    procedureWriter->insertProcedure("proc4");
+    procedureWriter->insertProcedure("proc5");
+    callProcNameWriter->addCallProcName(2,"proc2");
+    callProcNameWriter->addCallProcName(3,"proc3");
+    callProcNameWriter->addCallProcName(4,"proc4");
+    callProcNameWriter->addCallProcName(6,"proc4");
+    callProcNameWriter->addCallProcName(5,"proc5");
+    pkbManager->getPKBCacheManager()->populateCache();
+
+
+
+    SECTION("simple select of procsName using proc") {
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "procedure"),
+                Token(TokenType::IDENT, "proc"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::IDENT, "proc"),
+                Token(TokenType::Dot, "."),
+                Token(TokenType::AttrName, "procName"),
+        };
+
+        ParsingResult parsingResult = QueryParser(tokens).parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{ "proc1", "proc2", "proc3", "proc4", "proc5"});
+    }
+
+    SECTION("simple select of procsName using call") {
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "call"),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Dot, "."),
+                Token(TokenType::AttrName, "procName"),
+        };
+
+        ParsingResult parsingResult = QueryParser(tokens).parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{ "proc2", "proc3", "proc4", "proc5"});
+    }
+
+    SECTION("simple select of stmt# using call") {
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "call"),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Dot, "."),
+                Token(TokenType::AttrName, "stmt#"),
+        };
+
+        ParsingResult parsingResult = QueryParser(tokens).parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{ "2", "3", "4", "5", "6"});
+    }
+
+    SECTION("mutiple select of stmt# using call") {
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "call"),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::LeftAngleBracket, "<"),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Dot, "."),
+                Token(TokenType::AttrName, "stmt#"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Dot, "."),
+                Token(TokenType::AttrName, "procName"),
+                Token(TokenType::RightAngleBracket, ">")
+        };
+
+        ParsingResult parsingResult = QueryParser(tokens).parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{ "2", "3", "4", "5", "6"});
+    }
+
 
 }
