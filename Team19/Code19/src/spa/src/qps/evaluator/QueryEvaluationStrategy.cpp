@@ -41,6 +41,17 @@ std::unordered_set<int> QueryEvaluationStrategy::combineFoundStatements(const un
     return combinedResult;
 }
 
+std::unordered_set<string> QueryEvaluationStrategy::combineFoundEnts(const unordered_set<string> &newResult,
+                                                                        const unordered_set<string> &result) {
+    std::unordered_set<string> combinedResult;
+    for (const auto& elem : newResult) {
+        if (std::find(result.begin(), result.end(), elem) != result.end()) {
+            combinedResult.insert(elem);
+        }
+    }
+    return combinedResult;
+}
+
 // Get the statements numbers based on the type of statement
 unordered_set<int> QueryEvaluationStrategy::getFilteredStmtsNumByType(unordered_set<int> allStatements, string statementType, PKBReaderManager pkbReaderManager) {
     unordered_set<int> filteredResult;
@@ -80,6 +91,20 @@ void QueryEvaluationStrategy::insertSingleColToTable(const Token token,std::shar
     resultTable->insertAllColumns({colName});
 
 }
+
+unordered_set<string> QueryEvaluationStrategy::getFilteredEntType(unordered_set<string> allStatements, string entType, PKBReaderManager pkbReaderManager) {
+    unordered_set<string> filteredResult;
+    unordered_set<string> allEnts;
+    if (entType == "variable") {
+        allEnts = pkbReaderManager.getVariableReader()->getAllVariables();
+    } else if (entType == "procedure") {
+        allEnts = pkbReaderManager.getProcedureReader()->getAllProcedures();
+    }
+    filteredResult = combineFoundEnts(allStatements, allEnts);
+    return filteredResult;
+}
+
+
 
 void QueryEvaluationStrategy::insertColsToTable(const Token firstToken, const Token secondToken, std::shared_ptr<ResultTable> resultTable) {
     std::string colName1 = firstToken.getValue();

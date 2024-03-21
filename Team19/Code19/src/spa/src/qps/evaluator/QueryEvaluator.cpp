@@ -41,11 +41,19 @@ void QueryEvaluator::addEntriesToFinalWithResultOnly(std::unordered_set<std::str
 		finalSet.insert(toAdd);
 	}
 }
+
 void QueryEvaluator::addEntriesToFinalWithCrossJoinAndResult(std::unordered_set<std::string>& finalSet, std::vector<std::string> requiredSynonyms, std::unordered_map<std::string, std::string> crossJoinMap) {
 	for (auto row: result->getRows()) {
 		std::string toAdd;
 		for (auto requiredSynonym : requiredSynonyms) {
-			if (crossJoinMap.find(requiredSynonym) != crossJoinMap.end()) {
+            string requiredSynonymForChecking;
+            if (ParsingResult::isAttrRef(requiredSynonym)) {
+                requiredSynonymForChecking = ParsingResult::getSynFromAttrRef(requiredSynonym);
+            } else {
+                requiredSynonymForChecking = requiredSynonym;
+            }
+
+			if (crossJoinMap.find(requiredSynonymForChecking) != crossJoinMap.end()) {
 				constructEntryString(toAdd, requiredSynonym, crossJoinMap);
 			} else {
 				constructEntryString(toAdd, requiredSynonym, row);

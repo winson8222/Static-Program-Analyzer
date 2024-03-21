@@ -575,6 +575,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/18") {
     std::shared_ptr<CallWriter> callWriter = pkbWriterManager->getCallWriter();
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
     std::shared_ptr<CallsWriter> callsWriter = pkbWriterManager->getCallsWriter();
+    std::shared_ptr<UsesSWriter> usesSWriter = pkbWriterManager->getUsesSWriter();
+    std::shared_ptr<UsesPWriter> usesPWriter = pkbWriterManager->getUsesPWriter();
     std::shared_ptr<ProcedureWriter> procedureWriter = pkbWriterManager->getProcedureWriter();
     std::shared_ptr<CallProcNameWriter> callProcNameWriter = pkbWriterManager->getCallProcNameWriter();
     statementWriter->insertStatement(1);
@@ -591,7 +593,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/18") {
     callWriter->insertCall(4);
     callWriter->insertCall(6);
     callWriter->insertCall(5);
-
+    usesSWriter->addUsesS(2, "proc2");
+    usesSWriter->addUsesS(4, "proc4");
     procedureWriter->insertProcedure("proc1");
     procedureWriter->insertProcedure("proc2");
     procedureWriter->insertProcedure("proc3");
@@ -677,7 +680,194 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/18") {
         ParsingResult parsingResult = QueryParser(tokens).parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
         std::unordered_set<string> res = evaluator.evaluateQuery();
-        REQUIRE(res == std::unordered_set<string>{ "2", "3", "4", "5", "6"});
+        REQUIRE(res == std::unordered_set<string>{ "2 proc2", "3 proc3", "4 proc4", "6 proc4", "5 proc5"});
+    }
+
+    SECTION("mutiple select of stmt# using call if it is in result table") {
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "call"),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::LeftAngleBracket, "<"),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Dot, "."),
+                Token(TokenType::AttrName, "stmt#"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Dot, "."),
+                Token(TokenType::AttrName, "procName"),
+                Token(TokenType::RightAngleBracket, ">"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Uses, "Uses"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::Wildcard, "_"),
+                Token(TokenType::Rparenthesis, ")")
+        };
+
+        ParsingResult parsingResult = QueryParser(tokens).parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{ "4 proc4", "2 proc2" });
+    }
+
+    SECTION("mutiple select of stmt# using call if it is in result table, if variable not in result table") {
+        pkbWriterManager->getVariableWriter()->insertVariable("v");
+        pkbWriterManager->getVariableWriter()->insertVariable("x");
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "call"),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::DesignEntity, "variable"),
+                Token(TokenType::IDENT, "v"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::LeftAngleBracket, "<"),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Dot, "."),
+                Token(TokenType::AttrName, "stmt#"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Dot, "."),
+                Token(TokenType::AttrName, "procName"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::IDENT, "v"),
+                Token(TokenType::RightAngleBracket, ">"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Uses, "Uses"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::Wildcard, "_"),
+                Token(TokenType::Rparenthesis, ")")
+        };
+
+        ParsingResult parsingResult = QueryParser(tokens).parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{ "4 proc4 v", "2 proc2 v", "4 proc4 x", "2 proc2 x" });
+    }
+
+    SECTION("mutiple select of stmt# using call if it is in result table, if call not in result table") {
+        pkbWriterManager->getVariableWriter()->insertVariable("v");
+        pkbWriterManager->getVariableWriter()->insertVariable("x");
+        usesPWriter->addUsesP("proc1", "v");
+
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "call"),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::DesignEntity, "variable"),
+                Token(TokenType::IDENT, "v"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::LeftAngleBracket, "<"),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Dot, "."),
+                Token(TokenType::AttrName, "stmt#"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Dot, "."),
+                Token(TokenType::AttrName, "procName"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::IDENT, "v"),
+                Token(TokenType::RightAngleBracket, ">"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Uses, "Uses"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::QuoutIDENT, "\"proc1\""),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::IDENT, "v"),
+                Token(TokenType::Rparenthesis, ")")
+        };
+
+        ParsingResult parsingResult = QueryParser(tokens).parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{ "2 proc2 v", "4 proc4 v", "6 proc4 v", "3 proc3 v", "5 proc5 v" });
+    }
+
+    SECTION("mutiple select of stmt# using call if it is in result table, both are in result table") {
+        pkbWriterManager->getVariableWriter()->insertVariable("v");
+        pkbWriterManager->getVariableWriter()->insertVariable("x");
+        usesPWriter->addUsesP("proc1", "v");
+
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "call"),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::DesignEntity, "variable"),
+                Token(TokenType::IDENT, "v"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::LeftAngleBracket, "<"),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Dot, "."),
+                Token(TokenType::AttrName, "stmt#"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Dot, "."),
+                Token(TokenType::AttrName, "procName"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::IDENT, "v"),
+                Token(TokenType::RightAngleBracket, ">"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Uses, "Uses"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::IDENT, "v"),
+                Token(TokenType::Rparenthesis, ")")
+        };
+
+        ParsingResult parsingResult = QueryParser(tokens).parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{ "2 proc2 v", "4 proc4 v", "6 proc4 v", "3 proc3 v", "5 proc5 v" });
+    }
+
+    SECTION("mutiple select of stmt# using call if it is in result table, if call not in result table") {
+        pkbWriterManager->getVariableWriter()->insertVariable("v");
+        pkbWriterManager->getVariableWriter()->insertVariable("x");
+        usesPWriter->addUsesP("proc1", "v");
+
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "call"),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::DesignEntity, "variable"),
+                Token(TokenType::IDENT, "v"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::LeftAngleBracket, "<"),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Dot, "."),
+                Token(TokenType::AttrName, "stmt#"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Dot, "."),
+                Token(TokenType::AttrName, "procName"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::IDENT, "v"),
+                Token(TokenType::RightAngleBracket, ">"),
+                Token(TokenType::WithKeyword, "with"),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Dot, "."),
+                Token(TokenType::AttrName, "stmt#"),
+                Token(TokenType::Equal, "="),
+                Token(TokenType::INTEGER, "2"),
+        };
+
+        ParsingResult parsingResult = QueryParser(tokens).parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{ "2 proc2 v", "2 proc2 x" });
     }
 
 
