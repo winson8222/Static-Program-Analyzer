@@ -82,10 +82,6 @@ void QueryEvaluationStrategy::insertSingleColToTable(const Token token,std::shar
 
 }
 
-
-
-
-
 void QueryEvaluationStrategy::insertColsToTable(const Token firstToken, const Token secondToken, std::shared_ptr<ResultTable> resultTable) {
     std::string colName1 = firstToken.getValue();
     std::string colName2 = secondToken.getValue();
