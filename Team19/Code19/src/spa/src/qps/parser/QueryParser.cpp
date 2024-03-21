@@ -1,6 +1,7 @@
 // Include the parser class header.
 #include "../../spa/src/qps/parser/QueryParser.h"
 #include <stdexcept>
+#include <unordered_set>
 #include <iostream>
 
 using namespace std;
@@ -152,14 +153,10 @@ void QueryParser::parseSelectClause() {
                 ensureToken(TokenType::IDENT);
             }
             
-            string concatenatedTokens;
-            for (size_t i = startIndex; i <= currentTokenIndex; ++i) {
-                concatenatedTokens += tokens[i].getValue();
-            }
+            string concatenatedTokens = concatTokens(startIndex, currentTokenIndex);
             parsingResult.setRequiredSynonym(concatenatedTokens);
             if (parsingResult.getDeclaredSynonym(currentSuchThatToken.getValue()).empty()) {
                 throwSemanticError();
-                
             }
             advanceToken();
             if (match(TokenType::RightAngleBracket)) {
@@ -180,10 +177,7 @@ void QueryParser::parseSelectClause() {
                 ensureToken(TokenType::BooleanKeyword);
             }
         }
-        string concatenatedTokens;
-        for (size_t i = startIndex; i <= currentTokenIndex; ++i) {
-            concatenatedTokens += tokens[i].getValue();
-        }
+        string concatenatedTokens = concatTokens(startIndex, currentTokenIndex);
         parsingResult.setRequiredSynonym(concatenatedTokens);
         if (parsingResult.getDeclaredSynonym(currentSuchThatToken.getValue()).empty() && currentSuchThatToken.getValue() != "BOOLEAN") {
             throwSemanticError();
@@ -652,7 +646,7 @@ void QueryParser::parseEntSynonym() {
 
 void QueryParser::parseStmtSynonyms() {
     ensureToken(TokenType::IDENT);
-    const auto& currentTokenType = currentSuchThatToken.getType();
+    TokenType currentTokenType = currentSuchThatToken.getType();
     const std::string currentValue = parsingResult.getDeclaredSynonym(currentToken().getValue());
 
     // Check if the current token type is in the map
@@ -708,53 +702,85 @@ void QueryParser::parseWithClause() {
     advanceToken();
 
     size_t startIndex = currentTokenIndex;
-    parseRef();
-    string concatenatedTokens;
-    for (size_t i = startIndex; i <= currentTokenIndex; ++i) {
-        concatenatedTokens += tokens[i].getValue();
-    }
-    clause.setFirstParam(Token(TokenType::Ref, concatenatedTokens));
+    TokenType firstRefType = parseRef();
+    string concatenatedTokens = concatTokens(startIndex, currentTokenIndex);
+    Token firstParam = Token(TokenType::Ref, concatenatedTokens);
+    clause.setFirstParam(firstParam);
 
     advanceToken();
     ensureToken(TokenType::Equal);
     advanceToken();
 
     startIndex = currentTokenIndex;
-    parseRef();
-    concatenatedTokens = "";
-    for (size_t i = startIndex; i <= currentTokenIndex; ++i) {
-        concatenatedTokens += tokens[i].getValue();
+    TokenType secondRefType = parseRef();
+    concatenatedTokens = concatTokens(startIndex, currentTokenIndex);
+    Token secondParam = Token(TokenType::Ref, concatenatedTokens);
+    clause.setSecondParam(secondParam);
+    if (firstRefType != secondRefType) {
+        throwSemanticError();
     }
-    clause.setSecondParam(Token(TokenType::Ref, concatenatedTokens));
     
     parsingResult.addWithClause(clause);
 }
 
-void QueryParser::parseRef() {
+
+
+
+TokenType QueryParser::parseRef() {
     if (match(TokenType::QuoutIDENT)) {
-        return;
+        return TokenType::QuoutIDENT;
     }
     else if (match(TokenType::INTEGER)) {
         if (checkValidStmtNum()) {
-            return;
+            return TokenType::INTEGER;
         }
         throwSemanticError();
     }
     else {
         parseAttrRef();
+        return attrToTypeMap.find(currentToken().getValue())->second;
     }
 
 }
 
 void QueryParser::parseAttrRef() {
-    parseSynonym();
+    ensureToken(TokenType::IDENT);
+    if (!parsingResult.isSynonymDeclared(currentToken().getValue())) {
+        throwSemanticError();
+    }
+    parseAttr();
+}
+
+void QueryParser::parseAttr() {
+    Token currentSynonym = currentToken();
     advanceToken();
     ensureToken(TokenType::Dot);
     advanceToken();
-    ensureToken(TokenType::AttrName);
+    if (!checkValidAttr(currentSynonym)) {
+        throwSemanticError();
+    }
 }
 
-#include <unordered_set>
+
+bool QueryParser::checkValidAttr(Token synToken) {
+    ensureToken(TokenType::AttrName);
+    string synValue = synToken.getValue();
+    string synType = parsingResult.getRequiredSynonymType(synValue);
+    string attrValue = currentToken().getValue();
+    // find from validAttrMap if it of the right type
+    auto validAttrIt = validAttrMap.find(synType);
+    if (validAttrIt != validAttrMap.end()) {
+        std::unordered_set<std::string> validAttrs = validAttrIt->second;
+        if (validAttrs.find(attrValue) == validAttrs.end()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    return false;
+}
+
+
 
 bool QueryParser::checkIfStmt() {
     static const std::unordered_set<std::string> stmtTypes = {
@@ -788,4 +814,12 @@ bool QueryParser::checkIfPatternSyn() {
     };
     const auto& currentValue = parsingResult.getDeclaredSynonym(currentToken().getValue());
     return patternTypes.find(currentValue) != patternTypes.end();
+}
+
+string QueryParser::concatTokens(size_t start, size_t end) {
+    string concatenatedTokens;
+    for (size_t i = start; i <= end; ++i) {
+        concatenatedTokens += tokens[i].getValue();
+    }
+    return concatenatedTokens;
 }

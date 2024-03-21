@@ -52,9 +52,7 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     else if (regex_match(tokenStr, regex("^(Select|pattern|such|that|with|and)$"))) {
         // The first case check if there is unconventional naming 
         // and avoids assigning wrong token type
-        if (!tokens.empty() && (tokens.back().getType() == TokenType::SelectKeyword 
-            || checkIfDeclaration() || tokens.back().getType() == TokenType::Lparenthesis
-            || tokens.back().getType() == TokenType::Comma || tokens.back().getType() == TokenType::PatternKeyword)) {
+        if (!tokens.empty() && (isSynonym() || tokens.back().getType() == TokenType::SelectKeyword )) {
             return TokenType::IDENT;
         }
         if (tokenStr == "Select") {
@@ -80,6 +78,10 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
         }
     }
     else if (tokenStr == "BOOLEAN") {
+        if (!tokens.empty() && (isSynonym() || (tokens.back().getType() == TokenType::SelectKeyword && isBooleanDeclared))) {
+            isBooleanDeclared = true;
+            return TokenType::IDENT;
+        }
         return TokenType::BooleanKeyword;
     }
     // QuoutIDENT: An IDENT enclosed in double quotes.
@@ -124,9 +126,7 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     }
     // DesignEntity: Specific keywords.
     else if (regex_match(tokenStr, regex("^(stmt|read|print|while|if|assign|variable|constant|procedure|call)$"))) {
-        if (!tokens.empty() && (tokens.back().getType() == TokenType::SelectKeyword 
-            || checkIfDeclaration() || tokens.back().getType() == TokenType::Lparenthesis 
-            || tokens.back().getType() == TokenType::Comma || tokens.back().getType() == TokenType::PatternKeyword)) {
+        if (!tokens.empty() && (isSynonym() || tokens.back().getType() == TokenType::SelectKeyword)) {
             return TokenType::IDENT;
         }
         else {
@@ -135,9 +135,7 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     }
     // RelRef: Specific keywords.
     else if (regex_match(tokenStr, regex("^(Follows|Follows\\*|Parent|Parent\\*|Uses|Modifies|Next|Next\\*|Calls|Calls\\*|Affects)$"))) {
-        if (!tokens.empty() && (tokens.back().getType() == TokenType::SelectKeyword 
-            || checkIfDeclaration() || tokens.back().getType() == TokenType::Lparenthesis 
-            || tokens.back().getType() == TokenType::Comma)) {
+        if (!tokens.empty() && (isSynonym() || tokens.back().getType() == TokenType::SelectKeyword)) {
             return TokenType::IDENT;
         }
         else if (tokenStr == "Follows") {
@@ -175,9 +173,7 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     }
     // AttrName: Specific attributes.
     else if (regex_match(tokenStr, regex("^(procName|varName|value|stmt#)$"))) {
-        if (!tokens.empty() && (tokens.back().getType() == TokenType::SelectKeyword
-            || checkIfDeclaration() || tokens.back().getType() == TokenType::Lparenthesis
-            || tokens.back().getType() == TokenType::Comma || tokens.back().getType() == TokenType::PatternKeyword)) {
+        if (!tokens.empty() && (isSynonym() || tokens.back().getType() == TokenType::SelectKeyword)) {
             return TokenType::IDENT;
         }
         else {
@@ -220,4 +216,10 @@ bool Tokenizer::checkIfDeclaration() {
 string Tokenizer::removeSpaces(string str) {
     str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
     return str;
+}
+
+bool Tokenizer::isSynonym() {
+    return checkIfDeclaration() || tokens.back().getType() == TokenType::Lparenthesis
+        || tokens.back().getType() == TokenType::Comma || tokens.back().getType() == TokenType::PatternKeyword
+        || tokens.back().getType() == TokenType::LeftAngleBracket;
 }

@@ -45,6 +45,8 @@ public:
 
     // method to check if the synonym is delcared
     bool isSynonymDeclared(const string& synonym);
+    static string getSynFromAttrRef(const string &attrRef);
+    static string getAttrFromAttrRef(const string &attrRef);
 
 
 private:
