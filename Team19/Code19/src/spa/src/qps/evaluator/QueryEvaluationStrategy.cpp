@@ -41,6 +41,7 @@ std::unordered_set<int> QueryEvaluationStrategy::combineFoundStatements(const un
     return combinedResult;
 }
 
+
 // Get the statements numbers based on the type of statement
 unordered_set<int> QueryEvaluationStrategy::getFilteredStmtsNumByType(unordered_set<int> allStatements, string statementType, PKBReaderManager pkbReaderManager) {
     unordered_set<int> filteredResult;
@@ -80,6 +81,10 @@ void QueryEvaluationStrategy::insertSingleColToTable(const Token token,std::shar
     resultTable->insertAllColumns({colName});
 
 }
+
+
+
+
 
 void QueryEvaluationStrategy::insertColsToTable(const Token firstToken, const Token secondToken, std::shared_ptr<ResultTable> resultTable) {
     std::string colName1 = firstToken.getValue();
