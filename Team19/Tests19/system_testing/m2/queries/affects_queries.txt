@@ -1,0 +1,50 @@
+1 - Check affects relationship for statement 1
+stmt s; 
+Select s.stmt# such that Affects (1, s)
+6, 10, 11
+5000
+2 - Check spelling errors 1
+stmt s; 
+Select s.stmt such that Affects (1, s)
+SyntaxError
+5000
+3 - Check spelling errors 2
+stmt s
+Select s.stmt# such that Affects (1, s)
+SyntaxError
+5000
+4 - Check spelling errors 3
+stmt s;
+Select s/stmt# such that Affects (1, s)
+SyntaxError
+5000
+5 - Check spelling errors 4
+stmt s;
+Select s.stmt# such that Affect (1, s)
+SyntaxError
+5000
+6 - Check affects relationship for Gamma function
+stmt s;
+Select s.stmt# such that Affects (17, s)
+none
+5000
+7 - Checks affects results for statement number larger than number of statements in program
+stmt s;
+Select s.stmt# such that Affects (100 , s)
+none
+5000
+8 - Checks affects results for read statement
+stmt s;
+Select s.stmt# such that Affects (15, s)
+none
+5000
+9 - Checks affects results for print statement 
+stmt s;
+Select s.stmt# such that Affects (16, s)
+none
+5000
+10 - Checks affect results after modified by read statement.
+assign a;
+Select a such that Affects (14, a)
+none
+5000
