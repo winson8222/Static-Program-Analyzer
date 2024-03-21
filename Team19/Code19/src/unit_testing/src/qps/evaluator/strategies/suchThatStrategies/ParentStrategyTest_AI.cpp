@@ -12,7 +12,8 @@ ParsingResult createParsingResultForParent(int stmt1, int stmt2, bool isTransiti
     ParsingResult parsingResult;
     TokenType relationshipType = isTransitive ? TokenType::ParentT : TokenType::Parent;
     SuchThatClause clause;
-    clause.setRelationship(Token(relationshipType, ""));
+    string relationshipString = isTransitive ? "Parent*" : "Parent";
+    clause.setRelationship(Token(relationshipType, relationshipString));
     clause.setFirstParam(Token(TokenType::INTEGER, std::to_string(stmt1)));
     clause.setSecondParam(Token(TokenType::INTEGER, std::to_string(stmt2)));
     parsingResult.addSuchThatClause(clause);
@@ -22,6 +23,9 @@ ParsingResult createParsingResultForParent(int stmt1, int stmt2, bool isTransiti
 TEST_CASE("src/qps/evaluator/suchThatStrategies/ParentStrategy/1") {
     auto pkb = std::make_shared<PKB>();
     auto ParentStore = pkb->getParentStore();
+    auto ParentTStore = pkb->getParentTStore();
+    ParentTStore->addRelationship(1, 4);
+    ParentTStore->addRelationship(1, 3);
     ParentStore->addRelationship(1, 2);
     ParentStore->addRelationship(2, 3);
     ParentStore->addRelationship(3, 4);
@@ -69,6 +73,7 @@ std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderMan
 std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
 std::shared_ptr<ParentWriter> parentWriter = pkbWriterManager->getParentWriter();
+std::shared_ptr<ParentTWriter> parentTWriter = pkbWriterManager->getParentTWriter();
     statementWriter->insertStatement(1);
     statementWriter->insertStatement(2);
     parentWriter->addParent(1, 2);
@@ -128,6 +133,7 @@ std::shared_ptr<ParentWriter> parentWriter = pkbWriterManager->getParentWriter()
 
 
     SECTION("Verifying Transitive Parent Relation: Parent* of Statement 3") {
+        parentTWriter->addParentT(1, 3);
         std::vector<Token> tokens = {
                 Token(TokenType::DesignEntity, "stmt"),
                 Token(TokenType::IDENT, "s"),

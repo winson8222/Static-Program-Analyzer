@@ -795,7 +795,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/18") {
     SECTION("mutiple select of stmt# using call if it is in result table, both are in result table") {
         pkbWriterManager->getVariableWriter()->insertVariable("v");
         pkbWriterManager->getVariableWriter()->insertVariable("x");
-        usesPWriter->addUsesP("proc1", "v");
+        usesSWriter->addUsesS(3, "x");
 
         std::vector<Token> tokens = {
                 Token(TokenType::DesignEntity, "call"),
@@ -829,7 +829,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/18") {
         ParsingResult parsingResult = QueryParser(tokens).parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
         std::unordered_set<string> res = evaluator.evaluateQuery();
-        REQUIRE(res == std::unordered_set<string>{ "2 proc2 v", "4 proc4 v", "6 proc4 v", "3 proc3 v", "5 proc5 v" });
+        REQUIRE(res == std::unordered_set<string>{ "4 proc4 proc4", "3 proc3 x", "2 proc2 proc2" });
     }
 
     SECTION("mutiple select of stmt# using call if it is in result table, if call not in result table") {

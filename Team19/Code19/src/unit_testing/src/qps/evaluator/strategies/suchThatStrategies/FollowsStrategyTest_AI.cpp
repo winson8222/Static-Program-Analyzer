@@ -12,7 +12,8 @@ ParsingResult createParsingResultForFollows(int stmt1, int stmt2, bool isTransit
     ParsingResult parsingResult;
     TokenType relationshipType = isTransitive ? TokenType::FollowsT : TokenType::Follows;
     SuchThatClause clause;
-    clause.setRelationship(Token(relationshipType, ""));
+    string relationShipString = isTransitive ? "Follows*" : "Follows";
+    clause.setRelationship(Token(relationshipType, relationShipString));
     clause.setFirstParam(Token(TokenType::INTEGER, std::to_string(stmt1)));
     clause.setSecondParam(Token(TokenType::INTEGER, std::to_string(stmt2)));
     parsingResult.addSuchThatClause(clause);
@@ -22,6 +23,9 @@ ParsingResult createParsingResultForFollows(int stmt1, int stmt2, bool isTransit
 TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/1") {
     auto pkb = std::make_shared<PKB>();
     auto followsStore = pkb->getFollowsStore();
+    auto followsTStore = pkb->getFollowsTStore();
+    followsTStore->addRelationship(1, 3);
+    followsTStore->addRelationship(1, 4);
     followsStore->addRelationship(1, 2);
     followsStore->addRelationship(2, 3);
     followsStore->addRelationship(3, 4);
@@ -721,9 +725,9 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/16") {
                 Token(TokenType::ThatKeyword, "that"),
                 Token(TokenType::FollowsT, "Follows*"),
                 Token(TokenType::Lparenthesis, "("),
-                Token(TokenType::IDENT, "_"),
+                Token(TokenType::Wildcard, "_"),
                 Token(TokenType::Comma, ","),
-                Token(TokenType::Wildcard, "s"),
+                Token(TokenType::IDENT, "s"),
                 Token(TokenType::Rparenthesis, ")"),
                 Token(TokenType::AndKeyword, "such that"),
                 Token(TokenType::Uses, "Uses"),
@@ -738,7 +742,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/16") {
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
         std::unordered_set<string> res = evaluator.evaluateQuery();
-        REQUIRE(res == std::unordered_set<string>{ "x","y" });
+        REQUIRE(res == std::unordered_set<string>{ "y", "z" });
 
     }
 

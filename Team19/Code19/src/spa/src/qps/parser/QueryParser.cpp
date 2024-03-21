@@ -314,6 +314,8 @@ void QueryParser::parseUsesOrModifies(SuchThatClause& clause) {
         clause.setRelationship(currentSuchThatToken);
         clause.setFirstParam(currentToken());
         advanceToken();
+    } else {
+        throwSemanticError();
     }
 
 
