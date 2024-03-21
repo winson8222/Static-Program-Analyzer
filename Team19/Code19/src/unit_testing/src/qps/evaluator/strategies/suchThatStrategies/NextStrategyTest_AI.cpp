@@ -599,5 +599,18 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/NextStrategy/3") {
         REQUIRE(res == std::unordered_set<string>{"3", "1", "2", "4", "5"});
     }
 
+    SECTION("Select Boolean from Next Relationship with 2 Integer") {
+
+        string query = "stmt s; Select BOOLEAN such that Next(2, 1)";
+        Tokenizer tokenizer(query);
+        std::vector<Token> tokens = tokenizer.tokenize();
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{"FALSE"});
+    }
+
 
 }

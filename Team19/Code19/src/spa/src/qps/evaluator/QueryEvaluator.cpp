@@ -21,9 +21,14 @@ void QueryEvaluator::addStrategy(std::unique_ptr<QueryEvaluationStrategy> strate
 }
 
 void QueryEvaluator::constructEntryString(std::string& entry, std::string& synonym, std::unordered_map<std::string, std::string>& map) {
-    // check if synonym is a AttrRef
-    // entry.empty() ? entry = map.at(synonym) : entry += " " + map.at(synonym);
-    // convert map.at(synonym) to attrValue needed
+    // i check if synonym is a AttrRef
+    if (ParsingResult::isAttrRef(synonym)) {
+        string synonymSyn = ParsingResult::getSynFromAttrRef(synonym);
+        std::string ref = map.at(synonymSyn);
+        string convertedAttr = convertToAttr(synonym, ref);
+        entry.empty() ? entry = convertedAttr : entry += " " + convertedAttr;
+        return;
+    }
 	entry.empty() ? entry = map.at(synonym) : entry += " " + map.at(synonym);
 }
 
@@ -36,11 +41,19 @@ void QueryEvaluator::addEntriesToFinalWithResultOnly(std::unordered_set<std::str
 		finalSet.insert(toAdd);
 	}
 }
+
 void QueryEvaluator::addEntriesToFinalWithCrossJoinAndResult(std::unordered_set<std::string>& finalSet, std::vector<std::string> requiredSynonyms, std::unordered_map<std::string, std::string> crossJoinMap) {
 	for (auto row: result->getRows()) {
 		std::string toAdd;
 		for (auto requiredSynonym : requiredSynonyms) {
-			if (crossJoinMap.find(requiredSynonym) != crossJoinMap.end()) {
+            string requiredSynonymForChecking;
+            if (ParsingResult::isAttrRef(requiredSynonym)) {
+                requiredSynonymForChecking = ParsingResult::getSynFromAttrRef(requiredSynonym);
+            } else {
+                requiredSynonymForChecking = requiredSynonym;
+            }
+
+			if (crossJoinMap.find(requiredSynonymForChecking) != crossJoinMap.end()) {
 				constructEntryString(toAdd, requiredSynonym, crossJoinMap);
 			} else {
 				constructEntryString(toAdd, requiredSynonym, row);
@@ -85,8 +98,28 @@ std::vector<std::unordered_map<std::string, std::string>> QueryEvaluator::getCro
 	return crossJoinMapList;
 }
 
+std::vector<std::string> QueryEvaluator::removeAllAttrRefs(const std::vector<std::string>& requiredSynonyms) {
+    std::vector<std::string> processedSynonyms;
+    std::unordered_set<std::string> seen; // To ensure uniqueness without duplicates
+
+    for (const string& synonym : requiredSynonyms) {
+        std::string processedSynonym = synonym;
+        if (ParsingResult::isAttrRef(synonym)) {
+            processedSynonym = ParsingResult::getSynFromAttrRef(synonym);
+        }
+        // Insert into set to ensure uniqueness
+        if (seen.insert(processedSynonym).second) {
+            processedSynonyms.push_back(processedSynonym);
+        }
+    }
+
+    return processedSynonyms;
+}
+
 void QueryEvaluator::evaluateMultipleReturnValues(std::unordered_set<std::string>& finalSet, std::vector<std::string> requiredSynonyms) {
-	std::vector<std::unordered_map<std::string, std::string>> crossJoinMapList = getCrossJoinMapList(requiredSynonyms);
+    std::vector<std::string> processedSynonyms = removeAllAttrRefs(requiredSynonyms);
+    // check all the required synonyms are in the result table
+    std::vector<std::unordered_map<std::string, std::string>> crossJoinMapList = getCrossJoinMapList(processedSynonyms);
 	if (crossJoinMapList.empty()) {
 		// Case 1: All required synonyms are in the result table
 		addEntriesToFinalWithResultOnly(finalSet, requiredSynonyms);
@@ -186,8 +219,11 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
     std::vector<std::string> requiredSynonyms = parsingResult.getRequiredSynonyms();
     std::unordered_set<std::string> finalSet;
 
+    const string requiredSynonym = requiredSynonyms[0];
+    const string requiredSynonymForCheck = ParsingResult::isAttrRef(requiredSynonym) ? ParsingResult::getSynFromAttrRef(requiredSynonym) : requiredSynonym;
+    std::string requiredType = parsingResult.getRequiredSynonymType(requiredSynonym);
     if (requiredSynonyms.size() == 1) {
-        if (requiredSynonyms[0] == "BOOLEAN") {
+        if (requiredSynonym == "BOOLEAN") {
             if (result->isTableTrue() || !result->isEmpty()) {
                 return unordered_set<string>{"TRUE"};
             }
@@ -199,22 +235,25 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
         if (result->isTableFalse()) {
             return {};
         }
-        std::string requiredType = parsingResult.getRequiredSynonymType(requiredSynonyms[0]);
 
-        if (result->hasColumn(requiredSynonyms[0])) {
-            unordered_set<string> currentResult = result->getColumnValues(requiredSynonyms[0]);
-            // if it is an attr, convert into attrValue
-            finalSet.insert(currentResult.begin(), currentResult.end());
+        unordered_set<string> currentResult;
+        if (result->hasColumn(requiredSynonymForCheck)) {
+            currentResult = result->getColumnValues(requiredSynonymForCheck);
         }
         else {
             //return all statement/variables/whatever
             if (result->isTableTrue() || !result->isEmpty() || isFirstStrategy) {
-                unordered_set<string> currentResult = getAllEntities(requiredType);
-                // if it is an attr, convert into attrValue
-                finalSet.insert(currentResult.begin(), currentResult.end());
+                currentResult = getAllEntities(requiredType);;
             }
-
         }
+
+        if (ParsingResult::isAttrRef(requiredSynonym)) {
+            convertToAttrSet(requiredSynonym, currentResult, finalSet);
+        }
+        else {
+            finalSet = currentResult;
+        }
+
         return finalSet;
     } else {
         if (result->isTableFalse()) return {};
@@ -237,7 +276,7 @@ std::unordered_set<std::string> QueryEvaluator::getAllEntities(const std::string
             }
         }
         else {
-            for (string entity : std::get<std::unordered_set<string>>(variantEntities)) {
+            for (const string& entity : std::get<std::unordered_set<string>>(variantEntities)) {
                 entities.insert(entity);
             }
         }
@@ -331,4 +370,97 @@ string QueryEvaluator::join(const unordered_set<string>& elements, const string&
     }
     return result;
 }
+
+
+
+void QueryEvaluator::convertToAttrSet(const std::string &synonym, std::unordered_set<std::string> &valueSet,
+                                      std::unordered_set<std::string> &attrSet) {
+    if (ParsingResult::isAttrRef(synonym)) {
+        for (const string& value : valueSet) {
+            attrSet.insert(convertToAttr(synonym, value));
+        }
+    } else {
+        attrSet = valueSet;
+    };
+}
+
+string QueryEvaluator::convertToAttr(const string& synonym , string ref) {
+    // check take the syn par from the AttrRef
+    string declaredSynonymType = parsingResult.getRequiredSynonymType(synonym);
+    // check the type of Attr
+    string attrType = ParsingResult::getAttrFromAttrRef(synonym);
+    if (attrType == "stmt#" || attrType == "value") {
+        return ref;
+    } else if (attrType == "procName") {
+        return convertToProcName(declaredSynonymType, ref);
+    } else if (attrType == "varName") {
+        return convertToVarName(declaredSynonymType, ref);
+    }
+    return "";
+}
+
+
+string QueryEvaluator::convertToProcName(const std::string& declaredSynonym, std::string ref) {
+    initializeProcNameMap();
+    // find from the map the corresponding method based on the declaredSynonym and call the method to return the string
+    if (declaredSynonym == "procedure") {
+        return ref;
+    }
+    int refInt = stoi(ref);
+    // add a check if exists first
+    if (procNameMap.find(declaredSynonym) != procNameMap.end()) {
+            return procNameMap.at(declaredSynonym)(refInt);
+    } else {
+        throwNoSuchMethodException();
+    }
+
+}
+
+
+string QueryEvaluator::convertToVarName(const std::string& declaredSynonym, std::string ref) {
+    initializeVarNameMap();
+    // find from the map the corresponding method based on the declaredSynonym and call the method to return the string
+    if (declaredSynonym == "variable") {
+        return ref;
+    }
+    int refInt = stoi(ref);
+    if (varNameMap.find(declaredSynonym) != varNameMap.end()) {
+        return varNameMap.at(declaredSynonym)(refInt);
+    } else {
+        throwNoSuchMethodException();
+    }
+}
+
+void QueryEvaluator::throwNoSuchMethodException() {
+    throw "No such method for the declared synonym";
+}
+
+
+void QueryEvaluator::initializeProcNameMap() {
+    this->procNameMap = {
+            {"call",      [this](int ref) -> std::string {
+                // Assuming getCallProcName is a valid method for demonstration
+                shared_ptr<CallProcNameReader> callProcNameReader = pkbReaderManager->getCallProcNameReader();
+                return callProcNameReader->getCalledProcedureName(ref);
+            }}
+    };
+}
+
+void QueryEvaluator::initializeVarNameMap() {
+    this->varNameMap = {
+            {"read",     [this](int ref) -> std::string {
+                // Assuming getReadVarName is a valid method for demonstration
+                shared_ptr<ReadVarNameReader> readVarNameReader = pkbReaderManager->getReadVarNameReader();
+                return readVarNameReader->getReadVariableName(ref);
+            }},
+            {"print",    [this](int ref) -> std::string {
+                // Assuming getPrintVarName is a valid method for demonstration
+                shared_ptr<PrintVarNameReader> printVarNameReader = pkbReaderManager->getPrintVarNameReader();
+                return printVarNameReader->getPrintVariableName(ref);
+            }}
+    };
+}
+
+
+
 // ai-gen end
