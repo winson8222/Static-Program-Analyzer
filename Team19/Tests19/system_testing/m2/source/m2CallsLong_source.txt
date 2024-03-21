@@ -1,0 +1,76 @@
+procedure Main {
+    x = 5 + y + 3 + z;
+    call Calculate;
+}
+
+procedure Calculate {
+    x = y + z;
+    while (x > 0) {
+        call Finish;
+    }
+
+    if (x > 0) then {
+        call Finish;
+    } else {
+        call Continue;
+    }
+}
+
+procedure Finish {
+    x = 0;
+}
+
+procedure Continue {
+    x = x - 1;
+    if (x > 0) then {
+        call Finish;
+    } else {
+        call ContinueLonger;
+    }
+}
+
+procedure ContinueLonger {
+    x = x - 1;
+    if (x > 0) then {
+        call Finish;
+    } else {
+        call ContinueEvenLonger;
+    }
+}
+
+procedure ContinueEvenLonger {
+    x = x - 1;
+    if (x > 0) then {
+        call Finish;
+    } else {
+        if (x > 0) then {
+            if (y > 0) then {
+                if (z > 0) then {
+                    call Finish;
+                    if (x > 0) then {
+                        call End;
+                    } else {
+                        call Stop;
+                    }
+                } else {
+                    call Stop;
+                }
+            } else {
+                call Stop;
+            }
+        } else {
+            call Stop;
+        }
+    }
+}
+
+procedure End {
+    x = 10000;
+}
+
+procedure Stop {
+    x = 900;
+}
+
+
+
