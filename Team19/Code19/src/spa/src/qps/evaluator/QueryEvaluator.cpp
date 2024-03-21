@@ -220,6 +220,7 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
     std::unordered_set<std::string> finalSet;
 
     const string requiredSynonym = requiredSynonyms[0];
+    const string requiredSynonymForCheck = ParsingResult::isAttrRef(requiredSynonym) ? ParsingResult::getSynFromAttrRef(requiredSynonym) : requiredSynonym;
     std::string requiredType = parsingResult.getRequiredSynonymType(requiredSynonym);
     if (requiredSynonyms.size() == 1) {
         if (requiredSynonym == "BOOLEAN") {
@@ -236,8 +237,8 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
         }
 
         unordered_set<string> currentResult;
-        if (result->hasColumn(requiredSynonym)) {
-            currentResult = result->getColumnValues(requiredSynonym);
+        if (result->hasColumn(requiredSynonymForCheck)) {
+            currentResult = result->getColumnValues(requiredSynonymForCheck);
         }
         else {
             //return all statement/variables/whatever
