@@ -1,0 +1,60 @@
+1 - Finds all procedures that calls another procedure
+procedure p, q;
+Select p such that Calls(p, q)
+Continue, Main, Calculate, ContinueEvenLonger, ContinueLonger
+5000
+2 - Finds all procedures that are called by another procedure Transitively
+procedure p, q;
+Select q such that Calls*(p, q)
+Stop, ContinueLonger, ContinueEvenLonger, End, Calculate, Finish, Continue
+5000
+3 - Finds all procedures call pair
+procedure p, q;
+Select <p, q> such that Calls(p, q)
+ContinueEvenLonger Stop, ContinueEvenLonger Finish, ContinueEvenLonger End, ContinueLonger ContinueEvenLonger, Main Calculate, Calculate Finish, Continue Finish, Continue ContinueLonger, ContinueLonger Finish, Calculate Continue
+5000
+4 - Finds all procedures call pair transitively
+procedure p, q;
+Select <p, q> such that Calls*(p, q)
+ContinueEvenLonger Finish, ContinueEvenLonger End, ContinueLonger Finish, ContinueLonger ContinueEvenLonger, ContinueEvenLonger Stop, ContinueLonger Stop, Calculate Stop, Calculate Continue, Calculate ContinueLonger, ContinueLonger End, Continue End, Calculate Finish, Calculate ContinueEvenLonger, Calculate End, Continue ContinueEvenLonger, Continue Finish, Main Finish, Main ContinueLonger, Continue Stop, Main Calculate, Main Continue, Main ContinueEvenLonger, Main Stop, Continue ContinueLonger, Main End
+5000
+5 - Finds all procedures that are called by ContinueEvenLonger
+procedure p;
+Select p such that Calls("ContinueEvenLonger", p)
+Stop, Finish, End
+5000
+6 - Finds all procedures that calls ContinueEvenLonger
+procedure p;
+Select p such that Calls(p, "ContinueEvenLonger")
+ContinueLonger
+5000
+7 - Finds all procedures that are Transitively called by ContinueLonger
+procedure p;
+Select p such that Calls*("ContinueLonger", p)
+Stop, ContinueEvenLonger, End, Finish,
+5000
+8 - Finds all procedures that calls ContinueLonger
+procedure p;
+Select p such that Calls(p, "ContinueLonger")
+Continue
+5000
+9 - Finds all procedures that are calls Finish
+procedure p;
+Select p such that Calls*(p, "Finish")
+ContinueEvenLonger, ContinueLonger, Calculate, Main, Continue
+5000
+10 - Finds all procedures that calls End
+procedure p;
+Select p such that Calls("End", p)
+none
+5000
+11 - Finds all procedures that End called transitively
+procedure p;
+Select p such that Calls*("End", p)
+none
+5000
+12 - Finds all procedures that call End transitively
+procedure p;
+Select p such that Calls*(p, "End")
+ContinueEvenLonger, ContinueLonger, Calculate, Main, Continue
+5000

@@ -255,6 +255,9 @@ void QueryParser::parseCalls(SuchThatClause& clause) {
     }
 
     parseEntRef();
+    ensureSynonymType(currentToken(), "procedure");
+
+
     clause.setFirstParam(currentToken());
     advanceToken();
 
@@ -266,6 +269,7 @@ void QueryParser::parseCalls(SuchThatClause& clause) {
     }
 
     parseEntRef();
+    ensureSynonymType(currentToken(), "procedure");
     clause.setSecondParam(currentToken());
     advanceToken();
     ensureToken(TokenType::Rparenthesis);
@@ -642,6 +646,16 @@ void QueryParser::parseEntSynonym() {
         throwSemanticError();
     }
 }
+
+void QueryParser::ensureSynonymType(Token type, std::string synType) {
+    if (type.getType() != TokenType::IDENT) {
+        return;
+    }
+    if (parsingResult.getDeclaredSynonym(type.getValue()) != synType) {
+        throwSemanticError();
+    }
+}
+
 
 // Define a mapping of token types to their valid statement synonyms
 
