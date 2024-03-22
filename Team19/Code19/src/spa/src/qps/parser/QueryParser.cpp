@@ -1,7 +1,6 @@
 // Include the parser class header.
 #include "../../spa/src/qps/parser/QueryParser.h"
 #include <stdexcept>
-#include <unordered_set>
 #include <iostream>
 
 using namespace std;
@@ -153,10 +152,14 @@ void QueryParser::parseSelectClause() {
                 ensureToken(TokenType::IDENT);
             }
             
-            string concatenatedTokens = concatTokens(startIndex, currentTokenIndex);
+            string concatenatedTokens;
+            for (size_t i = startIndex; i <= currentTokenIndex; ++i) {
+                concatenatedTokens += tokens[i].getValue();
+            }
             parsingResult.setRequiredSynonym(concatenatedTokens);
             if (parsingResult.getDeclaredSynonym(currentSuchThatToken.getValue()).empty()) {
                 throwSemanticError();
+                
             }
             advanceToken();
             if (match(TokenType::RightAngleBracket)) {
@@ -177,7 +180,10 @@ void QueryParser::parseSelectClause() {
                 ensureToken(TokenType::BooleanKeyword);
             }
         }
-        string concatenatedTokens = concatTokens(startIndex, currentTokenIndex);
+        string concatenatedTokens;
+        for (size_t i = startIndex; i <= currentTokenIndex; ++i) {
+            concatenatedTokens += tokens[i].getValue();
+        }
         parsingResult.setRequiredSynonym(concatenatedTokens);
         if (parsingResult.getDeclaredSynonym(currentSuchThatToken.getValue()).empty() && currentSuchThatToken.getValue() != "BOOLEAN") {
             throwSemanticError();
@@ -218,11 +224,10 @@ void QueryParser::parseRelRef(SuchThatClause& clause) {
 bool QueryParser::isStmtRefStmtRef() {
     if (match(TokenType::Parent) || match(TokenType::ParentT) ||
         match(TokenType::Follows) || match(TokenType::FollowsT) ||
-        match(TokenType::Next) || match(TokenType::NextT) || match(TokenType::Affects)) {
+        match(TokenType::Next) || match(TokenType::NextT)) {
         currentSuchThatToken = currentToken();
         return true;
     }
-
     return false;
 }
 
@@ -314,8 +319,6 @@ void QueryParser::parseUsesOrModifies(SuchThatClause& clause) {
         clause.setRelationship(currentSuchThatToken);
         clause.setFirstParam(currentToken());
         advanceToken();
-    } else {
-        throwSemanticError();
     }
 
 
@@ -421,7 +424,7 @@ void QueryParser::parsePatternClause() {
     // check if it is a syn-assign
     ensureToken(TokenType::IDENT);
     clause.setRelationship(currentToken());
-    parsePatternSynonym();
+    parseAssignSynonyms();
 
 
     ensureToken(TokenType::Lparenthesis);
@@ -435,18 +438,19 @@ void QueryParser::parsePatternClause() {
     ensureToken(TokenType::Comma);
 
     advanceToken();
-
+    
 
     string patternType = parsingResult.getPatternClauseType(clause);
     if (patternType == "if") {
-        parseIfParams(clause);
+
     }
     else if (patternType == "while") {
-        parseWhileParams(clause);
 
     } else if (patternType == "assign") {
+
         // This is a rudimentary approach to tokenize ExpressionSpec, probably change later
         // Store the current token index before parsing the expression spec
+        size_t startIndex = currentTokenIndex;
         parseExpressionSpec(clause);
 
     } else {
@@ -457,30 +461,6 @@ void QueryParser::parsePatternClause() {
     ensureToken(TokenType::Rparenthesis);
     parsingResult.addPatternClause(clause);
 }
-
-void QueryParser::parseIfParams(PatternClause &clause) {
-    if (!match(TokenType::Wildcard)) {
-        throwSemanticError();
-    }
-    clause.setSecondParam(currentToken());
-    advanceToken();
-    ensureToken(TokenType::Comma);
-    advanceToken();
-    if (!match(TokenType::Wildcard)) {
-        throwSemanticError();
-    }
-    clause.setThirdParam(currentToken());
-}
-
-void QueryParser::parseWhileParams(PatternClause &clause) {
-    if (!match(TokenType::Wildcard)) {
-        throwSemanticError();
-    }
-    clause.setSecondParam(currentToken());
-}
-
-
-
 
 // Parses the expression specification in the query.
 // Handles different forms of expressions like quoted constants, wildcards, or quoted expressions.
@@ -644,19 +624,25 @@ void QueryParser::parseEntSynonym() {
 }
 
 // Define a mapping of token types to their valid statement synonyms
-
+const std::unordered_map<TokenType, std::unordered_set<std::string>> validStmtSynonymsMap = {
+        {TokenType::Parent, {"stmt", "assign", "while", "if", "print", "read"}},
+        {TokenType::ParentT, {"stmt", "assign", "while", "if", "print", "read"}},
+        {TokenType::Follows, {"stmt", "assign", "while", "if", "print", "read"}},
+        {TokenType::FollowsT, {"stmt", "assign", "while", "if", "print", "read"}},
+        {TokenType::Uses, {"stmt", "print", "while", "if", "assign", "call", "read"}},
+        {TokenType::Modifies, {"stmt", "print", "while", "if", "assign", "call", "read"}}
+};
 
 void QueryParser::parseStmtSynonyms() {
     ensureToken(TokenType::IDENT);
-    TokenType currentTokenType = currentSuchThatToken.getType();
-    const std::string currentValue = parsingResult.getDeclaredSynonym(currentToken().getValue());
+    const auto& currentTokenType = currentSuchThatToken.getType();
+    const auto& currentValue = parsingResult.getDeclaredSynonym(currentToken().getValue());
 
     // Check if the current token type is in the map
     auto validTypesIt = validStmtSynonymsMap.find(currentTokenType);
     if (validTypesIt != validStmtSynonymsMap.end()) {
         // Found the token type, now check if the current value is in the set of valid synonyms for this type
-        std::unordered_set<std::string> validSynonyms = validTypesIt->second;
-
+        const auto& validSynonyms = validTypesIt->second;
         if (validSynonyms.find(currentValue) == validSynonyms.end()) {
             // The current value is not a valid synonym for the current token type
             throwSemanticError();
@@ -665,11 +651,10 @@ void QueryParser::parseStmtSynonyms() {
 }
 
 
-
 // Parses an assignment synonym in the query.
-void QueryParser::parsePatternSynonym() {
+void QueryParser::parseAssignSynonyms() {
     ensureToken(TokenType::IDENT);
-    if (!checkIfPatternSyn()) {
+    if (parsingResult.getDeclaredSynonym(currentToken().getValue()) != "assign") {
         throwSemanticError();
     }
     advanceToken();
@@ -704,85 +689,53 @@ void QueryParser::parseWithClause() {
     advanceToken();
 
     size_t startIndex = currentTokenIndex;
-    TokenType firstRefType = parseRef();
-    string concatenatedTokens = concatTokens(startIndex, currentTokenIndex);
-    Token firstParam = Token(TokenType::Ref, concatenatedTokens);
-    clause.setFirstParam(firstParam);
+    parseRef();
+    string concatenatedTokens;
+    for (size_t i = startIndex; i <= currentTokenIndex; ++i) {
+        concatenatedTokens += tokens[i].getValue();
+    }
+    clause.setFirstParam(Token(TokenType::Ref, concatenatedTokens));
 
     advanceToken();
     ensureToken(TokenType::Equal);
     advanceToken();
 
     startIndex = currentTokenIndex;
-    TokenType secondRefType = parseRef();
-    concatenatedTokens = concatTokens(startIndex, currentTokenIndex);
-    Token secondParam = Token(TokenType::Ref, concatenatedTokens);
-    clause.setSecondParam(secondParam);
-    if (firstRefType != secondRefType) {
-        throwSemanticError();
+    parseRef();
+    concatenatedTokens = "";
+    for (size_t i = startIndex; i <= currentTokenIndex; ++i) {
+        concatenatedTokens += tokens[i].getValue();
     }
+    clause.setSecondParam(Token(TokenType::Ref, concatenatedTokens));
     
     parsingResult.addWithClause(clause);
 }
 
-
-
-
-TokenType QueryParser::parseRef() {
+void QueryParser::parseRef() {
     if (match(TokenType::QuoutIDENT)) {
-        return TokenType::QuoutIDENT;
+        return;
     }
     else if (match(TokenType::INTEGER)) {
         if (checkValidStmtNum()) {
-            return TokenType::INTEGER;
+            return;
         }
         throwSemanticError();
     }
     else {
         parseAttrRef();
-        return attrToTypeMap.find(currentToken().getValue())->second;
     }
 
 }
 
 void QueryParser::parseAttrRef() {
-    ensureToken(TokenType::IDENT);
-    if (!parsingResult.isSynonymDeclared(currentToken().getValue())) {
-        throwSemanticError();
-    }
-    parseAttr();
-}
-
-void QueryParser::parseAttr() {
-    Token currentSynonym = currentToken();
+    parseSynonym();
     advanceToken();
     ensureToken(TokenType::Dot);
     advanceToken();
-    if (!checkValidAttr(currentSynonym)) {
-        throwSemanticError();
-    }
-}
-
-
-bool QueryParser::checkValidAttr(Token synToken) {
     ensureToken(TokenType::AttrName);
-    string synValue = synToken.getValue();
-    string synType = parsingResult.getRequiredSynonymType(synValue);
-    string attrValue = currentToken().getValue();
-    // find from validAttrMap if it of the right type
-    auto validAttrIt = validAttrMap.find(synType);
-    if (validAttrIt != validAttrMap.end()) {
-        std::unordered_set<std::string> validAttrs = validAttrIt->second;
-        if (validAttrs.find(attrValue) == validAttrs.end()) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-    return false;
 }
 
-
+#include <unordered_set>
 
 bool QueryParser::checkIfStmt() {
     static const std::unordered_set<std::string> stmtTypes = {
@@ -799,7 +752,7 @@ bool QueryParser::checkIfStmt() {
 
 bool QueryParser::checkIfEnt() {
     static const std::unordered_set<std::string> entTypes = {
-            "variable", "procedure"
+            "variable", "constant", "procedure"
     };
 
     if (match(TokenType::QuoutIDENT)) {
@@ -808,20 +761,4 @@ bool QueryParser::checkIfEnt() {
 
     const auto& currentValue = parsingResult.getDeclaredSynonym(currentToken().getValue());
     return entTypes.find(currentValue) != entTypes.end();
-}
-
-bool QueryParser::checkIfPatternSyn() {
-    static const std::unordered_set<std::string> patternTypes = {
-            "assign", "while", "if"
-    };
-    const auto& currentValue = parsingResult.getDeclaredSynonym(currentToken().getValue());
-    return patternTypes.find(currentValue) != patternTypes.end();
-}
-
-string QueryParser::concatTokens(size_t start, size_t end) {
-    string concatenatedTokens;
-    for (size_t i = start; i <= end; ++i) {
-        concatenatedTokens += tokens[i].getValue();
-    }
-    return concatenatedTokens;
 }

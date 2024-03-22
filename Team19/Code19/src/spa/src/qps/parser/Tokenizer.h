@@ -37,13 +37,11 @@ private:
     void splitQuery();
 
     vector<Token> tokens;
-    bool isBooleanDeclared = false; //special case for boolean because it is treated as a synonym after selection if it was declared
 
     // A private method to determine the type of a token given its string representation.
     // Returns the TokenType of the token which is usefull in the QueryParser.
     TokenType determineTokenType(const string& tokenStr);
     bool checkIfDeclaration();
-    bool isSynonym();
 
 };
 

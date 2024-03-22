@@ -102,6 +102,7 @@ REQUIRE(res == std::unordered_set<string>{ "2" });
 
 }
 
+
 TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/3") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
@@ -139,6 +140,10 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/3") {
     REQUIRE(res == std::unordered_set<string>{ "SemanticError" });
 }
 
+
+
+
+
 TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/4") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
@@ -175,6 +180,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/4") {
     std::unordered_set<string> res = evaluator.evaluateQuery();
     REQUIRE((res == std::unordered_set<string>{ "1", "2", "3" } || res == std::unordered_set<string>{"2", "3", "1"} || res == std::unordered_set<string>{"3", "2", "1"}));
 }
+
 
 TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/5") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
@@ -214,6 +220,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/5") {
     std::unordered_set<string> res = evaluator.evaluateQuery();
     REQUIRE(res == std::unordered_set<string>{"y"});
 }
+
+
 
 TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/6") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
@@ -328,6 +336,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/7") {
     std::unordered_set<string> res = evaluator.evaluateQuery();
     REQUIRE(res == std::unordered_set<string>{"y 2 x", "y 3 x", "y 4 x", "y 4 y", "y 2 y", "y 2 z", "y 3 z", "y 3 y", "y 4 z"});
 }
+
 
 TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesStrategy/8") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();

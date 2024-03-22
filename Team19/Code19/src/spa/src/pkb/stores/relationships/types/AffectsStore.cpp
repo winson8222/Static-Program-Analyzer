@@ -47,9 +47,7 @@ bool AffectsStore::handleAddAffects(int statement, int current, const std::strin
             AffectsStore::addRelationship(statement, current);
         }
         return assignedVariable == *(modifiesSStore->getRelationshipsByKey(current).begin());
-    } else if (modifiesSStore->hasRelationship(current, assignedVariable)) {
-		return true;
-	}
+    }
     return false;
 }
 // ai-gen end

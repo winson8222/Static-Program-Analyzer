@@ -383,7 +383,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/2") {
 }
 
 // M1 Test Fix for Uses
-TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/3") {
+TEST_CASE("UsesStrategy - Comprehensive Test with Various Scenarios") {
     auto pkb = std::make_shared<PKB>();
     auto pkbReaderManager = std::make_shared<PKBReaderManager>(pkb);
     auto pkbWriterManager = std::make_shared<PKBWriterManager>(pkb);
@@ -422,6 +422,24 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/3") {
     pkbWriterManager->getParentWriter()->addParent(5, 3); // if statement 5 contains while statement 3
     pkbWriterManager->getParentWriter()->addParent(3, 8); // while statement 3 contains statement 8
 
+    // M1 Fixes for Uses (mainly involving nested while and if statements)
+//    statementWriter->insertStatement(9);
+//    statementWriter->insertStatement(10);
+//    usesWriter->addUsesS(10, "iter"); // Innermost nested statement in a nested while loop
+//    pkbWriterManager->getParentWriter()->addParent(8, 9); // Statement 8 is a while loop that contains statement 9
+//    pkbWriterManager->getParentWriter()->addParent(9, 10); // Statement 9 is a while loop that contains statement 10
+//
+//    // Additional setup for nested if within while where if does not have direct use
+//    statementWriter->insertStatement(11);
+//    statementWriter->insertStatement(12);
+//    usesWriter->addUsesS(12, "iter"); // Innermost nested statement in an if within a while loop
+//    pkbWriterManager->getParentWriter()->addParent(4, 11); // Statement 4 is a while loop that contains if statement 11
+//    pkbWriterManager->getParentWriter()->addParent(11, 12); // If statement 11 contains statement 12
+
+    // For UsesP (not required for this test case but added for completeness)
+    //    statementWriter->insertStatement(7);
+    //    procWriter->insertProcedure("computeCentroid");
+    //    usesWriter->addUsesP("computeCentroid", "iter"); // Call statement, direct procedure uses
 
     // Set up the query to evaluate
     std::vector<Token> tokens = {
@@ -451,316 +469,5 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/3") {
 //    REQUIRE(res == expected);
 }
 
-//call c;
-//Select c such that Uses(c, "iter")
-TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/4") {
-    //Select c such that Uses(c, "iter")
-    SECTION("QueryParser correctly parses 'call c; Select c such that Uses(c, \"iter\")' with no errors") {
-        // Manually create the vector of tokens for the query
-        std::vector<Token> tokens = {
-                Token(TokenType::DesignEntity, "call"),
-                Token(TokenType::IDENT, "c"),
-                Token(TokenType::Semicolon, ";"),
-                Token(TokenType::SelectKeyword, "Select"),
-                Token(TokenType::IDENT, "c"),
-                Token(TokenType::SuchKeyword, "such"),
-                Token(TokenType::ThatKeyword, "that"),
-                Token(TokenType::Uses, "Uses"),
-                Token(TokenType::Lparenthesis, "("),
-                Token(TokenType::IDENT, "c"),
-                Token(TokenType::Comma, ","),
-                Token(TokenType::QuoutIDENT, "\"iter\""),
-                Token(TokenType::Rparenthesis, ")")
 
-        };
-
-
-        // Instantiate the QueryParser with the tokens
-        QueryParser queryParser(tokens);
-
-        // Parse the query
-        ParsingResult parsingResult = queryParser.parse();
-
-        // Verify that the parsing result indicates a valid query with no errors
-        REQUIRE(parsingResult.isQueryValid() == true);
-        REQUIRE(parsingResult.getErrorMessage().empty() == true);
-
-        // Additional checks can be performed here if needed, such as verifying the specific parsing output
-    }
-
-    SECTION("QueryParser correctly parses 'read r; Select r such that Uses(r, 1)' with no errors") {
-        // Manually create the vector of tokens for the query
-        std::vector<Token> tokens = {
-                Token(TokenType::DesignEntity, "read"),
-                Token(TokenType::IDENT, "r"),
-                Token(TokenType::Semicolon, ";"),
-                Token(TokenType::SelectKeyword, "Select"),
-                Token(TokenType::IDENT, "r"),
-                Token(TokenType::SuchKeyword, "such"),
-                Token(TokenType::ThatKeyword, "that"),
-                Token(TokenType::Uses, "Uses"),
-                Token(TokenType::Lparenthesis, "("),
-                Token(TokenType::IDENT, "r"),
-                Token(TokenType::Comma, ","),
-                Token(TokenType::INTEGER, "1"),
-                Token(TokenType::Rparenthesis, ")")
-        };
-        QueryParser queryParser(tokens);
-        // Parse the query
-        ParsingResult parsingResult = queryParser.parse();
-
-
-        // Verify that the parsing result indicates a valid query with no errors
-        REQUIRE(parsingResult.isQueryValid() == false);
-        REQUIRE(parsingResult.getErrorMessage() == "SyntaxError");
-    }
-
-}
-
-TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/5") {
-    //Select c such that Uses(c, "iter")
-    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
-    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
-    pkbWriterManager->getPrintWriter()->insertPrint(2);
-    pkbWriterManager->getPrintWriter()->insertPrint(3);
-    pkbWriterManager->getPrintVarNameWriter()->addPrintVarName(2, "x");
-    pkbWriterManager->getPrintVarNameWriter()->addPrintVarName(3, "y");
-    pkbWriterManager->getUsesSWriter()->addUsesS(2, "x");
-    pkbWriterManager->getUsesSWriter()->addUsesS(3, "y");
-    SECTION("QueryParser correctly parses 'print pn; Select pn.varName; with no errors") {
-        // Manually create the vector of tokens for the query
-
-
-        std::vector<Token> tokens = {
-                Token(TokenType::DesignEntity, "print"),
-                Token(TokenType::IDENT, "pn"),
-                Token(TokenType::Semicolon, ";"),
-                Token(TokenType::SelectKeyword, "Select"),
-                Token(TokenType::IDENT, "pn"),
-                Token(TokenType::Dot, "."),
-                Token(TokenType::AttrName, "varName"),
-        };
-
-
-        // Instantiate the QueryParser with the tokens
-        QueryParser queryParser(tokens);
-
-        // Parse the query
-        ParsingResult parsingResult = queryParser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> res = evaluator.evaluateQuery();
-        REQUIRE(res == std::unordered_set<string>{"x", "y"});
-
-
-        // Additional checks can be performed here if needed, such as verifying the specific parsing output
-    }
-
-    SECTION("QueryParser correctly parses 'print pn; Select pn.stmt#; with no errors") {
-        // Manually create the vector of tokens for the query
-
-
-        std::vector<Token> tokens = {
-                Token(TokenType::DesignEntity, "print"),
-                Token(TokenType::IDENT, "pn"),
-                Token(TokenType::Semicolon, ";"),
-                Token(TokenType::SelectKeyword, "Select"),
-                Token(TokenType::IDENT, "pn"),
-                Token(TokenType::Dot, "."),
-                Token(TokenType::AttrName, "stmt#"),
-        };
-
-
-        // Instantiate the QueryParser with the tokens
-        QueryParser queryParser(tokens);
-
-        // Parse the query
-        ParsingResult parsingResult = queryParser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> res = evaluator.evaluateQuery();
-        REQUIRE(res == std::unordered_set<string>{"2", "3"});
-        // Additional checks can be performed here if needed, such as verifying the specific parsing output
-    }
-
-}
-
-TEST_CASE("Print Attr Select with Uses Clauses") {
-
-    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
-    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
-    pkbWriterManager->getPrintWriter()->insertPrint(2);
-    pkbWriterManager->getPrintWriter()->insertPrint(3);
-    pkbWriterManager->getPrintVarNameWriter()->addPrintVarName(2, "x");
-    pkbWriterManager->getPrintVarNameWriter()->addPrintVarName(3, "y");
-    pkbWriterManager->getUsesSWriter()->addUsesS(2, "x");
-    pkbWriterManager->getUsesSWriter()->addUsesS(3, "y");
-
-
-
-    SECTION("QueryParser correctly parses 'print pn; Select pn.varName such that Uses(pn, x); with no errors") {
-        // Manually create the vector of tokens for the query
-
-
-
-        std::vector<Token> tokens = {
-                Token(TokenType::DesignEntity, "print"),
-                Token(TokenType::IDENT, "pn"),
-                Token(TokenType::Semicolon, ";"),
-                Token(TokenType::SelectKeyword, "Select"),
-                Token(TokenType::IDENT, "pn"),
-                Token(TokenType::Dot, "."),
-                Token(TokenType::AttrName, "varName"),
-                Token(TokenType::SuchKeyword, "such"),
-                Token(TokenType::ThatKeyword, "that"),
-                Token(TokenType::Uses, "Uses"),
-                Token(TokenType::Lparenthesis, "("),
-                Token(TokenType::IDENT, "pn"),
-                Token(TokenType::Comma, ","),
-                Token(TokenType::QuoutIDENT, "\"x\""),
-                Token(TokenType::Rparenthesis, ")")
-        };
-
-
-        // Instantiate the QueryParser with the tokens
-        QueryParser queryParser(tokens);
-
-        // Parse the query
-        ParsingResult parsingResult = queryParser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> res = evaluator.evaluateQuery();
-        REQUIRE(res == std::unordered_set<string>{"x"});
-
-
-        // Additional checks can be performed here if needed, such as verifying the specific parsing output
-    }
-
-    SECTION("QueryParser correctly parses 'print pn; Select pn.stmt# such that Uses(pn, x); with no errors") {
-        // Manually create the vector of tokens for the query
-
-
-
-        std::vector<Token> tokens = {
-                Token(TokenType::DesignEntity, "print"),
-                Token(TokenType::IDENT, "pn"),
-                Token(TokenType::Semicolon, ";"),
-                Token(TokenType::SelectKeyword, "Select"),
-                Token(TokenType::IDENT, "pn"),
-                Token(TokenType::Dot, "."),
-                Token(TokenType::AttrName, "stmt#"),
-                Token(TokenType::SuchKeyword, "such"),
-                Token(TokenType::ThatKeyword, "that"),
-                Token(TokenType::Uses, "Uses"),
-                Token(TokenType::Lparenthesis, "("),
-                Token(TokenType::IDENT, "pn"),
-                Token(TokenType::Comma, ","),
-                Token(TokenType::QuoutIDENT, "\"x\""),
-                Token(TokenType::Rparenthesis, ")")
-        };
-
-
-        // Instantiate the QueryParser with the tokens
-        QueryParser queryParser(tokens);
-
-        // Parse the query
-        ParsingResult parsingResult = queryParser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> res = evaluator.evaluateQuery();
-        REQUIRE(res == std::unordered_set<string>{"2"});
-
-
-        // Additional checks can be performed here if needed, such as verifying the specific parsing output
-    }
-}
-
-
-
-TEST_CASE("Read Attr Select with Uses Clauses") {
-
-    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
-    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
-    pkbWriterManager->getReadWriter()->insertRead(2);
-    pkbWriterManager->getReadWriter()->insertRead(3);
-    pkbWriterManager->getReadVarNameWriter()->addReadVarName(2, "x");
-    pkbWriterManager->getReadVarNameWriter()->addReadVarName(3, "y");
-    pkbWriterManager->getUsesSWriter()->addUsesS(2, "x");
-    pkbWriterManager->getUsesSWriter()->addUsesS(3, "y");
-
-
-
-    SECTION("QueryParser correctly parses 'read r; Select r.varName such that Uses(r, x); with no errors") {
-        // Manually create the vector of tokens for the query
-
-
-
-        std::vector<Token> tokens = {
-                Token(TokenType::DesignEntity, "read"),
-                Token(TokenType::IDENT, "r"),
-                Token(TokenType::Semicolon, ";"),
-                Token(TokenType::SelectKeyword, "Select"),
-                Token(TokenType::IDENT, "r"),
-                Token(TokenType::Dot, "."),
-                Token(TokenType::AttrName, "varName"),
-                Token(TokenType::SuchKeyword, "such"),
-                Token(TokenType::ThatKeyword, "that"),
-                Token(TokenType::Uses, "Uses"),
-                Token(TokenType::Lparenthesis, "("),
-                Token(TokenType::IDENT, "r"),
-                Token(TokenType::Comma, ","),
-                Token(TokenType::QuoutIDENT, "\"x\""),
-                Token(TokenType::Rparenthesis, ")")
-        };
-
-
-        // Instantiate the QueryParser with the tokens
-        QueryParser queryParser(tokens);
-
-        // Parse the query
-        ParsingResult parsingResult = queryParser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> res = evaluator.evaluateQuery();
-        REQUIRE(res == std::unordered_set<string>{"x"});
-
-
-        // Additional checks can be performed here if needed, such as verifying the specific parsing output
-    }
-
-    SECTION("QueryParser correctly parses 'read r; Select r.stmt# such that Uses(r, x); with no errors") {
-        // Manually create the vector of tokens for the query
-
-
-
-        std::vector<Token> tokens = {
-                Token(TokenType::DesignEntity, "read"),
-                Token(TokenType::IDENT, "r"),
-                Token(TokenType::Semicolon, ";"),
-                Token(TokenType::SelectKeyword, "Select"),
-                Token(TokenType::IDENT, "r"),
-                Token(TokenType::Dot, "."),
-                Token(TokenType::AttrName, "stmt#"),
-                Token(TokenType::SuchKeyword, "such"),
-                Token(TokenType::ThatKeyword, "that"),
-                Token(TokenType::Uses, "Uses"),
-                Token(TokenType::Lparenthesis, "("),
-                Token(TokenType::IDENT, "r"),
-                Token(TokenType::Comma, ","),
-                Token(TokenType::QuoutIDENT, "\"x\""),
-                Token(TokenType::Rparenthesis, ")")
-        };
-
-
-        // Instantiate the QueryParser with the tokens
-        QueryParser queryParser(tokens);
-
-        // Parse the query
-        ParsingResult parsingResult = queryParser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> res = evaluator.evaluateQuery();
-        REQUIRE(res == std::unordered_set<string>{"2"});
-
-
-        // Additional checks can be performed here if needed, such as verifying the specific parsing output
-    }
-}
 

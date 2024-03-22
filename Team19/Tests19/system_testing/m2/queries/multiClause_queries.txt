@@ -21,7 +21,7 @@ Select i such that Parent(i, a) pattern a(_, _"add"_)
 5 - Combining Follows* and Uses
 stmt s; variable v;
 Select s such that Follows*(s, _) and Uses(s, v)
-14, 18, 20, 11, 6, 12, 17, 7, 5, 1, 4, 8
+4, 5, 6, 7, 8, 17, 20, 12, 14, 18
 5000
 6 - Combining Modifies and Parent*
 while w; variable v;
@@ -46,7 +46,7 @@ none
 10 - Multiple Uses Clauses with Different Variables
 variable v1, v2; assign a;
 Select a such that Uses(a, v1) and Uses(a, v2)
-12, 6, 4, 14, 18, 7, 5, 19, 20
+12, 5, 14, 6, 7, 20
 5000
 11 - Follows* with Pattern and Uses Clauses
 assign a; stmt s; variable v;

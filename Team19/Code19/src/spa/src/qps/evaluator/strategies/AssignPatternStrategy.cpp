@@ -1,4 +1,5 @@
-#include "AssignPatternStrategy.h"
+#pragma once
+#include "qps/evaluator/strategies/AssignPatternStrategy.h"
 
 
 std::shared_ptr<ResultTable> AssignPatternStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) {

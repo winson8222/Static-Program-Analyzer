@@ -41,7 +41,6 @@ std::unordered_set<int> QueryEvaluationStrategy::combineFoundStatements(const un
     return combinedResult;
 }
 
-
 // Get the statements numbers based on the type of statement
 unordered_set<int> QueryEvaluationStrategy::getFilteredStmtsNumByType(unordered_set<int> allStatements, string statementType, PKBReaderManager pkbReaderManager) {
     unordered_set<int> filteredResult;

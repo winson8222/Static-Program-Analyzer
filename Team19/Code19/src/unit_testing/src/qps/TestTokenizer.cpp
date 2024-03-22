@@ -404,51 +404,6 @@ TEST_CASE("Check unconventional naming tokenization 4") {
 
 }
 
-TEST_CASE("Check unconventional naming tokenization 5") {
-    Tokenizer tokenizer("assign BOOLEAN; Select BOOLEAN pattern BOOLEAN(_,_)");
-    vector<Token> tokens = tokenizer.tokenize();
-
-    REQUIRE(tokens.size() == 12);  // Expecting 5 tokens
-
-    REQUIRE(tokens[0].getType() == TokenType::DesignEntity);
-    REQUIRE(tokens[0].getValue() == "assign");
-
-    REQUIRE(tokens[1].getType() == TokenType::IDENT);
-    REQUIRE(tokens[1].getValue() == "BOOLEAN");
-
-    REQUIRE(tokens[2].getType() == TokenType::Semicolon);
-    REQUIRE(tokens[2].getValue() == ";");
-
-    REQUIRE(tokens[3].getType() == TokenType::SelectKeyword);
-    REQUIRE(tokens[3].getValue() == "Select");
-
-    REQUIRE(tokens[4].getType() == TokenType::IDENT);
-    REQUIRE(tokens[4].getValue() == "BOOLEAN");
-
-    REQUIRE(tokens[5].getType() == TokenType::PatternKeyword);
-    REQUIRE(tokens[5].getValue() == "pattern");
-
-    REQUIRE(tokens[6].getType() == TokenType::IDENT);
-    REQUIRE(tokens[6].getValue() == "BOOLEAN");
-
-    REQUIRE(tokens[7].getType() == TokenType::Lparenthesis);
-    REQUIRE(tokens[7].getValue() == "(");
-
-    REQUIRE(tokens[8].getType() == TokenType::Wildcard);
-    REQUIRE(tokens[8].getValue() == "_");
-
-    REQUIRE(tokens[9].getType() == TokenType::Comma);
-    REQUIRE(tokens[9].getValue() == ",");
-
-    REQUIRE(tokens[10].getType() == TokenType::Wildcard);
-    REQUIRE(tokens[10].getValue() == "_");
-
-    REQUIRE(tokens[11].getType() == TokenType::Rparenthesis);
-    REQUIRE(tokens[11].getValue() == ")");
-
-
-}
-
 TEST_CASE("Check Tokenisation of quotedconstant >= 10") {
     Tokenizer tokenizer("assign a; Select a pattern a(_, _\"10\"_)");
     vector<Token> tokens = tokenizer.tokenize();
@@ -1126,5 +1081,9 @@ TEST_CASE("Testing with clause with attributes") {
     REQUIRE(tokens[14].getValue() == ".");
 
     REQUIRE(tokens[15].getType() == TokenType::AttrName);
-    REQUIRE(tokens[15].getValue() == "stmt#"); 
+    REQUIRE(tokens[15].getValue() == "stmt#");
+
+
+
+
 }
