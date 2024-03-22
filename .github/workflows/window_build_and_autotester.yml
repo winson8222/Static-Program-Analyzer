@@ -97,6 +97,7 @@ jobs:
         run: |
             Write-Host "[System Test] Running all tests for Milestone 2"
             $EXIT_CODE = 0
+            mkdir -p outputs
             mkdir -p logs
 
             foreach ($file in Get-ChildItem source/*_source.txt) {

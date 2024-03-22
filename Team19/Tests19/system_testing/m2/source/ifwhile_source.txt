@@ -7,40 +7,50 @@ procedure if {
 			i = j - k;
 		}
 	} else {
-		if((!(l - m <= n)) && (o*(p / q)+(r) > s)) then {
-		
+		if((!(l - m <= n)) && (o*(p / q) + r*(s*(t/u/v)) > 0)) then {
+		    read w;
 		} else {
-			
+			print x;
 		}
+		y = z - 4;
 	}
 } 
 
 procedure while {
-	while (1==2) {
-		while (w1*(w2+(w3%(1-w4/w5)-w6)+w7)+1-0 > w1) {
-			while (w4+w5==w8+w9) {
-				w0 = w0 + 1;
+	while (1 != 3 - 2) {
+		while ((a1 - b1 * c1 + d1 <= 0 / e1) || (f1*(h1+i1/(3-4)) >= j1 - 15344262)) {
+			while (k1 + l1 > m1 - n1) {
+				o1 = p1 / q1;
 			}
 		}
+	}
+	while (while > if) {
+		call if;
 	}
 	call if;
 }
 
 procedure call {
-	while (temp == read){
-		if (print > assign) then {
-			while (procedure < call) {
-				x = x;
-				if (while > if) then {
-					x = x;	
-				} else {
-					x = x;
+	if ((!(if == while)) && (!(call - if + while > assign * procedure))) then {
+		call if;
+	} else {
+		call while;
+	}
+
+	if (a2 > 0) then {
+		while (b2 >= 1) {
+		    if (c2 - 3 < 0) then {
+		        read d2;
+		    } else {
+			    while (e2 <= 4) {
+				   print f2;
 				}
 			}
-		} else {
-			x = x;
 		}
+	} else {
+	   while (0 - 0 == 3-3) {
+	      g2 = h2 + i2;
+	   }
 	}
-	call if;
-	call while;
+	read j2;
 }
