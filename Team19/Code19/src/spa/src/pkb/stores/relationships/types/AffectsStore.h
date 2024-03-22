@@ -8,6 +8,8 @@
 #include "pkb/stores/relationships/types/NextStore.h"
 #include "pkb/stores/relationships/types/UsesSStore.h"
 #include "pkb/stores/relationships/types/ModifiesSStore.h"
+#include "pkb/stores/entities/types/WhileStore.h"
+#include "pkb/stores/entities/types/IfStore.h"
 // ai-gen start(copilot, 2, e)
 // prompt: used copilot
 /**
@@ -27,13 +29,17 @@ private:
     std::shared_ptr<NextStore> nextStore;
     std::shared_ptr<UsesSStore> usesSStore;
     std::shared_ptr<ModifiesSStore> modifiesSStore;
+	std::shared_ptr<WhileStore> whileStore;
+	std::shared_ptr<IfStore> ifStore;
 public:
     AffectsStore(
-            std::shared_ptr<AssignStore> assignStore,
-            std::shared_ptr<NextStore> nextStore,
-            std::shared_ptr<UsesSStore> usesSStore,
-            std::shared_ptr<ModifiesSStore> modifiesSStore
-            );
+		std::shared_ptr<AssignStore> assignStore,
+		std::shared_ptr<NextStore> nextStore,
+		std::shared_ptr<UsesSStore> usesSStore,
+		std::shared_ptr<ModifiesSStore> modifiesSStore,
+		std::shared_ptr<WhileStore> whileStore,
+		std::shared_ptr<IfStore> ifStore
+	);
 
     /**
      * Populate the AffectsStore with the 'Affects' relationship between statements.
