@@ -60,6 +60,9 @@ const vector<string>& ParsingResult::getRequiredSynonyms() const {
 }
 
 const string& ParsingResult::getRequiredSynonymType(const string& requiredSynonym) const {
+    if (ParsingResult::isAttrRef(requiredSynonym)) {
+        return getDeclaredSynonym(getSynFromAttrRef(requiredSynonym));
+    }
     return getDeclaredSynonym(requiredSynonym);
 }
 
@@ -90,4 +93,26 @@ const string& ParsingResult::getPatternClauseType(const PatternClause &clause) c
     return getDeclaredSynonym(clause.getRelationship().getValue());
 }
 
+const bool ParsingResult::isAttrRef(const string &attrRef) {
+    // check if it has .
+    size_t pos = attrRef.find('.');
+    return pos != std::string::npos;
 
+}
+
+
+string ParsingResult::getSynFromAttrRef(const string &attrRef) {
+    size_t pos = attrRef.find('.');
+    if (pos != std::string::npos) { // Check if the period is found
+        return attrRef.substr(0, pos); // Extract substring from the beginning to the position of the period
+    }
+    return "";
+}
+
+string ParsingResult::getAttrFromAttrRef(const string &attrRef) {
+    size_t pos = attrRef.find('.');
+    if (pos != std::string::npos) { // Check if the period is found
+        return attrRef.substr(pos + 1); // Extract substring from just after the position of the period to the end
+    }
+    return "";
+}
