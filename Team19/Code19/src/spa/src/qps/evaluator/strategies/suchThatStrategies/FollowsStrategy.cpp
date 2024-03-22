@@ -34,8 +34,8 @@ std::shared_ptr<ResultTable> FollowsStrategy::evaluateQuery(PKBReaderManager& pk
         processSecondParam(resultTable, parsingResult, pkbReaderManager);
     } else if (isBothParamsWildcard(firstParam, secondParam)) {
         bool hasRelationship = (variant == "Follows") ?
-                               !followsReader->getAllPreFollows().empty():
-                               !followsTReader->getAllPreFollowsT().empty();
+                               !followsReader->isEmpty():
+                               !followsTReader->isEmpty();
         if (hasRelationship) {
             resultTable->setAsTruthTable();
         }

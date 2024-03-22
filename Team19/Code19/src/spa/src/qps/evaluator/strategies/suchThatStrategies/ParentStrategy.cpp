@@ -38,8 +38,8 @@ std::shared_ptr<ResultTable> ParentStrategy::evaluateQuery(PKBReaderManager& pkb
     }
     else if (isBothParamsWildcard(this->firstParam, this->secondParam)) {
         bool hasRelationship = (variant == "Follows") ?
-                               !parentReader->getAllParents().empty():
-                               !parentTTReader->getAllParentTs().empty();
+                               !parentReader->isEmpty():
+                               !parentTTReader->isEmpty();
         if (hasRelationship) {
             resultTable->setAsTruthTable();
         }
