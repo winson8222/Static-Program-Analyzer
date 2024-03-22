@@ -1,0 +1,75 @@
+1 - Basic Next
+stmt s;
+Select s such that Next(1, s)
+2
+5000
+2 - Next for If
+stmt s;
+Select s such that Next(3, s)
+4, 6
+5000
+3 - Next for If Nested
+stmt s;
+Select s such that Next(s, 7)
+5, 6
+5000
+4- Next for While
+stmt s;
+Select s such that Next(10, s)
+11, 15
+5000
+5 - Next for While Nested
+stmt s;
+Select s such that Next(12, s)
+13, 14
+5000
+6 - Next when Next is Keyword
+stmt Next;
+Select Next such that Next(1, Next)
+2
+5000
+7 - Next when Next is Keyword
+stmt Next;
+Select Next such that Next(Next, 3)
+2
+5000
+8 - Next when no more Next
+stmt s;
+Select s such that Next(17, s)
+none
+5000
+9 - Next pairs
+stmt s1, s2;
+Select <s1, s2> such that Next(s1, s2)
+1 2, 2 3, 3 4, 3 6, 4 5, 5 7, 6 7, 7 8, 8 9, 9 10, 10 11, 11 12, 12 13, 14 10, 13 10, 10 15, 12 14, 15 16, 16 17, 18 19, 19 20, 21 22, 22 23, 23 24
+5000
+10 - Select all statements that are prior to an if
+stmt s; if if;
+Select s such that Next(s, if)
+2, 11
+5000
+11 - Select all statements that are prior to a while
+stmt s; while w;
+Select s such that Next(s, w)
+9, 13, 14
+5000
+12 - Select all statements that are after an if
+stmt s; if if;
+Select s such that Next(if, s)
+4, 6, 13, 14
+5000
+12 - Select all calls that are before a while
+call call; while while;
+Select call such that Next(call, while)
+9, 13
+5000
+13 - Select all assign that are after a while
+assign assign; while while;
+Select assign such that Next(while, assign)
+11
+5000
+14 - Select all if statements that use "x" that is directly before a call statement
+if if; call call;
+Select if such that Next(if, call) pattern if("x", _, _)
+12
+5000

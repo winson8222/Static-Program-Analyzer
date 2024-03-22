@@ -45,6 +45,7 @@ enum class TokenType {
     CallsT,
     Next,
     NextT,
+    Affects,
     WithKeyword,
     AttrName,
     Dot,

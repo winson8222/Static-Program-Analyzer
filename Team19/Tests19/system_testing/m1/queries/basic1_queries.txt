@@ -586,7 +586,7 @@ SyntaxError
 118 - Invalid pattern 6
 while w;
 Select w pattern w("read", _)
-SemanticError
+8, 17
 5000
 119 - Invalid pattern 7
 constant c;

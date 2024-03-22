@@ -1,0 +1,5 @@
+1 - Finds all procedures that calls another procedure
+procedure p, q;
+Select p such that Calls(p, q)
+Main, Calculate, Decrement
+5000

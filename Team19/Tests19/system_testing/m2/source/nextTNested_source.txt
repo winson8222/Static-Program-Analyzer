@@ -1,0 +1,21 @@
+procedure nested { read x;
+    while (x > 3) {
+        while (x > 3) {
+            while (x > 3) {
+                print x;
+                while (x > 3) {
+                    x = 4;
+                    while (x > 3) {
+                        call foo; }}}}}}
+procedure foo { read x;
+    while (x > 3) {
+        while (x > 3) {
+            while (x > 3) {
+                print x;
+                while (y > 3) {
+                    x = 4;
+                    while (x > 3) {
+                        if (x > 3) then {
+                            read y; } else {
+                            x = 3; }}}}}}
+    print x;}
