@@ -6,11 +6,15 @@ AffectsStore::AffectsStore(
         std::shared_ptr<AssignStore> assignStore,
         std::shared_ptr<NextStore> nextStore,
         std::shared_ptr<UsesSStore> usesSStore,
-        std::shared_ptr<ModifiesSStore> modifiesSStore
+        std::shared_ptr<ModifiesSStore> modifiesSStore,
+		std::shared_ptr<WhileStore> whileStore,
+		std::shared_ptr<IfStore> ifStore
 ) : assignStore(std::move(assignStore)),
     nextStore(std::move(nextStore)),
     usesSStore(std::move(usesSStore)),
-    modifiesSStore(std::move(modifiesSStore)) {}
+    modifiesSStore(std::move(modifiesSStore)),
+	whileStore(std::move(whileStore)),
+	ifStore(std::move(ifStore)) {}
 
 void AffectsStore::populateAffectsStore() {
     std::unordered_set<int> allAssigns = assignStore->getAllEntities();
@@ -48,6 +52,9 @@ bool AffectsStore::handleAddAffects(int statement, int current, const std::strin
         }
         return assignedVariable == *(modifiesSStore->getRelationshipsByKey(current).begin());
     } else if (modifiesSStore->hasRelationship(current, assignedVariable)) {
+		if (ifStore->contains(current) || whileStore->contains(current)) {
+			return false;
+		}
 		return true;
 	}
     return false;
