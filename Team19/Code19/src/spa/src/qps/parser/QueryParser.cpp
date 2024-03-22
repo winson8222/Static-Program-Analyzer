@@ -486,6 +486,7 @@ void QueryParser::parseWhileParams(PatternClause &clause) {
 
 
 
+
 // Parses the expression specification in the query.
 // Handles different forms of expressions like quoted constants, wildcards, or quoted expressions.
 void QueryParser::parseExpressionSpec(PatternClause &clause) {
