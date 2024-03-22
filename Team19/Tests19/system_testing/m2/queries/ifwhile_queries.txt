@@ -46,7 +46,7 @@ none
 10. Select all while pattern wildcard
 while pattern;
 Select pattern pattern pattern(_,_)
-10, 11, 12, 14, 21, 24, 26
+11, 12, 14, 21, 24
 5000
 11. Select all while pattern with ident
 while a1;
@@ -182,4 +182,69 @@ SemanticError
 assign assign; print print; read read; call call; if if; while while; variable variable; procedure procedure; constant constant; stmt stmt;
 Select read pattern constant(procedure,_)
 SemanticError
+5000
+38. Semantic Error
+assign assign; print print; read read; call call; if if; while while; variable variable; procedure procedure; constant constant; stmt stmt;
+Select call pattern call("v",_)
+SemanticError
+5000
+39. Semantic Error
+assign assign; print print; read read; call call; if if; while while; variable variable; procedure procedure; constant constant; stmt stmt;
+Select variable pattern variable(while,_)
+SemanticError
+5000
+40. Semantic Error
+assign assign; print print; read read; call call; if if; while while; variable variable; procedure procedure; constant constant; stmt stmt;
+Select procedure pattern procedure("v",_)
+SemanticError
+5000
+41. Syntax Error
+assign assign; print print; read read; call call; if if; while while; variable variable; procedure procedure; constant constant; stmt stmt;
+Select while pattern while(_)
+SyntaxError
+5000
+42. Syntax Error
+assign assign; print print; read read; call call; if if; while while; variable variable; procedure procedure; constant constant; stmt stmt;
+Select if pattern if(_)
+SyntaxError
+5000
+43. Syntax Error
+assign assign; print print; read read; call call; if if; while while; variable variable; procedure procedure; constant constant; stmt stmt;
+Select if pattern if("v",_)
+SemanticError
+5000
+44. Syntax Error
+assign assign; print print; read read; call call; if if; while while; variable variable; procedure procedure; constant constant; stmt stmt;
+Select while pattern while(_,_,_,_)
+SyntaxError
+5000
+45. Syntax Error
+assign assign; print print; read read; call call; if if; while while; variable variable; procedure procedure; constant constant; stmt stmt;
+Select if pattern if(_,_,_,_)
+SyntaxError
+5000
+46. Valid whiles
+assign assign; print print; read read; call call; if if; while while; variable variable; procedure procedure; constant constant; stmt stmt;
+Select while pattern while("h1",_)
+11
+5000
+47. Valid whiles
+assign assign; print print; read read; call call; if if; while while; variable variable; procedure procedure; constant constant; stmt stmt;
+Select while pattern while("e2",_)
+24
+5000
+48. Valid ifs
+assign assign; print print; read read; call call; if if; while while; variable variable; procedure procedure; constant constant; stmt stmt;
+Select if pattern if("u",_,_)
+6
+5000
+49. Valid ifs
+assign assign; print print; read read; call call; if if; while while; variable variable; procedure procedure; constant constant; stmt stmt;
+Select if pattern if("q",_,_)
+6
+5000
+50. Valid ifs
+assign assign; print print; read read; call call; if if; while while; variable variable; procedure procedure; constant constant; stmt stmt;
+Select if pattern if("call",_,_)
+17
 5000
