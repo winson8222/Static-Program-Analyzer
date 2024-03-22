@@ -220,6 +220,20 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
 
     }
 
+    SECTION("Select BOOLEAN with 1 = 0") {
+
+        Tokenizer tokenizer("Select BOOLEAN with 1 = 0");
+        vector<Token> tokens = tokenizer.tokenize();
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
+        std::unordered_set<string> expectedResults = { "FALSE" };
+        REQUIRE(actualResults == expectedResults);
+
+    }
+
     
 
 }

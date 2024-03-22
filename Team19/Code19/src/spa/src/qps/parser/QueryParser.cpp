@@ -690,7 +690,7 @@ bool QueryParser::peekNextToken(TokenType type) {
 }
 
 bool QueryParser::checkValidStmtNum() {
-    if (stoi(currentToken().getValue()) < 1) {
+    if (stoi(currentToken().getValue()) < 0) {
         return false;
     }
     return true;
