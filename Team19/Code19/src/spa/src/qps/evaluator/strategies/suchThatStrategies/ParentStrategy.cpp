@@ -37,7 +37,12 @@ std::shared_ptr<ResultTable> ParentStrategy::evaluateQuery(PKBReaderManager& pkb
         processSecondParam(resultTable, parsingResult, pkbReaderManager);
     }
     else if (isBothParamsWildcard(this->firstParam, this->secondParam)) {
-        resultTable->setAsTruthTable();
+        bool hasRelationship = (variant == "Follows") ?
+                               !parentReader->isEmpty():
+                               !parentTTReader->isEmpty();
+        if (hasRelationship) {
+            resultTable->setAsTruthTable();
+        }
     }
     else if (isBothParamsInteger(this->firstParam, this->secondParam)) {
         processIntegerParams(resultTable);
@@ -155,8 +160,11 @@ void ParentStrategy::processIntegerParams(
     // Implementation for processing when both parameters are integers
     int firstStmtNum = stoi(firstParam.getValue());
     int secondStmtNum = stoi(secondParam.getValue());
+    bool hasParents = (this->variant  == "Parent") ?
+                      parentReader->hasParent(firstStmtNum, secondStmtNum) :
+                      parentTTReader->hasParentT(firstStmtNum, secondStmtNum);
 
-    if (parentReader->hasParent(firstStmtNum, secondStmtNum)) {
+    if (hasParents) {
         resultTable->setAsTruthTable();
     }
 }
