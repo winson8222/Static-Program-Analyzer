@@ -11,5 +11,65 @@ Main Compute, Main Process, Main Finalize, Main Helper, Compute Process, Compute
 3 - Test for Modifies
 stmt s; variable v;
 Select <s, v> such that Modifies(s, "i")
-9 i, 11 i
+9 y, 2 y, 6 z, 11 z, 10 z, 9 z, 6 y, 2 z, 6 i, 2 x, 11 i, 10 y, 2 b, 4 i, 10 i, 9 i, 2 i, 6 a, 4 z, 11 a, 11 y, 6 x, 10 a, 4 a, 2 a, 4 y, 9 a, 6 b, 10 b, 10 x, 9 b, 4 b, 11 x, 11 b, 4 x, 9 x
+5000
+4 - Test for Modifies
+variable v;
+Select v such that Modifies("Helper", v)
+b
+5000
+5 - Test for Next
+stmt s1, s2;
+Select <s1, s2> such that Next(s1, s2)
+1 2, 3 4, 4 5, 4 7, 5 6, 6 8, 7 8, 9 10, 10 11, 11 12, 12 10, 13 14
+5000
+6 - Test for Affects
+stmt s1, s2;
+Select <s1, s2> such that Affects(s1, s2)
+3 5
+5000
+7 - Test for Uses
+stmt s; variable v;
+Select <s, v> such that Uses(s, v)
+14 a, 8 y, 8 a, 3 x, 8 x, 13 x, 13 z, 4 i, 5 y, 7 x, 2 x, 6 i, 11 i, 10 i, 8 z, 9 z, 4 y, 6 z, 15 i, 4 x, 2 i, 2 y, 2 z, 13 y, 2 a, 12 i, 4 z
+5000
+8 - Test for Parent
+stmt s1, s2;
+Select <s1, s2> such that Parent(s1, s2)
+4 6, 4 7, 4 5, 10 12, 10 11
+5000
+9 - Test for Follows
+stmt s1, s2;
+Select <s1, s2> such that Follows(s1, s2)
+1 2, 3 4, 5 6, 4 8, 9 10, 11 12, 13 14
+5000
+10 - Test for Parent*
+stmt s1, s2;
+Select <s1, s2> such that Parent*(s1, s2)
+2 3, 2 4, 2 5, 2 6, 2 7, 2 8, 2 9, 2 10, 2 11, 2 12, 2 13, 2 14, 2 15, 4 5, 4 6, 4 7, 4 9, 4 10, 4 11, 4 12, 4 15, 6 9, 6 10, 6 11, 6 12, 6 15, 8 13, 8 14, 10 11, 10 12, 10 15, 12 15
+5000
+11 - Test for Uses
+stmt s; variable v;
+Select <s, v> such that Uses(s, "z")
+2 a, 2 b, 2 i, 2 x, 2 y, 2 z, 4 a, 4 b, 4 i, 4 x, 4 y, 4 z, 6 a, 6 b, 6 i, 6 x, 6 y, 6 z, 8 a, 8 b, 8 i, 8 x, 8 y, 8 z, 9 a, 9 b, 9 i, 9 x, 9 y, 9 z, 13 a, 13 b, 13 i, 13 x, 13 y, 13 z
+5000
+12 - Test for Follows*
+stmt s1, s2;
+Select <s1, s2> such that Follows*(s1, s2)
+1 2, 3 4, 3 8, 4 8, 5 6, 9 10, 11 12, 13 14
+5000
+13 - Comprehensive Modifies and Uses Combination
+stmt s1, s2; variable v;
+Select <s1, s2, v> such that Modifies(s1, v) and Uses(s2, v) and Follows*(s1, s2)
+1 2 x, 3 4 y, 3 8 y, 4 8 z, 5 6 z, 9 10 i, 11 12 i, 13 14 a
+5000
+14 - Comprehensive Modifies and Calls Combination
+procedure p, q; variable v;
+Select <p, q, v> such that Calls(p, q) and Modifies(q, v)
+Process Helper b, Compute Finalize a, Main Compute b, Main Compute z, Main Compute y, Compute Process b, Main Compute i, Compute Process i, Main Compute a
+5000
+15 - Comprehensive Parent* and Modifies Combination
+assign a; while w; variable v;
+Select <w, a, v> such that Parent*(w, a) and Modifies(a, v)
+10 15 b, 10 11 i
 5000
