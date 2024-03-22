@@ -52,10 +52,7 @@ bool AffectsStore::handleAddAffects(int statement, int current, const std::strin
         }
         return assignedVariable == *(modifiesSStore->getRelationshipsByKey(current).begin());
     } else if (modifiesSStore->hasRelationship(current, assignedVariable)) {
-		if (ifStore->contains(current) || whileStore->contains(current)) {
-			return false;
-		}
-		return true;
+		return !ifStore->contains(current) && !whileStore->contains(current);
 	}
     return false;
 }

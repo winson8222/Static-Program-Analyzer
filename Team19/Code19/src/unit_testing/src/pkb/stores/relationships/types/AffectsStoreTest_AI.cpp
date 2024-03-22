@@ -82,7 +82,7 @@ TEST_CASE("pkb/stores/relationships/types/AffectsStore") {
 
 		ifStore->addEntity(7);
 		whileStore->addEntity(3);
-		
+
         affectsStore.populateAffectsStore();
 
         REQUIRE(affectsStore.getRelationshipsByKey(1) == std::unordered_set<int>{4, 8, 10, 12});
