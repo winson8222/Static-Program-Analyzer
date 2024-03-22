@@ -151,7 +151,7 @@ SemanticError
 31. Return all whiles
 assign assign; print print; read read; call call; if if; while while; variable variable; procedure procedure; constant constant; stmt stmt;
 Select while pattern while(variable,_)
-10, 11, 12, 14, 21, 24, 26
+11, 12, 14, 21, 24
 5000
 32. Semantic Error
 assign assign; print print; read read; call call; if if; while while; variable variable; procedure procedure; constant constant; stmt stmt;
