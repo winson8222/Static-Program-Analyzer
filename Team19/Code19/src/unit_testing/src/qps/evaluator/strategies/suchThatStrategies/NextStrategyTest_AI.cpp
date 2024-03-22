@@ -7,14 +7,395 @@
 #include "pkb/PKBManager.h"
 #include "qps/evaluator/QueryEvaluator.h"
 
-TEST_CASE("NextStrategy/Verify Direct Next Relationship") {
-// Setup PKB with Next relationships
-std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
-std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+TEST_CASE("src/qps/evaluator/suchThatStrategies/NextStrategy/1") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
-std::shared_ptr<NextWriter> nextWriter = pkbWriterManager->getNextWriter();
-nextWriter->addNext(2, 3);
+    std::shared_ptr<NextWriter> nextWriter = pkbWriterManager->getNextWriter();
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    statementWriter->insertStatement(5);
+    statementWriter->insertStatement(6);
+    nextWriter->addNext(1, 2); // Direct relationships to simulate NextT
+    nextWriter->addNext(2, 3);
+    nextWriter->addNext(3, 4);
+    nextWriter->addNext(1, 4);
+    nextWriter->addNext(5, 6);
+    pkbManager->getPKBCacheManager()->populateCache();
+
+    SECTION("NextStrategy/Verify Direct Next Relationship") {
+        // Define tokens for the query
+        std::vector<Token> tokens = {
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::BooleanKeyword, "BOOLEAN"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Next, "Next"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::INTEGER, "2"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::INTEGER, "3"),
+                Token(TokenType::Rparenthesis, ")")
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{"TRUE"}); // Expect TRUE as 2 Next 3 is defined
+    }
+
+    SECTION("NextStrategy/Verify Next Relationship") {
+
+
+        // Define tokens for the query testing transitive relationship
+        std::vector<Token> tokens = {
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::BooleanKeyword, "BOOLEAN"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Next, "Next"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::INTEGER, "1"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::INTEGER, "4"),
+                Token(TokenType::Rparenthesis, ")")
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{"TRUE"});
+    }
+
+    SECTION("NextStrategy/Verify Next Relationship with 1 Int and 1 IDENT (FALSE)") {
+
+        // Define tokens for the query testing transitive relationship
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "stmt"),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::BooleanKeyword, "BOOLEAN"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Next, "Next"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::INTEGER, "1"),
+                Token(TokenType::Rparenthesis, ")")
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{"FALSE"});
+    }
+
+    SECTION("NextStrategy/Verify Next Relationship with 1 Int and 1 IDENT (TRUE)") {
+
+
+        // Define tokens for the query testing transitive relationship
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "stmt"),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::BooleanKeyword, "BOOLEAN"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Next, "Next"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::INTEGER, "3"),
+                Token(TokenType::Rparenthesis, ")")
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{"TRUE"});
+    }
+
+    SECTION("Select stmt from NextT Relationship") {
+
+
+        // Define tokens for the query testing transitive relationship
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "stmt"),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Next, "Next"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::INTEGER, "4"),
+                Token(TokenType::Rparenthesis, ")")
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{"3", "1"});
+    }
+
+    SECTION("Select stmt from Next Relationship with 1 Int and 1 IDENT") {
+
+
+        // Define tokens for the query testing transitive relationship
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "stmt"),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Next, "Next"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::INTEGER, "4"),
+                Token(TokenType::Rparenthesis, ")")
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{"3", "1"});
+    }
+
+
+
+
+
+
+
+    SECTION("NextTStrategy/Verify Direct NextT Relationship") {
+
+
+        // Define tokens for the query
+        std::vector<Token> tokens = {
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::BooleanKeyword, "BOOLEAN"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::NextT, "Next*"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::INTEGER, "2"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::INTEGER, "3"),
+                Token(TokenType::Rparenthesis, ")")
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{"TRUE"}); // Expect TRUE as 2 Next* 3 is defined
+    }
+
+    SECTION("NextTStrategy/Verify NextT Relationship") {
+        // Define tokens for the query testing transitive relationship
+        std::vector<Token> tokens = {
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::BooleanKeyword, "BOOLEAN"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::NextT, "Next*"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::INTEGER, "1"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::INTEGER, "5"),
+                Token(TokenType::Rparenthesis, ")")
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{"FALSE"});
+    }
+
+    SECTION("NextTStrategy/Verify False NextT Relationship") {
+        // Define tokens for the query testing transitive relationship
+        std::vector<Token> tokens = {
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::BooleanKeyword, "BOOLEAN"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::NextT, "Next*"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::INTEGER, "2"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::INTEGER, "6"),
+                Token(TokenType::Rparenthesis, ")")
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{"FALSE"});
+    }
+
+    SECTION("NextTStrategy/Verify NextT Relationship with 1 Int and 1 IDENT (FALSE)") {
+
+        // Define tokens for the query testing transitive relationship
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "stmt"),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::BooleanKeyword, "BOOLEAN"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::NextT, "Next*"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::INTEGER, "1"),
+                Token(TokenType::Rparenthesis, ")")
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{"FALSE"});
+    }
+
+    SECTION("NextTStrategy/Verify NextT Relationship with 1 Int and 1 IDENT (TRUE)") {
+
+
+        // Define tokens for the query testing transitive relationship
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "stmt"),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::BooleanKeyword, "BOOLEAN"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::NextT, "Next*"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::INTEGER, "3"),
+                Token(TokenType::Rparenthesis, ")")
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{"TRUE"});
+    }
+
+    SECTION("Select stmt from NextT Relationship with 1 Int and 1 IDENT") {
+
+
+        // Define tokens for the query testing transitive relationship
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "stmt"),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::NextT, "Next*"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::INTEGER, "4"),
+                Token(TokenType::Rparenthesis, ")")
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{"3", "1", "2"});
+    }
+
+
+
+
+
+
+    SECTION("Select stmt from NextT Relationship with 1 SYN and 1 Integer result") {
+
+
+        // Define tokens for the query testing transitive relationship
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "stmt"),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::NextT, "Next*"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::INTEGER, "2"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Rparenthesis, ")")
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{"3", "4"});
+    }
+}
+
+TEST_CASE("src/qps/evaluator/suchThatStrategies/NextStrategy/2") {
+
+    // Setup PKB with necessary entities and relationships
+    auto pkbManager = std::make_shared<PKBManager>();
+    auto pkbReaderManager = pkbManager->getPKBReaderManager();
+    auto pkbWriterManager = pkbManager->getPKBWriterManager();
+    auto whileWriter = pkbWriterManager->getWhileWriter();
+    auto nextWriter = pkbWriterManager->getNextWriter();
+    auto statementWriter = pkbWriterManager->getStatementWriter();
+
+    // Populate Next relationships as needed for the test cases
+    // This setup assumes that statements 1-4 exist and are connected linearly
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    whileWriter->insertWhile(1);
+    whileWriter->insertWhile(2);
+    whileWriter->insertWhile(4);
+    nextWriter->addNext(1, 2);
+    nextWriter->addNext(2, 3);
+    nextWriter->addNext(3, 4);
+    nextWriter->addNext(1, 4);
+
+
+    // Assuming PKBManager's cache or similar mechanism is updated after modifications
+    pkbManager->getPKBCacheManager()->populateCache();
+
+SECTION("NextStrategy/Verify Direct NextT Relationship") {
 
 // Define tokens for the query
 std::vector<Token> tokens = {
@@ -22,7 +403,7 @@ std::vector<Token> tokens = {
         Token(TokenType::BooleanKeyword, "BOOLEAN"),
         Token(TokenType::SuchKeyword, "such"),
         Token(TokenType::ThatKeyword, "that"),
-        Token(TokenType::Next, "Next"),
+        Token(TokenType::NextT, "Next*"),
         Token(TokenType::Lparenthesis, "("),
         Token(TokenType::INTEGER, "2"),
         Token(TokenType::Comma, ","),
@@ -37,533 +418,143 @@ std::unordered_set<string> res = evaluator.evaluateQuery();
 REQUIRE(res == std::unordered_set<string>{"TRUE"}); // Expect TRUE as 2 Next 3 is defined
 }
 
-TEST_CASE("NextStrategy/Verify Next Relationship") {
-    // Setup PKB with Next* relationships
-    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
-    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+SECTION("Select stmt from NextT Relationship with 1 SYN and 1 Integer result none") {
 
-    std::shared_ptr<NextWriter> nextWriter = pkbWriterManager->getNextWriter();
-    nextWriter->addNext(1, 2); // Direct relationships to simulate Next*
-    nextWriter->addNext(2, 3);
-    nextWriter->addNext(3, 4);
-    nextWriter->addNext(1, 4);
+// Define tokens for the query testing transitive relationship
+std::vector<Token> tokens = {
+        Token(TokenType::DesignEntity, "stmt"),
+        Token(TokenType::IDENT, "s"),
+        Token(TokenType::Semicolon, ";"),
+        Token(TokenType::SelectKeyword, "Select"),
+        Token(TokenType::IDENT, "s"),
+        Token(TokenType::SuchKeyword, "such"),
+        Token(TokenType::ThatKeyword, "that"),
+        Token(TokenType::NextT, "Next*"),
+        Token(TokenType::Lparenthesis, "("),
+        Token(TokenType::INTEGER, "4"),
+        Token(TokenType::Comma, ","),
+        Token(TokenType::IDENT, "s"),
+        Token(TokenType::Rparenthesis, ")")
+};
 
-    // Define tokens for the query testing transitive relationship
-    std::vector<Token> tokens = {
-            Token(TokenType::SelectKeyword, "Select"),
-            Token(TokenType::BooleanKeyword, "BOOLEAN"),
-            Token(TokenType::SuchKeyword, "such"),
-            Token(TokenType::ThatKeyword, "that"),
-            Token(TokenType::Next, "Next"),
-            Token(TokenType::Lparenthesis, "("),
-            Token(TokenType::INTEGER, "1"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::INTEGER, "4"),
-            Token(TokenType::Rparenthesis, ")")
-    };
+        SECTION("Select while from NextT Relationship with 1 SYN and 1 Integer result none") {
 
-    QueryParser parser(tokens);
-    auto parsingResult = parser.parse();
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{"TRUE"});
+// Define tokens for the query testing transitive relationship
+            std::vector<Token> tokens = {
+                    Token(TokenType::DesignEntity, "while"),
+                    Token(TokenType::IDENT, "w"),
+                    Token(TokenType::Semicolon, ";"),
+                    Token(TokenType::SelectKeyword, "Select"),
+                    Token(TokenType::IDENT, "w"),
+                    Token(TokenType::SuchKeyword, "such"),
+                    Token(TokenType::ThatKeyword, "that"),
+                    Token(TokenType::NextT, "Next*"),
+                    Token(TokenType::Lparenthesis, "("),
+                    Token(TokenType::IDENT, "w"),
+                    Token(TokenType::Comma, ","),
+                    Token(TokenType::INTEGER, "3"),
+                    Token(TokenType::Rparenthesis, ")")
+            };
+
+            QueryParser parser(tokens);
+            auto parsingResult = parser.parse();
+            QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+            std::unordered_set<string> res = evaluator.evaluateQuery();
+            REQUIRE(res == std::unordered_set<string>{"1", "2"});
 }
 
-TEST_CASE("NextStrategy/Verify Next Relationship with 1 Int and 1 IDENT (FALSE)") {
-    // Setup PKB with Next* relationships
-    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
-    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+SECTION("Select stmt from Next Relationship with 1 wild card and 1 Integer"){
+// Define tokens for the query testing transitive relationship
+std::vector<Token> tokens = {
+        Token(TokenType::DesignEntity, "stmt"),
+        Token(TokenType::IDENT, "s"),
+        Token(TokenType::Semicolon, ";"),
+        Token(TokenType::SelectKeyword, "Select"),
+        Token(TokenType::IDENT, "s"),
+        Token(TokenType::SuchKeyword, "such"),
+        Token(TokenType::ThatKeyword, "that"),
+        Token(TokenType::Next, "Next"),
+        Token(TokenType::Lparenthesis, "("),
+        Token(TokenType::Wildcard, "_"),
+        Token(TokenType::Comma, ","),
+        Token(TokenType::INTEGER, "4"),
+        Token(TokenType::Rparenthesis, ")")
+};
 
-    std::shared_ptr<NextWriter> nextWriter = pkbWriterManager->getNextWriter();
-    nextWriter->addNext(1, 2); // Direct relationships to simulate Next*
-    nextWriter->addNext(2, 3);
-    nextWriter->addNext(3, 4);
-    nextWriter->addNext(1, 4);
-
-    // Define tokens for the query testing transitive relationship
-    std::vector<Token> tokens = {
-            Token(TokenType::DesignEntity, "stmt"),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::Semicolon, ";"),
-            Token(TokenType::SelectKeyword, "Select"),
-            Token(TokenType::BooleanKeyword, "BOOLEAN"),
-            Token(TokenType::SuchKeyword, "such"),
-            Token(TokenType::ThatKeyword, "that"),
-            Token(TokenType::Next, "Next"),
-            Token(TokenType::Lparenthesis, "("),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::INTEGER, "1"),
-            Token(TokenType::Rparenthesis, ")")
-    };
-
-    QueryParser parser(tokens);
-    auto parsingResult = parser.parse();
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{"FALSE"});
+QueryParser parser(tokens);
+auto parsingResult = parser.parse();
+QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+std::unordered_set<string> res = evaluator.evaluateQuery();
+REQUIRE(res == std::unordered_set<string>{"3", "1", "2", "4"});
 }
 
-TEST_CASE("NextStrategy/Verify Next Relationship with 1 Int and 1 IDENT (TRUE)") {
-    // Setup PKB with Next* relationships
-    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
-    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+SECTION("Select stmt from Next Relationship with 2 stmt and multiple Select") {
 
-    std::shared_ptr<NextWriter> nextWriter = pkbWriterManager->getNextWriter();
-    nextWriter->addNext(1, 2); // Direct relationships to simulate Next*
-    nextWriter->addNext(2, 3);
-    nextWriter->addNext(3, 4);
-    nextWriter->addNext(1, 4);
+// Define tokens for the query testing transitive relationship
+std::vector<Token> tokens = {
+        Token(TokenType::DesignEntity, "stmt"),
+        Token(TokenType::IDENT, "s"),
+        Token(TokenType::Comma, ","),
+        Token(TokenType::IDENT, "s1"),
+        Token(TokenType::Semicolon, ";"),
+        Token(TokenType::SelectKeyword, "Select"),
+        Token(TokenType::LeftAngleBracket, "<"),
+        Token(TokenType::IDENT, "s"),
+        Token(TokenType::Comma, ","),
+        Token(TokenType::IDENT, "s1"),
+        Token(TokenType::RightAngleBracket, ">"),
+        Token(TokenType::SuchKeyword, "such"),
+        Token(TokenType::ThatKeyword, "that"),
+        Token(TokenType::Next, "Next"),
+        Token(TokenType::Lparenthesis, "("),
+        Token(TokenType::IDENT, "s"),
+        Token(TokenType::Comma, ","),
+        Token(TokenType::IDENT, "s1"),
+        Token(TokenType::Rparenthesis, ")")
+};
 
-    // Define tokens for the query testing transitive relationship
-    std::vector<Token> tokens = {
-            Token(TokenType::DesignEntity, "stmt"),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::Semicolon, ";"),
-            Token(TokenType::SelectKeyword, "Select"),
-            Token(TokenType::BooleanKeyword, "BOOLEAN"),
-            Token(TokenType::SuchKeyword, "such"),
-            Token(TokenType::ThatKeyword, "that"),
-            Token(TokenType::Next, "Next"),
-            Token(TokenType::Lparenthesis, "("),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::INTEGER, "3"),
-            Token(TokenType::Rparenthesis, ")")
-    };
-
-    QueryParser parser(tokens);
-    auto parsingResult = parser.parse();
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{"TRUE"});
+QueryParser parser(tokens);
+auto parsingResult = parser.parse();
+QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+std::unordered_set<string> res = evaluator.evaluateQuery();
+REQUIRE(res == std::unordered_set<string>{"3 4", "1 4", "2 3", "1 2"});
 }
+SECTION("Select stmt from NextT Relationship with 2 stmt and multiple Select") {
+    //Define tokens for the query testing transitive relationship
+std::vector<Token> tokens = {
+        Token(TokenType::DesignEntity, "stmt"),
+        Token(TokenType::IDENT, "s"),
+        Token(TokenType::Comma, ","),
+        Token(TokenType::IDENT, "s1"),
+        Token(TokenType::Semicolon, ";"),
+        Token(TokenType::SelectKeyword, "Select"),
+        Token(TokenType::LeftAngleBracket, "<"),
+        Token(TokenType::IDENT, "s"),
+        Token(TokenType::Comma, ","),
+        Token(TokenType::IDENT, "s1"),
+        Token(TokenType::RightAngleBracket, ">"),
+        Token(TokenType::SuchKeyword, "such"),
+        Token(TokenType::ThatKeyword, "that"),
+        Token(TokenType::NextT, "Next*"),
+        Token(TokenType::Lparenthesis, "("),
+        Token(TokenType::IDENT, "s"),
+        Token(TokenType::Comma, ","),
+        Token(TokenType::IDENT, "s1"),
+        Token(TokenType::Rparenthesis, ")")
+};
 
-TEST_CASE("Select stmt from NextT Relationship") {
-    // Setup PKB with Next* relationships
-    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
-    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
-
-    std::shared_ptr<NextWriter> nextWriter = pkbWriterManager->getNextWriter();
-    nextWriter->addNext(1, 2); // Direct relationships to simulate Next*
-    nextWriter->addNext(2, 3);
-    nextWriter->addNext(3, 4);
-    nextWriter->addNext(1, 4);
-
-    // Define tokens for the query testing transitive relationship
-    std::vector<Token> tokens = {
-            Token(TokenType::DesignEntity, "stmt"),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::Semicolon, ";"),
-            Token(TokenType::SelectKeyword, "Select"),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::SuchKeyword, "such"),
-            Token(TokenType::ThatKeyword, "that"),
-            Token(TokenType::Next, "Next"),
-            Token(TokenType::Lparenthesis, "("),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::INTEGER, "4"),
-            Token(TokenType::Rparenthesis, ")")
-    };
-
-    QueryParser parser(tokens);
-    auto parsingResult = parser.parse();
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{"3", "1"});
+QueryParser parser(tokens);
+auto parsingResult = parser.parse();
+QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+std::unordered_set<string> res = evaluator.evaluateQuery();
+REQUIRE(res == std::unordered_set<string>{"3 4", "2 4", "1 3", "1 4", "2 3", "1 2"});
 }
 
 
-TEST_CASE("Select stmt from Next Relationship with 1 Int and 1 IDENT") {
-    // Setup PKB with Next* relationships
-    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
-    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
-
-    std::shared_ptr<NextWriter> nextWriter = pkbWriterManager->getNextWriter();
-    nextWriter->addNext(1, 2); // Direct relationships to simulate Next*
-    nextWriter->addNext(2, 3);
-    nextWriter->addNext(3, 4);
-    nextWriter->addNext(1, 4);
-
-    // Define tokens for the query testing transitive relationship
-    std::vector<Token> tokens = {
-            Token(TokenType::DesignEntity, "stmt"),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::Semicolon, ";"),
-            Token(TokenType::SelectKeyword, "Select"),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::SuchKeyword, "such"),
-            Token(TokenType::ThatKeyword, "that"),
-            Token(TokenType::Next, "Next"),
-            Token(TokenType::Lparenthesis, "("),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::INTEGER, "4"),
-            Token(TokenType::Rparenthesis, ")")
-    };
-
-    QueryParser parser(tokens);
-    auto parsingResult = parser.parse();
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{"3", "1"});
+}
 }
 
-TEST_CASE("Select stmt from Next Relationship with 1 wild card and 1 Integer") {
-    // Setup PKB with Next* relationships
-    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
-    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
-
-    std::shared_ptr<NextWriter> nextWriter = pkbWriterManager->getNextWriter();
-    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
-    statementWriter->insertStatement(1);
-    statementWriter->insertStatement(2);
-    statementWriter->insertStatement(3);
-    statementWriter->insertStatement(4);
-    nextWriter->addNext(1, 2); // Direct relationships to simulate Next*
-    nextWriter->addNext(2, 3);
-    nextWriter->addNext(3, 4);
-    nextWriter->addNext(1, 4);
-
-    // Define tokens for the query testing transitive relationship
-    std::vector<Token> tokens = {
-            Token(TokenType::DesignEntity, "stmt"),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::Semicolon, ";"),
-            Token(TokenType::SelectKeyword, "Select"),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::SuchKeyword, "such"),
-            Token(TokenType::ThatKeyword, "that"),
-            Token(TokenType::Next, "Next"),
-            Token(TokenType::Lparenthesis, "("),
-            Token(TokenType::Wildcard, "_"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::INTEGER, "4"),
-            Token(TokenType::Rparenthesis, ")")
-    };
-
-    QueryParser parser(tokens);
-    auto parsingResult = parser.parse();
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{"3", "1", "2", "4"});
-}
-
-
-TEST_CASE("Select stmt from Next Relationship with 2 stmt and multiple Select") {
-    // Setup PKB with Next* relationships
-    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
-    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
-
-    std::shared_ptr<NextWriter> nextWriter = pkbWriterManager->getNextWriter();
-    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
-    statementWriter->insertStatement(1);
-    statementWriter->insertStatement(2);
-    statementWriter->insertStatement(3);
-    statementWriter->insertStatement(4);
-    nextWriter->addNext(1, 2); // Direct relationships to simulate Next*
-    nextWriter->addNext(2, 3);
-    nextWriter->addNext(3, 4);
-    nextWriter->addNext(1, 4);
-
-    // Define tokens for the query testing transitive relationship
-    std::vector<Token> tokens = {
-            Token(TokenType::DesignEntity, "stmt"),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::IDENT, "s1"),
-            Token(TokenType::Semicolon, ";"),
-            Token(TokenType::SelectKeyword, "Select"),
-            Token(TokenType::LeftAngleBracket, "<"),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::IDENT, "s1"),
-            Token(TokenType::RightAngleBracket, ">"),
-            Token(TokenType::SuchKeyword, "such"),
-            Token(TokenType::ThatKeyword, "that"),
-            Token(TokenType::Next, "Next"),
-            Token(TokenType::Lparenthesis, "("),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::IDENT, "s1"),
-            Token(TokenType::Rparenthesis, ")")
-    };
-
-    QueryParser parser(tokens);
-    auto parsingResult = parser.parse();
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{"3 4", "1 4", "2 3", "1 2"});
-}
-
-TEST_CASE("NextStrategy/Verify Direct NextT Relationship") {
-// Setup PKB with Next relationships
-    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
-    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
-
-    std::shared_ptr<NextWriter> nextWriter = pkbWriterManager->getNextWriter();
-    nextWriter->addNext(2, 3);
-    // add this for NextT since there is not NextTWriter
-    pkbManager->getPKBCacheManager()->populateCache();
-
-// Define tokens for the query
-    std::vector<Token> tokens = {
-            Token(TokenType::SelectKeyword, "Select"),
-            Token(TokenType::BooleanKeyword, "BOOLEAN"),
-            Token(TokenType::SuchKeyword, "such"),
-            Token(TokenType::ThatKeyword, "that"),
-            Token(TokenType::NextT, "Next*"),
-            Token(TokenType::Lparenthesis, "("),
-            Token(TokenType::INTEGER, "2"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::INTEGER, "3"),
-            Token(TokenType::Rparenthesis, ")")
-    };
-
-    QueryParser parser(tokens);
-    auto parsingResult = parser.parse();
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{"TRUE"}); // Expect TRUE as 2 Next 3 is defined
-}
-
-TEST_CASE("NextTStrategy/Verify Direct NextT Relationship") {
-    // Setup PKB with NextT relationships
-    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
-    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
-
-    std::shared_ptr<NextWriter> nextWriter = pkbWriterManager->getNextWriter();
-    nextWriter->addNext(2, 3);
-    pkbManager->getPKBCacheManager()->populateCache();
-
-    // Define tokens for the query
-    std::vector<Token> tokens = {
-            Token(TokenType::SelectKeyword, "Select"),
-            Token(TokenType::BooleanKeyword, "BOOLEAN"),
-            Token(TokenType::SuchKeyword, "such"),
-            Token(TokenType::ThatKeyword, "that"),
-            Token(TokenType::NextT, "Next*"),
-            Token(TokenType::Lparenthesis, "("),
-            Token(TokenType::INTEGER, "2"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::INTEGER, "3"),
-            Token(TokenType::Rparenthesis, ")")
-    };
-
-    QueryParser parser(tokens);
-    auto parsingResult = parser.parse();
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{"TRUE"}); // Expect TRUE as 2 Next* 3 is defined
-}
-
-TEST_CASE("NextTStrategy/Verify NextT Relationship") {
-    // Setup PKB with NextT relationships
-    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
-    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
-
-    std::shared_ptr<NextWriter> nextWriter = pkbWriterManager->getNextWriter();
-    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
-    statementWriter->insertStatement(1);
-    statementWriter->insertStatement(2);
-    statementWriter->insertStatement(3);
-    statementWriter->insertStatement(4);
-    statementWriter->insertStatement(5);
-    statementWriter->insertStatement(6);
-    nextWriter->addNext(1, 2); // Direct relationships to simulate NextT
-    nextWriter->addNext(2, 3);
-    nextWriter->addNext(3, 4);
-    nextWriter->addNext(1, 4);
-    nextWriter->addNext(5, 6);
-    pkbManager->getPKBCacheManager()->populateCache();
-
-    // Define tokens for the query testing transitive relationship
-    std::vector<Token> tokens = {
-            Token(TokenType::SelectKeyword, "Select"),
-            Token(TokenType::BooleanKeyword, "BOOLEAN"),
-            Token(TokenType::SuchKeyword, "such"),
-            Token(TokenType::ThatKeyword, "that"),
-            Token(TokenType::NextT, "Next*"),
-            Token(TokenType::Lparenthesis, "("),
-            Token(TokenType::INTEGER, "1"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::INTEGER, "5"),
-            Token(TokenType::Rparenthesis, ")")
-    };
-
-    QueryParser parser(tokens);
-    auto parsingResult = parser.parse();
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{"FALSE"});
-}
-
-TEST_CASE("NextTStrategy/Verify False NextT Relationship") {
-    // Setup PKB with NextT relationships
-    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
-    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
-
-    std::shared_ptr<NextWriter> nextWriter = pkbWriterManager->getNextWriter();
-    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
-    statementWriter->insertStatement(1);
-    statementWriter->insertStatement(2);
-    statementWriter->insertStatement(3);
-    statementWriter->insertStatement(4);
-    statementWriter->insertStatement(5);
-    statementWriter->insertStatement(6);
-    nextWriter->addNext(1, 2); // Direct relationships to simulate NextT
-    nextWriter->addNext(2, 3);
-    nextWriter->addNext(3, 4);
-    nextWriter->addNext(1, 4);
-    nextWriter->addNext(5, 6);
-    pkbManager->getPKBCacheManager()->populateCache();
-
-    // Define tokens for the query testing transitive relationship
-    std::vector<Token> tokens = {
-            Token(TokenType::SelectKeyword, "Select"),
-            Token(TokenType::BooleanKeyword, "BOOLEAN"),
-            Token(TokenType::SuchKeyword, "such"),
-            Token(TokenType::ThatKeyword, "that"),
-            Token(TokenType::NextT, "Next*"),
-            Token(TokenType::Lparenthesis, "("),
-            Token(TokenType::INTEGER, "2"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::INTEGER, "6"),
-            Token(TokenType::Rparenthesis, ")")
-    };
-
-    QueryParser parser(tokens);
-    auto parsingResult = parser.parse();
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{"FALSE"});
-}
-
-TEST_CASE("NextTStrategy/Verify NextT Relationship with 1 Int and 1 IDENT (FALSE)") {
-    // Setup PKB with NextT relationships
-    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
-    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
-
-    std::shared_ptr<NextWriter> nextWriter = pkbWriterManager->getNextWriter();
-    nextWriter->addNext(1, 2); // Direct relationships to simulate NextT
-    nextWriter->addNext(2, 3);
-    nextWriter->addNext(3, 4);
-    nextWriter->addNext(1, 4);
-    pkbManager->getPKBCacheManager()->populateCache();
-
-    // Define tokens for the query testing transitive relationship
-    std::vector<Token> tokens = {
-            Token(TokenType::DesignEntity, "stmt"),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::Semicolon, ";"),
-            Token(TokenType::SelectKeyword, "Select"),
-            Token(TokenType::BooleanKeyword, "BOOLEAN"),
-            Token(TokenType::SuchKeyword, "such"),
-            Token(TokenType::ThatKeyword, "that"),
-            Token(TokenType::NextT, "Next*"),
-            Token(TokenType::Lparenthesis, "("),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::INTEGER, "1"),
-            Token(TokenType::Rparenthesis, ")")
-    };
-
-    QueryParser parser(tokens);
-    auto parsingResult = parser.parse();
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{"FALSE"});
-}
-
-TEST_CASE("NextTStrategy/Verify NextT Relationship with 1 Int and 1 IDENT (TRUE)") {
-    // Setup PKB with NextT relationships
-    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
-    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
-
-    std::shared_ptr<NextWriter> nextWriter = pkbWriterManager->getNextWriter();
-    nextWriter->addNext(1, 2); // Direct relationships to simulate NextT
-    nextWriter->addNext(2, 3);
-    nextWriter->addNext(3, 4);
-    nextWriter->addNext(1, 4);
-    pkbManager->getPKBCacheManager()->populateCache();
-
-    // Define tokens for the query testing transitive relationship
-    std::vector<Token> tokens = {
-            Token(TokenType::DesignEntity, "stmt"),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::Semicolon, ";"),
-            Token(TokenType::SelectKeyword, "Select"),
-            Token(TokenType::BooleanKeyword, "BOOLEAN"),
-            Token(TokenType::SuchKeyword, "such"),
-            Token(TokenType::ThatKeyword, "that"),
-            Token(TokenType::NextT, "Next*"),
-            Token(TokenType::Lparenthesis, "("),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::INTEGER, "3"),
-            Token(TokenType::Rparenthesis, ")")
-    };
-
-    QueryParser parser(tokens);
-    auto parsingResult = parser.parse();
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{"TRUE"});
-}
-
-
-TEST_CASE("Select stmt from NextT Relationship with 1 Int and 1 IDENT") {
-    // Setup PKB with NextT relationships
-    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
-    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
-
-    std::shared_ptr<NextWriter> nextWriter = pkbWriterManager->getNextWriter();
-    nextWriter->addNext(1, 2); // Direct relationships to simulate NextT
-    nextWriter->addNext(2, 3);
-    nextWriter->addNext(3, 4);
-    nextWriter->addNext(1, 4);
-    pkbManager->getPKBCacheManager()->populateCache();
-
-    // Define tokens for the query testing transitive relationship
-    std::vector<Token> tokens = {
-            Token(TokenType::DesignEntity, "stmt"),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::Semicolon, ";"),
-            Token(TokenType::SelectKeyword, "Select"),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::SuchKeyword, "such"),
-            Token(TokenType::ThatKeyword, "that"),
-            Token(TokenType::NextT, "Next*"),
-            Token(TokenType::Lparenthesis, "("),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::INTEGER, "4"),
-            Token(TokenType::Rparenthesis, ")")
-    };
-
-    QueryParser parser(tokens);
-    auto parsingResult = parser.parse();
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{"3", "1", "2"});
-}
-
-TEST_CASE("Select stmt from NextT Relationship with 1 wild card and 1 Integer") {
+TEST_CASE("src/qps/evaluator/suchThatStrategies/NextStrategy/3") {
     // Setup PKB with NextT relationships
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
@@ -582,158 +573,44 @@ TEST_CASE("Select stmt from NextT Relationship with 1 wild card and 1 Integer") 
     nextWriter->addNext(1, 4);
     pkbManager->getPKBCacheManager()->populateCache();
 
-    // Define tokens for the query testing transitive relationship
-    std::vector<Token> tokens = {
-            Token(TokenType::DesignEntity, "stmt"),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::Semicolon, ";"),
-            Token(TokenType::SelectKeyword, "Select"),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::SuchKeyword, "such"),
-            Token(TokenType::ThatKeyword, "that"),
-            Token(TokenType::NextT, "Next*"),
-            Token(TokenType::Lparenthesis, "("),
-            Token(TokenType::Wildcard, "_"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::INTEGER, "4"),
-            Token(TokenType::Rparenthesis, ")")
-    };
+    SECTION("Select stmt from NextT Relationship with 1 wild card and 1 Integer") {
 
-    QueryParser parser(tokens);
-    auto parsingResult = parser.parse();
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{"3", "1", "2", "4", "5"});
-}
+// Define tokens for the query testing transitive relationship
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "stmt"),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::NextT, "Next*"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::Wildcard, "_"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::INTEGER, "4"),
+                Token(TokenType::Rparenthesis, ")")
+        };
 
-TEST_CASE("Select stmt from NextT Relationship with 2 stmt and multiple Select") {
-    // Setup PKB with NextT relationships
-    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
-    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{"3", "1", "2", "4", "5"});
+    }
 
-    std::shared_ptr<NextWriter> nextWriter = pkbWriterManager->getNextWriter();
-    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
-    statementWriter->insertStatement(1);
-    statementWriter->insertStatement(2);
-    statementWriter->insertStatement(3);
-    statementWriter->insertStatement(4);
-    nextWriter->addNext(1, 2); // Direct relationships to simulate NextT
-    nextWriter->addNext(2, 3);
-    nextWriter->addNext(3, 4);
-    nextWriter->addNext(1, 4);
-    pkbManager->getPKBCacheManager()->populateCache();
+    SECTION("Select Boolean from Next Relationship with 2 Integer") {
 
-    // Define tokens for the query testing transitive relationship
-    std::vector<Token> tokens = {
-            Token(TokenType::DesignEntity, "stmt"),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::IDENT, "s1"),
-            Token(TokenType::Semicolon, ";"),
-            Token(TokenType::SelectKeyword, "Select"),
-            Token(TokenType::LeftAngleBracket, "<"),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::IDENT, "s1"),
-            Token(TokenType::RightAngleBracket, ">"),
-            Token(TokenType::SuchKeyword, "such"),
-            Token(TokenType::ThatKeyword, "that"),
-            Token(TokenType::NextT, "Next*"),
-            Token(TokenType::Lparenthesis, "("),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::IDENT, "s1"),
-            Token(TokenType::Rparenthesis, ")")
-    };
+        string query = "stmt s; Select BOOLEAN such that Next(2, 1)";
+        Tokenizer tokenizer(query);
+        std::vector<Token> tokens = tokenizer.tokenize();
 
-    QueryParser parser(tokens);
-    auto parsingResult = parser.parse();
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{"3 4", "2 4", "1 3", "1 4", "2 3", "1 2" });
-}
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{"FALSE"});
+    }
 
-TEST_CASE("Select stmt from NextT Relationship with 1 SYN and 1 Integer result none") {
-    // Setup PKB with NextT relationships
-    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
-    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
-    std::shared_ptr<NextWriter> nextWriter = pkbWriterManager->getNextWriter();
-    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
-    statementWriter->insertStatement(1);
-    statementWriter->insertStatement(2);
-    statementWriter->insertStatement(3);
-    statementWriter->insertStatement(4);
-    nextWriter->addNext(1, 2); // Direct relationships to simulate NextT
-    nextWriter->addNext(2, 3);
-    nextWriter->addNext(3, 4);
-    nextWriter->addNext(1, 4);
-    pkbManager->getPKBCacheManager()->populateCache();
-
-    // Define tokens for the query testing transitive relationship
-    std::vector<Token> tokens = {
-            Token(TokenType::DesignEntity, "stmt"),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::Semicolon, ";"),
-            Token(TokenType::SelectKeyword, "Select"),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::SuchKeyword, "such"),
-            Token(TokenType::ThatKeyword, "that"),
-            Token(TokenType::NextT, "Next*"),
-            Token(TokenType::Lparenthesis, "("),
-            Token(TokenType::INTEGER, "4"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::Rparenthesis, ")")
-    };
-
-    QueryParser parser(tokens);
-    auto parsingResult = parser.parse();
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{});
-}
-
-TEST_CASE("Select stmt from NextT Relationship with 1 SYN and 1 Integer result") {
-    // Setup PKB with NextT relationships
-    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
-    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
-
-    std::shared_ptr<NextWriter> nextWriter = pkbWriterManager->getNextWriter();
-    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
-    statementWriter->insertStatement(1);
-    statementWriter->insertStatement(2);
-    statementWriter->insertStatement(3);
-    statementWriter->insertStatement(4);
-    nextWriter->addNext(1, 2); // Direct relationships to simulate NextT
-    nextWriter->addNext(2, 3);
-    nextWriter->addNext(3, 4);
-    nextWriter->addNext(1, 4);
-    pkbManager->getPKBCacheManager()->populateCache();
-
-    // Define tokens for the query testing transitive relationship
-    std::vector<Token> tokens = {
-            Token(TokenType::DesignEntity, "stmt"),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::Semicolon, ";"),
-            Token(TokenType::SelectKeyword, "Select"),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::SuchKeyword, "such"),
-            Token(TokenType::ThatKeyword, "that"),
-            Token(TokenType::NextT, "Next*"),
-            Token(TokenType::Lparenthesis, "("),
-            Token(TokenType::INTEGER, "2"),
-            Token(TokenType::Comma, ","),
-            Token(TokenType::IDENT, "s"),
-            Token(TokenType::Rparenthesis, ")")
-    };
-
-    QueryParser parser(tokens);
-    auto parsingResult = parser.parse();
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{"3", "4"});
 }

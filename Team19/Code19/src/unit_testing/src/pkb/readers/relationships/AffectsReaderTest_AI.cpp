@@ -10,6 +10,8 @@ TEST_CASE("pkb/readers/relationships/AffectsReader") {
     std::shared_ptr<ModifiesSWriter> modifiesSWriter = pkbManager->getPKBWriterManager()->getModifiesSWriter();
     std::shared_ptr<AssignWriter> assignWriter = pkbManager->getPKBWriterManager()->getAssignWriter();
     std::shared_ptr<NextWriter> nextWriter = pkbManager->getPKBWriterManager()->getNextWriter();
+	std::shared_ptr<IfWriter> ifWriter = pkbManager->getPKBWriterManager()->getIfWriter();
+	std::shared_ptr<WhileWriter> whileWriter = pkbManager->getPKBWriterManager()->getWhileWriter();
     auto pkbCacheManager = pkbManager->getPKBCacheManager();
     // Source code being tested
 	/*
@@ -28,6 +30,8 @@ TEST_CASE("pkb/readers/relationships/AffectsReader") {
 11      y = z + 2;
 12      x = x * y + z;
 	 */
+	whileWriter->insertWhile(3);
+	ifWriter->insertIf(7);
 
     usesSWriter->addRelationship(4, "y");
     usesSWriter->addRelationship(4, "x");
@@ -71,6 +75,8 @@ TEST_CASE("pkb/readers/relationships/AffectsReader") {
     modifiesSWriter->addRelationship(2, "i");
     modifiesSWriter->addRelationship(4, "x");
     modifiesSWriter->addRelationship(6, "i");
+	modifiesSWriter->addRelationship(7, "x");
+	modifiesSWriter->addRelationship(7, "z");
     modifiesSWriter->addRelationship(8, "x");
     modifiesSWriter->addRelationship(9, "z");
     modifiesSWriter->addRelationship(10, "z");

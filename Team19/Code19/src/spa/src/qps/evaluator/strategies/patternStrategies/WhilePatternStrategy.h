@@ -1,12 +1,12 @@
 #pragma once
 
-#include "qps/evaluator/strategies/PatternStrategy.h"
+#include "PatternStrategy.h"
 #include "commons/ShuntingYard.h"
 
-class AssignPatternStrategy : public PatternStrategy {
+class WhilePatternStrategy : public PatternStrategy {
 private:
-    std::shared_ptr<AssignPatternReader> assignPatternReader;
-    std::shared_ptr<AssignReader> assignReader;
+    std::shared_ptr<WhilePatternReader> whilePatternReader;
+    std::shared_ptr<WhileReader> whileReader;
     Token firstParam;
     Token secondParam;
     Token relationShip;
@@ -18,6 +18,3 @@ public:
     void processQuotedIdent(ParsingResult parsingResult, std::shared_ptr<ResultTable> result) override;
     void processWildcard(ParsingResult parsingResult, std::shared_ptr<ResultTable> result) override;
 };
-
-
-

@@ -12,7 +12,8 @@ ParsingResult createParsingResultForFollows(int stmt1, int stmt2, bool isTransit
     ParsingResult parsingResult;
     TokenType relationshipType = isTransitive ? TokenType::FollowsT : TokenType::Follows;
     SuchThatClause clause;
-    clause.setRelationship(Token(relationshipType, ""));
+    string relationShipString = isTransitive ? "Follows*" : "Follows";
+    clause.setRelationship(Token(relationshipType, relationShipString));
     clause.setFirstParam(Token(TokenType::INTEGER, std::to_string(stmt1)));
     clause.setSecondParam(Token(TokenType::INTEGER, std::to_string(stmt2)));
     parsingResult.addSuchThatClause(clause);
@@ -22,6 +23,9 @@ ParsingResult createParsingResultForFollows(int stmt1, int stmt2, bool isTransit
 TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/1") {
     auto pkb = std::make_shared<PKB>();
     auto followsStore = pkb->getFollowsStore();
+    auto followsTStore = pkb->getFollowsTStore();
+    followsTStore->addRelationship(1, 3);
+    followsTStore->addRelationship(1, 4);
     followsStore->addRelationship(1, 2);
     followsStore->addRelationship(2, 3);
     followsStore->addRelationship(3, 4);
@@ -143,7 +147,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/3") {
 
 }
 
-
 TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/4") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
@@ -222,7 +225,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/5") {
     REQUIRE((res == std::unordered_set<string>{ "1", "2" } || res == std::unordered_set<string>{"2", "1"}));
 
 }
-
 
 TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/6") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
@@ -388,7 +390,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/9") {
     REQUIRE(res == std::unordered_set<string>{ });
 
 }
-
 
 TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/10") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
@@ -649,5 +650,173 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/15") {
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
     std::unordered_set<string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<string>{ "2" });
+
+}
+//stmt s; variable v;
+//Select s such that Follows*(s, _) and Uses(s, v)
+TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/16") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<FollowsTWriter> followWriter = pkbWriterManager->getFollowsTWriter();
+    std::shared_ptr<UsesSWriter> usesWriter = pkbWriterManager->getUsesSWriter();
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    statementWriter->insertStatement(5);
+    followWriter->addFollowsT(1, 2);
+    followWriter->addFollowsT(2, 3);
+    followWriter->addFollowsT(1, 3);
+    followWriter->addFollowsT(4, 5);
+    usesWriter->addUsesS(1, "x");
+    usesWriter->addUsesS(2, "y");
+    usesWriter->addUsesS(3, "z");
+
+
+    SECTION("Query for stmt with FollowsT with Uses Clause") {
+
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "stmt"),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::DesignEntity, "variable"),
+                Token(TokenType::IDENT, "v"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::FollowsT, "Follows*"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::Wildcard, "_"),
+                Token(TokenType::Rparenthesis, ")"),
+                Token(TokenType::AndKeyword, "such that"),
+                Token(TokenType::Uses, "Uses"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::IDENT, "v"),
+                Token(TokenType::Rparenthesis, ")")
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{ "1","2" });
+    }
+
+    SECTION("Query for variable used by followedT statements") {
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "stmt"),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::DesignEntity, "variable"),
+                Token(TokenType::IDENT, "v"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::IDENT, "v"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::FollowsT, "Follows*"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::Wildcard, "_"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Rparenthesis, ")"),
+                Token(TokenType::AndKeyword, "such that"),
+                Token(TokenType::Uses, "Uses"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::IDENT, "v"),
+                Token(TokenType::Rparenthesis, ")")
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{ "y", "z" });
+
+    }
+
+}
+
+TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/17 Select AttrRef") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<FollowsTWriter> followWriter = pkbWriterManager->getFollowsTWriter();
+    std::shared_ptr<UsesSWriter> usesWriter = pkbWriterManager->getUsesSWriter();
+    std::shared_ptr<VariableWriter> variableWriter = pkbWriterManager->getVariableWriter();
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    followWriter->addFollowsT(1, 2);
+    followWriter->addFollowsT(2, 3);
+    followWriter->addFollowsT(1, 3);
+    usesWriter->addUsesS(1, "x");
+    usesWriter->addUsesS(2, "y");
+    usesWriter->addUsesS(3, "z");
+    variableWriter->insertVariable("x");
+    variableWriter->insertVariable("y");
+    variableWriter->insertVariable("z");
+
+    pkbManager->getPKBCacheManager()->populateCache();
+
+
+
+    SECTION("Simple stmt# AttrRef") {
+
+
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "stmt"),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::DesignEntity, "variable"),
+                Token(TokenType::IDENT, "v"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Dot, "."),
+                Token(TokenType::AttrName, "stmt#"),
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{ "1","2", "3" });
+
+    }
+
+    SECTION("Simple varName AttrRef Test") {
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "stmt"),
+                Token(TokenType::IDENT, "s"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::DesignEntity, "variable"),
+                Token(TokenType::IDENT, "v"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::IDENT, "v"),
+                Token(TokenType::Dot, "."),
+                Token(TokenType::AttrName, "varName"),
+        };
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<string>{ "x","y", "z" });
+    }
 
 }

@@ -1,6 +1,11 @@
 #include "SimpleControlFlow.h"
+#include <stdexcept>
 
-SimpleControlFlow::SimpleControlFlow(std::shared_ptr<ASTNode> root) : root(root) {}
+SimpleControlFlow::SimpleControlFlow(std::shared_ptr<ASTNode> root) : root(root) {
+	if (!root->equalType(ASTNodeType::PROGRAMS)) {
+		throw std::runtime_error("Node type cannot be non-program");
+	}
+}
 
 std::shared_ptr<std::vector<std::shared_ptr<CFGNode>>> SimpleControlFlow::createControlFlowGraphs() {
 	std::vector<std::shared_ptr<ASTNode>> procedures = this->root->getChildren();

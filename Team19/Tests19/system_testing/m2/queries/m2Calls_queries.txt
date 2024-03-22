@@ -1,0 +1,160 @@
+1 - Finds all procedures that calls another procedure
+procedure p, q;
+Select p such that Calls(p, q)
+Main, Calculate, Decrement
+5000
+2 - Finds all procedures that calls Finish Transitively
+procedure p, q;
+Select p such that Calls*(p, "Finish")
+Calculate, Main
+5000
+3 - Finds all procedures that calls both "LogStatus" and "Decrement"
+procedure p;
+Select p such that Calls(p, "LogStatus") and Calls(p, "Decrement")
+Calculate
+5000
+4 - Finds all procedures that calls "LogStatus" and "Decrement" transitively
+procedure p;
+Select p such that Calls*(p, "LogStatus") and Calls*(p, "Decrement")
+Calculate, Main
+5000
+5 - Finds all procedures that calls "LogStatus" Transitively and "Decrement" directly
+procedure p;
+Select p such that Calls*(p, "LogStatus") and Calls(p, "Decrement")
+Calculate
+5000
+6 - Finds all procedures that is called
+procedure p;
+Select p such that Calls(_, p)
+Calculate, Decrement, Finish, LogStatus,
+5000
+7 - Finds all procedures that is called transitively
+procedure p;
+Select p such that Calls*(_, p)
+Calculate, Decrement, Finish, LogStatus
+5000
+8 - Finds all procedures that is called by "Main"
+procedure p;
+Select p such that Calls("Main", p)
+Calculate
+5000
+9 - Finds all procedures that is called by "Main" transitively
+procedure p;
+Select p such that Calls*("Main", p)
+Calculate, Decrement, Finish, LogStatus
+5000
+10 - Finds all procedures that is called by "Main" transitively and "LogStatus" directly
+procedure p;
+Select p such that Calls*("Main", p) and Calls("LogStatus", p)
+none
+5000
+11 - Finds all procedures that is called by "Main" transitively and "Calculate" directly
+procedure p;
+Select p such that Calls*("Main", p) and Calls("Calculate", p)
+Decrement, LogStatus, Finish
+5000
+12 - Finds all procedures if there is a direct call
+procedure p;
+Select p such that Calls(_, _)
+Calculate, Decrement, Finish, LogStatus, Main
+5000
+13 - Finds all procedures if there is a call transitively
+procedure p;
+Select p such that Calls*(_, _)
+Calculate, Decrement, Finish, LogStatus, Main
+5000
+14 - Finds BOOLEAN if Main Calls Finish
+
+Select BOOLEAN such that Calls("Main", "Finish")
+FALSE
+5000
+15 - Finds BOOLEAN if Main Calls Finish transitively
+
+Select BOOLEAN such that Calls*("Main", "Finish")
+TRUE
+5000
+16 - Finds BOOLEAN if LogStatus Calls anything
+
+Select BOOLEAN such that Calls("LogStatus", _)
+FALSE
+5000
+17 - Finds BOOLEAN if Decrement Calls anything transitively
+
+Select BOOLEAN such that Calls*("Decrement", _)
+TRUE
+5000
+18 - Finds procedures name that calls
+procedure p;
+Select p.procName
+Calculate, Main, LogStatus, Finish, Decrement
+5000
+19 - Finds procedures name that calls decrement
+procedure p;
+Select p.procName such that Calls(p, "Decrement")
+Calculate
+5000
+20 - Finds procedures that calls decrement with name = Calculate
+procedure p;
+Select p such that Calls(p, "Decrement") with p.procName = "Calculate"
+Calculate
+5000
+21 - Finds procedures that calls decrement with name = Main
+procedure p;
+Select p such that Calls(p, "Decrement") with p.procName = "Main"
+none
+5000
+22 - Finds procedures that calls LogStatus and Decrement and Finish
+procedure p;
+Select p such that Calls(p, "LogStatus") and Calls(p, "Decrement") and Calls(p, "Finish")
+Calculate
+5000
+23 - Get Semantic Error when a variable is used in call statement
+variable v;
+Select v such that Calls(v, "Decrement")
+SemanticError
+5000
+24 - Get Semantic Error when a variable is used in call statement
+variable v;
+Select v such that Calls("Main", v)
+SemanticError
+5000
+25 - Get Semantic Error when a Integer is used in call statement
+procedure p;
+Select p such that Calls(p, 1)
+SyntaxError
+5000
+26 - Get procedures that calls each other
+procedure p, q;
+Select <p, q> such that Calls(p, q)
+Decrement LogStatus, Calculate Decrement, Calculate LogStatus, Calculate Finish, Main Calculate
+5000
+27 - Get procedures that calls each other transitively
+procedure p, q;
+Select <p, q> such that Calls*(p, q)
+Decrement LogStatus, Calculate LogStatus, Main Finish, Calculate Finish, Main Calculate, Main Decrement, Calculate Decrement, Main LogStatus
+5000
+28 - Get procedure.procNames that calls each other
+procedure p, q;
+Select <p.procName, q.procName> such that Calls(p, q)
+Decrement LogStatus, Calculate Decrement, Calculate LogStatus, Calculate Finish, Main Calculate
+5000
+29 - Get procedure.procNames and procedure that calls each other
+procedure p, q;
+Select <p.procName, q> such that Calls(p, q)
+Decrement LogStatus, Calculate Decrement, Calculate LogStatus, Calculate Finish, Main Calculate
+5000
+30 - Get procedure.procNames that calls and all variables
+procedure p; variable v;
+Select <p.procName, v.varName> such that Calls*(p, _)
+Calculate x, Decrement x, Main y, Main x, Decrement y, Main value, Main complete, Calculate y, Main number, Calculate value, Decrement value, Calculate complete, Decrement number, Main z, Decrement complete, Decrement result, Main result, Calculate result, Calculate z, Decrement z, Calculate number
+5000
+31 - Get procedure.procNames that calls, procedure and all variables
+procedure p, q; variable v;
+Select <p.procName, q, v.varName> such that Calls(p, q) with v.varName = "x"
+Calculate Decrement x, Calculate Finish x, Calculate LogStatus x, Decrement LogStatus x, Main Calculate x
+5000
+32 - Get procedure.procNames that calls, procedure and all variables
+procedure p, q; variable v;
+Select <p.procName, q, v.varName> such that Calls(p, q)
+Calculate Decrement x, Calculate LogStatus x, Calculate Finish x, Main Calculate x, Calculate LogStatus y, Calculate Finish y, Main Calculate y, Calculate Finish number, Calculate LogStatus z, Calculate Decrement z, Calculate Finish z, Decrement LogStatus value, Calculate Decrement complete, Decrement LogStatus y, Calculate LogStatus number, Main Calculate value, Decrement LogStatus complete, Decrement LogStatus z, Main Calculate z, Calculate LogStatus complete, Calculate Decrement result, Calculate Finish complete, Calculate LogStatus value, Calculate Decrement y, Main Calculate complete, Calculate Decrement number, Decrement LogStatus number, Decrement LogStatus x, Calculate Finish value, Decrement LogStatus result, Calculate Decrement value, Main Calculate number, Calculate LogStatus result, Calculate Finish result, Main Calculate result
+10000

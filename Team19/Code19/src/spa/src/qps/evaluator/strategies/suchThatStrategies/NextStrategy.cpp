@@ -44,18 +44,20 @@ void NextStrategy::processSynonyms(std::shared_ptr<ResultTable> resultTable, con
         return;
     }
 
-
-
     // Fetch all relationships from the selected reader
-    auto relationships = reader->getKeyValueRelationships();
+    string firstParamType = parsingResult.getDeclaredSynonym(firstParam.getValue());
+    unordered_set<int> allPreviousStmts = reader->getKeys();
+    unordered_set<int> filteredPreviousStmts = getFilteredStmtsNumByType(allPreviousStmts, firstParamType, pkbReaderManager);
 
     // Iterate through all relationships, filtering based on the synonyms' criteria
-    for (const auto& pair : relationships) {
-        int fromStmt = pair.first;
-        for (int toStmt : pair.second) {
+    for (const int stmt : filteredPreviousStmts) {
+        unordered_set<int> allNextStmts = reader->getRelationshipsByKey(stmt);
+        string secondStatementType = parsingResult.getDeclaredSynonym(secondParam.getValue());
+        unordered_set<int>  filteredNextStatements = getFilteredStmtsNumByType(allNextStmts, secondStatementType, pkbReaderManager);
+        for (int nextStmt : filteredNextStatements) {
             // Insert each relevant pair into the result table
-            std::pair<string, string> col1Pair = make_pair<string, string>(firstParam.getValue(), to_string(fromStmt));
-            std::pair<string, string> col2Pair = make_pair<string, string>(secondParam.getValue(), to_string(toStmt));
+            std::pair<string, string> col1Pair = make_pair<string, string>(firstParam.getValue(), to_string(stmt));
+            std::pair<string, string> col2Pair = make_pair<string, string>(secondParam.getValue(), to_string(nextStmt));
             insertRowToTable(col1Pair, col2Pair, resultTable);
         }
     }
@@ -93,11 +95,12 @@ void NextStrategy::processFirstParam(std::shared_ptr<ResultTable> resultTable, c
         }
     }
 
-
+    string statementType = parsingResult.getDeclaredSynonym(firstParam.getValue());
+    std::unordered_set<int> allFilteredPreviousStmts = getFilteredStmtsNumByType(previousStatements, statementType, pkbReaderManager);
     resultTable->insertColumn(firstParam.getValue());
     // convert the set of previous statements to a unordered set of strings
     std::unordered_set<std::string> previousStatementsStr;
-    convertIntSetToStringSet(previousStatements, previousStatementsStr);
+    convertIntSetToStringSet(allFilteredPreviousStmts, previousStatementsStr);
     insertRowsWithSingleColumn(firstParam.getValue(), previousStatementsStr, resultTable);
 
 }
@@ -131,11 +134,13 @@ void NextStrategy::processSecondParam(std::shared_ptr<ResultTable> resultTable, 
             return;
         }
     }
+    string statementType = parsingResult.getDeclaredSynonym(secondParam.getValue());
+    std::unordered_set<int> allFilteredNextStmts = getFilteredStmtsNumByType(nextStatements, statementType, pkbReaderManager);
 
     resultTable->insertColumn(secondParam.getValue());
     // convert the set of next statements to a unordered set of strings
     std::unordered_set<std::string> nextStatementsStr;
-    convertIntSetToStringSet(nextStatements, nextStatementsStr);
+    convertIntSetToStringSet(allFilteredNextStmts, nextStatementsStr);
     insertRowsWithSingleColumn(secondParam.getValue(), nextStatementsStr, resultTable);
 }
 
