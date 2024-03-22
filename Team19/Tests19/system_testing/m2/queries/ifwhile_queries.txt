@@ -301,7 +301,7 @@ SyntaxError
 61. Invalid ifs
 while w; if i; variable v; assign a;
 Select i pattern i("v",__)
-SyntaxError
+SemanticError
 5000
 62. Invalid whiles
 while w; if i; variable v; assign a;
