@@ -1,0 +1,46 @@
+procedure if {
+	if(a == b - 1) then {
+		c = d + e % 2 / 3;
+		if(!(f != g + h)) then {
+			i = j + k;
+		} else {
+			i = j - k;
+		}
+	} else {
+		if((!(l - m <= n)) && (o*(p / q)+(r) > s)) then {
+		
+		} else {
+			
+		}
+	}
+} 
+
+procedure while {
+	while (1==2) {
+		while (w1*(w2+(w3%(1-w4/w5)-w6)+w7)+1-0 > w1) {
+			while (w4+w5==w8+w9) {
+				w0 = w0 + 1;
+			}
+		}
+	}
+	call if;
+}
+
+procedure call {
+	while (temp == read){
+		if (print > assign) then {
+			while (procedure < call) {
+				x = x;
+				if (while > if) then {
+					x = x;	
+				} else {
+					x = x;
+				}
+			}
+		} else {
+			x = x;
+		}
+	}
+	call if;
+	call while;
+}
