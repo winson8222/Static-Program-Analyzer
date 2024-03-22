@@ -1,5 +1,4 @@
-#pragma
-#define PATTERNSTRATEGY_H
+#pragma once
 
 #include "qps/evaluator/QueryEvaluationStrategy.h"
 
