@@ -1,0 +1,38 @@
+<?xml-stylesheet type="text/xsl" href="analysis.xsl"?>
+<test_results>
+<info>
+<name>m2</name><parsing_time_taken>55.710000</parsing_time_taken>
+</info>
+<queries>
+<query>
+<id ReturnTuple="1" Calls="1" SuchThat="1" CondNum="3" RelNum="1" comment="Test for Calls">1</id><querystr><![CDATA[procedure p, q; Select <p, q> such that Calls(p, q)]]></querystr>
+<stuans>Process Helper,Compute Finalize,Compute Process,Main Compute</stuans>
+<correct>Main Compute,Compute Process,Process Helper,Compute Finalize</correct>
+<time_taken>1.899000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Callsstar="1" SuchThat="1" CondNum="3" RelNum="1" comment="Test for Calls*">2</id><querystr><![CDATA[procedure p, q; Select <p, q> such that Calls*(p, q)]]></querystr>
+<stuans>Process Helper,Compute Process,Compute Helper,Main Compute,Main Process,Compute Finalize,Main Helper,Main Finalize</stuans>
+<correct>Main Compute,Main Process,Main Finalize,Main Helper,Compute Process,Compute Finalize,Compute Helper,Process Helper</correct>
+<time_taken>1.377000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Modifies="1" SuchThat="1" CondNum="3" RelNum="1" comment="Test for Modifies">3</id><querystr><![CDATA[stmt s; variable v; Select <s, v> such that Modifies(s, "i")]]></querystr>
+<stuans>9 y,2 y,6 z,11 z,10 z,9 z,6 y,2 z,6 i,2 x,11 i,10 y,2 b,4 i,10 i,9 i,2 i,6 a,4 z,11 a,11 y,6 x,10 a,4 a,2 a,4 y,9 a,6 b,10 b,10 x,9 b,4 b,11 x,11 b,4 x,9 x</stuans>
+<correct>9 i,11 i</correct>
+<time_taken>1.439000</time_taken>
+<failed>
+<missing></missing>
+<additional>10 a,10 b,10 i,10 x,10 y,10 z,11 a,11 b,11 x,11 y,11 z,2 a,2 b,2 i,2 x,2 y,2 z,4 a,4 b,4 i,4 x,4 y,4 z,6 a,6 b,6 i,6 x,6 y,6 z,9 a,9 b,9 x,9 y,9 z</additional>
+<summary>
+<expected>2</expected>
+<matched>2</matched>
+<missing>0</missing>
+<additional>34</additional>
+</summary>
+</failed>
+</query>
+</queries>
+</test_results>

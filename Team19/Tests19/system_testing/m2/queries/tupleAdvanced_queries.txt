@@ -1,0 +1,15 @@
+1 - Test for Calls
+procedure p, q;
+Select <p, q> such that Calls(p, q)
+Main Compute, Compute Process, Process Helper, Compute Finalize
+5000
+2 - Test for Calls*
+procedure p, q;
+Select <p, q> such that Calls*(p, q)
+Main Compute, Main Process, Main Finalize, Main Helper, Compute Process, Compute Finalize, Compute Helper, Process Helper
+5000
+3 - Test for Modifies
+stmt s; variable v;
+Select <s, v> such that Modifies(s, "i")
+9 i, 11 i
+5000
