@@ -413,6 +413,8 @@ void QueryParser::parsePatternClause() {
 
     advanceToken();
     parseEntRef();
+    ensureSynonymType(currentToken(), "variable");
+
     clause.setFirstParam(currentToken());
     
 
@@ -448,6 +450,9 @@ void QueryParser::parseIfParams(PatternClause &clause) {
         throwSemanticError();
     }
     clause.setSecondParam(currentToken());
+    if (isLastParamInPatternClause()) {
+        throwSemanticError();
+    }
     advanceToken();
     ensureToken(TokenType::Comma);
     advanceToken();
@@ -455,14 +460,29 @@ void QueryParser::parseIfParams(PatternClause &clause) {
         throwSemanticError();
     }
     clause.setThirdParam(currentToken());
+
 }
+
+bool QueryParser::isLastParamInPatternClause() {
+    if (!peekNextToken(TokenType::Rparenthesis)) {
+        ensureNextBlank();
+        return false;
+    } else {
+        return true;
+    }
+}
+
 
 void QueryParser::parseWhileParams(PatternClause &clause) {
     if (!match(TokenType::Wildcard)) {
         throwSemanticError();
     }
     clause.setSecondParam(currentToken());
+    if (!isLastParamInPatternClause()) {
+        throwSemanticError();
+    }
 }
+
 
 
 
@@ -684,6 +704,17 @@ bool QueryParser::peekNextToken(TokenType type) {
     return false;
 }
 
+void QueryParser::ensureNextBlank() {
+    if (currentTokenIndex < tokens.size() - 2 &&
+    tokens[currentTokenIndex + 1].getType() == TokenType::Comma &&
+    tokens[currentTokenIndex + 2].getType() == TokenType::Wildcard) {
+        return;
+    } else {
+        throwGrammarError();
+    }
+
+}
+
 bool QueryParser::checkValidStmtNum() {
     if (stoi(currentToken().getValue()) < 1) {
         return false;
@@ -820,3 +851,4 @@ string QueryParser::concatTokens(size_t start, size_t end) {
     }
     return concatenatedTokens;
 }
+

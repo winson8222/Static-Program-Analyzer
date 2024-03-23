@@ -140,6 +140,9 @@ private:
     bool checkIfStmt();
     bool checkIfEnt();
     bool checkIfPatternSyn();
+    bool isLastParamInPatternClause();
+    void ensureNextBlank();
+
 
 };
 

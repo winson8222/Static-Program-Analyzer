@@ -46,6 +46,10 @@ TEST_CASE("sp/SourceProcessor: Calls Procedure") {
         std::shared_ptr<CallsReader> callsReader = pkbReaderManager->getCallsReader();
         std::shared_ptr<CallsTReader> callsTReader = pkbReaderManager->getCallsTReader();
         std::shared_ptr<CallProcNameReader> callProcNameReader = pkbReaderManager->getCallProcNameReader();
+        std::shared_ptr<UsesPReader> usesPReader = pkbReaderManager->getUsesPReader();
+        std::shared_ptr<UsesSReader> usesSReader = pkbReaderManager->getUsesSReader();
+        std::shared_ptr<ModifiesPReader> modifiesPReader = pkbReaderManager->getModifiesPReader();
+        std::shared_ptr<ModifiesSReader> modifiesSReader = pkbReaderManager->getModifiesSReader();
 
         std::string expectedCall1 = "proc2";
         REQUIRE(callProcNameReader->getCalledProcedureName(16) == expectedCall1);
@@ -70,5 +74,19 @@ TEST_CASE("sp/SourceProcessor: Calls Procedure") {
 
         std::unordered_set<std::string> expectedCalls4 = { "proc4" };
         REQUIRE(callsReader->getDirectCallersOfProcedure("proc3") == expectedCalls4);
+
+        std::unordered_set<std::string> expectedUse1 = { "meme", "x", "y", "u", "p", "i"};
+        REQUIRE(usesPReader->getAllVariablesUsedByProc("proc3") == expectedUse1);
+        REQUIRE(usesSReader->getAllVariablesUsedByStmt(17) == expectedUse1);
+
+        std::unordered_set<std::string> expectedModify1 = {"me", "z", "x", "t", "y"};
+        REQUIRE(modifiesPReader->getAllVariablesModifiedByProc("proc3") == expectedModify1);
+        REQUIRE(modifiesSReader->getAllVariablesModifiedByStmt(17) == expectedModify1);
+
+        std::unordered_set<std::string> expectedUse2 = { "x", "y", "u", "p", "i" };
+        REQUIRE(usesSReader->getAllVariablesUsedByStmt(13) == expectedUse2);
+
+        std::unordered_set<std::string> expectedModify2 = { "z", "x", "y", "t"};
+        REQUIRE(modifiesSReader->getAllVariablesModifiedByStmt(13) == expectedModify2);
     }
 }
