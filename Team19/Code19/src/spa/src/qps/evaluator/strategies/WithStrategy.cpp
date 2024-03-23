@@ -37,7 +37,7 @@ std::shared_ptr<ResultTable> WithStrategy::evaluateQuery(PKBReaderManager& pkbRe
         else {
             std::unordered_set<std::string> lhsValue = processParam(firstParam, pkbReaderManager, originalResultTable);
             std::unordered_set<std::string> rhsValue = processParam(secondParam, pkbReaderManager, originalResultTable);
-            std::unordered_set<std::string> intersection = findIntersection(lhsValue, rhsValue);
+            std::vector<std::string> intersection = findIntersection(lhsValue, rhsValue);
             std::vector<pair<string, string>> rows1;
             std::vector<pair<string, string>> rows2;
             rows1 = populateResultTable(resultTable, intersection, firstParam, pkbReaderManager);
@@ -211,18 +211,18 @@ bool WithStrategy::isQuotedString(const std::string& str) {
 }
 
 //function that finds the intersection of two unordered sets of strings efficiently
-std::unordered_set<std::string> WithStrategy::findIntersection(const std::unordered_set<std::string>& set1, const std::unordered_set<std::string>& set2) {
+std::vector<std::string> WithStrategy::findIntersection(const std::unordered_set<std::string>& set1, const std::unordered_set<std::string>& set2) {
     // Determine the smaller and the larger set
     const auto& smallerSet = (set1.size() < set2.size()) ? set1 : set2;
     const auto& largerSet = (set1.size() < set2.size()) ? set2 : set1;
 
-    std::unordered_set<std::string> intersection;
+    std::vector<std::string> intersection;
 
     // Iterate through the smaller set and add elements to the intersection
     // if they are found in the larger set
     for (const auto& element : smallerSet) {
         if (largerSet.find(element) != largerSet.end()) {
-            intersection.insert(element);
+            intersection.push_back(element);
         }
     }
 
@@ -239,18 +239,19 @@ bool WithStrategy::isIntegerStored(string synyonymType, string attribute)
     return false;
 }
 
-unordered_set<std::string> WithStrategy::mapStringSetToIntSet(PKBReaderManager& pkbReaderManager, const unordered_set<string>& stringSet, string& synonymType)
+vector<std::string> WithStrategy::mapStringSetToIntSet(PKBReaderManager& pkbReaderManager, const vector<string>& stringSet, string& synonymType)
 {
     // function that takes in the string set and retrieves all the linked statements for each string within the set
     // and returns a set of integers
-    unordered_set<int> intSet;
+    vector<int> intSet;
     if (synonymType == "read")
     {
 		auto readVarNameReader = pkbReaderManager.getReadVarNameReader();
         for (string varName : stringSet)
         {
 			unordered_set<int> linkedStmts = readVarNameReader->getLinker(varName);
-			intSet.insert(linkedStmts.begin(), linkedStmts.end());
+            intSet.insert(intSet.end(), linkedStmts.begin(), linkedStmts.end());
+            
 		}
 	}
     else if (synonymType == "print")
@@ -259,7 +260,7 @@ unordered_set<std::string> WithStrategy::mapStringSetToIntSet(PKBReaderManager& 
         for (string varName : stringSet)
         {
 			unordered_set<int> linkedStmts = printVarNameReader->getLinker(varName);
-			intSet.insert(linkedStmts.begin(), linkedStmts.end());
+            intSet.insert(intSet.end(), linkedStmts.begin(), linkedStmts.end());
 		}
 	}
     else if (synonymType == "call")
@@ -268,17 +269,19 @@ unordered_set<std::string> WithStrategy::mapStringSetToIntSet(PKBReaderManager& 
         for (string procName : stringSet)
         {
 			unordered_set<int> linkedStmts = callProcNameReader->getLinker(procName);
-			intSet.insert(linkedStmts.begin(), linkedStmts.end());
+            intSet.insert(intSet.end(), linkedStmts.begin(), linkedStmts.end());
 		}
 	}
-    unordered_set<string> mappedIntSet;
-    convertIntSetToStringSet(intSet, mappedIntSet);
+    vector<string> mappedIntSet;
+    for (int i : intSet) {
+        mappedIntSet.push_back(std::to_string(i));
+    }
 	return mappedIntSet;
 }
 
 std::vector<pair<string, string>> WithStrategy::populateResultTable(
     const std::shared_ptr<ResultTable>& resultTable,
-    const std::unordered_set<std::string>& intersection, Token param, PKBReaderManager& pkbReaderManager)
+    const std::vector<std::string>& intersection, Token param, PKBReaderManager& pkbReaderManager)
 {
     std::vector<pair<string, string>> rows;
     if (!isQuotedString(param.getValue()) && !isInteger(param.getValue())) {
@@ -291,7 +294,7 @@ std::vector<pair<string, string>> WithStrategy::populateResultTable(
             resultTable->insertColumn(synonym);
         }
         if (isIntegerStored(synonymType, attribute)) {
-            unordered_set<string> mappedIntersection = mapStringSetToIntSet(pkbReaderManager, intersection, synonymType);
+            vector<string> mappedIntersection = mapStringSetToIntSet(pkbReaderManager, intersection, synonymType);
             // insert column with value of synonym and rows with the intersection of the two sets
             for (string elem : mappedIntersection) {
                 rows.push_back(make_pair(synonym, elem));
