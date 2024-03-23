@@ -405,6 +405,9 @@ void QueryParser::parseStmtRef() {
 // Parses an entity reference in the query.
 // Handles different types of entity references like quoted identifier, wildcard, or synonym.
 void QueryParser::parseEntRef() {
+    if (!match(TokenType::QuoutIDENT) && !match(TokenType::Wildcard) && !match(TokenType::IDENT)) {
+        throwSemanticError();
+    }
     if (match(TokenType::QuoutIDENT) || match(TokenType::Wildcard)) {
         return;
     } else {
@@ -420,6 +423,7 @@ void QueryParser::parseEntRef() {
 // Ensures the correct syntax and processes entity references and expression specifications.
 void QueryParser::parsePatternClause() {
     PatternClause clause;
+    ensureToken(TokenType::PatternKeyword);
     advanceToken();
     // check if it is a syn-assign
     ensureToken(TokenType::IDENT);
@@ -434,7 +438,7 @@ void QueryParser::parsePatternClause() {
     ensureSynonymType(currentToken(), "variable");
 
     clause.setFirstParam(currentToken());
-    
+
 
     advanceToken();
     ensureToken(TokenType::Comma);
@@ -468,9 +472,6 @@ void QueryParser::parseIfParams(PatternClause &clause) {
         throwSemanticError();
     }
     clause.setSecondParam(currentToken());
-    if (isLastParamInPatternClause()) {
-        throwSemanticError();
-    }
     advanceToken();
     ensureToken(TokenType::Comma);
     advanceToken();
@@ -496,9 +497,7 @@ void QueryParser::parseWhileParams(PatternClause &clause) {
         throwSemanticError();
     }
     clause.setSecondParam(currentToken());
-    if (!isLastParamInPatternClause()) {
-        throwSemanticError();
-    }
+
 }
 
 
@@ -668,7 +667,11 @@ void QueryParser::parseEntSynonym() {
 
 void QueryParser::ensureSynonymType(Token type, std::string synType) {
     if (type.getType() != TokenType::IDENT) {
-        return;
+        if (type.getType() == TokenType::QuoutIDENT || type.getType() == TokenType::Wildcard) {
+            return;
+        } else {
+            throwSemanticError();
+        }
     }
     if (parsingResult.getDeclaredSynonym(type.getValue()) != synType) {
         throwSemanticError();
@@ -743,6 +746,7 @@ bool QueryParser::checkValidStmtNum() {
 
 void QueryParser::parseWithClause() {
     WithClause clause;
+    ensureToken(TokenType::WithKeyword);
     clause.setRelationship(currentToken());
     advanceToken();
 
