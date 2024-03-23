@@ -255,6 +255,9 @@ void QueryParser::parseCalls(SuchThatClause& clause) {
     }
 
     parseEntRef();
+    ensureSynonymType(currentToken(), "procedure");
+
+
     clause.setFirstParam(currentToken());
     advanceToken();
 
@@ -266,6 +269,7 @@ void QueryParser::parseCalls(SuchThatClause& clause) {
     }
 
     parseEntRef();
+    ensureSynonymType(currentToken(), "procedure");
     clause.setSecondParam(currentToken());
     advanceToken();
     ensureToken(TokenType::Rparenthesis);
@@ -428,6 +432,8 @@ void QueryParser::parsePatternClause() {
 
     advanceToken();
     parseEntRef();
+    ensureSynonymType(currentToken(), "variable");
+
     clause.setFirstParam(currentToken());
     
 
@@ -463,6 +469,9 @@ void QueryParser::parseIfParams(PatternClause &clause) {
         throwSemanticError();
     }
     clause.setSecondParam(currentToken());
+    if (isLastParamInPatternClause()) {
+        throwSemanticError();
+    }
     advanceToken();
     ensureToken(TokenType::Comma);
     advanceToken();
@@ -470,14 +479,29 @@ void QueryParser::parseIfParams(PatternClause &clause) {
         throwSemanticError();
     }
     clause.setThirdParam(currentToken());
+
 }
+
+bool QueryParser::isLastParamInPatternClause() {
+    if (!peekNextToken(TokenType::Rparenthesis)) {
+        ensureNextBlank();
+        return false;
+    } else {
+        return true;
+    }
+}
+
 
 void QueryParser::parseWhileParams(PatternClause &clause) {
     if (!match(TokenType::Wildcard)) {
         throwSemanticError();
     }
     clause.setSecondParam(currentToken());
+    if (!isLastParamInPatternClause()) {
+        throwSemanticError();
+    }
 }
+
 
 
 
@@ -643,6 +667,16 @@ void QueryParser::parseEntSynonym() {
     }
 }
 
+void QueryParser::ensureSynonymType(Token type, std::string synType) {
+    if (type.getType() != TokenType::IDENT) {
+        return;
+    }
+    if (parsingResult.getDeclaredSynonym(type.getValue()) != synType) {
+        throwSemanticError();
+    }
+}
+
+
 // Define a mapping of token types to their valid statement synonyms
 
 
@@ -687,6 +721,17 @@ bool QueryParser::peekNextToken(TokenType type) {
         return tokens[currentTokenIndex + 1].getType() == type;
     }
     return false;
+}
+
+void QueryParser::ensureNextBlank() {
+    if (currentTokenIndex < tokens.size() - 2 &&
+    tokens[currentTokenIndex + 1].getType() == TokenType::Comma &&
+    tokens[currentTokenIndex + 2].getType() == TokenType::Wildcard) {
+        return;
+    } else {
+        throwGrammarError();
+    }
+
 }
 
 bool QueryParser::checkValidStmtNum() {
@@ -825,3 +870,4 @@ string QueryParser::concatTokens(size_t start, size_t end) {
     }
     return concatenatedTokens;
 }
+

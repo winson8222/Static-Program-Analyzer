@@ -1,4 +1,4 @@
-Write-Host "[System Test] Running all tests for Milestone 1"
+Write-Host "[System Test] Running all tests for Milestone 2"
 $EXIT_CODE = 0
 
 # Get the current directory

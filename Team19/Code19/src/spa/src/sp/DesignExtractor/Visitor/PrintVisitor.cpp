@@ -24,6 +24,4 @@ void PrintVisitor::visit() {
 	VariableVisitor variableVisitor(childVariable, this->pkbWriterManager);
 	variableVisitor.setUsedContext(contexts, root);
 	variableVisitor.visit();
-
-	setParents(this->contexts, this->root, this->pkbWriterManager);
 }

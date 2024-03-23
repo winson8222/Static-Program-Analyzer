@@ -121,6 +121,7 @@ private:
     void parseEntSynonym();
     void parseStmtSynonyms();
     void parsePatternSynonym();
+    void ensureSynonymType(Token type, string synType);
 
 
     // helper function to replace concatenation of tokens
@@ -139,6 +140,9 @@ private:
     bool checkIfStmt();
     bool checkIfEnt();
     bool checkIfPatternSyn();
+    bool isLastParamInPatternClause();
+    void ensureNextBlank();
+
 
 };
 

@@ -7,7 +7,9 @@ TEST_CASE("pkb/stores/relationships/types/AffectsStore") {
     auto nextStore = std::make_shared<NextStore>();
     auto usesSStore = std::make_shared<UsesSStore>();
     auto modifiesSStore = std::make_shared<ModifiesSStore>();
-    AffectsStore affectsStore(assignStore, nextStore, usesSStore, modifiesSStore);
+	auto whileStore = std::make_shared<WhileStore>();
+	auto ifStore = std::make_shared<IfStore>();
+    AffectsStore affectsStore(assignStore, nextStore, usesSStore, modifiesSStore, whileStore, ifStore);
 
     // Source code being tested
     /*
@@ -70,11 +72,16 @@ TEST_CASE("pkb/stores/relationships/types/AffectsStore") {
         modifiesSStore->addRelationship(2, "i");
         modifiesSStore->addRelationship(4, "x");
         modifiesSStore->addRelationship(6, "i");
+		modifiesSStore->addRelationship(7, "x");
+		modifiesSStore->addRelationship(7, "z");
         modifiesSStore->addRelationship(8, "x");
         modifiesSStore->addRelationship(9, "z");
         modifiesSStore->addRelationship(10, "z");
         modifiesSStore->addRelationship(11, "y");
         modifiesSStore->addRelationship(12, "x");
+
+		ifStore->addEntity(7);
+		whileStore->addEntity(3);
 
         affectsStore.populateAffectsStore();
 
