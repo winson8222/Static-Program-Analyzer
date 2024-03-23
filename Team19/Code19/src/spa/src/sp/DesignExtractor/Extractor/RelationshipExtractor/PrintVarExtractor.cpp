@@ -1,4 +1,4 @@
-#include "sp/DesignExtractor/Extractor/RelationshipExtractor/ReadVarExtractor.h"
+#include "sp/DesignExtractor/Extractor/RelationshipExtractor/PrintVarExtractor.h"
 
 PrintVarExtractor::PrintVarExtractor(std::shared_ptr<ASTNode> ast1,
 	std::shared_ptr<ASTNode> ast2,

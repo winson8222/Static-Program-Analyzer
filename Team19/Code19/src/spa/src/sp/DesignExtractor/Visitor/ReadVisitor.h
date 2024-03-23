@@ -5,6 +5,7 @@
 
 #include "sp/DesignExtractor/Extractor/EntityExtractor/ReadExtractor.h"
 #include "sp/DesignExtractor/Extractor/RelationshipExtractor/ParentExtractor.h"
+#include "sp/DesignExtractor/Extractor/RelationshipExtractor/ReadVarExtractor.h"
 
 #include <stdexcept>
 
