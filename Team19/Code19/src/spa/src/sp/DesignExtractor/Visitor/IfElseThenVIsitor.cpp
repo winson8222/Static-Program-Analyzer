@@ -25,7 +25,6 @@ void IfElseThenVisitor::visit() {
 	handleExpressionVisitor();
 	handleStatementListVisitor(this->thenStatementList);
 	handleStatementListVisitor(this->elseStatementList);
-	setParents(this->contexts, this->root, this->pkbWriterManager);
 }
 
 void IfElseThenVisitor::handleIfExtractor() {

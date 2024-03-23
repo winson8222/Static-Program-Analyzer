@@ -5,6 +5,7 @@
 
 #include "sp/DesignExtractor/Extractor/EntityExtractor/PrintExtractor.h"
 #include "sp/DesignExtractor/Extractor/RelationshipExtractor/ParentExtractor.h"
+#include "sp/DesignExtractor/Extractor/RelationshipExtractor/PrintVarExtractor.h"
 
 
 constexpr int PRINT_VARIABLE_INDEX = 0;
