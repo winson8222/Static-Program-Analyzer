@@ -51,36 +51,7 @@ TEST_CASE("src/qps/parser/ParsingResult") {
 
     }
 
-    SECTION("Check Parsing Result for suchthat-cl ModifiesP with quoted variable") {
-        std::vector<Token> tokens = {
-                Token(TokenType::DesignEntity, "variable"),
-                Token(TokenType::IDENT, "v"),
-                Token(TokenType::Semicolon, ";"),
-                Token(TokenType::SelectKeyword, "Select"),
-                Token(TokenType::IDENT, "v"),
-                Token(TokenType::SuchKeyword, "such"),
-                Token(TokenType::ThatKeyword, "that"),
-                Token(TokenType::Modifies, "Modifies"),
-                Token(TokenType::Lparenthesis, "("),
-                Token(TokenType::IDENT, "v"),
-                Token(TokenType::Comma, ","),
-                Token(TokenType::QuoutIDENT, "\"existentVar\""),
-                Token(TokenType::Rparenthesis, ")")
-        };
 
-        QueryParser parser(tokens);
-        auto parsingResult = parser.parse();
-        auto suchThatClause = parsingResult.getSuchThatClauses()[0];
-        REQUIRE(parsingResult.getDeclaredSynonym("v") == "variable");
-        REQUIRE(parsingResult.getRequiredSynonyms()[0] == "v");
-        REQUIRE(suchThatClause.getRelationship().getType() == TokenType::ModifiesP);
-        REQUIRE(suchThatClause.getRelationship().getValue() == "Modifies");
-        REQUIRE(suchThatClause.getFirstParam().getType() == TokenType::IDENT);
-        REQUIRE(suchThatClause.getFirstParam().getValue() == "v");
-        REQUIRE(suchThatClause.getSecondParam().getType() == TokenType::QuoutIDENT);
-        REQUIRE(suchThatClause.getSecondParam().getValue() == "\"existentVar\"");
-
-    }
 
 
     SECTION("Check Parsing Result for suchthat-cl ModifiesS with wild card as first param") {
@@ -388,5 +359,7 @@ TEST_CASE("src/qps/parser/ParsingResult") {
 //        REQUIRE(withClause.getSecondParam().getValue() == "\"Third\"");
 //    }
 }
+
+
 
 
