@@ -299,3 +299,65 @@ TEST_CASE("With strategy with multiple clauses") {
         REQUIRE(actualResults == std::unordered_set<string>{"hello"});
     }
 }
+
+TEST_CASE("Multiple Clauses with with") {
+
+    shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    shared_ptr<VariableWriter> variableWriter = pkbWriterManager->getVariableWriter();
+    shared_ptr<PrintVarNameWriter> printVarNameWriter = pkbWriterManager->getPrintVarNameWriter();
+    shared_ptr<PrintWriter> printWriter = pkbWriterManager->getPrintWriter();
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    statementWriter->insertStatement(5);
+    statementWriter->insertStatement(6);
+    variableWriter->insertVariable("n");
+    variableWriter->insertVariable("x");
+    variableWriter->insertVariable("y");
+    variableWriter->insertVariable("variable");
+    variableWriter->insertVariable("start");
+    variableWriter->insertVariable("end");
+    variableWriter->insertVariable("total");
+    variableWriter->insertVariable("middle");
+    printWriter->insertPrint(3);
+    printVarNameWriter->addPrintVarName(3, "variable");
+
+    printWriter->insertPrint(7);
+    printVarNameWriter->addPrintVarName(7, "total");
+
+    printWriter->insertPrint(18);
+    printVarNameWriter->addPrintVarName(18, "middle");
+
+    printWriter->insertPrint(22);
+    printVarNameWriter->addPrintVarName(22, "start");
+
+    printWriter->insertPrint(32);
+    printVarNameWriter->addPrintVarName(32, "end");
+
+    
+    //    printWriter->insertPrint(7);
+    //    printVarNameWriter->addPrintVarName(7, "end");
+    //    printWriter->insertPrint(8);
+    //    printVarNameWriter->addPrintVarName(8, "variable");
+
+
+    SECTION("variable v; print pr; Select <v, pr> with pr.varName = v.varName") {
+        Tokenizer tokenizer("variable v; print pr; Select <v, pr> with pr.varName = v.varName");
+        vector<Token> tokens = tokenizer.tokenize();
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
+        std::unordered_set<string> expectedResults = { "variable 3", "start 22", "end 32", "total 7", "middle 18" };
+        REQUIRE(actualResults == expectedResults);
+    }
+}
+
+
+
+
