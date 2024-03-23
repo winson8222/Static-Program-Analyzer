@@ -420,7 +420,6 @@ void QueryParser::parseEntRef() {
 // Ensures the correct syntax and processes entity references and expression specifications.
 void QueryParser::parsePatternClause() {
     PatternClause clause;
-    ensureToken(TokenType::PatternKeyword);
     advanceToken();
     // check if it is a syn-assign
     ensureToken(TokenType::IDENT);
@@ -744,7 +743,6 @@ bool QueryParser::checkValidStmtNum() {
 
 void QueryParser::parseWithClause() {
     WithClause clause;
-    ensureToken(TokenType::WithKeyword);
     clause.setRelationship(currentToken());
     advanceToken();
 
