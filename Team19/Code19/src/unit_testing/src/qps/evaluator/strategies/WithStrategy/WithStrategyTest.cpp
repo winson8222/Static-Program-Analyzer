@@ -21,6 +21,7 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
     auto assignPatternWriter = pkbWriterManager->getAssignPatternWriter();
     auto ifWriter = pkbWriterManager->getIfWriter();
     auto followsWriter = pkbWriterManager->getFollowsWriter();
+    auto constantWriter = pkbWriterManager->getConstantWriter();
 
     auto readWriter = pkbWriterManager->getReadWriter();
     auto printWriter = pkbWriterManager->getPrintWriter();
@@ -28,6 +29,7 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
     auto readVarWriter = pkbWriterManager->getReadVarNameWriter();
     auto printVarWriter = pkbWriterManager->getPrintVarNameWriter();
     auto callProcWriter = pkbWriterManager->getCallProcNameWriter();
+    auto constantReader = pkbReaderManager->getConstantReader();
     std::shared_ptr<CallsWriter> CallsWriter = pkbWriterManager->getCallsWriter();
     std::shared_ptr<ProcedureWriter> procedureWriter = pkbWriterManager->getProcedureWriter();
     std::shared_ptr<CallsTWriter> CallsTWriter = pkbWriterManager->getCallsTWriter();
@@ -37,6 +39,8 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
     statementWriter->insertStatement(4);
     statementWriter->insertStatement(5);
     assignWriter->insertAssign(1);
+    constantWriter->insertConstant(0);
+    
 
     CallsWriter->addCalls("proc1", "proc3");
     CallsWriter->addCalls("proc2", "proc4");
@@ -231,6 +235,27 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
         std::unordered_set<string> actualResults = evaluator.evaluateQuery();
         std::unordered_set<string> expectedResults = { "FALSE" };
         REQUIRE(actualResults == expectedResults);
+
+    }
+
+    SECTION("constant c; Select c with 0 = c.value") {
+        unordered_set<string> a;
+        auto x = constantReader->getAllConstants();
+
+        for (auto i : x) {
+            a.insert(to_string(i));
+        }
+        Tokenizer tokenizer("constant c; Select c with 0 = c.value");
+        vector<Token> tokens = tokenizer.tokenize();
+
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
+        std::unordered_set<string> expectedResults = { "FALSE" };
+        
+		
+        REQUIRE(actualResults == a);
 
     }
 
