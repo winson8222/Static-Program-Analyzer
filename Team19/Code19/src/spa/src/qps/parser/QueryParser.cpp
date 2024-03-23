@@ -255,7 +255,7 @@ void QueryParser::parseCalls(SuchThatClause& clause) {
     }
 
     parseEntRef();
-    ensureSynonymType(currentToken(), "procedure");
+    ensureSynonymType("procedure");
 
 
     clause.setFirstParam(currentToken());
@@ -269,7 +269,7 @@ void QueryParser::parseCalls(SuchThatClause& clause) {
     }
 
     parseEntRef();
-    ensureSynonymType(currentToken(), "procedure");
+    ensureSynonymType("procedure");
     clause.setSecondParam(currentToken());
     advanceToken();
     ensureToken(TokenType::Rparenthesis);
@@ -309,7 +309,7 @@ void QueryParser::parseUsesOrModifies(SuchThatClause& clause) {
     } else if (checkIfEnt()) {
         parseEntRef(); // Attempt to parse an entity reference
         if (currentToken().getType() == TokenType::IDENT) {
-            ensureSynonymType(currentToken(), "procedure");
+            ensureSynonymType("procedure");
         }
         // If parseEntRef succeeds, control continues here
         if (currentSuchThatToken.getType() == TokenType::Uses) {
@@ -355,7 +355,7 @@ void QueryParser::parseUsesOrModifies(SuchThatClause& clause) {
 
     parseEntRef();
     if (currentToken().getType() == TokenType::IDENT) {
-        ensureSynonymType(currentToken(), "variable");
+        ensureSynonymType("variable");
     }
 
     clause.setSecondParam(currentToken());
@@ -430,7 +430,6 @@ void QueryParser::parseEntRef() {
 // Ensures the correct syntax and processes entity references and expression specifications.
 void QueryParser::parsePatternClause() {
     PatternClause clause;
-    ensureToken(TokenType::PatternKeyword);
     advanceToken();
     // check if it is a syn-assign
     ensureToken(TokenType::IDENT);
@@ -443,7 +442,7 @@ void QueryParser::parsePatternClause() {
     advanceToken();
     parseEntRef();
     if (currentToken().getType() == TokenType::IDENT) {
-        ensureSynonymType(currentToken(), "variable");
+        ensureSynonymType("variable");
     }
 
 
@@ -675,15 +674,16 @@ void QueryParser::parseEntSynonym() {
     }
 }
 
-void QueryParser::ensureSynonymType(Token type, std::string synType) {
-    if (type.getType() != TokenType::IDENT) {
-        if (type.getType() == TokenType::QuoutIDENT || type.getType() == TokenType::Wildcard) {
+void QueryParser::ensureSynonymType(std::string synType) {
+    if (currentToken().getType() != TokenType::IDENT) {
+        if (currentToken().getType() == TokenType::QuoutIDENT || currentToken().getType() == TokenType::Wildcard) {
             return;
         } else {
             throwSemanticError();
         }
     }
-    if (parsingResult.getDeclaredSynonym(type.getValue()) != synType) {
+
+    if (parsingResult.getDeclaredSynonym(currentToken().getValue()) != synType) {
         throwSemanticError();
     }
 }
@@ -756,7 +756,7 @@ bool QueryParser::checkValidStmtNum() {
 
 void QueryParser::parseWithClause() {
     WithClause clause;
-    ensureToken(TokenType::WithKeyword);
+
     clause.setRelationship(currentToken());
     advanceToken();
 
@@ -790,10 +790,7 @@ TokenType QueryParser::parseRef() {
         return TokenType::QuoutIDENT;
     }
     else if (match(TokenType::INTEGER)) {
-        if (checkValidStmtNum()) {
-            return TokenType::INTEGER;
-        }
-        throwSemanticError();
+        return TokenType::INTEGER;
     }
     else {
         parseAttrRef();
@@ -801,6 +798,7 @@ TokenType QueryParser::parseRef() {
     }
 
 }
+
 
 void QueryParser::parseAttrRef() {
     ensureToken(TokenType::IDENT);
