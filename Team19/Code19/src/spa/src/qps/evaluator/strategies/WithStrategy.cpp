@@ -38,49 +38,28 @@ std::shared_ptr<ResultTable> WithStrategy::evaluateQuery(PKBReaderManager& pkbRe
             std::unordered_set<std::string> lhsValue = processParam(firstParam, pkbReaderManager, originalResultTable);
             std::unordered_set<std::string> rhsValue = processParam(secondParam, pkbReaderManager, originalResultTable);
             std::unordered_set<std::string> intersection = findIntersection(lhsValue, rhsValue);
-
-            if (!isQuotedString(firstParam.getValue()) && !isInteger(firstParam.getValue())) {
-                pair<string, string> attributes = extractAttributes(firstParam, pkbReaderManager);
-                string synonym = attributes.first;
-                string attribute = attributes.second;
-                string synonymType = parsingResult.getDeclaredSynonym(synonym);
-                resultTable->insertColumn(synonym);
-                if (isIntegerStored(synonymType, attribute)) {
-                    unordered_set<string> mappedIntersection = mapStringSetToIntSet(pkbReaderManager, intersection, synonymType);
-                    // insert column with value of synonym and rows with the intersection of the two sets
-                    for (string elem : mappedIntersection) {
-                        resultTable->insertNewRow({ {synonym, elem} });
-                    }
-                }
-                else {
-                    for (string elem : intersection) {
-                        resultTable->insertNewRow({ {synonym, elem} });
-                    }
-                }
-                
-                
-            }
-            if (!isQuotedString(secondParam.getValue()) && !isInteger(secondParam.getValue())) {
-                pair<string, string> attributes = extractAttributes(secondParam, pkbReaderManager);
-                string synonym = attributes.first;
-                string attribute = attributes.second;
-                string synonymType = parsingResult.getDeclaredSynonym(synonym);
-                // insert column with value of synonym and rows with the intersection of the two sets
-                if (resultTable->hasColumn(synonym)) {
-                    if (isIntegerStored(synonymType, attribute)) {
-                        unordered_set<string> mappedIntersection = mapStringSetToIntSet(pkbReaderManager, intersection, synonymType);
-                        // insert column with value of synonym and rows with the intersection of the two sets
-                        for (string elem : mappedIntersection) {
-                            resultTable->insertNewRow({ {synonym, elem} });
-                        }
-                    }
-                    else {
-                        for (string elem : intersection) {
-                            resultTable->insertNewRow({ {synonym, elem} });
-                        }
-                    }
+            std::vector<pair<string, string>> rows1;
+            std::vector<pair<string, string>> rows2;
+            rows1 = populateResultTable(resultTable, intersection, firstParam, pkbReaderManager);
+            rows2 = populateResultTable(resultTable, intersection, secondParam, pkbReaderManager);
+            if (rows1.size() != 0 && rows2.size() != 0) {
+                int i = 0;
+                while (i < rows1.size()) {
+                    insertRowToTable(rows1[i], rows2[i], resultTable);
+                    i++;
                 }
             }
+            else if (rows2.size() != 0) {
+                for (pair<string, string> row : rows2) {
+                    insertSingleColRowToTable(row, resultTable);
+				}
+            }
+            else if (rows1.size() != 0) {
+                for (pair<string, string> row : rows1) {
+                    insertSingleColRowToTable(row, resultTable);
+                }
+            }
+             
         }
         return resultTable;
 }
@@ -260,7 +239,7 @@ bool WithStrategy::isIntegerStored(string synyonymType, string attribute)
     return false;
 }
 
-unordered_set<std::string> WithStrategy::mapStringSetToIntSet(PKBReaderManager& pkbReaderManager, unordered_set<string>& stringSet, string& synonymType)
+unordered_set<std::string> WithStrategy::mapStringSetToIntSet(PKBReaderManager& pkbReaderManager, const unordered_set<string>& stringSet, string& synonymType)
 {
     // function that takes in the string set and retrieves all the linked statements for each string within the set
     // and returns a set of integers
@@ -295,6 +274,38 @@ unordered_set<std::string> WithStrategy::mapStringSetToIntSet(PKBReaderManager& 
     unordered_set<string> mappedIntSet;
     convertIntSetToStringSet(intSet, mappedIntSet);
 	return mappedIntSet;
+}
+
+std::vector<pair<string, string>> WithStrategy::populateResultTable(
+    const std::shared_ptr<ResultTable>& resultTable,
+    const std::unordered_set<std::string>& intersection, Token param, PKBReaderManager& pkbReaderManager)
+{
+    std::vector<pair<string, string>> rows;
+    if (!isQuotedString(param.getValue()) && !isInteger(param.getValue())) {
+        
+        pair<string, string> attributes = extractAttributes(param, pkbReaderManager);
+        string synonym = attributes.first;
+        string attribute = attributes.second;
+        string synonymType = parsingResult.getDeclaredSynonym(synonym);
+        if (!resultTable->hasColumn(synonym)) {
+            resultTable->insertColumn(synonym);
+        }
+        if (isIntegerStored(synonymType, attribute)) {
+            unordered_set<string> mappedIntersection = mapStringSetToIntSet(pkbReaderManager, intersection, synonymType);
+            // insert column with value of synonym and rows with the intersection of the two sets
+            for (string elem : mappedIntersection) {
+                rows.push_back(make_pair(synonym, elem));
+            }
+        }
+        else {
+            for (string elem : intersection) {
+                rows.push_back(make_pair(synonym, elem));
+            }
+        }
+
+
+    }
+    return rows;
 }
 
 

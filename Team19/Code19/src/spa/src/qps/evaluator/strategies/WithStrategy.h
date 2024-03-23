@@ -69,6 +69,7 @@ public:
     std::unordered_set<std::string> findIntersection(const std::unordered_set<std::string>& set1, const std::unordered_set<std::string>& set2);
 
     bool isIntegerStored(string synyonymType, string attribute);
-    unordered_set<std::string> mapStringSetToIntSet(PKBReaderManager& pkbReaderManager, unordered_set<string>& stringSet, string& synonymType);
+    unordered_set<std::string> mapStringSetToIntSet(PKBReaderManager& pkbReaderManager, const unordered_set<string>& stringSet, string& synonymType);
+    std::vector<pair<string, string>> populateResultTable(const std::shared_ptr<ResultTable>& resultTable, const std::unordered_set<std::string>& intersection, Token param, PKBReaderManager& pkbReaderManager);
     
 };
