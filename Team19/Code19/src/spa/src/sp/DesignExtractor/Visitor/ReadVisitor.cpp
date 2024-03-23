@@ -15,9 +15,10 @@ void ReadVisitor::visit() {
 	ReadExtractor readExtractor(this->root, this->pkbWriterManager->getReadWriter());
 	readExtractor.extract();
 
+	ReadVarExtractor readVarExtractor(this->root, this->variableChild, this->pkbWriterManager->getReadVarNameWriter());
+	readVarExtractor.extract();
+
 	VariableVisitor variableVisitor(variableChild, this->pkbWriterManager);
 	variableVisitor.setModifiedContext(this->contexts, this->root);
 	variableVisitor.visit();
-
-	setParents(this->contexts, this->root, this->pkbWriterManager);
 }
