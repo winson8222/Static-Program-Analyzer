@@ -121,7 +121,7 @@ SemanticError
 25 - Get Semantic Error when a Integer is used in call statement
 procedure p;
 Select p such that Calls(p, 1)
-SemanticError
+SyntaxError
 5000
 26 - Get procedures that calls each other
 procedure p, q;
