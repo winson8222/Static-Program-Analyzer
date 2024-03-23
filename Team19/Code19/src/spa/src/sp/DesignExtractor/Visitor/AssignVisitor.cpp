@@ -20,7 +20,6 @@ void AssignVisitor::visit() {
 	handleLHSExtraction(this->lhsExpr);
 	handleRHSExtraction(this->rhsExpr);
 	handleAssignPatternExtraction(this->root, this->lhsExpr, this->rhsExpr);
-	// setParents(this->contexts, this->root, this->pkbWriterManager);
 }
 
 void AssignVisitor::handleAssignExtraction(std::shared_ptr<ASTNode> node) {

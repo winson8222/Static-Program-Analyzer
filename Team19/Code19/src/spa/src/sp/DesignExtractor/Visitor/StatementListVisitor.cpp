@@ -20,7 +20,6 @@ void StatementListVisitor::visit() {
 		statementVisitor->visit();
 		statementVisitor->setParents(this->contexts, statement, this->pkbWriterManager);
 		handleStatementExtraction(statement);
-		// setParents(this->contexts, this->root, this->pkbWriterManager);
 	}
 
 	handleAllFollows();
