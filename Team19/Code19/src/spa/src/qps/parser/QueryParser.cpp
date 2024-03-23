@@ -308,6 +308,9 @@ void QueryParser::parseUsesOrModifies(SuchThatClause& clause) {
         advanceToken();
     } else if (checkIfEnt()) {
         parseEntRef(); // Attempt to parse an entity reference
+        if (currentToken().getType() == TokenType::IDENT) {
+            ensureSynonymType(currentToken(), "procedure");
+        }
         // If parseEntRef succeeds, control continues here
         if (currentSuchThatToken.getType() == TokenType::Uses) {
             currentSuchThatToken.setType(TokenType::UsesP);
@@ -351,6 +354,10 @@ void QueryParser::parseUsesOrModifies(SuchThatClause& clause) {
     }
 
     parseEntRef();
+    if (currentToken().getType() == TokenType::IDENT) {
+        ensureSynonymType(currentToken(), "variable");
+    }
+
     clause.setSecondParam(currentToken());
     advanceToken();
     ensureToken(TokenType::Rparenthesis);
@@ -406,7 +413,7 @@ void QueryParser::parseStmtRef() {
 // Handles different types of entity references like quoted identifier, wildcard, or synonym.
 void QueryParser::parseEntRef() {
     if (!match(TokenType::QuoutIDENT) && !match(TokenType::Wildcard) && !match(TokenType::IDENT)) {
-        throwSemanticError();
+        throwGrammarError();
     }
     if (match(TokenType::QuoutIDENT) || match(TokenType::Wildcard)) {
         return;
@@ -435,7 +442,10 @@ void QueryParser::parsePatternClause() {
 
     advanceToken();
     parseEntRef();
-    ensureSynonymType(currentToken(), "variable");
+    if (currentToken().getType() == TokenType::IDENT) {
+        ensureSynonymType(currentToken(), "variable");
+    }
+
 
     clause.setFirstParam(currentToken());
 
@@ -737,7 +747,7 @@ void QueryParser::ensureNextBlank() {
 }
 
 bool QueryParser::checkValidStmtNum() {
-    if (stoi(currentToken().getValue()) < 0) {
+    if (stoi(currentToken().getValue()) <= 0) {
         return false;
     }
     return true;

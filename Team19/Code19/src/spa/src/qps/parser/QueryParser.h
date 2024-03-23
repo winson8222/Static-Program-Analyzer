@@ -41,6 +41,11 @@ private:
             {TokenType::Affects, {"stmt", "assign", "while", "if", "print", "read", "call"}},
     };
 
+    const std::unordered_map<TokenType, std::unordered_set<std::string>> validEntSynonymsMap = {
+            {TokenType::Uses, {"procedure"}},
+            {TokenType::Modifies, {"procedure"}},
+    };
+
     const std::unordered_map<string, std::unordered_set<std::string>> validAttrMap = {
             {"stmt", {"stmt#"}},
             {"assign", {"stmt#"}},
