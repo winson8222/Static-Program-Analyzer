@@ -4,6 +4,7 @@
 #include <string>    // For std::string
 #include <map>
 #include <unordered_map>
+#include <functional>
 
 using namespace std;
 

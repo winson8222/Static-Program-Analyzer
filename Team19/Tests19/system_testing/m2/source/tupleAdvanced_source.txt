@@ -1,0 +1,29 @@
+procedure Main {
+    x = 5;
+    call Compute;
+}
+
+procedure Compute {
+    y = x + 10;
+    if (y > 10) then {
+        z = y + 2;
+        call Process;} else {
+        z = x - 2;}
+    call Finalize;
+}
+
+procedure Process {
+    i = z + 3;
+    while (i > 0) {
+        i = i - 1;
+        call Helper;}
+}
+
+procedure Finalize {
+    a = x + y + z;
+    print a;
+}
+
+procedure Helper {
+    b = i * 2;
+}

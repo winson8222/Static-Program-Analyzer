@@ -5,7 +5,8 @@
 #include <string>
 #include <vector>
 #include <regex>
-#include <unordered_map>
+#include <map>
+#include <functional>
 
 using namespace std;
 
@@ -22,7 +23,7 @@ public:
 
     string removeSpaces(string str);
 
-    unordered_map<std::string, TokenType> clauseTypeMap = {
+    map<std::string, TokenType> clauseTypeMap = {
             {"Follows", TokenType::Follows},
             {"Follows*", TokenType::FollowsT},
             {"Parent", TokenType::Parent},
@@ -36,7 +37,7 @@ public:
             {"Affects", TokenType::Affects},
     };
 
-    unordered_map<std::string, TokenType> signMap = {
+    map<std::string, TokenType> signMap = {
             {"(", TokenType::Lparenthesis},
             {")", TokenType::Rparenthesis},
             {";", TokenType::Semicolon},
@@ -48,7 +49,8 @@ public:
             // Add other mappings as necessary...
     };
 
-    const unordered_map<std::string, std::function<TokenType()>> tokenFunctionMap = {
+
+    const map<std::string, std::function<TokenType()>> tokenFunctionMap = {
             {"Select", [this]() -> TokenType {
                 return TokenType::SelectKeyword;
             }},
