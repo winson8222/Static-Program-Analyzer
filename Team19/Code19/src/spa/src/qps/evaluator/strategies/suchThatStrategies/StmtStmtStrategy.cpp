@@ -36,9 +36,10 @@ void StmtStmtStrategy::setTrueIfRelationShipExist(const Token &firstParam, const
 
 void StmtStmtStrategy::insertRowsWithTwoCols(const Token &firstParam, const Token &secondParam,std::shared_ptr<IRelationshipReader<int ,int>> reader,
                            const ParsingResult &parsingResult, std::shared_ptr<ResultTable> resultTable, PKBReaderManager &pkbReaderManager) {
-    string firstStatementType = parsingResult.getDeclaredSynonyms().at(firstParam.getValue());
-    string secondStatementType = parsingResult.getDeclaredSynonyms().at(secondParam.getValue());
-
+    string firstParamValue = firstParam.getValue();
+    string secondParamValue = secondParam.getValue();
+    const string& firstStatementType = parsingResult.getRequiredSynonymType(firstParamValue);
+    const string& secondStatementType = parsingResult.getRequiredSynonymType(secondParamValue);
     // Retrieve the relationships
     unordered_set<int> filteredParents;
     const unordered_set<int>& parents = reader->getKeys();
