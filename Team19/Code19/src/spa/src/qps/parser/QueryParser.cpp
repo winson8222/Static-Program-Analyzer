@@ -326,25 +326,6 @@ void QueryParser::parseUsesOrModifies(SuchThatClause& clause) {
     }
 
 
-//
-//    try {
-//        parseStmtRef(); // Attempt to parse a statement reference
-//        // If parseStmtRef succeeds, control continues here
-//
-//    }
-//    catch (const std::exception& e) { // If parseStmtRef fails, it will enter this catch block
-//        try {
-//
-//        }
-//        catch (const std::exception& e) {
-//            // If both parseStmtRef and parseEntRef fail, it will enter this catch block
-//            throwGrammarError(); // Throws a grammar error if both parsing attempts fail
-//        }
-//    }
-
-
-
-
 
     if (match(TokenType::Comma)) {
         advanceToken();

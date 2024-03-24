@@ -86,7 +86,7 @@ void AssignPatternStrategy::processWildcard(ParsingResult parsingResult, std::sh
     } else if (this->secondParam.getType() == TokenType::PartialExpressionSpec) {
         allStmts = assignPatternReader->getStatementNumbersWithPartialRHS(secondParamValue);
     } else {
-        allStmts = assignPatternReader->getAllStatementNumbers();
+        allStmts = assignReader->getAllAssigns();
     }
 
     std::unordered_set<string> allStmtInString;
