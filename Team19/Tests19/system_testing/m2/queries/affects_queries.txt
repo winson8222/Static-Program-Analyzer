@@ -3,53 +3,108 @@ stmt s;
 Select s such that Affects (1, s)
 none
 5000
-2 - Check spelling errors 1
+2 - Check boolean for affects in statement 1
+stmt s;
+Select BOOLEAN such that Affects(1, s)
+FALSE
+5000
+3 - Check spelling errors 1
 stmt s; 
 Select s.stmt such that Affects (1, s)
 SyntaxError
 5000
-3 - Check spelling errors 2
+4 - Check spelling errors 2
 stmt s
 Select s.stmt# such that Affects (1, s)
 SyntaxError
 5000
-4 - Check spelling errors 3
+5 - Check spelling errors 3
 stmt s;
 Select s/stmt# such that Affects (1, s)
 SyntaxError
 5000
-5 - Check spelling errors 4
+6 - Check spelling errors 4
 stmt s;
 Select s.stmt# such that Affect (1, s)
 SyntaxError
 5000
-6 - Check affects relationship for Gamma function
+7 - Check spelling errors 5
+stmt s;
+Select s such that Affects(1,s);
+SyntaxError
+5000
+8 - Check affects relationship for Gamma function
 stmt s;
 Select s.stmt# such that Affects (17, s)
 none
 5000
-7 - Checks affects results for statement number larger than number of statements in program
+9 - Checks affects results for statement number larger than number of statements in program
 stmt s;
 Select s.stmt# such that Affects (100 , s)
 none
 5000
-8 - Checks affects results for read statement
+10 - Checks affects results for read statement
 stmt s;
 Select s.stmt# such that Affects (15, s)
 none
 5000
-9 - Checks affects results for print statement 
+11 - Checks affects results for print statement 
 stmt s;
 Select s.stmt# such that Affects (16, s)
 none
 5000
-10 - Checks affect results after modified by read statement.
+12 - Checks affect results after modified by read statement.
 assign a;
 Select a such that Affects (14, a)
 none
 5000
-11 - Check affects relationship for statement
+13 - Check affects relationship for statement
 stmt s;
 Select s such that Affects (6, s)
 6, 8, 10
+5000
+14 - Check the affects relationship for while
+stmt s;
+Select s such that Affects(s, s)
+5, 6
+5000
+15 - Check error when comparing with number for affects
+stmt s;
+Select s such that Affects(s.stmt#, s)
+SyntaxError
+5000
+16 - Checks the affects relationship for procedure calls
+stmt s;
+Select BOOLEAN such that Affects(18, 21)
+FALSE
+5000
+17 - Checks the and relationship for affects
+stmt s1, s2, s3;
+Select <s1,s2,s3> such that Affects(s1, s2) and Affects(s2, s3)
+9 10 12, 9 6 8, 9 6 10, 5 10 12, 6 6 10, 9 6 6, 6 8 5, 6 8 10, 6 10 12, 6 6 8, 6 6 6, 5 8 5, 5 8 10, 5 9 10, 5 9 6, 5 5 8, 5 5 9, 5 5 5, 5 5 10, 8 5 8, 8 5 9, 8 5 5, 8 5 10, 8 10 12
+5000
+18 - Checks for statement that affects this other statement, which affects itself
+stmt s1, s2, s3;
+Select <s1, s2> such that Affects(s1, s2) and Affects(s2, s1)
+5 5, 6 6, 8 5, 5 8
+5000
+19 - Check for keyword as synonym
+assign Affects;
+Select Affects such that Affects(Affects, Affects)
+5, 6
+5000
+20 - Check affects for wildcard
+
+Select BOOLEAN such that Affects(_, _)
+TRUE
+5000
+21 - Check for left sided wild card 
+
+Select BOOLEAN such that Affects(_, 6)
+TRUE
+5000
+22 - Check for right sided wild card
+
+Select BOOLEAN such that Affects(1, _)
+FALSE
 5000
