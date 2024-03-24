@@ -33,3 +33,34 @@ stmt s, s1; variable v, v1;
 Select <s, s1, v, v1> such that Modifies(s, v)
 1 1 x x, 1 2 x x, 2 1 y x, 2 2 y x, 1 1 x y, 1 2 x y, 2 1 y y, 2 2 y y
 5000
+8 - Find All Variables and Their Modifying Statements
+variable v; stmt s;
+Select <v, s>
+x 1, x 2, y 1, y 2
+5000
+9 - Check Which Statements Follow Each Other
+stmt s1, s2;
+Select <s1, s2> such that Follows(s1, s2)
+1 2
+5000
+10 - Find Variables Used and Modified by Each Statement
+stmt s; variable v;
+Select <s, v> such that Modifies(s, v) and Uses(s, v)
+
+5000
+11 - Verify no statement uses 'x'
+stmt s; variable v;
+Select <s, v> such that Uses(s, "x")
+
+5000
+12 - What is the next statement for each statement
+stmt s1, s2;
+Select <s1, s2> such that Next(s1, s2)
+1 2
+5000
+13 - Cross-join of variables with statements modifying them
+stmt s; variable v, v1;
+Select <s, v, v1> such that Modifies(s, v)
+1 x x, 1 x y, 2 y x, 2 y y
+5000
+

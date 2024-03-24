@@ -6,8 +6,7 @@
 
 class NextStrategy : public StmtStmtStrategy {
 private:
-    std::shared_ptr<NextReader> nextReader;
-    std::shared_ptr<NextTReader> nextTReader;
+    std::shared_ptr<IRelationshipReader<int ,int>> reader;
     std::shared_ptr<StatementReader> statementReader;
     Token firstParam;
     Token secondParam;

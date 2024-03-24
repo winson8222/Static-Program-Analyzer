@@ -31,18 +31,7 @@ void IfPatternStrategy::processSynonyms(ParsingResult parsingResult, std::shared
     string firstColName = this->relationShip.getValue();
     string secondColName = this->firstParam.getValue();
     insertColsToTable(this->relationShip, this->firstParam, resultTable);
-    std::unordered_set<int> allStmts;
-
-
-    allStmts = ifPatternReader->getAllStatementNumbersOfIfControlVariables();
-    for (auto stmt : allStmts) {
-        std::unordered_set<std::string> foundVariables = ifPatternReader->getControlVariablesOfIfStatement(stmt);
-        for (auto var : foundVariables) {
-            pair<string, string> col1 = make_pair(firstParam.getValue(), var);
-            pair<string, string> col2 = make_pair(relationShip.getValue(), to_string(stmt));
-            insertRowToTable(col1, col2, resultTable);
-        }
-    }
+    insertRowsWithTwoCols(this->firstParam, this->relationShip, parsingResult ,ifPatternReader, resultTable);
 }
 
 void IfPatternStrategy::processQuotedIdent(ParsingResult parsingResult, std::shared_ptr<ResultTable> result) {
@@ -54,10 +43,8 @@ void IfPatternStrategy::processQuotedIdent(ParsingResult parsingResult, std::sha
     firstParamValue = extractQuotedExpression(firstParam);
 
 //    secondParamValue = ShuntingYard::convertToPostfix(secondParamValue);
-    allStmts = ifPatternReader->getStatementNumbersOfIfControlVariable(firstParamValue);
-    std::unordered_set<string> allStmtInString;
-    convertIntSetToStringSet(allStmts, allStmtInString);
-    insertRowsWithSingleColumn(firstColName, allStmtInString, result);
+    allStmts = ifPatternReader->getStatementNumbersWithControlPattern(firstParamValue);
+    insertStmtRowsWithSingleCol(allStmts, result, firstColName);
 }
 
 
@@ -65,8 +52,6 @@ void IfPatternStrategy::processWildcard(ParsingResult parsingResult, std::shared
     string firstColName = this->relationShip.getValue();
     insertSingleColToTable(this->relationShip, result);
     std::unordered_set<int> allStmts;
-    allStmts = ifReader->getAllIfs();
-    std::unordered_set<string> allStmtInString;
-    convertIntSetToStringSet(allStmts, allStmtInString);
-    insertRowsWithSingleColumn(firstColName, allStmtInString, result);
+    allStmts = ifReader->getAllEntities();
+    insertStmtRowsWithSingleCol(allStmts, result, firstColName);
 }
