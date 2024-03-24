@@ -1,0 +1,40 @@
+1 - Recursive procedure calling
+procedure Calls, Next, Affects;
+Select <Calls, Next, Affects> such that Calls(Calls, Next) and Calls(Next, Affects)
+alpha gamma beta
+5000
+2 - And clause on with
+procedure p1, p2, p3;
+Select <p1,p2,p3> such that Calls(p1, p2) and Calls(p2, p3) with p1.procName = "alpha" and p3.procName = "gamma"
+alpha gamma beta
+5000
+3 - Follows clause on and
+stmt s1, s2;
+Select s2 such that Follows(s1, s2) and Follows(s2, _)
+none
+5000
+4 - Follows and Affects
+stmt s1, s2;
+Select s2 such that Affects(s1, s2) and Follows(s2, _) and Affects(s2, s1)
+5, 6
+5000
+5 - Testing for duplicate With Clause
+procedure p1;
+Select p1 such that Calls(p1, "beta") with p1.procName = "alpha" and p1.procName = "alpha" and p1.procName = "alpha"
+alpha
+5000
+6 - Testing for duplicate Such That Clause
+stmt s;
+Select s such that Follows(1, s) and Follows(1, s) and Follows(1, s)
+2
+5000
+7 - Testing for duplicate patterns Clause
+assign asg;
+Select asg pattern asg("         x          ", "1") and asg("x", "1")
+1
+5000
+8 - Testing for keyword used as variable name, same logic as 7
+assign pattern;
+Select pattern pattern pattern("         x          ", "1") and pattern("x", "1")
+1
+5000

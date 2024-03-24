@@ -820,3 +820,40 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/17 Select AttrRe
     }
 
 }
+
+TEST_CASE("Select Boolean Follows(1, _)") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<FollowsWriter> followWriter = pkbWriterManager->getFollowsWriter();
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    followWriter->addFollows(1, 2);
+    followWriter->addFollows(2, 3);
+
+
+
+    std::vector<Token> tokens = {
+            Token(TokenType::SelectKeyword, "Select"),
+            Token(TokenType::BooleanKeyword, "BOOLEAN"),
+            Token(TokenType::SuchKeyword, "such"),
+            Token(TokenType::ThatKeyword, "that"),
+            Token(TokenType::Follows, "Follows"),
+            Token(TokenType::Lparenthesis, "("),
+            Token(TokenType::INTEGER, "1"),
+            Token(TokenType::Comma, ","),
+            Token(TokenType::Wildcard, "_"),
+            Token(TokenType::Rparenthesis, ")")
+
+    };
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ "TRUE" });
+
+}
