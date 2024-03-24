@@ -50,6 +50,7 @@ public:
     static const bool isAttrRef(const string &attrRef);
 
 
+
 private:
     unordered_map<string, string> declaredSynonyms;
     vector<string> requiredSynonyms;

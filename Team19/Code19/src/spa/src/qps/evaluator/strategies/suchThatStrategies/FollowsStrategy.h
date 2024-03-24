@@ -14,8 +14,7 @@
 
 class FollowsStrategy : public StmtStmtStrategy {
 private:
-    std::shared_ptr<FollowsReader> followsReader; ///< Reader to access Follows relationships.
-    std::shared_ptr<FollowsTReader> followsTReader; ///< Reader to access transitive Follows relationships.
+    std::shared_ptr<IRelationshipReader<int ,int>> reader; ///< Reader to access Follows relationship information.
     std::shared_ptr<StatementReader> statementReader; ///< Reader to access statement-related information.
     Token firstParam;
     Token secondParam;
