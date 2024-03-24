@@ -56,6 +56,9 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     tokenType = determineBooleanToken(tokenStr);
     if (tokenType != TokenType::SyntaxError) return tokenType;
 
+    tokenType = determineAttrNameToken(tokenStr);
+    if (tokenType != TokenType::SyntaxError) return tokenType;
+
     tokenType = determineQuoutToken(tokenStr);
     if (tokenType != TokenType::SyntaxError) return tokenType;
 
@@ -189,7 +192,16 @@ TokenType Tokenizer::determineRelRefToken(const string& tokenStr) {
     return TokenType::SyntaxError;
 }
 
-
+TokenType Tokenizer::determineAttrNameToken(const string& tokenStr) {
+    if (regex_match(tokenStr, regex("^(procName|varName|value|stmt#)$"))) {
+        if (!tokens.empty() && (isSynonym() || tokens.back().getType() == TokenType::SelectKeyword)) {
+            return TokenType::IDENT;
+        } else {
+            return TokenType::AttrName;
+        }
+    }
+    return TokenType::SyntaxError;
+}
 
 // Check if the current token is a declaration token
 bool Tokenizer::checkIfDeclaration() {

@@ -49,6 +49,7 @@ private:
     TokenType determineBooleanToken(const string& tokenStr);
     TokenType determineDesignEntityToken(const string& tokenStr);
     TokenType determineRelRefToken(const string& tokenStr);
+    TokenType determineAttrNameToken(const string& tokenStr);
 
     bool checkIfDeclaration();
     bool isSynonym();
