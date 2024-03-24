@@ -18,12 +18,18 @@ std::shared_ptr<ResultTable> FollowsStrategy::evaluateQuery(PKBReaderManager& pk
     auto resultTable = std::make_shared<ResultTable>();
 
     // Initializing PKB readers for Follows relationships
-    followsReader = pkbReaderManager.getFollowsReader();
-    followsTReader = pkbReaderManager.getFollowsTReader();
+
     const SuchThatClause* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
     this->firstParam = suchClause->getFirstParam();
     this->secondParam = suchClause->getSecondParam();
     this->variant = suchClause->getRelationship().getValue();
+
+    if (variant == "Follows") {
+        reader = pkbReaderManager.getFollowsReader();
+    } else {
+        reader = pkbReaderManager.getFollowsTReader();
+    }
+
 
     // Handling different parameter types for the Follows relationship
     if (isBothParamsSynonym(firstParam, secondParam)) {
@@ -55,12 +61,12 @@ void FollowsStrategy::processSynonyms(std::shared_ptr<ResultTable> resultTable,
     string firstStatementType = parsingResult.getDeclaredSynonym(firstParam.getValue());
     string secondStatementType = parsingResult.getDeclaredSynonym(secondParam.getValue());
     unordered_set<int> filteredPreFollows;
-    unordered_set<int> allPreFollowsStmts = variant == "Follows" ? followsReader->getAllPreFollows() : followsTReader->getAllPreFollowsT();
+    unordered_set<int> allPreFollowsStmts = reader->getKeys();
     filteredPreFollows = getFilteredStmtsNumByType(allPreFollowsStmts, firstStatementType, pkbReaderManager);
 
     for (int stmt1 : filteredPreFollows) {
         unordered_set<int> filteredPostFollows;
-        auto postFollows = variant == "Follows" ? followsReader->getPostFollows(stmt1) : followsTReader->getPostFollowsT(stmt1);
+        auto postFollows = reader->getRelationshipsByKey(stmt1);
         filteredPostFollows = getFilteredStmtsNumByType(postFollows, secondStatementType, pkbReaderManager);
         for (int stmt2 : filteredPostFollows) {
             // if the two synonyms are the same, add only one col and the 2 value must be the same
@@ -90,17 +96,13 @@ void FollowsStrategy::processFirstParam(
     if (secondParam.getType() == TokenType::INTEGER) {
         int stmtNum = std::stoi(secondParam.getValue());
 
-        const auto& follows = (variant == "Follows") ?
-                              followsReader->getPreFollows(stmtNum) :
-                              followsTReader->getPreFollowsT(stmtNum);
+        const auto& follows = reader->getRelationshipsByValue(stmtNum);
         filteredPreFollows = getFilteredStmtsNumByType(follows, firstStatementType, pkbReaderManager);
         for (int stmt : filteredPreFollows) {
             resultTable->insertNewRow({{col1, std::to_string(stmt)}});
         }
     } else if (secondParam.getType() == TokenType::Wildcard) {
-        const auto& follows = (variant == "Follows") ?
-                              followsReader->getAllPreFollows() :
-                              followsTReader->getAllPreFollowsT();
+        const auto& follows = reader->getKeys();
         filteredPreFollows = getFilteredStmtsNumByType(follows, firstStatementType, pkbReaderManager);
         for (int stmt : filteredPreFollows) {
             resultTable->insertNewRow({{col1, std::to_string(stmt)}});
@@ -126,9 +128,7 @@ void FollowsStrategy::processSecondParam(
     unordered_set<int> filteredPostFollows;
     if (firstParam.getType() == TokenType::INTEGER) {
         int stmtNum = std::stoi(firstParam.getValue());
-        const auto& follows = (variant == "Follows") ?
-                              followsReader->getPostFollows(stmtNum) :
-                              followsTReader->getPostFollowsT(stmtNum);
+        const auto& follows = reader->getRelationshipsByKey(stmtNum);
 
         filteredPostFollows = getFilteredStmtsNumByType(follows, secondStatementType, pkbReaderManager);
 
@@ -136,9 +136,7 @@ void FollowsStrategy::processSecondParam(
             resultTable->insertNewRow({{col2, std::to_string(stmt)}});
         }
     } else if (firstParam.getType() == TokenType::Wildcard) {
-        const auto& follows = (variant == "Follows") ?
-                              followsReader->getAllPostFollows() :
-                              followsTReader->getAllPostFollowsT();
+        const auto& follows = reader->getValues();
 
         filteredPostFollows = getFilteredStmtsNumByType(follows, secondStatementType, pkbReaderManager);
 
@@ -158,16 +156,14 @@ void FollowsStrategy::processSecondParam(
  */
 void FollowsStrategy::processIntegerParams(std::shared_ptr<ResultTable> resultTable) {
     if (isBothParamsWildcard(firstParam, secondParam)) {
-        bool hasRelationship = (variant == "Follows") ?
-                               !followsReader->isEmpty():
-                               !followsTReader->isEmpty();
+        bool hasRelationship = !reader->isEmpty();
         if (hasRelationship) {
             resultTable->setAsTruthTable();
         }
         return;
     } else {
-        variant == "Follows" ?  setTrueIfRelationShipExist(firstParam, secondParam, followsReader, resultTable) :
-                                setTrueIfRelationShipExist(firstParam, secondParam, followsTReader, resultTable);
+        setTrueIfRelationShipExist(firstParam, secondParam, reader, resultTable);
+
 
     }
 }

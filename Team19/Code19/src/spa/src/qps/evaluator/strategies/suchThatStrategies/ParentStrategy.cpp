@@ -18,14 +18,17 @@ std::shared_ptr<ResultTable> ParentStrategy::evaluateQuery(PKBReaderManager& pkb
     }
     
     // Obtain readers from PKBReaderManager
-    this->parentReader = pkbReaderManager.getParentReader();
-    this->parentTTReader = pkbReaderManager.getParentTReader();
     this->statementReader = pkbReaderManager.getStatementReader();
 
     const SuchThatClause* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
     this->firstParam = suchClause->getFirstParam();
     this->secondParam = suchClause->getSecondParam();
     this->variant   = suchClause->getRelationship().getValue();
+    if (this->variant == "Parent") {
+        reader = pkbReaderManager.getParentReader();
+    } else {
+        reader = pkbReaderManager.getParentTReader();
+    }
 
     if (this->firstParam.getType() == TokenType::IDENT && this->secondParam.getType() == TokenType::IDENT) {
         processSynonyms(resultTable, parsingResult, pkbReaderManager);
@@ -55,17 +58,13 @@ void ParentStrategy::processSynonyms(std::shared_ptr<ResultTable> resultTable,
 
     // Retrieve the relationships
     unordered_set<int> filteredParents;
-    const unordered_set<int>& parents = (this->variant  == "Parent") ?
-                                        parentReader->getAllParents() :
-                                        parentTTReader->getAllParentTs();
+    const unordered_set<int>& parents = reader->getKeys();
 
     filteredParents = getFilteredStmtsNumByType(parents, firstStatementType, pkbReaderManager);
     // Iterate through the preFollows set and find corresponding postFollows
     for (int stmt1 : filteredParents) {
         unordered_set<int> filteredChildren;
-        unordered_set<int> children = (this->variant    == "Parent") ?
-            parentReader->getChild(stmt1) :
-            parentTTReader->getChildT(stmt1);
+        unordered_set<int> children = reader->getRelationshipsByKey(stmt1);
 
         filteredChildren = getFilteredStmtsNumByType(children, secondStatementType, pkbReaderManager);
         // For each stmt1, iterate through all its postFollows
@@ -89,9 +88,7 @@ void ParentStrategy::processFirstParam(
     unordered_set<int> filteredParents;
     if (secondParam.getType() == TokenType::INTEGER) {
         int stmtNum = stoi(secondParam.getValue());
-        const unordered_set<int>& parents = (this->variant  == "Parent") ?
-                                            parentReader->getParent(stmtNum) :
-                                            parentTTReader->getParentT(stmtNum);
+        const unordered_set<int>& parents = reader->getRelationshipsByValue(stmtNum);
         filteredParents = getFilteredStmtsNumByType(parents, firstStatementType, pkbReaderManager);
         for (int stmt : filteredParents) {
             unordered_map<string, string> row;
@@ -100,9 +97,7 @@ void ParentStrategy::processFirstParam(
         }
     }
     else if (secondParam.getType() == TokenType::Wildcard) {
-        const unordered_set<int>& parents = (this->variant  == "Parent") ?
-                                            parentReader->getAllParents() :
-                                            parentTTReader->getAllParentTs();
+        const unordered_set<int>& parents = reader->getKeys();
         filteredParents = getFilteredStmtsNumByType(parents, firstStatementType, pkbReaderManager);
         for (int stmt : filteredParents) {
             unordered_map<string, string> row;
@@ -121,9 +116,7 @@ void ParentStrategy::processSecondParam(
     unordered_set<int> filteredParents;
     if (firstParam.getType() == TokenType::INTEGER) {
         int stmtNum = stoi(firstParam.getValue());
-        const unordered_set<int>& parents = (this->variant  == "Parent") ?
-                                            parentReader->getChild(stmtNum) :
-                                            parentTTReader->getChildT(stmtNum);
+        const unordered_set<int>& parents = reader->getRelationshipsByKey(stmtNum);
         filteredParents = getFilteredStmtsNumByType(parents, secondStatementType, pkbReaderManager);
 
         for (int stmt : filteredParents) {
@@ -133,9 +126,7 @@ void ParentStrategy::processSecondParam(
         }
     }
     else if (firstParam.getType() == TokenType::Wildcard) {
-        const unordered_set<int>& parents = (this->variant  == "Parent") ?
-                                            parentReader->getAllChildren() :
-                                            parentTTReader->getAllChildrenT();
+        const unordered_set<int>& parents = reader->getValues();
         filteredParents = getFilteredStmtsNumByType(parents, secondStatementType, pkbReaderManager);
         for (int stmt : filteredParents) {
             unordered_map<string, string> row;
@@ -151,15 +142,12 @@ void ParentStrategy::processIntegerParams(
             std::shared_ptr<ResultTable> resultTable) {
     // Implementation for processing when both parameters are integers
     if (isBothParamsWildcard(firstParam, secondParam)) {
-        bool hasRelationship = (variant == "Parent") ?
-                               !parentReader->isEmpty():
-                               !parentTTReader->isEmpty();
+        bool hasRelationship = !reader->isEmpty();
         if (hasRelationship) {
             resultTable->setAsTruthTable();
         }
         return;
     } else {
-        variant == "Parent" ?  setTrueIfRelationShipExist(firstParam, secondParam, parentReader, resultTable) :
-        setTrueIfRelationShipExist(firstParam, secondParam, parentTTReader, resultTable);
+        setTrueIfRelationShipExist(firstParam, secondParam, reader, resultTable);
     }
 }

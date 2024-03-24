@@ -9,8 +9,7 @@ using namespace std;
 
 class ParentStrategy : public StmtStmtStrategy {
 private:
-    std::shared_ptr<ParentReader> parentReader;
-    std::shared_ptr<ParentTReader> parentTTReader;
+    std::shared_ptr<IRelationshipReader<int ,int>> reader;
     std::shared_ptr<StatementReader> statementReader;
     Token firstParam;
     Token secondParam;
