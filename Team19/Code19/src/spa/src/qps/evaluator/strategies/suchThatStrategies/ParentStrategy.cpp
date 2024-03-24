@@ -18,14 +18,17 @@ std::shared_ptr<ResultTable> ParentStrategy::evaluateQuery(PKBReaderManager& pkb
     }
     
     // Obtain readers from PKBReaderManager
-    this->parentReader = pkbReaderManager.getParentReader();
-    this->parentTTReader = pkbReaderManager.getParentTReader();
     this->statementReader = pkbReaderManager.getStatementReader();
 
     const SuchThatClause* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
     this->firstParam = suchClause->getFirstParam();
     this->secondParam = suchClause->getSecondParam();
     this->variant   = suchClause->getRelationship().getValue();
+    if (this->variant == "Parent") {
+        reader = pkbReaderManager.getParentReader();
+    } else {
+        reader = pkbReaderManager.getParentTReader();
+    }
 
     if (this->firstParam.getType() == TokenType::IDENT && this->secondParam.getType() == TokenType::IDENT) {
         processSynonyms(resultTable, parsingResult, pkbReaderManager);
@@ -35,14 +38,6 @@ std::shared_ptr<ResultTable> ParentStrategy::evaluateQuery(PKBReaderManager& pkb
     }
     else if (this->secondParam.getType() == TokenType::IDENT) {
         processSecondParam(resultTable, parsingResult, pkbReaderManager);
-    }
-    else if (isBothParamsWildcard(this->firstParam, this->secondParam)) {
-        bool hasRelationship = (variant == "Parent") ?
-                               !parentReader->isEmpty():
-                               !parentTTReader->isEmpty();
-        if (hasRelationship) {
-            resultTable->setAsTruthTable();
-        }
     }
     else {
         processIntegerParams(resultTable);
@@ -58,32 +53,8 @@ void ParentStrategy::processSynonyms(std::shared_ptr<ResultTable> resultTable,
 {
     // Implementation for processing when both parameters are synonyms
     insertColsToTable(firstParam, secondParam, resultTable);
-    string firstStatementType = parsingResult.getDeclaredSynonyms().at(firstParam.getValue());
-    string secondStatementType = parsingResult.getDeclaredSynonyms().at(secondParam.getValue());
+    insertRowsWithTwoCols(firstParam,secondParam,reader, parsingResult, resultTable, pkbReaderManager);
 
-    // Retrieve the relationships
-    unordered_set<int> filteredParents;
-    const unordered_set<int>& parents = (this->variant  == "Parent") ?
-                                        parentReader->getAllParents() :
-                                        parentTTReader->getAllParentTs();
-
-    filteredParents = getFilteredStmtsNumByType(parents, firstStatementType, pkbReaderManager);
-    // Iterate through the preFollows set and find corresponding postFollows
-    for (int stmt1 : filteredParents) {
-        unordered_set<int> filteredChildren;
-        unordered_set<int> children = (this->variant    == "Parent") ?
-            parentReader->getChild(stmt1) :
-            parentTTReader->getChildT(stmt1);
-
-        filteredChildren = getFilteredStmtsNumByType(children, secondStatementType, pkbReaderManager);
-        // For each stmt1, iterate through all its postFollows
-        for (int stmt2 : filteredChildren) {
-            pair<string, string> col1Pair = make_pair<string, string>(firstParam.getValue(), to_string(stmt1));
-            pair<string, string> col2Pair = make_pair<string, string>(secondParam.getValue(), to_string(stmt2));
-            insertRowToTable(col1Pair, col2Pair, resultTable);
-
-        }
-    }
 }
 
 // Additional helper methods for readability
@@ -95,29 +66,17 @@ void ParentStrategy::processFirstParam(
     resultTable->insertAllColumns({ col1 });
 
     unordered_set<int> filteredParents;
+    unordered_set<int> parents;
     if (secondParam.getType() == TokenType::INTEGER) {
         int stmtNum = stoi(secondParam.getValue());
-        const unordered_set<int>& parents = (this->variant  == "Parent") ?
-                                            parentReader->getParent(stmtNum) :
-                                            parentTTReader->getParentT(stmtNum);
-        filteredParents = getFilteredStmtsNumByType(parents, firstStatementType, pkbReaderManager);
-        for (int stmt : filteredParents) {
-            unordered_map<string, string> row;
-            row[col1] = to_string(stmt);
-            resultTable->insertNewRow(row);
-        }
+        parents = reader->getRelationshipsByValue(stmtNum);
     }
     else if (secondParam.getType() == TokenType::Wildcard) {
-        const unordered_set<int>& parents = (this->variant  == "Parent") ?
-                                            parentReader->getAllParents() :
-                                            parentTTReader->getAllParentTs();
-        filteredParents = getFilteredStmtsNumByType(parents, firstStatementType, pkbReaderManager);
-        for (int stmt : filteredParents) {
-            unordered_map<string, string> row;
-            row[col1] = to_string(stmt);
-            resultTable->insertNewRow(row);
-        }
+        parents = reader->getKeys();
     }
+
+    filteredParents = getFilteredStmtsNumByType(parents, firstStatementType, pkbReaderManager);
+    insertStmtRowsWithSingleCol(filteredParents, resultTable, col1);
 }
 
 void ParentStrategy::processSecondParam(
@@ -126,31 +85,18 @@ void ParentStrategy::processSecondParam(
     string col2 = secondParam.getValue();
     string secondStatementType = parsingResult.getDeclaredSynonyms().at(col2);
     resultTable->insertAllColumns({ col2 });
+    unordered_set<int> parents;
     unordered_set<int> filteredParents;
     if (firstParam.getType() == TokenType::INTEGER) {
         int stmtNum = stoi(firstParam.getValue());
-        const unordered_set<int>& parents = (this->variant  == "Parent") ?
-                                            parentReader->getChild(stmtNum) :
-                                            parentTTReader->getChildT(stmtNum);
-        filteredParents = getFilteredStmtsNumByType(parents, secondStatementType, pkbReaderManager);
-
-        for (int stmt : filteredParents) {
-            unordered_map<string, string> row;
-            row[col2] = to_string(stmt);
-            resultTable->insertNewRow(row);
-        }
+        parents = reader->getRelationshipsByKey(stmtNum);
     }
     else if (firstParam.getType() == TokenType::Wildcard) {
-        const unordered_set<int>& parents = (this->variant  == "Parent") ?
-                                            parentReader->getAllChildren() :
-                                            parentTTReader->getAllChildrenT();
-        filteredParents = getFilteredStmtsNumByType(parents, secondStatementType, pkbReaderManager);
-        for (int stmt : filteredParents) {
-            unordered_map<string, string> row;
-            row[col2] = to_string(stmt);
-            resultTable->insertNewRow(row);
-        }
+        parents = reader->getValues();
     }
+
+    filteredParents = getFilteredStmtsNumByType(parents, secondStatementType, pkbReaderManager);
+    insertStmtRowsWithSingleCol(filteredParents, resultTable, col2);
 }
 
 
@@ -159,15 +105,12 @@ void ParentStrategy::processIntegerParams(
             std::shared_ptr<ResultTable> resultTable) {
     // Implementation for processing when both parameters are integers
     if (isBothParamsWildcard(firstParam, secondParam)) {
-        bool hasRelationship = (variant == "Parent") ?
-                               !parentReader->isEmpty():
-                               !parentTTReader->isEmpty();
+        bool hasRelationship = !reader->isEmpty();
         if (hasRelationship) {
             resultTable->setAsTruthTable();
         }
         return;
     } else {
-        variant == "Parent" ?  setTrueIfRelationShipExist(firstParam, secondParam, parentReader, resultTable) :
-        setTrueIfRelationShipExist(firstParam, secondParam, parentTTReader, resultTable);
+        setTrueIfRelationShipExist(firstParam, secondParam, reader, resultTable);
     }
 }
