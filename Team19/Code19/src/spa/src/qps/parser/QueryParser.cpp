@@ -452,17 +452,20 @@ void QueryParser::parsePatternClause() {
 
 void QueryParser::ensureCorrectPatternParams(PatternClause &clause) {
     string patternType = parsingResult.getPatternClauseType(clause);
+    TokenType secondParamType = clause.getSecondParam().getType();
+    TokenType thirdParamType = clause.getThirdParam().getType();
+    string thirdParamValue = clause.getThirdParam().getValue();
     if (patternType == "if") {
-        if (clause.getSecondParam().getType() != TokenType::Wildcard || clause.getThirdParam().getType() != TokenType::Wildcard) {
+        if (secondParamType != TokenType::Wildcard || thirdParamType != TokenType::Wildcard) {
             throwSemanticError();
         }
     } else if (patternType == "while") {
         // if third param exist its a semantic error
-        if (clause.getSecondParam().getType() != TokenType::Wildcard || !clause.getThirdParam().getValue().empty() ) {
+        if (secondParamType != TokenType::Wildcard || !thirdParamValue.empty() ) {
             throwSemanticError();
         }
     } else if (patternType == "assign") {
-        if (!clause.getThirdParam().getValue().empty()) {
+        if (!thirdParamValue.empty()) {
             throwSemanticError();
         }
     } else {
