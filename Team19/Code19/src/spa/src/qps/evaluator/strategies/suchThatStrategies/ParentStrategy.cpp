@@ -66,17 +66,17 @@ void ParentStrategy::processFirstParam(
     resultTable->insertAllColumns({ col1 });
 
     unordered_set<int> filteredParents;
+    unordered_set<int> parents;
     if (secondParam.getType() == TokenType::INTEGER) {
         int stmtNum = stoi(secondParam.getValue());
-        const unordered_set<int>& parents = reader->getRelationshipsByValue(stmtNum);
-        filteredParents = getFilteredStmtsNumByType(parents, firstStatementType, pkbReaderManager);
-        insertStmtRowsWithSingleCol(filteredParents, resultTable, col1);
+        parents = reader->getRelationshipsByValue(stmtNum);
     }
     else if (secondParam.getType() == TokenType::Wildcard) {
-        const unordered_set<int>& parents = reader->getKeys();
-        filteredParents = getFilteredStmtsNumByType(parents, firstStatementType, pkbReaderManager);
-        insertStmtRowsWithSingleCol(filteredParents, resultTable, col1);
+        parents = reader->getKeys();
     }
+
+    filteredParents = getFilteredStmtsNumByType(parents, firstStatementType, pkbReaderManager);
+    insertStmtRowsWithSingleCol(filteredParents, resultTable, col1);
 }
 
 void ParentStrategy::processSecondParam(
@@ -85,19 +85,18 @@ void ParentStrategy::processSecondParam(
     string col2 = secondParam.getValue();
     string secondStatementType = parsingResult.getDeclaredSynonyms().at(col2);
     resultTable->insertAllColumns({ col2 });
+    unordered_set<int> parents;
     unordered_set<int> filteredParents;
     if (firstParam.getType() == TokenType::INTEGER) {
         int stmtNum = stoi(firstParam.getValue());
-        const unordered_set<int>& parents = reader->getRelationshipsByKey(stmtNum);
-        filteredParents = getFilteredStmtsNumByType(parents, secondStatementType, pkbReaderManager);
-
-        insertStmtRowsWithSingleCol(filteredParents, resultTable, col2);
+        parents = reader->getRelationshipsByKey(stmtNum);
     }
     else if (firstParam.getType() == TokenType::Wildcard) {
-        const unordered_set<int>& parents = reader->getValues();
-        filteredParents = getFilteredStmtsNumByType(parents, secondStatementType, pkbReaderManager);
-        insertStmtRowsWithSingleCol(filteredParents, resultTable, col2);
+        parents = reader->getValues();
     }
+
+    filteredParents = getFilteredStmtsNumByType(parents, secondStatementType, pkbReaderManager);
+    insertStmtRowsWithSingleCol(filteredParents, resultTable, col2);
 }
 
 
