@@ -421,13 +421,24 @@ void QueryParser::parsePatternClause() {
     ensureToken(TokenType::Lparenthesis);
 
     advanceToken();
+
+
     parseEntRef();
     if (currentToken().getType() == TokenType::IDENT) {
         ensureSynonymType("variable");
     }
 
-
     clause.setFirstParam(currentToken());
+
+    while(peekNextToken(TokenType::Comma)) {
+        advanceToken();
+        advanceToken();
+        parseEntRef();
+        if (currentToken().getType() == TokenType::IDENT) {
+            ensureSynonymType("variable");
+        }
+        clause.setFirstParam(Token(TokenType::PartialExpressionSpec, currentToken().getValue()));
+    }
 
 
     advanceToken();

@@ -167,6 +167,7 @@ void FollowsStrategy::processIntegerParams(
                                            std::shared_ptr<ResultTable> resultTable) {
     int firstStmtNum = std::stoi(firstParam.getValue());
     int secondStmtNum = std::stoi(secondParam.getValue());
+
     bool hasFollows = (variant == "Follows") ?
                       followsReader->hasFollows(firstStmtNum, secondStmtNum):
                       followsTReader->hasFollowsT(firstStmtNum, secondStmtNum);
