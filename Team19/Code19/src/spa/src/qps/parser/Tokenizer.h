@@ -42,6 +42,13 @@ private:
     // A private method to determine the type of a token given its string representation.
     // Returns the TokenType of the token which is usefull in the QueryParser.
     TokenType determineTokenType(const string& tokenStr);
+    // helper fn for determineTokenType
+    TokenType determineClauseKeywordToken(const string& tokenStr);
+    TokenType determineSingleCharToken(const string& tokenStr);
+    TokenType determineBooleanToken(const string& tokenStr);
+    TokenType determineDesignEntityToken(const string& tokenStr);
+    TokenType determineRelRefToken(const string& tokenStr);
+
     bool checkIfDeclaration();
     bool isSynonym();
 
