@@ -256,22 +256,22 @@ SemanticError
 52. Invalid whiles
 while w; if i; variable v;
 Select w pattern w("v", v)
-SemanticError
+SyntaxError
 5000
 53. Invalid whiles
 while w; if i; variable v; assign a;
 Select w pattern w("v",a)
-SemanticError
+SyntaxError
 5000
 54. Invalid ifs
 while w; if i; variable v; assign a;
 Select i pattern i("v",v,_)
-SemanticError
+SyntaxError
 5000
 55. Invalid ifs
 while w; if i; variable v; assign a;
 Select i pattern i("v",a,v)
-SemanticError
+SyntaxError
 5000
 56. Invalid ifs
 while w; if i; variable v; assign a;

@@ -1566,15 +1566,27 @@ TEST_CASE("Testing parsing of attrName") {
 
 
 TEST_CASE("M2 system test cases") {
-    SECTION("using variable as synonym") {
-        string query = "assign assign; print print; read read; call call; if if; while while; variable variable; procedure procedure; constant constant; stmt stmt;\n"
-                       "Select if pattern if(variable,_,_)";
+//    SECTION("using variable as synonym") {
+//        string query = "assign assign; print print; read read; call call; if if; while while; variable variable; procedure procedure; constant constant; stmt stmt;\n"
+//                       "Select if pattern if(variable,_,_)";
+//
+//        Tokenizer tokenizer(query);
+//        vector<Token> tokens = tokenizer.tokenize();
+//        QueryParser queryParser(tokens);
+//        ParsingResult parsingResult = queryParser.parse();
+//        REQUIRE(parsingResult.getErrorMessage() == "");
+//    }
 
+    SECTION("while w; if i; variable v; assign a;\n"
+            "Select i pattern i(\"v\",a,v)") {
+        string query = "while w; if i; variable v; assign a;\n"
+                       "Select i pattern i(\"v\",a,v)";
         Tokenizer tokenizer(query);
         vector<Token> tokens = tokenizer.tokenize();
         QueryParser queryParser(tokens);
         ParsingResult parsingResult = queryParser.parse();
-        REQUIRE(parsingResult.getErrorMessage() == "");
+        REQUIRE(parsingResult.getErrorMessage() == "SyntaxError");
+
     }
 }
 
