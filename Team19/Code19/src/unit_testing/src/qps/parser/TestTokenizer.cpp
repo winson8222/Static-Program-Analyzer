@@ -1128,3 +1128,66 @@ TEST_CASE("Testing with clause with attributes") {
     REQUIRE(tokens[15].getType() == TokenType::AttrName);
     REQUIRE(tokens[15].getValue() == "stmt#"); 
 }
+
+TEST_CASE("pattern pattern pattern") {
+    Tokenizer tokenizer("assign pattern; Select pattern pattern pattern(\"         x          \", \"1\") and pattern(\"x\", \"1\")");
+    vector<Token> tokens = tokenizer.tokenize();
+
+    REQUIRE(tokens.size() == 19);  // Expecting 13 tokens
+    REQUIRE(tokens[0].getType() == TokenType::DesignEntity);
+    REQUIRE(tokens[0].getValue() == "assign");
+
+    REQUIRE(tokens[1].getType() == TokenType::IDENT);
+    REQUIRE(tokens[1].getValue() == "pattern");
+
+    REQUIRE(tokens[2].getType() == TokenType::Semicolon);
+    REQUIRE(tokens[2].getValue() == ";");
+
+    REQUIRE(tokens[3].getType() == TokenType::SelectKeyword);
+    REQUIRE(tokens[3].getValue() == "Select");
+
+    REQUIRE(tokens[4].getType() == TokenType::IDENT);
+    REQUIRE(tokens[4].getValue() == "pattern");
+
+    REQUIRE(tokens[5].getType() == TokenType::PatternKeyword);
+    REQUIRE(tokens[5].getValue() == "pattern");
+
+    REQUIRE(tokens[6].getType() == TokenType::IDENT);
+    REQUIRE(tokens[6].getValue() == "pattern");
+
+    REQUIRE(tokens[7].getType() == TokenType::Lparenthesis);
+    REQUIRE(tokens[7].getValue() == "(");
+
+    REQUIRE(tokens[8].getType() == TokenType::QuoutIDENT);
+    REQUIRE(tokens[8].getValue() == "\"x\"");
+
+    REQUIRE(tokens[9].getType() == TokenType::Comma);
+    REQUIRE(tokens[9].getValue() == ",");
+
+    REQUIRE(tokens[10].getType() == TokenType::QuoutConst);
+    REQUIRE(tokens[10].getValue() == "\"1\"");
+
+    REQUIRE(tokens[11].getType() == TokenType::Rparenthesis);
+    REQUIRE(tokens[11].getValue() == ")");
+
+    REQUIRE(tokens[12].getType() == TokenType::AndKeyword);
+    REQUIRE(tokens[12].getValue() == "pattern");
+
+    REQUIRE(tokens[13].getType() == TokenType::IDENT);
+    REQUIRE(tokens[13].getValue() == "pattern");
+
+    REQUIRE(tokens[14].getType() == TokenType::Lparenthesis);
+    REQUIRE(tokens[14].getValue() == "(");
+
+    REQUIRE(tokens[15].getType() == TokenType::QuoutIDENT);
+    REQUIRE(tokens[15].getValue() == "\"x\"");
+
+    REQUIRE(tokens[16].getType() == TokenType::Comma);
+    REQUIRE(tokens[16].getValue() == ",");
+
+    REQUIRE(tokens[17].getType() == TokenType::QuoutConst);
+    REQUIRE(tokens[17].getValue() == "\"1\"");
+
+    REQUIRE(tokens[18].getType() == TokenType::Rparenthesis);
+    REQUIRE(tokens[18].getValue() == ")");
+}
