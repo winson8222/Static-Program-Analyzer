@@ -163,8 +163,7 @@ void FollowsStrategy::processSecondParam(
  * @param secondParam The second parameter token of the query, another integer representing a statement number.
  * @param resultTable The table to be set as a truth table if the Follows relationship exists.
  */
-void FollowsStrategy::processIntegerParams(
-                                           std::shared_ptr<ResultTable> resultTable) {
+void FollowsStrategy::processIntegerParams(std::shared_ptr<ResultTable> resultTable) {
     if (isBothParamsWildcard(firstParam, secondParam)) {
         bool hasRelationship = (variant == "Follows") ?
                                !followsReader->isEmpty():

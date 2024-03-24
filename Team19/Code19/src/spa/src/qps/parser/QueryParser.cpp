@@ -393,7 +393,7 @@ void QueryParser::parseStmtRef() {
 // Parses an entity reference in the query.
 // Handles different types of entity references like quoted identifier, wildcard, or synonym.
 void QueryParser::parseEntRef() {
-    if (!match(TokenType::QuoutIDENT) && !match(TokenType::Wildcard) && !match(TokenType::IDENT)) {
+    if (!(match(TokenType::QuoutIDENT) || match(TokenType::Wildcard) || match(TokenType::IDENT))) {
         throwGrammarError();
     }
     if (match(TokenType::QuoutIDENT) || match(TokenType::Wildcard)) {
@@ -421,40 +421,56 @@ void QueryParser::parsePatternClause() {
     ensureToken(TokenType::Lparenthesis);
 
     advanceToken();
+
+
     parseEntRef();
     if (currentToken().getType() == TokenType::IDENT) {
         ensureSynonymType("variable");
     }
-
-
     clause.setFirstParam(currentToken());
-
 
     advanceToken();
     ensureToken(TokenType::Comma);
-
     advanceToken();
-
-
-    string patternType = parsingResult.getPatternClauseType(clause);
-    if (patternType == "if") {
-        parseIfParams(clause);
-    }
-    else if (patternType == "while") {
-        parseWhileParams(clause);
-
-    } else if (patternType == "assign") {
-        // This is a rudimentary approach to tokenize ExpressionSpec, probably change later
-        // Store the current token index before parsing the expression spec
-        parseExpressionSpec(clause);
-
-    } else {
-        throwSemanticError();
+    parseExpressionSpec(clause);
+    if (peekNextToken(TokenType::Comma)) {
+        advanceToken();
+        advanceToken();
+        parseEntRef();
+        clause.setThirdParam(currentToken());
     }
 
     advanceToken();
     ensureToken(TokenType::Rparenthesis);
     parsingResult.addPatternClause(clause);
+
+
+
+    string patternType = parsingResult.getPatternClauseType(clause);
+    ensureCorrectPatternParams(clause);
+}
+
+void QueryParser::ensureCorrectPatternParams(PatternClause &clause) {
+    string patternType = parsingResult.getPatternClauseType(clause);
+    TokenType secondParamType = clause.getSecondParam().getType();
+    TokenType thirdParamType = clause.getThirdParam().getType();
+    string thirdParamValue = clause.getThirdParam().getValue();
+    if (patternType == "if") {
+        if (secondParamType != TokenType::Wildcard || thirdParamType != TokenType::Wildcard) {
+            throwSemanticError();
+        }
+    } else if (patternType == "while") {
+        // if third param exist its a semantic error
+        if (secondParamType != TokenType::Wildcard || !thirdParamValue.empty() ) {
+            throwSemanticError();
+        }
+    } else if (patternType == "assign") {
+        if (!thirdParamValue.empty()) {
+            throwSemanticError();
+        }
+    } else {
+        throwSemanticError();
+    }
 }
 
 void QueryParser::parseIfParams(PatternClause &clause) {
@@ -470,15 +486,6 @@ void QueryParser::parseIfParams(PatternClause &clause) {
     }
     clause.setThirdParam(currentToken());
 
-}
-
-bool QueryParser::isLastParamInPatternClause() {
-    if (!peekNextToken(TokenType::Rparenthesis)) {
-        ensureNextBlank();
-        return false;
-    } else {
-        return true;
-    }
 }
 
 
@@ -503,7 +510,7 @@ void QueryParser::parseExpressionSpec(PatternClause &clause) {
         return;
     } else if (match(TokenType::Wildcard)) {
 
-        if (peekNextToken(TokenType::Rparenthesis)) {
+        if (peekNextToken(TokenType::Rparenthesis) || peekNextToken(TokenType::Comma)) {
             clause.setSecondParam(Token(TokenType::Wildcard, currentToken().getValue()));
             return;
         }
