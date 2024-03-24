@@ -131,6 +131,12 @@ void QueryEvaluationStrategy::insertRowsWithMatchedResults(const Token& firstPar
     }
 }
 
+void QueryEvaluationStrategy::insertStmtRowsWithSingleCol(unordered_set<int> filteredStmts, shared_ptr<ResultTable> resultTable, string colName){
+    unordered_set<string> filteredStmtsStr;
+    convertIntSetToStringSet(filteredStmts,filteredStmtsStr);
+    insertRowsWithSingleColumn(colName, filteredStmtsStr, resultTable);
+}
+
 void QueryEvaluationStrategy::insertRowsWithSingleColumn(std::string colName, std::unordered_set<std::string> results,
                                                          std::shared_ptr<ResultTable> resultTable) {
     for (string result : results) {

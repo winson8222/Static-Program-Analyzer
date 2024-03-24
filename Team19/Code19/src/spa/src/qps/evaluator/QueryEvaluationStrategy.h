@@ -35,6 +35,7 @@ protected:
                                              const std::shared_ptr<ResultTable>& resultTable);
     // used with there is only 1 column, it will fills the table with all possible results of this synonym
     static void insertRowsWithSingleColumn(string colName, std::unordered_set<std::string> results, std::shared_ptr<ResultTable> resultTable);
+    static void insertStmtRowsWithSingleCol(unordered_set<int> filteredStmts, shared_ptr<ResultTable> resultTable, string colName);
 
 };
 

@@ -60,8 +60,3 @@ void StmtStmtStrategy::insertRowsWithTwoCols(const Token &firstParam, const Toke
     }
 }
 
-void StmtStmtStrategy::insertStmtRowsWithSingleCol(unordered_set<int> filteredStmts, shared_ptr<ResultTable> resultTable, string colName){
-    unordered_set<string> filteredStmtsStr;
-    convertIntSetToStringSet(filteredStmts,filteredStmtsStr);
-    insertRowsWithSingleColumn(colName, filteredStmtsStr, resultTable);
-}
