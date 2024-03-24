@@ -47,7 +47,7 @@ public:
             // Add other mappings as necessary...
     };
 
-    const std::unordered_map<std::string, std::function<TokenType()>> tokenFunctionMap = {
+    const unordered_map<std::string, std::function<TokenType()>> tokenFunctionMap = {
             {"Select", [this]() -> TokenType {
                 return TokenType::SelectKeyword;
             }},
