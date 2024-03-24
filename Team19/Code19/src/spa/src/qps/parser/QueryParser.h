@@ -141,9 +141,9 @@ private:
     bool checkIfStmt();
     bool checkIfEnt();
     bool checkIfPatternSyn();
-    bool isLastParamInPatternClause();
-    void ensureNextBlank();
 
+    void ensureNextBlank();
+    void ensureCorrectPatternParams(PatternClause &clause);
 
 };
 

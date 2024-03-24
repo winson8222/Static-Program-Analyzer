@@ -40,7 +40,7 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
     statementWriter->insertStatement(5);
     assignWriter->insertAssign(1);
     constantWriter->insertConstant(0);
-    
+
 
     CallsWriter->addCalls("proc1", "proc3");
     CallsWriter->addCalls("proc2", "proc4");
@@ -253,14 +253,14 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
         std::unordered_set<string> actualResults = evaluator.evaluateQuery();
         std::unordered_set<string> expectedResults = { "FALSE" };
-        
-		
+
+
         REQUIRE(actualResults == a);
 
     }
 
 
-    
+
 
 }
 
@@ -325,24 +325,18 @@ TEST_CASE("Multiple Clauses with with") {
     variableWriter->insertVariable("middle");
     printWriter->insertPrint(3);
     printVarNameWriter->addPrintVarName(3, "variable");
-
-    printWriter->insertPrint(7);
-    printVarNameWriter->addPrintVarName(7, "total");
-
-    printWriter->insertPrint(18);
-    printVarNameWriter->addPrintVarName(18, "middle");
-
     printWriter->insertPrint(22);
     printVarNameWriter->addPrintVarName(22, "start");
-
     printWriter->insertPrint(32);
     printVarNameWriter->addPrintVarName(32, "end");
-
-    
-    //    printWriter->insertPrint(7);
-    //    printVarNameWriter->addPrintVarName(7, "end");
-    //    printWriter->insertPrint(8);
-    //    printVarNameWriter->addPrintVarName(8, "variable");
+    printWriter->insertPrint(7);
+    printVarNameWriter->addPrintVarName(7, "total");
+    printWriter->insertPrint(18);
+    printVarNameWriter->addPrintVarName(18, "middle");
+//    printWriter->insertPrint(7);
+//    printVarNameWriter->addPrintVarName(7, "end");
+//    printWriter->insertPrint(8);
+//    printVarNameWriter->addPrintVarName(8, "variable");
 
 
     SECTION("variable v; print pr; Select <v, pr> with pr.varName = v.varName") {
