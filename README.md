@@ -5,7 +5,7 @@
 
 Item | Version
 -|-
-OS | Window, MacOS
+OS | MacOS
 Toolchain | Visual Studio, CMake, CLion
 C++ Standard | C++17
 
