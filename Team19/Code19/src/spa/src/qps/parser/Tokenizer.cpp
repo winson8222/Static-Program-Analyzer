@@ -40,20 +40,19 @@ void Tokenizer::splitQuery() {
 
 }
 
+static const regex IDENT_REGEX(R"(^[a-zA-Z][a-zA-Z0-9]*$)");
+static const regex INTEGER_REGEX(R"(^(0|[1-9][0-9]*)$)");
+static const regex clauseKeywordRegex(R"((Select|pattern|such|that|with|and))");
+static const regex quoutIDENTRegex(R"(^"\s*[a-zA-Z][a-zA-Z0-9]*\s*"$)");
+static const regex quoutConstRegex(R"(^"\s*[0-9]+\s*"$)");
+static const regex designEntityRegex(R"((stmt|read|print|while|if|assign|variable|constant|procedure|call))");
+static const regex relRefRegex(R"((Follows|Follows\*|Parent|Parent\*|Uses|Modifies|Next|Next\*|Calls|Calls\*|Affects))");
+static const regex attrNameRegex(R"((procName|varName|value|stmt#))");
+static const regex expressionSpecRegex(R"(".*")");
+
 // Determines the type of token based on its string representation.
 // Returns the TokenType of the token.
 TokenType Tokenizer::determineTokenType(const string& tokenStr) {
-    // Simplify regex checks by grouping them into functions or under specific conditions
-    static const regex IDENT_REGEX(R"(^[a-zA-Z][a-zA-Z0-9]*$)");
-    static const regex INTEGER_REGEX(R"(^(0|[1-9][0-9]*)$)");
-    static const regex clauseKeywordRegex(R"((Select|pattern|such|that|with|and))");
-    static const regex quoutIDENTRegex(R"(^"\s*[a-zA-Z][a-zA-Z0-9]*\s*"$)");
-    static const regex quoutConstRegex(R"(^"\s*[0-9]+\s*"$)");
-    static const regex designEntityRegex(R"((stmt|read|print|while|if|assign|variable|constant|procedure|call))");
-    static const regex relRefRegex(R"((Follows|Follows\*|Parent|Parent\*|Uses|Modifies|Next|Next\*|Calls|Calls\*|Affects))");
-    static const regex attrNameRegex(R"((procName|varName|value|stmt#))");
-    static const regex expressionSpecRegex(R"(".*")");
-
     if (tokenStr == "_") return TokenType::Wildcard;
 
     if (regex_match(tokenStr, clauseKeywordRegex)) return determineClauseKeywordToken(tokenStr);
