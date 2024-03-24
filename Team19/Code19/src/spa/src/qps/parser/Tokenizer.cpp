@@ -51,25 +51,25 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     TokenType tokenType;
 
     tokenType = determineClauseKeywordToken(tokenStr);
-    if (tokenType != TokenType::SyntaxError) return tokenType;
+    if (!isSyntaxError(tokenType)) return tokenType;
 
     tokenType = determineBooleanToken(tokenStr);
-    if (tokenType != TokenType::SyntaxError) return tokenType;
+    if (!isSyntaxError(tokenType)) return tokenType;
 
     tokenType = determineAttrNameToken(tokenStr);
-    if (tokenType != TokenType::SyntaxError) return tokenType;
+    if (!isSyntaxError(tokenType)) return tokenType;
 
     tokenType = determineQuoutToken(tokenStr);
-    if (tokenType != TokenType::SyntaxError) return tokenType;
+    if (!isSyntaxError(tokenType)) return tokenType;
 
     tokenType = determineSingleCharToken(tokenStr);
-    if (tokenType != TokenType::SyntaxError) return tokenType;
+    if (!isSyntaxError(tokenType)) return tokenType;
 
     tokenType = determineDesignEntityToken(tokenStr);
-    if (tokenType != TokenType::SyntaxError) return tokenType;
+    if (!isSyntaxError(tokenType))return tokenType;
 
     tokenType = determineRelRefToken(tokenStr);
-    if (tokenType != TokenType::SyntaxError) return tokenType;
+    if (!isSyntaxError(tokenType)) return tokenType;
 
     // IDENT: Starts with a letter and may continue with letters or digits.
     if (regex_match(tokenStr, regex("^[a-zA-Z][a-zA-Z0-9]*$"))) {
@@ -89,25 +89,19 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     return TokenType::SyntaxError;
 }
 
+bool Tokenizer::isSyntaxError(TokenType tokenType) {
+    return tokenType == TokenType::SyntaxError;
+}
+
 TokenType Tokenizer::determineClauseKeywordToken(const string& tokenStr) {
     if (regex_match(tokenStr, regex("^(Select|pattern|such|that|with|and)$"))) {
         if (!tokens.empty() && (isSynonym() || tokens.back().getType() == TokenType::SelectKeyword)) {
             return TokenType::IDENT;
-        } else if (tokenStr == "Select") {
-            return TokenType::SelectKeyword;
-        } else if (tokenStr == "pattern") {
-            lastRelationship = "pattern";
-            return TokenType::PatternKeyword;
-        } else if (tokenStr == "such") {
-            lastRelationship = "such that";
-            return TokenType::SuchKeyword;
-        } else if (tokenStr == "that") {
-            return TokenType::ThatKeyword;
-        } else if (tokenStr == "with") {
-            lastRelationship = "with";
-            return TokenType::WithKeyword;
-        } else if (tokenStr == "and") {
-            return TokenType::AndKeyword;
+        }
+
+        auto it = tokenFunctionMap.find(tokenStr);
+        if (it != tokenFunctionMap.end()) {
+            return it->second(); // Execute the function
         }
     }
     return TokenType::SyntaxError;
@@ -139,14 +133,9 @@ TokenType Tokenizer::determineQuoutToken(const string& tokenStr) {
 }
 
 TokenType Tokenizer::determineSingleCharToken(const string& tokenStr) {
-    if (tokenStr == "(") return TokenType::Lparenthesis;
-    if (tokenStr == ")") return TokenType::Rparenthesis;
-    if (tokenStr == ";") return TokenType::Semicolon;
-    if (tokenStr == ",") return TokenType::Comma;
-    if (tokenStr == ".") return TokenType::Dot;
-    if (tokenStr == "=") return TokenType::Equal;
-    if (tokenStr == "<") return TokenType::LeftAngleBracket;
-    if (tokenStr == ">") return TokenType::RightAngleBracket;
+    if (signMap.find(tokenStr) != signMap.end()) {
+        return signMap[tokenStr];
+    }
     return TokenType::SyntaxError;
 }
 
@@ -165,28 +154,10 @@ TokenType Tokenizer::determineRelRefToken(const string& tokenStr) {
     if (regex_match(tokenStr, regex("^(Follows|Follows\\*|Parent|Parent\\*|Uses|Modifies|Next|Next\\*|Calls|Calls\\*|Affects)$"))) {
         if (!tokens.empty() && (isSynonym() || tokens.back().getType() == TokenType::SelectKeyword)) {
             return TokenType::IDENT;
-        } else if (tokenStr == "Follows") {
-            return TokenType::Follows;
-        } else if (tokenStr == "Follows*") {
-            return TokenType::FollowsT;
-        } else if (tokenStr == "Parent") {
-            return TokenType::Parent;
-        } else if (tokenStr == "Parent*") {
-            return TokenType::ParentT;
-        } else if (tokenStr == "Uses") {
-            return TokenType::Uses;
-        } else if (tokenStr == "Modifies") {
-            return TokenType::Modifies;
-        } else if (tokenStr == "Next") {
-            return TokenType::Next;
-        } else if (tokenStr == "Next*") {
-            return TokenType::NextT;
-        } else if (tokenStr == "Calls") {
-            return TokenType::Calls;
-        } else if (tokenStr == "Calls*") {
-            return TokenType::CallsT;
-        } else if (tokenStr == "Affects") {
-            return TokenType::Affects;
+        }
+
+        if (clauseTypeMap.find(tokenStr) != clauseTypeMap.end()) {
+            return clauseTypeMap[tokenStr];
         }
     }
     return TokenType::SyntaxError;
