@@ -43,6 +43,7 @@ private:
     // Returns the TokenType of the token which is useful in the QueryParser.
     TokenType determineTokenType(const string& tokenStr);
     // helper fn for determineTokenType
+    TokenType determineQuoutToken(const string& tokenStr);
     TokenType determineClauseKeywordToken(const string& tokenStr);
     TokenType determineSingleCharToken(const string& tokenStr);
     TokenType determineBooleanToken(const string& tokenStr);

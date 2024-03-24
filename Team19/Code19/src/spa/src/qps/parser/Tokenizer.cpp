@@ -42,92 +42,96 @@ void Tokenizer::splitQuery() {
 
 // Determines the type of token based on its string representation.
 // Returns the TokenType of the token.
+
 TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     if (tokenStr == "_") {
         return TokenType::Wildcard;
     }
 
-    auto clauseKeywordToken = determineClauseKeywordToken(tokenStr);
-    if (clauseKeywordToken != TokenType::SyntaxError) return clauseKeywordToken;
+    TokenType tokenType;
 
-    // Handling for quoted identifiers (adjust placement as necessary)
-    if (regex_match(tokenStr, regex("^\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\"$"))) {
-        return TokenType::QuoutIDENT;
-    }
+    tokenType = determineClauseKeywordToken(tokenStr);
+    if (tokenType != TokenType::SyntaxError) return tokenType;
 
-    // Handling for quoted constants (adjust regex as needed)
-    if (regex_match(tokenStr, regex("^\"\\s*[0-9]+\\s*\"$"))) {
-        return TokenType::QuoutConst;
-    }
+    tokenType = determineBooleanToken(tokenStr);
+    if (tokenType != TokenType::SyntaxError) return tokenType;
 
-    auto singleCharToken = determineSingleCharToken(tokenStr);
-    if (singleCharToken != TokenType::SyntaxError) return singleCharToken;
+    tokenType = determineQuoutToken(tokenStr);
+    if (tokenType != TokenType::SyntaxError) return tokenType;
 
-    auto booleanToken = determineBooleanToken(tokenStr);
-    if (booleanToken != TokenType::SyntaxError) return booleanToken;
+    tokenType = determineSingleCharToken(tokenStr);
+    if (tokenType != TokenType::SyntaxError) return tokenType;
 
-    auto designEntityToken = determineDesignEntityToken(tokenStr);
-    if (designEntityToken != TokenType::SyntaxError) return designEntityToken;
+    tokenType = determineDesignEntityToken(tokenStr);
+    if (tokenType != TokenType::SyntaxError) return tokenType;
 
-    auto relRefToken = determineRelRefToken(tokenStr);
-    if (relRefToken != TokenType::SyntaxError) return relRefToken;
+    tokenType = determineRelRefToken(tokenStr);
+    if (tokenType != TokenType::SyntaxError) return tokenType;
 
+    // IDENT: Starts with a letter and may continue with letters or digits.
     if (regex_match(tokenStr, regex("^[a-zA-Z][a-zA-Z0-9]*$"))) {
         return TokenType::IDENT;
     }
+
+    // INTEGER: Either 0 or a sequence of digits with no leading zero.
     if (regex_match(tokenStr, regex("^(0|[1-9][0-9]*)$"))) {
         return TokenType::INTEGER;
     }
-    if (regex_match(tokenStr, regex("^[+\\-*/%&|<>=!~^]$"))) {
+
+    // OPERATOR: "+-*/%&|<>=!~^"
+    if (regex_match(tokenStr, regex("^[+\\-*/%&|!~^]$"))) {
         return TokenType::Operator;
     }
 
     return TokenType::SyntaxError;
 }
 
-
 TokenType Tokenizer::determineClauseKeywordToken(const string& tokenStr) {
-    if (tokenStr == "Select") return TokenType::SelectKeyword;
-    if (tokenStr == "pattern") return TokenType::PatternKeyword;
-    if (tokenStr == "such") return TokenType::SuchKeyword;
-    if (tokenStr == "that") return TokenType::ThatKeyword;
-    if (tokenStr == "with") return TokenType::WithKeyword;
-    if (tokenStr == "and") return TokenType::AndKeyword;
+    if (regex_match(tokenStr, regex("^(Select|pattern|such|that|with|and)$"))) {
+        if (!tokens.empty() && (isSynonym() || tokens.back().getType() == TokenType::SelectKeyword)) {
+            return TokenType::IDENT;
+        } else if (tokenStr == "Select") {
+            return TokenType::SelectKeyword;
+        } else if (tokenStr == "pattern") {
+            lastRelationship = "pattern";
+            return TokenType::PatternKeyword;
+        } else if (tokenStr == "such") {
+            lastRelationship = "such that";
+            return TokenType::SuchKeyword;
+        } else if (tokenStr == "that") {
+            return TokenType::ThatKeyword;
+        } else if (tokenStr == "with") {
+            lastRelationship = "with";
+            return TokenType::WithKeyword;
+        } else if (tokenStr == "and") {
+            return TokenType::AndKeyword;
+        }
+    }
     return TokenType::SyntaxError;
 }
 
 
 TokenType Tokenizer::determineBooleanToken(const string& tokenStr) {
     if (tokenStr == "BOOLEAN") {
-        if (isBooleanDeclared) return TokenType::IDENT;
-        isBooleanDeclared = true;
+        if (!tokens.empty() && (isSynonym() || (tokens.back().getType() == TokenType::SelectKeyword && isBooleanDeclared))) {
+            isBooleanDeclared = true;
+            return TokenType::IDENT;
+        }
         return TokenType::BooleanKeyword;
     }
     return TokenType::SyntaxError;
 }
 
-TokenType Tokenizer::determineDesignEntityToken(const string& tokenStr) {
-    if (tokenStr == "stmt" || tokenStr == "read" || tokenStr == "print" || tokenStr == "while" ||
-        tokenStr == "if" || tokenStr == "assign" || tokenStr == "variable" || tokenStr == "constant" ||
-        tokenStr == "procedure" || tokenStr == "call") {
-        return TokenType::DesignEntity;
+TokenType Tokenizer::determineQuoutToken(const string& tokenStr) {
+    if (regex_match(tokenStr, regex("^\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\"$"))) {
+        return TokenType::QuoutIDENT;
     }
-    return TokenType::SyntaxError;
-}
-
-
-TokenType Tokenizer::determineRelRefToken(const string& tokenStr) {
-    if (tokenStr == "Follows") return TokenType::Follows;
-    if (tokenStr == "Follows*") return TokenType::FollowsT;
-    if (tokenStr == "Parent") return TokenType::Parent;
-    if (tokenStr == "Parent*") return TokenType::ParentT;
-    if (tokenStr == "Uses") return TokenType::Uses;
-    if (tokenStr == "Modifies") return TokenType::Modifies;
-    if (tokenStr == "Next") return TokenType::Next;
-    if (tokenStr == "Next*") return TokenType::NextT;
-    if (tokenStr == "Calls") return TokenType::Calls;
-    if (tokenStr == "Calls*") return TokenType::CallsT;
-    if (tokenStr == "Affects") return TokenType::Affects;
+    if (regex_match(tokenStr, regex("^\"\\s*[0-9]+\\s*\"$"))) {
+        return TokenType::QuoutConst;
+    }
+    if (regex_match(tokenStr, regex("\".*\""))) {
+        return TokenType::ExpressionSpec;
+    }
     return TokenType::SyntaxError;
 }
 
@@ -142,6 +146,49 @@ TokenType Tokenizer::determineSingleCharToken(const string& tokenStr) {
     if (tokenStr == ">") return TokenType::RightAngleBracket;
     return TokenType::SyntaxError;
 }
+
+TokenType Tokenizer::determineDesignEntityToken(const string& tokenStr) {
+    if (regex_match(tokenStr, regex("^(stmt|read|print|while|if|assign|variable|constant|procedure|call)$"))) {
+        if (!tokens.empty() && (isSynonym() || tokens.back().getType() == TokenType::SelectKeyword)) {
+            return TokenType::IDENT;
+        } else {
+            return TokenType::DesignEntity;
+        }
+    }
+    return TokenType::SyntaxError;
+}
+
+TokenType Tokenizer::determineRelRefToken(const string& tokenStr) {
+    if (regex_match(tokenStr, regex("^(Follows|Follows\\*|Parent|Parent\\*|Uses|Modifies|Next|Next\\*|Calls|Calls\\*|Affects)$"))) {
+        if (!tokens.empty() && (isSynonym() || tokens.back().getType() == TokenType::SelectKeyword)) {
+            return TokenType::IDENT;
+        } else if (tokenStr == "Follows") {
+            return TokenType::Follows;
+        } else if (tokenStr == "Follows*") {
+            return TokenType::FollowsT;
+        } else if (tokenStr == "Parent") {
+            return TokenType::Parent;
+        } else if (tokenStr == "Parent*") {
+            return TokenType::ParentT;
+        } else if (tokenStr == "Uses") {
+            return TokenType::Uses;
+        } else if (tokenStr == "Modifies") {
+            return TokenType::Modifies;
+        } else if (tokenStr == "Next") {
+            return TokenType::Next;
+        } else if (tokenStr == "Next*") {
+            return TokenType::NextT;
+        } else if (tokenStr == "Calls") {
+            return TokenType::Calls;
+        } else if (tokenStr == "Calls*") {
+            return TokenType::CallsT;
+        } else if (tokenStr == "Affects") {
+            return TokenType::Affects;
+        }
+    }
+    return TokenType::SyntaxError;
+}
+
 
 
 // Check if the current token is a declaration token
