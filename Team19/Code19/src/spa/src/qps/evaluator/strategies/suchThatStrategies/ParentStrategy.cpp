@@ -37,14 +37,14 @@ std::shared_ptr<ResultTable> ParentStrategy::evaluateQuery(PKBReaderManager& pkb
         processSecondParam(resultTable, parsingResult, pkbReaderManager);
     }
     else if (isBothParamsWildcard(this->firstParam, this->secondParam)) {
-        bool hasRelationship = (variant == "Follows") ?
+        bool hasRelationship = (variant == "Parent") ?
                                !parentReader->isEmpty():
                                !parentTTReader->isEmpty();
         if (hasRelationship) {
             resultTable->setAsTruthTable();
         }
     }
-    else if (isBothParamsInteger(this->firstParam, this->secondParam)) {
+    else {
         processIntegerParams(resultTable);
     }
 
@@ -158,13 +158,16 @@ void ParentStrategy::processSecondParam(
 void ParentStrategy::processIntegerParams(
             std::shared_ptr<ResultTable> resultTable) {
     // Implementation for processing when both parameters are integers
-    int firstStmtNum = stoi(firstParam.getValue());
-    int secondStmtNum = stoi(secondParam.getValue());
-    bool hasParents = (this->variant  == "Parent") ?
-                      parentReader->hasParent(firstStmtNum, secondStmtNum) :
-                      parentTTReader->hasParentT(firstStmtNum, secondStmtNum);
-
-    if (hasParents) {
-        resultTable->setAsTruthTable();
+    if (isBothParamsWildcard(firstParam, secondParam)) {
+        bool hasRelationship = (variant == "Parent") ?
+                               !parentReader->isEmpty():
+                               !parentTTReader->isEmpty();
+        if (hasRelationship) {
+            resultTable->setAsTruthTable();
+        }
+        return;
+    } else {
+        variant == "Parent" ?  setTrueIfRelationShipExist(firstParam, secondParam, parentReader, resultTable) :
+        setTrueIfRelationShipExist(firstParam, secondParam, parentTTReader, resultTable);
     }
 }
