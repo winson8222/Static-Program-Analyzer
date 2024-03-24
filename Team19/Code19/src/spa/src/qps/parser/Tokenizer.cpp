@@ -60,8 +60,7 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
 
     auto relRefToken = determineRelRefToken(tokenStr);
     if (relRefToken != TokenType::SyntaxError) return relRefToken;
-
-    // IDENT and INTEGER are more generic and should be checked last
+    
     if (regex_match(tokenStr, regex("^[a-zA-Z][a-zA-Z0-9]*$"))) {
         return TokenType::IDENT;
     }
@@ -89,7 +88,7 @@ TokenType Tokenizer::determineClauseKeywordToken(const string& tokenStr) {
 
 TokenType Tokenizer::determineBooleanToken(const string& tokenStr) {
     if (tokenStr == "BOOLEAN") {
-        if (isBooleanDeclared) return TokenType::IDENT; // Assuming isBooleanDeclared checks if BOOLEAN was previously declared
+        if (isBooleanDeclared) return TokenType::IDENT;
         isBooleanDeclared = true;
         return TokenType::BooleanKeyword;
     }
