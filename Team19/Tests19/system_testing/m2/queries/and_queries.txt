@@ -10,16 +10,31 @@ alpha gamma beta
 5000
 3 - Follows clause on and
 stmt s1, s2;
-Select s2 such that Follows(s1, s2) And Follows(s2, _)
+Select s2 such that Follows(s1, s2) and Follows(s2, _)
 none
 5000
-4 - Follows friendly check
-
-Select BOOLEAN such that Follows(1, _)
-TRUE
+4 - Follows and Affects
+stmt s1, s2;
+Select s2 such that Affects(s1, s2) and Follows(s2, _) and Affects(s2, s1)
+5, 6
 5000
-5 - Follows check
-
-SELECT BOOLEAN such that Follows(_, 3)
-TRUE
+5 - Testing for duplicate With Clause
+procedure p1;
+Select p1 such that Calls(p1, "beta") with p1.procName = "alpha" and p1.procName = "alpha" and p1.procName = "alpha"
+alpha
+5000
+6 - Testing for duplicate Such That Clause
+stmt s;
+Select s such that Follows(1, s) and Follows(1, s) and Follows(1, s)
+2
+5000
+7 - Testing for duplicate patterns Clause
+assign asg;
+Select asg pattern asg("         x          ", "1") and asg("x", "1")
+1
+5000
+8 - Testing for keyword used as variable name, same logic as 7
+assign pattern;
+Select pattern pattern pattern("         x          ", "1") and pattern("x", "1")
+1
 5000
