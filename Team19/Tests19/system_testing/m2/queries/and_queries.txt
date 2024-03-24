@@ -5,13 +5,13 @@ alpha gamma beta
 5000
 2 - And clause on with
 procedure p1, p2, p3;
-Select <p1,p2,p3> such that Calls(p1, p2) and Calls(p2, p3) with p1.procName = "alpha" and p3.procName = "gamma"
+Select <p1,p2,p3> such that Calls(p1, p2) and Calls(p2, p3) with p1.procName = "alpha" and p3.procName = "beta"
 alpha gamma beta
 5000
 3 - Follows clause on and
 stmt s1, s2;
-Select s2 such that Follows(s1, s2) and Follows(s2, _)
-none
+Select s2 such that Follows(_, s2) and Follows(s2, _)
+2,3,4,5,6,7,8,9,10,11,12,15,16,19,20
 5000
 4 - Follows and Affects
 stmt s1, s2;
