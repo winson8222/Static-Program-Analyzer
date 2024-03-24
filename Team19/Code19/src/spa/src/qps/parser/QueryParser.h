@@ -41,6 +41,7 @@ private:
             {TokenType::Affects, {"stmt", "assign", "while", "if", "print", "read", "call"}},
     };
 
+
     const std::unordered_map<string, std::unordered_set<std::string>> validAttrMap = {
             {"stmt", {"stmt#"}},
             {"assign", {"stmt#"}},
@@ -121,7 +122,7 @@ private:
     void parseEntSynonym();
     void parseStmtSynonyms();
     void parsePatternSynonym();
-    void ensureSynonymType(Token type, string synType);
+    void ensureSynonymType(string synType);
 
 
     // helper function to replace concatenation of tokens
