@@ -46,8 +46,19 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     if (tokenStr == "_") {
         return TokenType::Wildcard;
     }
+
     auto clauseKeywordToken = determineClauseKeywordToken(tokenStr);
     if (clauseKeywordToken != TokenType::SyntaxError) return clauseKeywordToken;
+
+    // Handling for quoted identifiers (adjust placement as necessary)
+    if (regex_match(tokenStr, regex("^\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\"$"))) {
+        return TokenType::QuoutIDENT;
+    }
+
+    // Handling for quoted constants (adjust regex as needed)
+    if (regex_match(tokenStr, regex("^\"\\s*[0-9]+\\s*\"$"))) {
+        return TokenType::QuoutConst;
+    }
 
     auto singleCharToken = determineSingleCharToken(tokenStr);
     if (singleCharToken != TokenType::SyntaxError) return singleCharToken;
@@ -60,7 +71,7 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
 
     auto relRefToken = determineRelRefToken(tokenStr);
     if (relRefToken != TokenType::SyntaxError) return relRefToken;
-    
+
     if (regex_match(tokenStr, regex("^[a-zA-Z][a-zA-Z0-9]*$"))) {
         return TokenType::IDENT;
     }
