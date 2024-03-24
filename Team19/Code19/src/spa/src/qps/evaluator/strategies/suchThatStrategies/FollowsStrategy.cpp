@@ -32,15 +32,8 @@ std::shared_ptr<ResultTable> FollowsStrategy::evaluateQuery(PKBReaderManager& pk
         processFirstParam(resultTable, parsingResult, pkbReaderManager);
     } else if (secondParam.getType() == TokenType::IDENT) {
         processSecondParam(resultTable, parsingResult, pkbReaderManager);
-    } else if (isBothParamsWildcard(firstParam, secondParam)) {
-        bool hasRelationship = (variant == "Follows") ?
-                               !followsReader->isEmpty():
-                               !followsTReader->isEmpty();
-        if (hasRelationship) {
-            resultTable->setAsTruthTable();
-        }
     } else {
-        processIntegerParams(resultTable); // Handling integer cases
+        processIntegerParams(resultTable);
     }
 
     return resultTable;

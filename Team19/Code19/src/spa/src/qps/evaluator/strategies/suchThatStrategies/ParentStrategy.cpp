@@ -36,14 +36,6 @@ std::shared_ptr<ResultTable> ParentStrategy::evaluateQuery(PKBReaderManager& pkb
     else if (this->secondParam.getType() == TokenType::IDENT) {
         processSecondParam(resultTable, parsingResult, pkbReaderManager);
     }
-    else if (isBothParamsWildcard(this->firstParam, this->secondParam)) {
-        bool hasRelationship = (variant == "Parent") ?
-                               !parentReader->isEmpty():
-                               !parentTTReader->isEmpty();
-        if (hasRelationship) {
-            resultTable->setAsTruthTable();
-        }
-    }
     else {
         processIntegerParams(resultTable);
     }
