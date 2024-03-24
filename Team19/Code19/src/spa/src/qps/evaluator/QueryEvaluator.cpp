@@ -177,6 +177,7 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
     int suchThatCounter = 0;
     int patternCounter = 0;
     int withCounter = 0;
+    bool isOnlyBoolean = true;
     for (auto& strategy : strategies) {
         shared_ptr<ResultTable> tempResult;
         if (suchThatCounter < suchThatClauses.size()) {
@@ -194,7 +195,6 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
       
         // if it is a true table skip to next strategy
         if (tempResult->isTableTrue()) {
-            result = tempResult;
             continue;
         }
 

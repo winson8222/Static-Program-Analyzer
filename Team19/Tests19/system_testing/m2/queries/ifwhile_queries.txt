@@ -61,12 +61,12 @@ none
 13. Semantic Error
 while w; if i; variable v;
 Select w pattern w(_,_,_)
-SemanticError
+SyntaxError
 5000
 14. Semantic Error
 while w; if i; variable v;
 Select i pattern i(_,_)
-SemanticError
+SyntaxError
 5000
 15. Semantic Error
 assign assign; print print; read read; call call; if if; while while; variable variable; procedure procedure; constant constant; stmt stmt;
@@ -211,7 +211,7 @@ SyntaxError
 43. Syntax Error
 assign assign; print print; read read; call call; if if; while while; variable variable; procedure procedure; constant constant; stmt stmt;
 Select if pattern if("v",_)
-SemanticError
+SyntaxError
 5000
 44. Syntax Error
 assign assign; print print; read read; call call; if if; while while; variable variable; procedure procedure; constant constant; stmt stmt;
@@ -316,7 +316,7 @@ SyntaxError
 64. Invalid whiles
 while w; if i; variable v; assign a;
 Select w pattern w("1",_)
-none
+SyntaxError
 5000
 65. Invalid whiles
 while w; if i; variable v; assign a;

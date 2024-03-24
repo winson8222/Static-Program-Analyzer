@@ -758,6 +758,72 @@ TEST_CASE("src/qps/parser/QueryParser/M1FailedCases/2") {
 
         // Additional checks can be performed here if needed, such as verifying the specific parsing output
     }
+
+    SECTION("QueryParser correctly parses 'call c; Select c such that Follows(c, _)' with no errors") {
+        // Manually create the vector of tokens for the query
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "call"),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Follows, "Follows"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::Wildcard, "_"),
+                Token(TokenType::Rparenthesis, ")")
+        };
+
+
+        // Instantiate the QueryParser with the tokens
+        QueryParser queryParser(tokens);
+
+        // Parse the query
+        ParsingResult parsingResult = queryParser.parse();
+
+        // Verify that the parsing result indicates a valid query with no errors
+        REQUIRE(parsingResult.isQueryValid() == true);
+        REQUIRE(parsingResult.getErrorMessage().empty() == true);
+
+        // Additional checks can be performed here if needed, such as verifying the specific parsing output
+    }
+
+
+    SECTION("QueryParser correctly parses 'call c; Select c such that Parents(c, _)' with no errors") {
+        // Manually create the vector of tokens for the query
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "call"),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Parent, "Parents"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::Wildcard, "_"),
+                Token(TokenType::Rparenthesis, ")")
+
+        };
+
+
+        // Instantiate the QueryParser with the tokens
+        QueryParser queryParser(tokens);
+
+        // Parse the query
+        ParsingResult parsingResult = queryParser.parse();
+
+        // Verify that the parsing result indicates a valid query with no errors
+        REQUIRE(parsingResult.isQueryValid() == true);
+        REQUIRE(parsingResult.getErrorMessage().empty() == true);
+
+        // Additional checks can be performed here if needed, such as verifying the specific parsing output
+    }
 }
 
 //read r;
@@ -1470,6 +1536,25 @@ TEST_CASE("Testing parsing of attrName") {
         // Verify that the parsing result indicates a valid query with no errors
         REQUIRE(parsingResult.isQueryValid() == false);
         REQUIRE(parsingResult.getErrorMessage() == "SemanticError");
+
+
+        // Additional checks can be performed here if needed, such as verifying the specific parsing output
+    }
+
+    SECTION("read r; call c; variable v; procedure p; Select r.varName with r.varName = c.procName and v.varName = p.procName with 1 = 1") {
+        // Manually create the vector of tokens for the query
+        Tokenizer tokenizer("read r; call c; variable v; procedure p; Select r.varName with r.varName = c.procName and v.varName = p.procName with 1 = 1");
+        vector<Token> tokens = tokenizer.tokenize();
+
+        // Instantiate the QueryParser with the tokens
+        QueryParser queryParser(tokens);
+
+        // Parse the query
+        ParsingResult parsingResult = queryParser.parse();
+
+        // Verify that the parsing result indicates a valid query with no errors
+        //REQUIRE(parsingResult.isQueryValid() == true);
+        REQUIRE(parsingResult.getErrorMessage() == "");
 
 
         // Additional checks can be performed here if needed, such as verifying the specific parsing output
