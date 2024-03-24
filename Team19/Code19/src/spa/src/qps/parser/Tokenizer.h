@@ -21,7 +21,7 @@ public:
 
     string removeSpaces(string str);
 
-    std::unordered_map<std::string, TokenType> clauseTypeMap = {
+    unordered_map<std::string, TokenType> clauseTypeMap = {
             {"Follows", TokenType::Follows},
             {"Follows*", TokenType::FollowsT},
             {"Parent", TokenType::Parent},
@@ -35,7 +35,7 @@ public:
             {"Affects", TokenType::Affects},
     };
 
-    std::unordered_map<std::string, TokenType> signMap = {
+    unordered_map<std::string, TokenType> signMap = {
             {"(", TokenType::Lparenthesis},
             {")", TokenType::Rparenthesis},
             {";", TokenType::Semicolon},
