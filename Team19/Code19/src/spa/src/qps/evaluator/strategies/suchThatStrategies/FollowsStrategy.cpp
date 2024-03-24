@@ -39,7 +39,7 @@ std::shared_ptr<ResultTable> FollowsStrategy::evaluateQuery(PKBReaderManager& pk
         if (hasRelationship) {
             resultTable->setAsTruthTable();
         }
-    } else if (isBothParamsInteger(firstParam, secondParam)) {
+    } else {
         processIntegerParams(resultTable); // Handling integer cases
     }
 
@@ -163,14 +163,18 @@ void FollowsStrategy::processSecondParam(
  * @param secondParam The second parameter token of the query, another integer representing a statement number.
  * @param resultTable The table to be set as a truth table if the Follows relationship exists.
  */
-void FollowsStrategy::processIntegerParams(
-                                           std::shared_ptr<ResultTable> resultTable) {
-    int firstStmtNum = std::stoi(firstParam.getValue());
-    int secondStmtNum = std::stoi(secondParam.getValue());
-    bool hasFollows = (variant == "Follows") ?
-                      followsReader->hasFollows(firstStmtNum, secondStmtNum):
-                      followsTReader->hasFollowsT(firstStmtNum, secondStmtNum);
-    if (hasFollows) {
-        resultTable->setAsTruthTable();
+void FollowsStrategy::processIntegerParams(std::shared_ptr<ResultTable> resultTable) {
+    if (isBothParamsWildcard(firstParam, secondParam)) {
+        bool hasRelationship = (variant == "Follows") ?
+                               !followsReader->isEmpty():
+                               !followsTReader->isEmpty();
+        if (hasRelationship) {
+            resultTable->setAsTruthTable();
+        }
+        return;
+    } else {
+        variant == "Follows" ?  setTrueIfRelationShipExist(firstParam, secondParam, followsReader, resultTable) :
+                                setTrueIfRelationShipExist(firstParam, secondParam, followsTReader, resultTable);
+
     }
 }

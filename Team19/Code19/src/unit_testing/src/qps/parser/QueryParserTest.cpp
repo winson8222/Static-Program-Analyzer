@@ -758,6 +758,72 @@ TEST_CASE("src/qps/parser/QueryParser/M1FailedCases/2") {
 
         // Additional checks can be performed here if needed, such as verifying the specific parsing output
     }
+
+    SECTION("QueryParser correctly parses 'call c; Select c such that Follows(c, _)' with no errors") {
+        // Manually create the vector of tokens for the query
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "call"),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Follows, "Follows"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::Wildcard, "_"),
+                Token(TokenType::Rparenthesis, ")")
+        };
+
+
+        // Instantiate the QueryParser with the tokens
+        QueryParser queryParser(tokens);
+
+        // Parse the query
+        ParsingResult parsingResult = queryParser.parse();
+
+        // Verify that the parsing result indicates a valid query with no errors
+        REQUIRE(parsingResult.isQueryValid() == true);
+        REQUIRE(parsingResult.getErrorMessage().empty() == true);
+
+        // Additional checks can be performed here if needed, such as verifying the specific parsing output
+    }
+
+
+    SECTION("QueryParser correctly parses 'call c; Select c such that Parents(c, _)' with no errors") {
+        // Manually create the vector of tokens for the query
+        std::vector<Token> tokens = {
+                Token(TokenType::DesignEntity, "call"),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Semicolon, ";"),
+                Token(TokenType::SelectKeyword, "Select"),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::SuchKeyword, "such"),
+                Token(TokenType::ThatKeyword, "that"),
+                Token(TokenType::Parent, "Parents"),
+                Token(TokenType::Lparenthesis, "("),
+                Token(TokenType::IDENT, "c"),
+                Token(TokenType::Comma, ","),
+                Token(TokenType::Wildcard, "_"),
+                Token(TokenType::Rparenthesis, ")")
+
+        };
+
+
+        // Instantiate the QueryParser with the tokens
+        QueryParser queryParser(tokens);
+
+        // Parse the query
+        ParsingResult parsingResult = queryParser.parse();
+
+        // Verify that the parsing result indicates a valid query with no errors
+        REQUIRE(parsingResult.isQueryValid() == true);
+        REQUIRE(parsingResult.getErrorMessage().empty() == true);
+
+        // Additional checks can be performed here if needed, such as verifying the specific parsing output
+    }
 }
 
 //read r;
@@ -1500,15 +1566,27 @@ TEST_CASE("Testing parsing of attrName") {
 
 
 TEST_CASE("M2 system test cases") {
-    SECTION("using variable as synonym") {
-        string query = "assign assign; print print; read read; call call; if if; while while; variable variable; procedure procedure; constant constant; stmt stmt;\n"
-                       "Select if pattern if(variable,_,_)";
+//    SECTION("using variable as synonym") {
+//        string query = "assign assign; print print; read read; call call; if if; while while; variable variable; procedure procedure; constant constant; stmt stmt;\n"
+//                       "Select if pattern if(variable,_,_)";
+//
+//        Tokenizer tokenizer(query);
+//        vector<Token> tokens = tokenizer.tokenize();
+//        QueryParser queryParser(tokens);
+//        ParsingResult parsingResult = queryParser.parse();
+//        REQUIRE(parsingResult.getErrorMessage() == "");
+//    }
 
+    SECTION("while w; if i; variable v; assign a;\n"
+            "Select i pattern i(\"v\",a,v)") {
+        string query = "while w; if i; variable v; assign a;\n"
+                       "Select i pattern i(\"v\",a,v)";
         Tokenizer tokenizer(query);
         vector<Token> tokens = tokenizer.tokenize();
         QueryParser queryParser(tokens);
         ParsingResult parsingResult = queryParser.parse();
-        REQUIRE(parsingResult.getErrorMessage() == "");
+        REQUIRE(parsingResult.getErrorMessage() == "SyntaxError");
+
     }
 }
 

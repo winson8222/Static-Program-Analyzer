@@ -64,7 +64,7 @@ void WhilePatternStrategy::processWildcard(ParsingResult parsingResult, std::sha
     string firstColName = this->relationShip.getValue();
     insertSingleColToTable(this->relationShip, result);
     std::unordered_set<int> allStmts;
-    allStmts = whilePatternReader->getAllStatementNumbers();
+    allStmts = whileReader->getAllWhiles();
     std::unordered_set<string> allStmtInString;
     convertIntSetToStringSet(allStmts, allStmtInString);
     insertRowsWithSingleColumn(firstColName, allStmtInString, result);

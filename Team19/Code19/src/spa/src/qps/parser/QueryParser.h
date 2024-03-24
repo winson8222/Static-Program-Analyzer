@@ -30,10 +30,10 @@ public:
 
 private:
     const std::unordered_map<TokenType, std::unordered_set<std::string>> validStmtSynonymsMap = {
-            {TokenType::Parent, {"stmt", "assign", "while", "if", "print", "read"}},
-            {TokenType::ParentT, {"stmt", "assign", "while", "if", "print", "read"}},
-            {TokenType::Follows, {"stmt", "assign", "while", "if", "print", "read"}},
-            {TokenType::FollowsT, {"stmt", "assign", "while", "if", "print", "read"}},
+            {TokenType::Parent, {"stmt", "assign", "while", "if", "print", "read", "call"}},
+            {TokenType::ParentT, {"stmt", "assign", "while", "if", "print", "read", "call"}},
+            {TokenType::Follows, {"stmt", "assign", "while", "if", "print", "read", "call"}},
+            {TokenType::FollowsT, {"stmt", "assign", "while", "if", "print", "read", "call"}},
             {TokenType::Uses, {"stmt", "print", "while", "if", "assign", "call", "read"}},
             {TokenType::Modifies, {"stmt", "print", "while", "if", "assign", "call", "read"}},
             {TokenType::Next, {"stmt", "assign", "while", "if", "print", "read", "call"}},
@@ -141,9 +141,9 @@ private:
     bool checkIfStmt();
     bool checkIfEnt();
     bool checkIfPatternSyn();
-    bool isLastParamInPatternClause();
-    void ensureNextBlank();
 
+    void ensureNextBlank();
+    void ensureCorrectPatternParams(PatternClause &clause);
 
 };
 
