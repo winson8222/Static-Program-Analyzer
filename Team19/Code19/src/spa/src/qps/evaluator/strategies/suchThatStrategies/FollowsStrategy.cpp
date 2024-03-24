@@ -64,17 +64,7 @@ void FollowsStrategy::processSynonyms(std::shared_ptr<ResultTable> resultTable,
     unordered_set<int> allPreFollowsStmts = reader->getKeys();
     filteredPreFollows = getFilteredStmtsNumByType(allPreFollowsStmts, firstStatementType, pkbReaderManager);
 
-    for (int stmt1 : filteredPreFollows) {
-        unordered_set<int> filteredPostFollows;
-        auto postFollows = reader->getRelationshipsByKey(stmt1);
-        filteredPostFollows = getFilteredStmtsNumByType(postFollows, secondStatementType, pkbReaderManager);
-        for (int stmt2 : filteredPostFollows) {
-            // if the two synonyms are the same, add only one col and the 2 value must be the same
-            pair<string, string> col1Pair = make_pair<string, string>(firstParam.getValue(), to_string(stmt1));
-            pair<string, string> col2Pair = make_pair<string, string>(secondParam.getValue(), to_string(stmt2));
-            insertRowToTable(col1Pair, col2Pair, resultTable);
-        }
-    }
+    insertRowsWithTwoCols(firstParam, secondParam, reader, parsingResult, resultTable, pkbReaderManager);
 }
 
 /**
@@ -98,15 +88,11 @@ void FollowsStrategy::processFirstParam(
 
         const auto& follows = reader->getRelationshipsByValue(stmtNum);
         filteredPreFollows = getFilteredStmtsNumByType(follows, firstStatementType, pkbReaderManager);
-        for (int stmt : filteredPreFollows) {
-            resultTable->insertNewRow({{col1, std::to_string(stmt)}});
-        }
+        insertStmtRowsWithSingleCol(filteredPreFollows, resultTable, col1);
     } else if (secondParam.getType() == TokenType::Wildcard) {
         const auto& follows = reader->getKeys();
         filteredPreFollows = getFilteredStmtsNumByType(follows, firstStatementType, pkbReaderManager);
-        for (int stmt : filteredPreFollows) {
-            resultTable->insertNewRow({{col1, std::to_string(stmt)}});
-        }
+        insertStmtRowsWithSingleCol(filteredPreFollows, resultTable, col1);
     }
 }
 
@@ -131,18 +117,12 @@ void FollowsStrategy::processSecondParam(
         const auto& follows = reader->getRelationshipsByKey(stmtNum);
 
         filteredPostFollows = getFilteredStmtsNumByType(follows, secondStatementType, pkbReaderManager);
-
-        for (int stmt : filteredPostFollows) {
-            resultTable->insertNewRow({{col2, std::to_string(stmt)}});
-        }
+        insertStmtRowsWithSingleCol(filteredPostFollows, resultTable, col2);
     } else if (firstParam.getType() == TokenType::Wildcard) {
         const auto& follows = reader->getValues();
 
         filteredPostFollows = getFilteredStmtsNumByType(follows, secondStatementType, pkbReaderManager);
-
-        for (int stmt : filteredPostFollows) {
-            resultTable->insertNewRow({{col2, std::to_string(stmt)}});
-        }
+        insertStmtRowsWithSingleCol(filteredPostFollows, resultTable, col2);
     }
 }
 

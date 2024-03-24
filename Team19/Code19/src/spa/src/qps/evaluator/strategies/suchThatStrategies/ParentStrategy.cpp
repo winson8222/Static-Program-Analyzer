@@ -53,28 +53,8 @@ void ParentStrategy::processSynonyms(std::shared_ptr<ResultTable> resultTable,
 {
     // Implementation for processing when both parameters are synonyms
     insertColsToTable(firstParam, secondParam, resultTable);
-    string firstStatementType = parsingResult.getDeclaredSynonyms().at(firstParam.getValue());
-    string secondStatementType = parsingResult.getDeclaredSynonyms().at(secondParam.getValue());
+    insertRowsWithTwoCols(firstParam,secondParam,reader, parsingResult, resultTable, pkbReaderManager);
 
-    // Retrieve the relationships
-    unordered_set<int> filteredParents;
-    const unordered_set<int>& parents = reader->getKeys();
-
-    filteredParents = getFilteredStmtsNumByType(parents, firstStatementType, pkbReaderManager);
-    // Iterate through the preFollows set and find corresponding postFollows
-    for (int stmt1 : filteredParents) {
-        unordered_set<int> filteredChildren;
-        unordered_set<int> children = reader->getRelationshipsByKey(stmt1);
-
-        filteredChildren = getFilteredStmtsNumByType(children, secondStatementType, pkbReaderManager);
-        // For each stmt1, iterate through all its postFollows
-        for (int stmt2 : filteredChildren) {
-            pair<string, string> col1Pair = make_pair<string, string>(firstParam.getValue(), to_string(stmt1));
-            pair<string, string> col2Pair = make_pair<string, string>(secondParam.getValue(), to_string(stmt2));
-            insertRowToTable(col1Pair, col2Pair, resultTable);
-
-        }
-    }
 }
 
 // Additional helper methods for readability
@@ -90,20 +70,12 @@ void ParentStrategy::processFirstParam(
         int stmtNum = stoi(secondParam.getValue());
         const unordered_set<int>& parents = reader->getRelationshipsByValue(stmtNum);
         filteredParents = getFilteredStmtsNumByType(parents, firstStatementType, pkbReaderManager);
-        for (int stmt : filteredParents) {
-            unordered_map<string, string> row;
-            row[col1] = to_string(stmt);
-            resultTable->insertNewRow(row);
-        }
+        insertStmtRowsWithSingleCol(filteredParents, resultTable, col1);
     }
     else if (secondParam.getType() == TokenType::Wildcard) {
         const unordered_set<int>& parents = reader->getKeys();
         filteredParents = getFilteredStmtsNumByType(parents, firstStatementType, pkbReaderManager);
-        for (int stmt : filteredParents) {
-            unordered_map<string, string> row;
-            row[col1] = to_string(stmt);
-            resultTable->insertNewRow(row);
-        }
+        insertStmtRowsWithSingleCol(filteredParents, resultTable, col1);
     }
 }
 
@@ -119,20 +91,12 @@ void ParentStrategy::processSecondParam(
         const unordered_set<int>& parents = reader->getRelationshipsByKey(stmtNum);
         filteredParents = getFilteredStmtsNumByType(parents, secondStatementType, pkbReaderManager);
 
-        for (int stmt : filteredParents) {
-            unordered_map<string, string> row;
-            row[col2] = to_string(stmt);
-            resultTable->insertNewRow(row);
-        }
+        insertStmtRowsWithSingleCol(filteredParents, resultTable, col2);
     }
     else if (firstParam.getType() == TokenType::Wildcard) {
         const unordered_set<int>& parents = reader->getValues();
         filteredParents = getFilteredStmtsNumByType(parents, secondStatementType, pkbReaderManager);
-        for (int stmt : filteredParents) {
-            unordered_map<string, string> row;
-            row[col2] = to_string(stmt);
-            resultTable->insertNewRow(row);
-        }
+        insertStmtRowsWithSingleCol(filteredParents, resultTable, col2);
     }
 }
 
