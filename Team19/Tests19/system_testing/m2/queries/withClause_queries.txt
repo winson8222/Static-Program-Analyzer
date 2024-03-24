@@ -1,0 +1,100 @@
+1 - with statement number
+stmt s1, s2;
+Select s1 with s1.stmt# = 2
+2
+5000
+2 - with true value
+while w;
+Select w with 1 = 1
+8
+5000
+3 - with false value
+stmt s1;
+Select s1 with 1 = 2
+
+5000
+4 - with stmt#
+stmt s1;
+Select s1 with s1.stmt# = 2
+2
+5000
+5 - with variable
+variable v;
+Select v with v.varName = "x"
+x
+5000
+6 - with read and variable
+read r; variable v;
+Select v with v.varName = r.varName
+complete
+5000
+7 - with procedure
+procedure p;
+Select p with "Main" = p.procName
+Main
+5000
+8 - with constant
+constant c;
+Select c with c.value = 5
+5
+5000
+9 - with equal to itself
+procedure p;
+Select p with p.procName = p.procName
+Main, Calculate, Decrement, LogStatus, Finish
+5000
+10 - procedure name = var name
+variable v; procedure p;
+Select p with p.procName = v.varName
+Calculate, Main, Finish
+5000
+11 - call and proc name
+call c; procedure p;
+Select p with p.procName = c.procName
+Calculate, Decrement, LogStatus, Finish
+5000
+12 - print and read varname
+print p; read r;
+Select p.varName with p.varName = r.varName
+complete
+5000
+13 - constant and statment with
+stmt s; constant c; 
+Select s with s.stmt# = c.value
+1, 3, 5
+5000
+14 - with print and read stmt
+read r; print p; 
+Select r with r.stmt# = p.stmt#
+
+5000
+15 - non existent variable name
+variable v; 
+Select v.varName with v.varName = "ea"
+
+5000
+16 - boolean false
+variable v;
+Select BOOLEAN with v.varName = "ea"
+FALSE
+5000
+17 - boolean true
+variable v;
+Select BOOLEAN with v.varName = "x"
+TRUE
+5000
+18 - assign with
+assign a; 
+Select a with a.stmt# = 1
+1
+5000
+19 - while stmt#
+while w; 
+Select w with 8 = w.stmt#
+8
+5000
+20 - assign constant stmt #
+assign a; constant c; 
+Select a with a.stmt# = c.value
+1
+5000
