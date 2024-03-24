@@ -16,12 +16,8 @@ std::shared_ptr<ResultTable> UsesStrategy::evaluateQuery(PKBReaderManager& pkbRe
         processFirstParam(suchThatFirstParam, suchThatSecondParam, parsingResult, resultTable, pkbReaderManager);
     } else if (suchThatSecondParam.getType() == TokenType::IDENT) {
         processSecondParam(suchThatFirstParam, suchThatSecondParam, parsingResult, resultTable, pkbReaderManager);
-    } else if (suchThatFirstParam.getType() == TokenType::INTEGER  && suchThatSecondParam.getType() == TokenType::QuoutIDENT) {
-        processBothConstants(suchThatFirstParam, suchThatSecondParam, parsingResult, resultTable);
-    } else if (suchThatFirstParam.getType() == TokenType::Wildcard || suchThatSecondParam.getType() == TokenType::Wildcard) {
-        processWildCards(suchThatFirstParam, suchThatSecondParam, resultTable);
     } else {
-        throw "Invalid Query!";
+        processBothConstants(suchThatFirstParam, suchThatSecondParam, parsingResult, resultTable);
     }
     return resultTable;
 }
@@ -103,31 +99,12 @@ void UsesStrategy::processBothConstants(const Token &firstParam, const Token &se
                                             const ParsingResult &parsingResult,
                                             std::shared_ptr<ResultTable> resultTable) {
     // check if the statement modifies the variable
-    string extractedVar = extractQuotedExpression(secondParam);
-    bool modifies = usesSReader->doesStmtUseVariable(stoi(firstParam.getValue()), extractedVar);
-    if (modifies) {
-        resultTable->setAsTruthTable();
+    if (isBothParamsWildcard(firstParam, secondParam)) {
+        if (usesSReader->getAllStmtsThatUseAnyVariable().empty()) {
+            resultTable->setAsTruthTable();
+        }
+    } else {
+        setTrueIfRelationShipExist(firstParam, secondParam, usesSReader, resultTable);
     }
 }
 
-void UsesStrategy::processWildCards(const Token& firstParam, const Token& secondParam, std::shared_ptr<ResultTable> resultTable) {
-    // check if there is any statement that modifies a variable
-    if (firstParam.getType() == TokenType::Wildcard && secondParam.getType() == TokenType::Wildcard) {
-        std::unordered_set<int> allUsesStmts = usesSReader->getAllStmtsThatUseAnyVariable();
-        if (!allUsesStmts.empty()) {
-            resultTable->setAsTruthTable();
-        }
-    } else if (firstParam.getType() == TokenType::Wildcard) {
-        std::unordered_set<int> allModifiesStmts = usesSReader->getAllStmtsThatUseVariable(
-                extractQuotedExpression(secondParam));
-        if (!allModifiesStmts.empty()) {
-            resultTable->setAsTruthTable();
-        }
-    } else if (secondParam.getType() == TokenType::Wildcard) {
-        std::unordered_set<std::string> allModifiedVars = usesSReader->getAllVariablesUsedByStmt(
-                stoi(firstParam.getValue()));
-        if (!allModifiedVars.empty()) {
-            resultTable->setAsTruthTable();
-        }
-    }
-}

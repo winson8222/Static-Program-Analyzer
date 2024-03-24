@@ -11,20 +11,15 @@ std::shared_ptr<ResultTable> AffectsStrategy::evaluateQuery(PKBReaderManager& pk
     if (firstParam.getType() == TokenType::IDENT && secondParam.getType() == TokenType::IDENT) {
         // Both parameters are synonyms, representing assignment statement numbers.
         processSynonyms(resultTable, parsingResult, pkbReaderManager);
-    } else if (isBothParamsInteger(firstParam, secondParam)) {
-        // Both parameters are specific statement numbers; directly check Affects relationship.
-        int stmt1 = std::stoi(firstParam.getValue());
-        int stmt2 = std::stoi(secondParam.getValue());
-        if (affectsReader->hasAffects(stmt1, stmt2)) {
-            resultTable->setAsTruthTable();
-        }
+    } else if (firstParam.getType() == TokenType::IDENT) {
+        // First parameter is a synonym, representing assignment statement numbers.
+        processFirstParam(resultTable, parsingResult, pkbReaderManager);
+    } else if (secondParam.getType() == TokenType::IDENT) {
+        // Second parameter is a synonym, representing assignment statement numbers.
+        processSecondParam(resultTable, parsingResult, pkbReaderManager);
     } else {
-        // Mixed parameter types: one is a specific statement number, and the other is a synonym.
-        if (firstParam.getType() == TokenType::IDENT) {
-            processFirstParam(resultTable, parsingResult, pkbReaderManager);
-        } else if (secondParam.getType() == TokenType::IDENT) {
-            processSecondParam(resultTable, parsingResult, pkbReaderManager);
-        }
+        // Both parameters are specific statement numbers.
+        processIntegerParams(resultTable);
     }
 
     return resultTable;
