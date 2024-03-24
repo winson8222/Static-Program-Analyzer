@@ -23,7 +23,7 @@ public:
 
     string removeSpaces(string str);
 
-    map<std::string, TokenType> clauseTypeMap = {
+    std::map<std::string, TokenType> clauseTypeMap = {
             {"Follows", TokenType::Follows},
             {"Follows*", TokenType::FollowsT},
             {"Parent", TokenType::Parent},
@@ -37,7 +37,7 @@ public:
             {"Affects", TokenType::Affects},
     };
 
-    map<std::string, TokenType> signMap = {
+    std::map<std::string, TokenType> signMap = {
             {"(", TokenType::Lparenthesis},
             {")", TokenType::Rparenthesis},
             {";", TokenType::Semicolon},
@@ -50,7 +50,7 @@ public:
     };
 
 
-    const map<std::string, std::function<TokenType()>> tokenFunctionMap = {
+    const std::map<std::string, std::function<TokenType()>> tokenFunctionMap = {
             {"Select", [this]() -> TokenType {
                 return TokenType::SelectKeyword;
             }},
