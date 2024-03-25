@@ -26,7 +26,7 @@ Select <s1, s2> such that Next(s1, s2)
 6 - Test for Affects
 stmt s1, s2;
 Select <s1, s2> such that Affects(s1, s2)
-3 5
+3 5, 11 11, 9 11
 5000
 7 - Test for Uses
 stmt s; variable v;
