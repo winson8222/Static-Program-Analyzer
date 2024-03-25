@@ -158,3 +158,4 @@ procedure p, q; variable v;
 Select <p.procName, q, v.varName> such that Calls(p, q)
 Calculate Decrement x, Calculate LogStatus x, Calculate Finish x, Main Calculate x, Calculate LogStatus y, Calculate Finish y, Main Calculate y, Calculate Finish number, Calculate LogStatus z, Calculate Decrement z, Calculate Finish z, Decrement LogStatus value, Calculate Decrement complete, Decrement LogStatus y, Calculate LogStatus number, Main Calculate value, Decrement LogStatus complete, Decrement LogStatus z, Main Calculate z, Calculate LogStatus complete, Calculate Decrement result, Calculate Finish complete, Calculate LogStatus value, Calculate Decrement y, Main Calculate complete, Calculate Decrement number, Decrement LogStatus number, Decrement LogStatus x, Calculate Finish value, Decrement LogStatus result, Calculate Decrement value, Main Calculate number, Calculate LogStatus result, Calculate Finish result, Main Calculate result
 10000
+

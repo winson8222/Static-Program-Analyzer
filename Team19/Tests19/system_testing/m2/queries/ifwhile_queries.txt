@@ -46,7 +46,7 @@ none
 10. Select all while pattern wildcard
 while pattern;
 Select pattern pattern pattern(_,_)
-11, 12, 14, 21, 24
+11, 12, 14, 21, 24, 10, 26
 5000
 11. Select all while pattern with ident
 while a1;
@@ -256,22 +256,22 @@ SemanticError
 52. Invalid whiles
 while w; if i; variable v;
 Select w pattern w("v", v)
-SemanticError
+SyntaxError
 5000
 53. Invalid whiles
 while w; if i; variable v; assign a;
 Select w pattern w("v",a)
-SemanticError
+SyntaxError
 5000
 54. Invalid ifs
 while w; if i; variable v; assign a;
 Select i pattern i("v",v,_)
-SemanticError
+SyntaxError
 5000
 55. Invalid ifs
 while w; if i; variable v; assign a;
 Select i pattern i("v",a,v)
-SemanticError
+SyntaxError
 5000
 56. Invalid ifs
 while w; if i; variable v; assign a;
@@ -301,7 +301,7 @@ SyntaxError
 61. Invalid ifs
 while w; if i; variable v; assign a;
 Select i pattern i("v",__)
-SemanticError
+SyntaxError
 5000
 62. Invalid whiles
 while w; if i; variable v; assign a;
@@ -316,7 +316,7 @@ SyntaxError
 64. Invalid whiles
 while w; if i; variable v; assign a;
 Select w pattern w("1",_)
-none
+SyntaxError
 5000
 65. Invalid whiles
 while w; if i; variable v; assign a;
