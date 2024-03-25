@@ -142,6 +142,8 @@ std::unordered_set<std::string> WithStrategy::processParam(Token param, PKBReade
         string attribute = attributes.second;
         string synonymType = parsingResult.getDeclaredSynonym(synonym);
 
+
+
         if (synonymType == "stmt" && attribute == "stmt#") {
             return retrieveIntEntities(synonym, resultTable, statementReader);
 		}
