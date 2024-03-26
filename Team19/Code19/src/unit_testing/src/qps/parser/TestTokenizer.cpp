@@ -1128,3 +1128,95 @@ TEST_CASE("Testing with clause with attributes") {
     REQUIRE(tokens[15].getType() == TokenType::AttrName);
     REQUIRE(tokens[15].getValue() == "stmt#"); 
 }
+
+
+TEST_CASE("quoted constant with wildcards and not") {
+    Tokenizer tokenizer("assign a; Select a pattern not a(_, _\"1\"_)");
+    vector<Token> tokens = tokenizer.tokenize();
+
+    REQUIRE(tokens.size() == 15);  // Expecting 14 tokens
+
+    REQUIRE(tokens[0].getType() == TokenType::DesignEntity);
+    REQUIRE(tokens[0].getValue() == "assign");
+
+    REQUIRE(tokens[1].getType() == TokenType::IDENT);
+    REQUIRE(tokens[1].getValue() == "a");
+
+    REQUIRE(tokens[2].getType() == TokenType::Semicolon);
+    REQUIRE(tokens[2].getValue() == ";");
+
+    REQUIRE(tokens[3].getType() == TokenType::SelectKeyword);
+    REQUIRE(tokens[3].getValue() == "Select");
+
+    REQUIRE(tokens[4].getType() == TokenType::IDENT);
+    REQUIRE(tokens[4].getValue() == "a");
+
+    REQUIRE(tokens[5].getType() == TokenType::PatternKeyword);
+    REQUIRE(tokens[5].getValue() == "pattern");
+
+    REQUIRE(tokens[6].getType() == TokenType::NotKeyword);
+    REQUIRE(tokens[6].getValue() == "not");
+
+    REQUIRE(tokens[7].getType() == TokenType::IDENT);
+    REQUIRE(tokens[7].getValue() == "a");
+
+    REQUIRE(tokens[8].getType() == TokenType::Lparenthesis);
+    REQUIRE(tokens[8].getValue() == "(");
+
+    REQUIRE(tokens[9].getType() == TokenType::Wildcard);
+    REQUIRE(tokens[9].getValue() == "_");
+
+    REQUIRE(tokens[10].getType() == TokenType::Comma);
+    REQUIRE(tokens[10].getValue() == ",");
+
+    REQUIRE(tokens[11].getType() == TokenType::Wildcard);
+    REQUIRE(tokens[11].getValue() == "_");
+
+    REQUIRE(tokens[12].getType() == TokenType::QuoutConst);
+    REQUIRE(tokens[12].getValue() == "\"1\"");
+
+    REQUIRE(tokens[13].getType() == TokenType::Wildcard);
+    REQUIRE(tokens[13].getValue() == "_");
+
+    REQUIRE(tokens[14].getType() == TokenType::Rparenthesis);
+    REQUIRE(tokens[14].getValue() == ")");
+}
+
+TEST_CASE("stmt s; Select BOOLEAN such that not Follows(3, 4)") {
+    // Initialize tokenizer with the input string
+    Tokenizer tokenizer("stmt s; Select BOOLEAN such that not Follows(3, 4)");
+    vector<Token> tokens = tokenizer.tokenize();
+
+    // Check the total number of tokens
+    REQUIRE(tokens.size() == 14);  // Expecting 12 tokens
+
+    // Validate each token against the expected output
+    REQUIRE(tokens[0].getType() == TokenType::DesignEntity);
+    REQUIRE(tokens[0].getValue() == "stmt");
+    REQUIRE(tokens[1].getType() == TokenType::IDENT);
+    REQUIRE(tokens[1].getValue() == "s");
+    REQUIRE(tokens[2].getType() == TokenType::Semicolon);
+    REQUIRE(tokens[2].getValue() == ";");
+    REQUIRE(tokens[3].getType() == TokenType::SelectKeyword);
+    REQUIRE(tokens[3].getValue() == "Select");
+    REQUIRE(tokens[4].getType() == TokenType::BooleanKeyword);
+    REQUIRE(tokens[4].getValue() == "BOOLEAN");
+    REQUIRE(tokens[5].getType() == TokenType::SuchKeyword);
+    REQUIRE(tokens[5].getValue() == "such");
+    REQUIRE(tokens[6].getType() == TokenType::ThatKeyword);
+    REQUIRE(tokens[6].getValue() == "that");
+    REQUIRE(tokens[7].getType() == TokenType::NotKeyword);
+    REQUIRE(tokens[7].getValue() == "not");
+    REQUIRE(tokens[8].getType() == TokenType::Follows);
+    REQUIRE(tokens[8].getValue() == "Follows");
+    REQUIRE(tokens[9].getType() == TokenType::Lparenthesis);
+    REQUIRE(tokens[9].getValue() == "(");
+    REQUIRE(tokens[10].getType() == TokenType::INTEGER);
+    REQUIRE(tokens[10].getValue() == "3");
+    REQUIRE(tokens[11].getType() == TokenType::Comma);
+    REQUIRE(tokens[11].getValue() == ",");
+    REQUIRE(tokens[12].getType() == TokenType::INTEGER);
+    REQUIRE(tokens[12].getValue() == "4");
+    REQUIRE(tokens[13].getType() == TokenType::Rparenthesis);
+    REQUIRE(tokens[13].getValue() == ")");
+}
