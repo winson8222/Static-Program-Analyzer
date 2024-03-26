@@ -25,12 +25,9 @@ public:
 
     ParsingResult getParsingResult();  // Method to retrieve the result
 private:
-	void throwIncompleteQueryError();
-	bool syntaxError;
-	bool semanticError;
-
-	ParsingResult makeResult(ParsingResult parsingResult);
-	void setSyntaxError();
+    bool semanticError;
+    void throwSyntaxError();
+    ParsingResult makeResult(ParsingResult parsingResult);
 	void setSemanticError();
     const std::unordered_map<TokenType, std::unordered_set<std::string>> validStmtSynonymsMap = {
             {TokenType::Parent, {"stmt", "assign", "while", "if", "print", "read", "call"}},
