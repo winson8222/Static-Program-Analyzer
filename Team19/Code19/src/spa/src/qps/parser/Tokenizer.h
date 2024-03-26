@@ -77,6 +77,9 @@ public:
             {"and", [this]() -> TokenType {
                 return TokenType::AndKeyword;
             }},
+            {"not", [this]() -> TokenType {
+                return TokenType::NotKeyword;
+            }},
     };
 
 private:
@@ -89,6 +92,8 @@ private:
     // string the represents the last relationship used (such that, with, pattern)
     // it is used to explicitly state the relationship instead of "and"
     string lastRelationship;
+
+    string nextToken;
 
     // A private method that splits the query into tokens based on the regular expression.
     // Returns a vector of Token objects.

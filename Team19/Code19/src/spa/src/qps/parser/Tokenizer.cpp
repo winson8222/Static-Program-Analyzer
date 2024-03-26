@@ -29,6 +29,9 @@ void Tokenizer::splitQuery() {
     std::sregex_token_iterator end;  // End iterator.
 
     for (; iter != end; ++iter) {  // Loop through all tokens.
+        // Check if the next iterator is available.
+        auto nextIter = std::next(iter, 1);
+        nextToken = nextIter != end ? *nextIter : string("");
         auto tokenType = determineTokenType(*iter);  // Determine the type of each token.
         if (*iter == "and") {
             tokens.emplace_back(tokenType, lastRelationship);  // Add the token to the vector.
@@ -73,6 +76,9 @@ TokenType Tokenizer::determineTokenType(const string& tokenStr) {
     tokenType = determineRelRefToken(tokenStr);
     if (!isSyntaxError(tokenType)) return tokenType;
 
+    tokenType = determineClauseKeywordToken(tokenStr);
+    if (!isSyntaxError(tokenType)) return tokenType;
+
     // IDENT: Starts with a letter and may continue with letters or digits.
     if (regex_match(tokenStr, regex("^[a-zA-Z][a-zA-Z0-9]*$"))) {
         return TokenType::IDENT;
@@ -96,7 +102,7 @@ bool Tokenizer::isSyntaxError(TokenType tokenType) {
 }
 
 TokenType Tokenizer::determineClauseKeywordToken(const string& tokenStr) {
-    if (regex_match(tokenStr, regex("^(Select|pattern|such|that|with|and)$"))) {
+    if (regex_match(tokenStr, regex("^(Select|pattern|such|that|with|and|not)$"))) {
         if (!tokens.empty() && (isSynonym() || tokens.back().getType() == TokenType::SelectKeyword)) {
             return TokenType::IDENT;
         }
@@ -198,6 +204,8 @@ string Tokenizer::removeSpaces(string str) {
 
 bool Tokenizer::isSynonym() {
     return checkIfDeclaration() || tokens.back().getType() == TokenType::Lparenthesis
-           || tokens.back().getType() == TokenType::Comma || tokens.back().getType() == TokenType::PatternKeyword
-           || tokens.back().getType() == TokenType::LeftAngleBracket;
+        || tokens.back().getType() == TokenType::Comma 
+        || (tokens.back().getType() == TokenType::PatternKeyword && nextToken == "(")
+        || tokens.back().getType() == TokenType::LeftAngleBracket
+        || (tokens.back().getType() == TokenType::AndKeyword && tokens.back().getValue() == "pattern");
 }
