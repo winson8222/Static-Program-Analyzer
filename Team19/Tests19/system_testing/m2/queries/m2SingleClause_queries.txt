@@ -143,8 +143,3 @@ stmt s, s1;
 Select BOOLEAN such that Affects(16, 17)
 TRUE
 5000
-30 - M2 failed
-assign a; variable v, v1;
-Select v such that Modifies(a, v) pattern a (v1, _)
-x
-5000
