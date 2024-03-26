@@ -198,6 +198,7 @@ string Tokenizer::removeSpaces(string str) {
 
 bool Tokenizer::isSynonym() {
     return checkIfDeclaration() || tokens.back().getType() == TokenType::Lparenthesis
-           || tokens.back().getType() == TokenType::Comma || tokens.back().getType() == TokenType::PatternKeyword
-           || tokens.back().getType() == TokenType::LeftAngleBracket;
+        || tokens.back().getType() == TokenType::Comma || tokens.back().getType() == TokenType::PatternKeyword
+        || tokens.back().getType() == TokenType::LeftAngleBracket
+        || (tokens.back().getValue() == "pattern" && tokens.back().getType() == TokenType::AndKeyword);
 }
