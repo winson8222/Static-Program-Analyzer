@@ -1220,3 +1220,262 @@ TEST_CASE("stmt s; Select BOOLEAN such that not Follows(3, 4)") {
     REQUIRE(tokens[13].getType() == TokenType::Rparenthesis);
     REQUIRE(tokens[13].getValue() == ")");
 }
+
+TEST_CASE("assign a; Select a such that Follows(3, a) not Parent(a, 5) pattern a(v, _\"2\"_) and not a(_, _)") {
+    // Initialize tokenizer with the input string
+    Tokenizer tokenizer("assign a; Select a such that Follows(3, a) and not Parent(a, 5) pattern a(v, _\"2\"_) and not a(_, _)");
+    vector<Token> tokens = tokenizer.tokenize();
+
+    // Check the total number of tokens
+    REQUIRE(tokens.size() == 38);  // Expecting 30 tokens
+
+    // Validate each token against the expected output
+    REQUIRE(tokens[0].getType() == TokenType::DesignEntity);
+    REQUIRE(tokens[0].getValue() == "assign");
+    REQUIRE(tokens[1].getType() == TokenType::IDENT);
+    REQUIRE(tokens[1].getValue() == "a");
+    REQUIRE(tokens[2].getType() == TokenType::Semicolon);
+    REQUIRE(tokens[2].getValue() == ";");
+    REQUIRE(tokens[3].getType() == TokenType::SelectKeyword);
+    REQUIRE(tokens[3].getValue() == "Select");
+    REQUIRE(tokens[4].getType() == TokenType::IDENT);
+    REQUIRE(tokens[4].getValue() == "a");
+    REQUIRE(tokens[5].getType() == TokenType::SuchKeyword);
+    REQUIRE(tokens[5].getValue() == "such");
+    REQUIRE(tokens[6].getType() == TokenType::ThatKeyword);
+    REQUIRE(tokens[6].getValue() == "that");
+    REQUIRE(tokens[7].getType() == TokenType::Follows);
+    REQUIRE(tokens[7].getValue() == "Follows");
+    REQUIRE(tokens[8].getType() == TokenType::Lparenthesis);
+    REQUIRE(tokens[8].getValue() == "(");
+    REQUIRE(tokens[9].getType() == TokenType::INTEGER);
+    REQUIRE(tokens[9].getValue() == "3");
+    REQUIRE(tokens[10].getType() == TokenType::Comma);
+    REQUIRE(tokens[10].getValue() == ",");
+    REQUIRE(tokens[11].getType() == TokenType::IDENT);
+    REQUIRE(tokens[11].getValue() == "a");
+    REQUIRE(tokens[12].getType() == TokenType::Rparenthesis);
+    REQUIRE(tokens[12].getValue() == ")");
+    REQUIRE(tokens[13].getType() == TokenType::AndKeyword);
+    // finish the all of the rest for me
+    REQUIRE(tokens[14].getType() == TokenType::NotKeyword);
+    REQUIRE(tokens[14].getValue() == "not");
+    REQUIRE(tokens[15].getType() == TokenType::Parent);
+    REQUIRE(tokens[15].getValue() == "Parent");
+    REQUIRE(tokens[16].getType() == TokenType::Lparenthesis);
+    REQUIRE(tokens[16].getValue() == "(");
+    REQUIRE(tokens[17].getType() == TokenType::IDENT);
+    REQUIRE(tokens[17].getValue() == "a");
+    REQUIRE(tokens[18].getType() == TokenType::Comma);
+    REQUIRE(tokens[18].getValue() == ",");
+    REQUIRE(tokens[19].getType() == TokenType::INTEGER);
+    REQUIRE(tokens[19].getValue() == "5");
+    REQUIRE(tokens[20].getType() == TokenType::Rparenthesis);
+    REQUIRE(tokens[20].getValue() == ")");
+    REQUIRE(tokens[21].getType() == TokenType::PatternKeyword);
+    REQUIRE(tokens[21].getValue() == "pattern");
+    REQUIRE(tokens[22].getType() == TokenType::IDENT);
+    REQUIRE(tokens[22].getValue() == "a");
+    REQUIRE(tokens[23].getType() == TokenType::Lparenthesis);
+    REQUIRE(tokens[23].getValue() == "(");
+    REQUIRE(tokens[24].getType() == TokenType::IDENT);
+    REQUIRE(tokens[24].getValue() == "v");
+    REQUIRE(tokens[25].getType() == TokenType::Comma);
+    REQUIRE(tokens[25].getValue() == ",");
+    REQUIRE(tokens[26].getType() == TokenType::Wildcard);
+    REQUIRE(tokens[26].getValue() == "_");
+    REQUIRE(tokens[27].getType() == TokenType::QuoutConst);
+    REQUIRE(tokens[27].getValue() == "\"2\"");
+    REQUIRE(tokens[28].getType() == TokenType::Wildcard);
+    REQUIRE(tokens[28].getValue() == "_");
+    REQUIRE(tokens[29].getType() == TokenType::Rparenthesis);
+    REQUIRE(tokens[29].getValue() == ")");
+    REQUIRE(tokens[30].getType() == TokenType::AndKeyword);
+    REQUIRE(tokens[30].getValue() == "pattern");
+    REQUIRE(tokens[31].getType() == TokenType::NotKeyword);
+    REQUIRE(tokens[31].getValue() == "not");
+    REQUIRE(tokens[32].getType() == TokenType::IDENT);
+    REQUIRE(tokens[32].getValue() == "a");
+    REQUIRE(tokens[33].getType() == TokenType::Lparenthesis);
+    REQUIRE(tokens[33].getValue() == "(");
+    REQUIRE(tokens[34].getType() == TokenType::Wildcard);
+    REQUIRE(tokens[34].getValue() == "_");
+    REQUIRE(tokens[35].getType() == TokenType::Comma);
+    REQUIRE(tokens[35].getValue() == ",");
+    REQUIRE(tokens[36].getType() == TokenType::Wildcard);
+    REQUIRE(tokens[36].getValue() == "_");
+    REQUIRE(tokens[37].getType() == TokenType::Rparenthesis);
+    REQUIRE(tokens[37].getValue() == ")");
+
+
+
+
+}
+
+
+TEST_CASE("stmt s; assign a; constant c; Select BOOLEAN such that Follows(3, 4) and Parent(5, 6) with a.stmt# = s.stmt# not c.value = \"abc\"") {
+    // Initialize tokenizer with the input string
+    Tokenizer tokenizer(
+            "stmt s; assign a; constant c; Select BOOLEAN such that Follows(3, 4) and Parent(5, 6) with a.stmt# = s.stmt# and not c.value = \"abc\"");
+    vector<Token> tokens = tokenizer.tokenize();
+
+    // Check the total number of tokens
+    REQUIRE(tokens.size() == 41);  // The exact token count should be determined based on parsing rules
+
+    // Validate each token against the expected output
+    REQUIRE(tokens[0].getType() == TokenType::DesignEntity);
+    REQUIRE(tokens[0].getValue() == "stmt");
+
+    REQUIRE(tokens[1].getType() == TokenType::IDENT);
+    REQUIRE(tokens[1].getValue() == "s");
+
+    REQUIRE(tokens[2].getType() == TokenType::Semicolon);
+
+    REQUIRE(tokens[3].getType() == TokenType::DesignEntity);
+    REQUIRE(tokens[3].getValue() == "assign");
+
+    REQUIRE(tokens[4].getType() == TokenType::IDENT);
+    REQUIRE(tokens[4].getValue() == "a");
+
+    REQUIRE(tokens[5].getType() == TokenType::Semicolon);
+
+    REQUIRE(tokens[6].getType() == TokenType::DesignEntity);
+    REQUIRE(tokens[6].getValue() == "constant");
+
+    REQUIRE(tokens[7].getType() == TokenType::IDENT);
+    REQUIRE(tokens[7].getValue() == "c");
+
+    REQUIRE(tokens[8].getType() == TokenType::Semicolon);
+
+    REQUIRE(tokens[9].getType() == TokenType::SelectKeyword);
+    REQUIRE(tokens[9].getValue() == "Select");
+
+    REQUIRE(tokens[10].getType() == TokenType::BooleanKeyword);
+    REQUIRE(tokens[10].getValue() == "BOOLEAN");
+
+    REQUIRE(tokens[11].getType() == TokenType::SuchKeyword);
+
+    REQUIRE(tokens[12].getType() == TokenType::ThatKeyword);
+
+    REQUIRE(tokens[13].getType() == TokenType::Follows);
+    REQUIRE(tokens[13].getValue() == "Follows");
+
+    REQUIRE(tokens[14].getType() == TokenType::Lparenthesis);
+
+    REQUIRE(tokens[15].getType() == TokenType::INTEGER);
+    REQUIRE(tokens[15].getValue() == "3");
+
+    REQUIRE(tokens[16].getType() == TokenType::Comma);
+
+    REQUIRE(tokens[17].getType() == TokenType::INTEGER);
+    REQUIRE(tokens[17].getValue() == "4");
+
+    REQUIRE(tokens[18].getType() == TokenType::Rparenthesis);
+
+    REQUIRE(tokens[19].getType() == TokenType::AndKeyword);
+
+    REQUIRE(tokens[20].getType() == TokenType::Parent);
+    REQUIRE(tokens[20].getValue() == "Parent");
+
+    REQUIRE(tokens[21].getType() == TokenType::Lparenthesis);
+
+    REQUIRE(tokens[22].getType() == TokenType::INTEGER);
+    REQUIRE(tokens[22].getValue() == "5");
+
+    REQUIRE(tokens[23].getType() == TokenType::Comma);
+
+    REQUIRE(tokens[24].getType() == TokenType::INTEGER);
+    REQUIRE(tokens[24].getValue() == "6");
+
+    REQUIRE(tokens[25].getType() == TokenType::Rparenthesis);
+
+    REQUIRE(tokens[26].getType() == TokenType::WithKeyword);
+
+    REQUIRE(tokens[27].getType() == TokenType::IDENT);
+    REQUIRE(tokens[27].getValue() == "a");
+    REQUIRE(tokens[28].getType() == TokenType::Dot);
+    REQUIRE(tokens[29].getType() == TokenType::AttrName);
+    REQUIRE(tokens[29].getValue() == "stmt#");
+    REQUIRE(tokens[30].getType() == TokenType::Equal);
+    REQUIRE(tokens[31].getType() == TokenType::IDENT);
+    REQUIRE(tokens[31].getValue() == "s");
+    REQUIRE(tokens[32].getType() == TokenType::Dot);
+    REQUIRE(tokens[33].getType() == TokenType::AttrName);
+    REQUIRE(tokens[33].getValue() == "stmt#");
+    REQUIRE(tokens[34].getType() == TokenType::AndKeyword);
+    REQUIRE(tokens[35].getType() == TokenType::NotKeyword);
+    REQUIRE(tokens[36].getType() == TokenType::IDENT);
+    REQUIRE(tokens[36].getValue() == "c");
+    REQUIRE(tokens[37].getType() == TokenType::Dot);
+    REQUIRE(tokens[38].getType() == TokenType::AttrName);
+    REQUIRE(tokens[38].getValue() == "value");
+    REQUIRE(tokens[39].getType() == TokenType::Equal);
+    REQUIRE(tokens[40].getType() == TokenType::QuoutIDENT);
+    REQUIRE(tokens[40].getValue() == "\"abc\"");
+
+}
+
+TEST_CASE("Select stmts with adjusted conditions and additional clause") {
+    Tokenizer tokenizer("stmt s; Select s such that not Follows(s, 4) and not Parent(s, 5) and Modifies(s, \"x\") and not Modifies(s, \"y\") Uses(s, \"z\")");
+    vector<Token> tokens = tokenizer.tokenize();
+
+    REQUIRE(tokens.size() == 43);  // Adjust the expected number based on how your tokenizer handles this query
+    REQUIRE(tokens[0].getType() == TokenType::DesignEntity);
+    REQUIRE(tokens[0].getValue() == "stmt");
+    REQUIRE(tokens[1].getType() == TokenType::IDENT);
+    REQUIRE(tokens[1].getValue() == "s");
+    REQUIRE(tokens[2].getType() == TokenType::Semicolon);
+    REQUIRE(tokens[3].getType() == TokenType::SelectKeyword);
+    REQUIRE(tokens[3].getValue() == "Select");
+    REQUIRE(tokens[4].getType() == TokenType::IDENT);
+    REQUIRE(tokens[4].getValue() == "s");
+    REQUIRE(tokens[5].getType() == TokenType::SuchKeyword);
+    REQUIRE(tokens[6].getType() == TokenType::ThatKeyword);
+    REQUIRE(tokens[7].getType() == TokenType::NotKeyword);
+    REQUIRE(tokens[8].getType() == TokenType::Follows);
+    REQUIRE(tokens[9].getType() == TokenType::Lparenthesis);
+    REQUIRE(tokens[10].getType() == TokenType::IDENT);
+    REQUIRE(tokens[10].getValue() == "s");
+    REQUIRE(tokens[11].getType() == TokenType::Comma);
+    REQUIRE(tokens[12].getType() == TokenType::INTEGER);
+    REQUIRE(tokens[12].getValue() == "4");
+    REQUIRE(tokens[13].getType() == TokenType::Rparenthesis);
+    REQUIRE(tokens[14].getType() == TokenType::AndKeyword);
+    REQUIRE(tokens[15].getType() == TokenType::NotKeyword);
+    REQUIRE(tokens[16].getType() == TokenType::Parent);
+    REQUIRE(tokens[17].getType() == TokenType::Lparenthesis);
+    REQUIRE(tokens[18].getType() == TokenType::IDENT);
+    REQUIRE(tokens[18].getValue() == "s");
+    REQUIRE(tokens[19].getType() == TokenType::Comma);
+    REQUIRE(tokens[20].getType() == TokenType::INTEGER);
+    REQUIRE(tokens[20].getValue() == "5");
+    REQUIRE(tokens[21].getType() == TokenType::Rparenthesis);
+    REQUIRE(tokens[22].getType() == TokenType::AndKeyword);
+    REQUIRE(tokens[23].getType() == TokenType::Modifies);
+    REQUIRE(tokens[24].getType() == TokenType::Lparenthesis);
+    REQUIRE(tokens[25].getType() == TokenType::IDENT);
+    REQUIRE(tokens[25].getValue() == "s");
+    REQUIRE(tokens[26].getType() == TokenType::Comma);
+    REQUIRE(tokens[27].getType() == TokenType::QuoutIDENT);
+    REQUIRE(tokens[27].getValue() == "\"x\"");
+    REQUIRE(tokens[28].getType() == TokenType::Rparenthesis);
+    REQUIRE(tokens[29].getType() == TokenType::AndKeyword);
+    REQUIRE(tokens[30].getType() == TokenType::NotKeyword);
+    REQUIRE(tokens[31].getType() == TokenType::Modifies);
+    REQUIRE(tokens[32].getType() == TokenType::Lparenthesis);
+    REQUIRE(tokens[33].getType() == TokenType::IDENT);
+    REQUIRE(tokens[33].getValue() == "s");
+    REQUIRE(tokens[34].getType() == TokenType::Comma);
+    REQUIRE(tokens[35].getType() == TokenType::QuoutIDENT);
+    REQUIRE(tokens[35].getValue() == "\"y\"");
+    REQUIRE(tokens[36].getType() == TokenType::Rparenthesis);
+    REQUIRE(tokens[37].getType() == TokenType::Uses);
+    REQUIRE(tokens[38].getType() == TokenType::Lparenthesis);
+    REQUIRE(tokens[39].getType() == TokenType::IDENT);
+    REQUIRE(tokens[39].getValue() == "s");
+    REQUIRE(tokens[40].getType() == TokenType::Comma);
+    REQUIRE(tokens[41].getType() == TokenType::QuoutIDENT);
+    REQUIRE(tokens[41].getValue() == "\"z\"");
+    REQUIRE(tokens[42].getType() == TokenType::Rparenthesis);
+
+}

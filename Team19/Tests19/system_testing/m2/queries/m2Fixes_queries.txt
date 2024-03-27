@@ -1,0 +1,15 @@
+1 - Order of error throwing
+assign a; variable v; constant c;
+Select a such that Uses(a, c) pattern a("8", _)
+SyntaxError
+5000
+2 - Testing for keyword used as variable name, same logic as 7
+assign pattern;
+Select pattern pattern pattern("         x          ", "1") and pattern("x", "1")
+none
+5000
+3 - Multiple Clause, Syntax Error, Pattern AND Such that 1
+assign a; variable v; read rd;
+Select a pattern a("end",_) and such that Uses(a, v)
+SyntaxError
+5000

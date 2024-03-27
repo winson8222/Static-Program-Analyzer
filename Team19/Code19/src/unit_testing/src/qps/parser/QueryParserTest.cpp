@@ -1589,13 +1589,108 @@ TEST_CASE("M2 system test cases") {
 
     }
 
-//    SECTION("assign pattern; Select pattern pattern pattern(\"         x          \", \"1\") and pattern(\"x\", \"1\")") {
-//        string query = "assign pattern; Select pattern pattern pattern(\"         x          \", \"1\") and pattern(\"x\", \"1\")";
-//        Tokenizer tokenizer(query);
-//        vector<Token> tokens = tokenizer.tokenize();
-//        QueryParser queryParser(tokens);
-//        ParsingResult parsingResult = queryParser.parse();
-//        REQUIRE(parsingResult.getErrorMessage() == "");
-//    }
+
+}
+
+TEST_CASE("use not") {
+    SECTION("assign a; Select a pattern not a(_, _\"1\"_)") {
+        Tokenizer tokenizer("assign a; Select a pattern not a(_, _\"1\"_)");
+        vector<Token> tokens = tokenizer.tokenize();
+        QueryParser queryParser(tokens);
+        ParsingResult parsingResult = queryParser.parse();
+        REQUIRE(parsingResult.getErrorMessage() == "");
+        REQUIRE(parsingResult.getPatternClauses()[0].getFirstParam().getValue() == "_");
+        REQUIRE(parsingResult.getPatternClauses()[0].getSecondParam().getValue() == "\"1\"");
+        REQUIRE(parsingResult.getPatternClauses()[0].getSecondParam().getType() == TokenType::PartialExpressionSpec);
+        REQUIRE(parsingResult.getPatternClauses()[0].isNegated() == true);
+    }
+
+    SECTION("stmt s; Select BOOLEAN such that not Follows(3, 4)") {
+        Tokenizer tokenizer("stmt s; Select BOOLEAN such that not Follows(3, 4)");
+        vector<Token> tokens = tokenizer.tokenize();
+        QueryParser queryParser(tokens);
+        ParsingResult parsingResult = queryParser.parse();
+        REQUIRE(parsingResult.getErrorMessage() == "");
+        auto suchThatClauses = parsingResult.getSuchThatClauses();
+        REQUIRE(suchThatClauses.size() == 1);
+        REQUIRE(suchThatClauses[0].getRelationship().getType() == TokenType::Follows);
+        REQUIRE(suchThatClauses[0].getFirstParam().getValue() == "3");
+        REQUIRE(suchThatClauses[0].getSecondParam().getValue() == "4");
+        REQUIRE(suchThatClauses[0].isNegated() == true);
+    }
+
+    SECTION("assign a; Select a such that Follows(3, a) not Parent(a, 5) pattern a(v, _\"2\"_) not a(_, _)") {
+        Tokenizer tokenizer("assign a; Select a such that Follows(3, a) not Parent(a, 5) pattern a(v, _\"2\"_) and not a(_, _)");
+        vector<Token> tokens = tokenizer.tokenize();
+        QueryParser queryParser(tokens);
+        ParsingResult parsingResult = queryParser.parse();
+        REQUIRE(parsingResult.getErrorMessage() == "");
+        // Check for the 'Follows' clause
+        REQUIRE(parsingResult.getSuchThatClauses()[0].getRelationship().getType() == TokenType::Follows);
+        REQUIRE(parsingResult.getSuchThatClauses()[0].getFirstParam().getValue() == "3");
+        // Check for the 'Parent' clause
+        REQUIRE(parsingResult.getSuchThatClauses()[1].isNegated() == true);
+        REQUIRE(parsingResult.getSuchThatClauses()[1].getFirstParam().getValue() == "a");
+        // Pattern clause checks
+        REQUIRE(parsingResult.getPatternClauses()[1].isNegated() == true);
+        REQUIRE(parsingResult.getPatternClauses()[0].getFirstParam().getValue() == "v");
+        REQUIRE(parsingResult.getPatternClauses()[0].getSecondParam().getValue() == "\"2\"");
+    }
+
+    SECTION("stmt s; assign a; constant c; Select BOOLEAN such that Follows(3, 4) and Parent(5, 6) with a.stmt# = s.stmt# not c.value = \"abc\"") {
+        Tokenizer tokenizer("stmt s; assign a; constant c; Select BOOLEAN such that Follows(3, 4) and Parent(5, 6) with a.stmt# = s.stmt# and not c.value = \"abc\"");
+        vector<Token> tokens = tokenizer.tokenize();
+        QueryParser queryParser(tokens);
+        ParsingResult parsingResult = queryParser.parse();
+        REQUIRE(parsingResult.getErrorMessage() == "");
+        // Check 'Follows' and 'Parent' clauses
+        REQUIRE(parsingResult.getSuchThatClauses()[0].getRelationship().getType() == TokenType::Follows);
+        REQUIRE(parsingResult.getSuchThatClauses()[1].getRelationship().getType() == TokenType::Parent);
+        // With clause checks
+        REQUIRE(parsingResult.getWithClauses()[0].isNegated() == false);
+        REQUIRE(parsingResult.getWithClauses()[0].getFirstParam().getValue() == "a.stmt#");
+        REQUIRE(parsingResult.getWithClauses()[0].getSecondParam().getValue() == "s.stmt#");
+        REQUIRE(parsingResult.getWithClauses()[1].isNegated() == true); // Assuming your ParsingResult can handle negation in WithClauses
+        REQUIRE(parsingResult.getWithClauses()[1].getFirstParam().getValue() == "c.value");
+        REQUIRE(parsingResult.getWithClauses()[1].getSecondParam().getValue() == "\"abc\"");
+    }
+
+    SECTION("Select stmts with adjusted conditions and additional clause") {
+        Tokenizer tokenizer("stmt s; Select s such that not Follows(s, 4) and not Parent(s, 5) and Modifies(s, \"x\") and not Modifies(s, \"y\") Uses(s, \"z\")");
+        vector<Token> tokens = tokenizer.tokenize();
+        QueryParser queryParser(tokens);
+        ParsingResult parsingResult = queryParser.parse();
+        REQUIRE(parsingResult.getErrorMessage() == "");
+
+        // Validate 'Follows' clause
+        REQUIRE(parsingResult.getSuchThatClauses()[0].isNegated() == true);
+        REQUIRE(parsingResult.getSuchThatClauses()[0].getRelationship().getType() == TokenType::Follows);
+        REQUIRE(parsingResult.getSuchThatClauses()[0].getFirstParam().getValue() == "s");
+        REQUIRE(parsingResult.getSuchThatClauses()[0].getSecondParam().getValue() == "4");
+
+        // Validate 'Parent' clause
+        REQUIRE(parsingResult.getSuchThatClauses()[1].isNegated() == true);
+        REQUIRE(parsingResult.getSuchThatClauses()[1].getRelationship().getType() == TokenType::Parent);
+        REQUIRE(parsingResult.getSuchThatClauses()[1].getFirstParam().getValue() == "s");
+        REQUIRE(parsingResult.getSuchThatClauses()[1].getSecondParam().getValue() == "5");
+
+        // Validate 'Modifies' clause for "x"
+        REQUIRE(parsingResult.getSuchThatClauses()[2].getRelationship().getType() == TokenType::ModifiesS);
+        REQUIRE(parsingResult.getSuchThatClauses()[2].getFirstParam().getValue() == "s");
+        REQUIRE(parsingResult.getSuchThatClauses()[2].getSecondParam().getValue() == "\"x\"");
+
+        // Validate negated 'Modifies' clause for "y"
+        REQUIRE(parsingResult.getSuchThatClauses()[3].isNegated() == true);
+        REQUIRE(parsingResult.getSuchThatClauses()[3].getRelationship().getType() == TokenType::ModifiesS);
+        REQUIRE(parsingResult.getSuchThatClauses()[3].getFirstParam().getValue() == "s");
+        REQUIRE(parsingResult.getSuchThatClauses()[3].getSecondParam().getValue() == "\"y\"");
+
+        // Validate 'Uses' clause for "z"
+        REQUIRE(parsingResult.getSuchThatClauses()[4].getRelationship().getType() == TokenType::UsesS);
+        REQUIRE(parsingResult.getSuchThatClauses()[4].getFirstParam().getValue() == "s");
+        REQUIRE(parsingResult.getSuchThatClauses()[4].getSecondParam().getValue() == "\"z\"");
+    }
+
+
 }
 
