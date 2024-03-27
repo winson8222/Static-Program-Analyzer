@@ -23,12 +23,12 @@ public:
     // Returns true if parsing is successful, false otherwise.
     ParsingResult parse();
 
-    ParsingResult getParsingResult() const;  // Method to retrieve the result
-    void throwGrammarError();
-    void throwSemanticError();
-    void throwIncompleteQueryError();
-
+    ParsingResult getParsingResult();  // Method to retrieve the result
 private:
+    bool semanticError;
+    void throwSyntaxError();
+    ParsingResult makeResult(ParsingResult parsingResult);
+	void setSemanticError();
     const std::unordered_map<TokenType, std::unordered_set<std::string>> validStmtSynonymsMap = {
             {TokenType::Parent, {"stmt", "assign", "while", "if", "print", "read", "call"}},
             {TokenType::ParentT, {"stmt", "assign", "while", "if", "print", "read", "call"}},
