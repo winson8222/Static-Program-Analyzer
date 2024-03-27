@@ -112,10 +112,6 @@ void QueryParser::parseDeclarations() {
 
         numberOfDeclarations++;
     }
-
-    if (numberOfDeclarations == 0) {
-        throwSyntaxError();
-    }
     
 }
 

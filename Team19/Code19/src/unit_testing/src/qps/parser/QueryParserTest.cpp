@@ -1597,5 +1597,13 @@ TEST_CASE("M2 system test cases") {
 //        ParsingResult parsingResult = queryParser.parse();
 //        REQUIRE(parsingResult.getErrorMessage() == "");
 //    }
+    SECTION("Select c") {
+        string query = "Select c";
+        Tokenizer tokenizer(query);
+        vector<Token> tokens = tokenizer.tokenize();
+        QueryParser queryParser(tokens);
+        ParsingResult parsingResult = queryParser.parse();
+        REQUIRE(parsingResult.getErrorMessage() == "SemanticError");
+    }
 }
 
