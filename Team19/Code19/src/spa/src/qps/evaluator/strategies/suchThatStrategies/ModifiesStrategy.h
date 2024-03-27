@@ -21,7 +21,6 @@ public:
             ,std::shared_ptr<ResultTable> resultTable, PKBReaderManager& pkbReaderManager) override;
     void processBothConstants(const Token& firstParam, const Token& secondParam, const ParsingResult& parsingResult
             ,std::shared_ptr<ResultTable> resultTable) override;
-    void processWildCards(const Token& firstParam, const Token& secondParam,std::shared_ptr<ResultTable> resultTable) override;
 
         
 };

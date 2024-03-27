@@ -26,6 +26,8 @@ protected:
     static void setTrueIfRelationShipExist(const Token &firstParam, const Token &secondParam,
                                            const std::shared_ptr<IRelationshipReader<int, int>> &reader,
                                            std::shared_ptr<ResultTable> resultTable);
+    static void insertRowsWithTwoCols(const Token &firstParam, const Token &secondParam, std::shared_ptr<IRelationshipReader<int ,int>> reader,
+                                      const ParsingResult &parsingResult, std::shared_ptr<ResultTable> resultTable, PKBReaderManager &pkbReaderManager);
 
 
 };

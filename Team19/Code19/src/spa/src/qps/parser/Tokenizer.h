@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 #include <regex>
+#include <map>
+#include <functional>
 
 using namespace std;
 
@@ -20,6 +22,62 @@ public:
     vector<Token> tokenize();
 
     string removeSpaces(string str);
+
+    std::map<std::string, TokenType> clauseTypeMap = {
+            {"Follows", TokenType::Follows},
+            {"Follows*", TokenType::FollowsT},
+            {"Parent", TokenType::Parent},
+            {"Parent*", TokenType::ParentT},
+            {"Uses", TokenType::Uses},
+            {"Modifies", TokenType::Modifies},
+            {"Next", TokenType::Next},
+            {"Next*", TokenType::NextT},
+            {"Calls", TokenType::Calls},
+            {"Calls*", TokenType::CallsT},
+            {"Affects", TokenType::Affects},
+    };
+
+    std::map<std::string, TokenType> signMap = {
+            {"(", TokenType::Lparenthesis},
+            {")", TokenType::Rparenthesis},
+            {";", TokenType::Semicolon},
+            {",", TokenType::Comma},
+            {".", TokenType::Dot},
+            {"=", TokenType::Equal},
+            {"<", TokenType::LeftAngleBracket},
+            {">", TokenType::RightAngleBracket},
+            // Add other mappings as necessary...
+    };
+
+
+    const std::map<std::string, std::function<TokenType()>> tokenFunctionMap = {
+            {"Select", [this]() -> TokenType {
+                return TokenType::SelectKeyword;
+            }},
+            {"pattern", [this]() -> TokenType {
+                lastRelationship = "pattern";
+                return TokenType::PatternKeyword;
+            }},
+            {"such", [this]() -> TokenType {
+                // Assuming you want to concatenate "such that" when "that" comes next,
+                // this will initially set it to "such". You might adjust based on your parsing logic.
+                lastRelationship = "such";
+                return TokenType::SuchKeyword;
+            }},
+            {"that", [this]() -> TokenType {
+                if (lastRelationship == "such") {
+                    lastRelationship += " that";
+                }
+                return TokenType::ThatKeyword;
+            }},
+            {"with", [this]() -> TokenType {
+                lastRelationship = "with";
+                return TokenType::WithKeyword;
+            }},
+            {"and", [this]() -> TokenType {
+                return TokenType::AndKeyword;
+            }},
+    };
 
 private:
     // Private member variable to store the query string.
@@ -39,11 +97,21 @@ private:
     vector<Token> tokens;
     bool isBooleanDeclared = false; //special case for boolean because it is treated as a synonym after selection if it was declared
 
-    // A private method to determine the type of a token given its string representation.
-    // Returns the TokenType of the token which is usefull in the QueryParser.
+    // A private method to determine the type of token given its string representation.
+    // Returns the TokenType of the token which is useful in the QueryParser.
     TokenType determineTokenType(const string& tokenStr);
+    // helper fn for determineTokenType
+    TokenType determineQuoutToken(const string& tokenStr);
+    TokenType determineClauseKeywordToken(const string& tokenStr);
+    TokenType determineSingleCharToken(const string& tokenStr);
+    TokenType determineBooleanToken(const string& tokenStr);
+    TokenType determineDesignEntityToken(const string& tokenStr);
+    TokenType determineRelRefToken(const string& tokenStr);
+    TokenType determineAttrNameToken(const string& tokenStr);
+
     bool checkIfDeclaration();
     bool isSynonym();
+    static bool isSyntaxError(TokenType tokenType);
 
 };
 
