@@ -191,7 +191,6 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
         }
 
 
-        handleTableTrue(clause);
         if (tempResult->isTableTrue()) {
             if (handleTableTrue(clause)) {
                 continue;

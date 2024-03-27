@@ -857,3 +857,36 @@ TEST_CASE("Select Boolean Follows(1, _)") {
     REQUIRE(res == std::unordered_set<string>{ "TRUE" });
 
 }
+
+//stmt s1, s2; variable v;
+//Select s1 such that Parent(s1, s2) and Follows(s1, s2) and Uses(s1, v)
+TEST_CASE("stmt s1, s2; variable v; Select s1 such that Parent(s1, s2) and Follows(s1, s2) and Uses(s1, v)") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<FollowsWriter> followWriter = pkbWriterManager->getFollowsWriter();
+    std::shared_ptr<ParentWriter> parentWriter = pkbWriterManager->getParentWriter();
+    std::shared_ptr<UsesSWriter> usesWriter = pkbWriterManager->getUsesSWriter();
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    followWriter->addFollows(1, 2);
+    followWriter->addFollows(2, 3);
+    parentWriter->addParent(1, 2);
+    usesWriter->addUsesS(1, "x");
+    usesWriter->addUsesS(2, "y");
+    usesWriter->addUsesS(3, "z");
+
+    string query = "stmt s1, s2; variable v; Select s1 such that Parent(s1, s2) and Follows(s1, s2) and Uses(s1, v)";
+    Tokenizer tokenizer(query);
+    auto tokens = tokenizer.tokenize();
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<string>{ "1" });
+
+
+}
