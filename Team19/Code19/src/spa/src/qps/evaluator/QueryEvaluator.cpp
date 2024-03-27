@@ -140,6 +140,8 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
     // Create a new result table for storing query results.
     result = std::make_shared<ResultTable>();
     result->setAsTruthTable();
+    // create a vector of Clauses
+    std::vector<std::shared_ptr<Clause>> clauses;
 
     // Check if the query is valid. If not, return an error message.
     if (!parsingResult.isQueryValid()) {
@@ -150,49 +152,48 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
     vector<SuchThatClause> suchThatClauses = parsingResult.getSuchThatClauses();
     // Add such-that-strategies based on the relationship specified in the query.
     for (auto clause : suchThatClauses) {
-        TokenType suchThatRelationship = clause.getRelationship().getType();
-        auto it = suchThatStrategyFactory.find(suchThatRelationship);
-        if (it != suchThatStrategyFactory.end()) {
-            addStrategy(it->second());
-        }
+        clauses.push_back(std::make_shared<SuchThatClause>(clause));
     }
     
     vector<PatternClause> patternClauses = parsingResult.getPatternClauses();
     // Add PatternStrategy if pattern clause exists in the query.
     for (auto clause : patternClauses) {
-        string patternType = parsingResult.getPatternClauseType(clause);
-        auto it = patternStrategyFactory.find(patternType);
-        if (it != patternStrategyFactory.end()) {
-            addStrategy(it->second());
-        }
+        clauses.push_back(std::make_shared<PatternClause>(clause));
     }
     
     vector<WithClause> withClauses = parsingResult.getWithClauses();
-    for (auto cluase : withClauses) {
-        addStrategy(std::make_unique<WithStrategy>());
+    for (auto clause : withClauses) {
+        clauses.push_back(std::make_shared<WithClause>(clause));
     }
 
     // Evaluate the query using the strategies and compile the results.
     bool isFirstStrategy = true;
-    int suchThatCounter = 0;
-    int patternCounter = 0;
-    int withCounter = 0;
     bool isOnlyBoolean = true;
-    for (auto& strategy : strategies) {
+    for (auto& clause : clauses) {
         shared_ptr<ResultTable> tempResult;
-        if (suchThatCounter < suchThatClauses.size()) {
-            tempResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult, suchThatClauses[suchThatCounter]);
-            suchThatCounter++;
+        unique_ptr<QueryEvaluationStrategy> strategy;
+
+        // get the strategy based on the clause type
+        // make unique pointer to the clause
+
+        auto it = clauseToStrategiesMap.find(clause->getTypeName());
+        if (it != clauseToStrategiesMap.end()) {
+            strategy = it->second(clause);
+        } else {
+            throw "No such strategy found";
         }
-        else if (patternCounter < patternClauses.size()) {
-            tempResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult, patternClauses[patternCounter]);
-            patternCounter++;
+
+        // evaluate the strategy
+        if (clause->getTypeName() == "WithClause") {
+            tempResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult, *clause, result);
+        } else {
+            tempResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult, *clause);
         }
-        else if (withCounter < withClauses.size()) {
-            tempResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult, withClauses[withCounter], result);
-			withCounter++;
-		}
-      
+
+
+
+
+
         // if it is a true table skip to next strategy
         if (tempResult->isTableTrue()) {
             continue;
@@ -293,6 +294,8 @@ std::unordered_set<std::string> QueryEvaluator::getAllEntities(const std::string
 // Initializes the strategy factory with various query evaluation strategies..
 void QueryEvaluator::initializeStrategyFactory() {
 
+
+
     // Mapping of query types to their corresponding strategies.
     QueryEvaluator::suchThatStrategyFactory = {
             {TokenType::Follows, []() { return std::make_unique<FollowsStrategy>(); }},
@@ -315,6 +318,31 @@ void QueryEvaluator::initializeStrategyFactory() {
             {"assign", []() { return std::make_unique<AssignPatternStrategy>(); }},
             {"while", []() { return std::make_unique<WhilePatternStrategy>();}},
             {"if", []() { return std::make_unique<IfPatternStrategy>();}}
+    };
+
+    QueryEvaluator::clauseToStrategiesMap = {
+            {"SuchThatClause", [this](shared_ptr<Clause> clause)-> std::unique_ptr<QueryEvaluationStrategy> {
+                auto suchThatClause = dynamic_cast<SuchThatClause*>(clause.get());
+                if (suchThatClause) {
+                    TokenType suchThatRelationship = suchThatClause->getRelationship().getType();
+                    auto it = suchThatStrategyFactory.find(suchThatRelationship);
+                    if (it != suchThatStrategyFactory.end()) {
+                        return it->second();
+                    }
+                }
+            }},
+            {"PatternClause", [this](shared_ptr<Clause> clause) -> std::unique_ptr<QueryEvaluationStrategy> {
+                auto patternClause = dynamic_cast<PatternClause*>(clause.get());
+                if (patternClause) {
+                    string patternType = parsingResult.getPatternClauseType(*patternClause);
+                    auto it = patternStrategyFactory.find(patternType);
+                    if (it != patternStrategyFactory.end()) {
+                        return it->second();
+                    }
+
+                }
+            }},
+            {"WithClause", [](shared_ptr<Clause> clause) -> std::unique_ptr<QueryEvaluationStrategy> { return std::make_unique<WithStrategy>(); }}
     };
 }
 

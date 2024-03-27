@@ -27,6 +27,7 @@ private:
     ParsingResult& parsingResult;
     std::shared_ptr<ResultTable> result;
     std::vector<std::unique_ptr<QueryEvaluationStrategy>> strategies; // Store multiple strategies
+    std::map<string, std::function<std::unique_ptr<QueryEvaluationStrategy>(shared_ptr<Clause>)>>clauseToStrategiesMap;
     std::map<TokenType, std::function<std::unique_ptr<QueryEvaluationStrategy>()>> suchThatStrategyFactory; // Map of strategy factory
     std::map<string, std::function<std::unique_ptr<QueryEvaluationStrategy>()>> patternStrategyFactory; // Map of strategy factory
     std::map<std::string, std::function<std::variant<std::unordered_set<int>, std::unordered_set<std::string>>()>> entityFactory;
