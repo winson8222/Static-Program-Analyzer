@@ -216,7 +216,7 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
                 result = tempResult;
             } else {
                 //
-//                result = result->getAllInverse(tempResult);
+//                result = result->populateWithInverse(tempResult);
             }
         }
         else {
