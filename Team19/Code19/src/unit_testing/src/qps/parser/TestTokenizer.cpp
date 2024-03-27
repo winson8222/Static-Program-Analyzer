@@ -1313,10 +1313,10 @@ TEST_CASE("assign a; Select a such that Follows(3, a) not Parent(a, 5) pattern a
 }
 
 
-TEST_CASE("stmt s; assign a; constant c; Select BOOLEAN such that Follows(3, 4) and Parent(5, 6) with a.stmt# = s.stmt# not c.value = \"abc\"") {
+TEST_CASE("stmt s; assign a; constant c; Select BOOLEAN such that Follows(3, 4) and Parent(5, 6) with a.stmt# = s.stmt# not c.value = 1") {
     // Initialize tokenizer with the input string
     Tokenizer tokenizer(
-            "stmt s; assign a; constant c; Select BOOLEAN such that Follows(3, 4) and Parent(5, 6) with a.stmt# = s.stmt# and not c.value = \"abc\"");
+            "stmt s; assign a; constant c; Select BOOLEAN such that Follows(3, 4) and Parent(5, 6) with a.stmt# = s.stmt# and not c.value = 1");
     vector<Token> tokens = tokenizer.tokenize();
 
     // Check the total number of tokens
@@ -1410,16 +1410,16 @@ TEST_CASE("stmt s; assign a; constant c; Select BOOLEAN such that Follows(3, 4) 
     REQUIRE(tokens[38].getType() == TokenType::AttrName);
     REQUIRE(tokens[38].getValue() == "value");
     REQUIRE(tokens[39].getType() == TokenType::Equal);
-    REQUIRE(tokens[40].getType() == TokenType::QuoutIDENT);
-    REQUIRE(tokens[40].getValue() == "\"abc\"");
+    REQUIRE(tokens[40].getType() == TokenType::INTEGER);
+    REQUIRE(tokens[40].getValue() == "1");
 
 }
 
 TEST_CASE("Select stmts with adjusted conditions and additional clause") {
-    Tokenizer tokenizer("stmt s; Select s such that not Follows(s, 4) and not Parent(s, 5) and Modifies(s, \"x\") and not Modifies(s, \"y\") Uses(s, \"z\")");
+    Tokenizer tokenizer("stmt s; Select s such that not Follows(s, 4) and not Parent(s, 5) and Modifies(s, \"x\") and not Modifies(s, \"y\") and Uses(s, \"z\")");
     vector<Token> tokens = tokenizer.tokenize();
 
-    REQUIRE(tokens.size() == 43);  // Adjust the expected number based on how your tokenizer handles this query
+    REQUIRE(tokens.size() == 44);  // Adjust the expected number based on how your tokenizer handles this query
     REQUIRE(tokens[0].getType() == TokenType::DesignEntity);
     REQUIRE(tokens[0].getValue() == "stmt");
     REQUIRE(tokens[1].getType() == TokenType::IDENT);
@@ -1469,13 +1469,14 @@ TEST_CASE("Select stmts with adjusted conditions and additional clause") {
     REQUIRE(tokens[35].getType() == TokenType::QuoutIDENT);
     REQUIRE(tokens[35].getValue() == "\"y\"");
     REQUIRE(tokens[36].getType() == TokenType::Rparenthesis);
-    REQUIRE(tokens[37].getType() == TokenType::Uses);
-    REQUIRE(tokens[38].getType() == TokenType::Lparenthesis);
-    REQUIRE(tokens[39].getType() == TokenType::IDENT);
-    REQUIRE(tokens[39].getValue() == "s");
-    REQUIRE(tokens[40].getType() == TokenType::Comma);
-    REQUIRE(tokens[41].getType() == TokenType::QuoutIDENT);
-    REQUIRE(tokens[41].getValue() == "\"z\"");
-    REQUIRE(tokens[42].getType() == TokenType::Rparenthesis);
+    REQUIRE(tokens[37].getType() == TokenType::AndKeyword);
+    REQUIRE(tokens[38].getType() == TokenType::Uses);
+    REQUIRE(tokens[39].getType() == TokenType::Lparenthesis);
+    REQUIRE(tokens[40].getType() == TokenType::IDENT);
+    REQUIRE(tokens[40].getValue() == "s");
+    REQUIRE(tokens[41].getType() == TokenType::Comma);
+    REQUIRE(tokens[42].getType() == TokenType::QuoutIDENT);
+    REQUIRE(tokens[42].getValue() == "\"z\"");
+    REQUIRE(tokens[43].getType() == TokenType::Rparenthesis);
 
 }

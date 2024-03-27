@@ -1620,7 +1620,7 @@ TEST_CASE("use not") {
     }
 
     SECTION("assign a; Select a such that Follows(3, a) not Parent(a, 5) pattern a(v, _\"2\"_) not a(_, _)") {
-        Tokenizer tokenizer("assign a; Select a such that Follows(3, a) not Parent(a, 5) pattern a(v, _\"2\"_) and not a(_, _)");
+        Tokenizer tokenizer("assign a; Select a such that Follows(3, a) and not Parent(a, 5) pattern a(v, _\"2\"_) and not a(_, _)");
         vector<Token> tokens = tokenizer.tokenize();
         QueryParser queryParser(tokens);
         ParsingResult parsingResult = queryParser.parse();
@@ -1638,7 +1638,7 @@ TEST_CASE("use not") {
     }
 
     SECTION("stmt s; assign a; constant c; Select BOOLEAN such that Follows(3, 4) and Parent(5, 6) with a.stmt# = s.stmt# not c.value = \"abc\"") {
-        Tokenizer tokenizer("stmt s; assign a; constant c; Select BOOLEAN such that Follows(3, 4) and Parent(5, 6) with a.stmt# = s.stmt# and not c.value = \"abc\"");
+        Tokenizer tokenizer("stmt s; assign a; constant c; Select BOOLEAN such that Follows(3, 4) and Parent(5, 6) with a.stmt# = s.stmt# and not c.value = 1");
         vector<Token> tokens = tokenizer.tokenize();
         QueryParser queryParser(tokens);
         ParsingResult parsingResult = queryParser.parse();
@@ -1652,11 +1652,11 @@ TEST_CASE("use not") {
         REQUIRE(parsingResult.getWithClauses()[0].getSecondParam().getValue() == "s.stmt#");
         REQUIRE(parsingResult.getWithClauses()[1].isNegated() == true); // Assuming your ParsingResult can handle negation in WithClauses
         REQUIRE(parsingResult.getWithClauses()[1].getFirstParam().getValue() == "c.value");
-        REQUIRE(parsingResult.getWithClauses()[1].getSecondParam().getValue() == "\"abc\"");
+        REQUIRE(parsingResult.getWithClauses()[1].getSecondParam().getValue() == "1");
     }
 
     SECTION("Select stmts with adjusted conditions and additional clause") {
-        Tokenizer tokenizer("stmt s; Select s such that not Follows(s, 4) and not Parent(s, 5) and Modifies(s, \"x\") and not Modifies(s, \"y\") Uses(s, \"z\")");
+        Tokenizer tokenizer("stmt s; Select s such that not Follows(s, 4) and not Parent(s, 5) and Modifies(s, \"x\") and not Modifies(s, \"y\") such that Uses(s, \"z\")");
         vector<Token> tokens = tokenizer.tokenize();
         QueryParser queryParser(tokens);
         ParsingResult parsingResult = queryParser.parse();
