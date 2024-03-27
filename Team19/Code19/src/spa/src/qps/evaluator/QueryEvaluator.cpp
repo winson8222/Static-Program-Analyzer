@@ -191,28 +191,42 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
         }
 
 
-
-
-
-        // if it is a true table skip to next strategy
+        handleTableTrue(clause);
         if (tempResult->isTableTrue()) {
-            continue;
+            if (handleTableTrue(clause)) {
+                continue;
+            } else {
+                break;
+            }
         }
 
         // if it is a false table, we can break early since the result will be false
         if (tempResult->isTableFalse()) {
-            result = tempResult;
-            break;
+            if (handleTableFalse(clause)) {
+                result = tempResult;
+                break;
+            } else {
+                continue;
+            }
         }
 
         if (isFirstStrategy) {
-            // if it is a false table, we can break early since the result will be false
             isFirstStrategy = false;
-            result = tempResult;
+            if (clause->getClauseOperation() == Clause::ClauseOperations::AND) {
+                result = tempResult;
+            } else {
+                //
+//                result = result->getAllInverse(tempResult);
+            }
         }
         else {
             // if it is a non true and non empty table, join the result with the tempResult
-            result = result->joinOnColumns(tempResult);
+            if (clause->getClauseOperation() == Clause::ClauseOperations::AND) {
+                result = result->joinOnColumns(tempResult);
+            } else {
+                // if it is a non true and non empty table, join the result with the tempResult
+//                result = result->getInverse(tempResult);
+            }
         }
     }
 
@@ -287,6 +301,28 @@ std::unordered_set<std::string> QueryEvaluator::getAllEntities(const std::string
     }
 
     return entities;
+}
+
+bool QueryEvaluator::handleTableTrue(shared_ptr<Clause> clause) {
+    Clause::ClauseOperations op = clause->getClauseOperation();
+        if (op == Clause::ClauseOperations::AND) {
+            result->setAsTruthTable();
+            return true;
+        }
+        else if (op == Clause::ClauseOperations::NOT) {
+//            result->setAsFalseTable();
+            return false;
+        }
+
+}
+
+bool QueryEvaluator::handleTableFalse(shared_ptr<Clause> clause) {
+    if (clause->getClauseOperation() == Clause::ClauseOperations::AND) {
+        return true;
+    }
+    else if (clause->getClauseOperation() == Clause::ClauseOperations::NOT) {
+        return false;
+    }
 }
 
 

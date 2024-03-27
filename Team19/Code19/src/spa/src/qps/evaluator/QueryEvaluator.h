@@ -114,4 +114,6 @@ public:
     void initializeProcNameMap();
     void initializeVarNameMap();
     void throwNoSuchMethodException();
+    bool handleTableTrue(shared_ptr<Clause> clause);
+    bool handleTableFalse(shared_ptr<Clause> clause);
 };
