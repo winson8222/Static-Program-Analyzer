@@ -18,7 +18,7 @@ void QueryParser::setSemanticError() {
 // Processes declarations, select clause, and optional such that and pattern clauses.
 ParsingResult QueryParser::makeResult(ParsingResult parsingResult) {
 	if (semanticError) {
-		parsingResult.setErrorMessage("SemanticError" + currentToken().getValue());
+		parsingResult.setErrorMessage("SemanticError");
 	}
 	return parsingResult;
 }
