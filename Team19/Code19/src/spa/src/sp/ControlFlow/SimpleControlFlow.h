@@ -12,7 +12,7 @@ public:
 	/*
 	* @brief Constructor for Control Flow Graph generator that takes in the root of the AST.
 	*/
-	SimpleControlFlow(std::shared_ptr<ASTNode> root);
+	explicit SimpleControlFlow(std::shared_ptr<ASTNode> root);
 
 	/*
 	* @brief Creates all control flow graphs based on the AST representation of the SIMPLE program.

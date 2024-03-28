@@ -11,7 +11,7 @@ public:
 	/**
 	 * @brief Constructor takes a shared pointer to an array of tokens
 	 */
-	SimpleTokenStream(const std::shared_ptr<std::vector<LexicalToken>> token_ptr);
+	explicit SimpleTokenStream(const std::shared_ptr<std::vector<LexicalToken>> token_ptr);
 
 	/**
 	 * @brief Gets the token after the lookahead amount of token in the stream.

@@ -1,4 +1,4 @@
-#include "AffectsStrategy.h"
+#include "qps/evaluator/strategies/suchThatStrategies/AffectsStrategy.h"
 
 std::shared_ptr<ResultTable> AffectsStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) {
     auto resultTable = std::make_shared<ResultTable>();
@@ -85,5 +85,3 @@ void AffectsStrategy::processIntegerParams(std::shared_ptr<ResultTable> resultTa
         setTrueIfRelationShipExist(firstParam, secondParam, affectsReader, resultTable);
     }
 }
-
-

@@ -1,10 +1,10 @@
 #pragma once
 
+#include <stdexcept>
 #include "sp/DesignExtractor/Visitor/IVisitor.h"
 #include "sp/DesignExtractor/Extractor/EntityExtractor/VariableExtractor.h"
 #include "sp/DesignExtractor/Extractor/RelationshipExtractor/UsesExtractor.h"
 #include "sp/DesignExtractor/Extractor/RelationshipExtractor/ModifiesExtractor.h"
-#include <stdexcept>
 
 
 /*

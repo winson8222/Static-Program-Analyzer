@@ -1,7 +1,7 @@
 #pragma once
 
-#include "sp/DesignExtractor/Extractor/EntityExtractor/IEntityExtractor.h"
 #include <stdexcept>
+#include "sp/DesignExtractor/Extractor/EntityExtractor/IEntityExtractor.h"
 
 /*
 * Extracts the print statement from the AST and writes the information to the PKB.

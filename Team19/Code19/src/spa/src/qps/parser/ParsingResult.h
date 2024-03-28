@@ -1,13 +1,12 @@
-#ifndef PARSINGRESULT_H
-#define PARSINGRESULT_H
+#pragma once
 
 #include <string>
 #include <unordered_map>
 #include <utility>
-#include "Token.h"
-#include "clauses/SuchThatClause.h"
-#include "clauses/PatternClause.h"
-#include "clauses/WithClause.h"
+#include "qps/parser/Token.h"
+#include "qps/parser/clauses/SuchThatClause.h"
+#include "qps/parser/clauses/PatternClause.h"
+#include "qps/parser/clauses/WithClause.h"
 
 using namespace std;
 
@@ -62,5 +61,3 @@ private:
 
     string errorMessage;
 };
-
-#endif 

@@ -1,17 +1,11 @@
 #pragma once
-//
-// Created by Winson Zheng on 19/2/24.
-//
 
-#ifndef SPA_RESULTABLE_H
-#define SPA_RESULTABLE_H
 #include <vector>
 #include <string>
 #include <memory>
 #include <functional>
 #include <unordered_set>
 #include <unordered_map>
-
 
 class ResultTable {
 private:
@@ -93,6 +87,3 @@ public:
     bool isEmpty();
     bool isTableFalse();
 };
-
-
-#endif //SPA_RESULTABLE_H

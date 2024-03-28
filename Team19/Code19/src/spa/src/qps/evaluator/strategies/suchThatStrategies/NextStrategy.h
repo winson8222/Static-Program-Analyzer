@@ -1,7 +1,7 @@
 #pragma once
 
-#include "qps/evaluator/strategies/suchThatStrategies/StmtStmtStrategy.h"
 #include <memory>
+#include "qps/evaluator/strategies/suchThatStrategies/StmtStmtStrategy.h"
 
 
 class NextStrategy : public StmtStmtStrategy {

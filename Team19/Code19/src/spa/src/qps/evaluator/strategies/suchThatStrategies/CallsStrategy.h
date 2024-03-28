@@ -2,7 +2,6 @@
 
 #include "qps/evaluator/strategies/suchThatStrategies/EntEntStrategy.h"
 
-
 using namespace std;
 
 class CallsStrategy : public EntEntStrategy {
@@ -27,4 +26,3 @@ public:
 
 
 };
-

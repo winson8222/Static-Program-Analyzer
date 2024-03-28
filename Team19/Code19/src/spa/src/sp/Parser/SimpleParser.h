@@ -2,7 +2,6 @@
 
 #include <memory>
 #include <vector>
-#include "sp/AST/AST.h"
 #include "sp/AST/ASTNode.h"
 #include "sp/AST/ASTUtility.h"
 #include "sp/SPTokenizer/LexicalToken.h"
@@ -17,7 +16,7 @@ public:
 	/**
 	* @brief The constructor for the Simple Parser.
 	*/
-	SimpleParser(std::shared_ptr<std::vector<LexicalToken>> tokens);
+	explicit SimpleParser(std::shared_ptr<std::vector<LexicalToken>> tokens);
 
 	/**
 	* @brief Parses the SIMPLE program based on a token stream as given.

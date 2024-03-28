@@ -1,14 +1,11 @@
-#ifndef TOKENIZER_H
-#define TOKENIZER_H
+#pragma once
 
-#include "../../spa/src/qps/parser/Token.h"
 #include <string>
 #include <vector>
 #include <regex>
 #include <map>
 #include <functional>
-
-using namespace std;
+#include "qps/parser/Token.h"
 
 // The Tokenizer class is used for converting a string query into tokens.
 class Tokenizer {
@@ -16,12 +13,12 @@ public:
     // Constructor for the Tokenizer class.
     // It takes a constant reference to a string as input, representing the query to be tokenized.
     // The 'explicit' keyword prevents implicit conversions from string to Tokenizer.
-    explicit Tokenizer(const string& query);
+    explicit Tokenizer(const std::string& query);
 
     // This method tokenizes the stored query and returns a vector of Token objects.
     vector<Token> tokenize();
 
-    string removeSpaces(string str);
+    std::string removeSpaces(std::string str);
 
     std::map<std::string, TokenType> clauseTypeMap = {
             {"Follows", TokenType::Follows},
@@ -84,16 +81,16 @@ public:
 
 private:
     // Private member variable to store the query string.
-    string query;
+    std::string query;
 
     // A regular expression object used to identify tokens in the query string.
-    regex tokenRegex;
+    std::regex tokenRegex;
 
     // string the represents the last relationship used (such that, with, pattern)
     // it is used to explicitly state the relationship instead of "and"
-    string lastRelationship;
+    std::string lastRelationship;
 
-    string nextToken;
+    std::string nextToken;
 
     // A private method that splits the query into tokens based on the regular expression.
     // Returns a vector of Token objects.
@@ -104,20 +101,17 @@ private:
 
     // A private method to determine the type of token given its string representation.
     // Returns the TokenType of the token which is useful in the QueryParser.
-    TokenType determineTokenType(const string& tokenStr);
+    TokenType determineTokenType(const std::string& tokenStr);
     // helper fn for determineTokenType
-    TokenType determineQuoutToken(const string& tokenStr);
-    TokenType determineClauseKeywordToken(const string& tokenStr);
-    TokenType determineSingleCharToken(const string& tokenStr);
-    TokenType determineBooleanToken(const string& tokenStr);
-    TokenType determineDesignEntityToken(const string& tokenStr);
-    TokenType determineRelRefToken(const string& tokenStr);
-    TokenType determineAttrNameToken(const string& tokenStr);
+    TokenType determineQuoutToken(const std::string& tokenStr);
+    TokenType determineClauseKeywordToken(const std::string& tokenStr);
+    TokenType determineSingleCharToken(const std::string& tokenStr);
+    TokenType determineBooleanToken(const std::string& tokenStr);
+    TokenType determineDesignEntityToken(const std::string& tokenStr);
+    TokenType determineRelRefToken(const std::string& tokenStr);
+    TokenType determineAttrNameToken(const std::string& tokenStr);
 
     bool checkIfDeclaration();
     bool isSynonym();
     static bool isSyntaxError(TokenType tokenType);
-
 };
-
-#endif // TOKENIZER_H

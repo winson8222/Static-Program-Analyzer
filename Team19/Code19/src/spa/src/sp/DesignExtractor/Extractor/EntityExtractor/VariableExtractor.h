@@ -1,7 +1,7 @@
 #pragma once
 
-#include "sp/DesignExtractor/Extractor/EntityExtractor/IEntityExtractor.h"
 #include <stdexcept>
+#include "sp/DesignExtractor/Extractor/EntityExtractor/IEntityExtractor.h"
 
 /*
 * VariableExtractor is responsible for extracting variable information from the AST

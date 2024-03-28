@@ -1,8 +1,4 @@
-//
-// Created by Winson Zheng on 19/2/24.
-//
-
-#include "ResultTable.h"
+#include "qps/evaluator/ResultTable.h"
 #include <initializer_list>
 #include <algorithm>   // For std::sort, std::set_intersection, std::set_difference
 #include <iterator>    // For std::back_inserter
@@ -261,6 +257,3 @@ bool ResultTable::isEmpty() {
 bool ResultTable::isTableFalse() {
     return !isTruthTable && isEmpty();
 }
-
-
-

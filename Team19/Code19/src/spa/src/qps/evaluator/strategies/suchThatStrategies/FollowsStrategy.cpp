@@ -1,10 +1,7 @@
-#include "FollowsStrategy.h"
+#include "qps/evaluator/strategies/suchThatStrategies/FollowsStrategy.h"
 #include "qps/parser/Token.h" // Include for Token definition
 
 // Standard library dependencies
-#include <string>
-#include <unordered_set>
-#include <iostream>
 
 /**
  * Evaluates Follows or Follows* queries between two statements.

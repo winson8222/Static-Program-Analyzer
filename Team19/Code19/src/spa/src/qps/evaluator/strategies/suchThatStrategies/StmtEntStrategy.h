@@ -1,9 +1,6 @@
 #pragma once
-// Created by Winson Zheng on 22/2/24.
-//
 
-
-#include "SuchThatStrategy.h"
+#include "qps/evaluator/strategies/suchThatStrategies/SuchThatStrategy.h"
 using namespace std;
 
 class StmtEntStrategy : public SuchThatStrategy {
@@ -24,4 +21,3 @@ public:
                                            std::shared_ptr<ResultTable> resultTable);
 
 };
-

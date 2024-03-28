@@ -19,7 +19,7 @@ public:
 	 *
 	 * @param lineNumber The line number associated with the CFG node.
 	 */
-	CFGNode(int lineNumber);
+	explicit CFGNode(int lineNumber);
 
 	static const int PROCEDURE_END_LINE_NUMBER = -1;
 

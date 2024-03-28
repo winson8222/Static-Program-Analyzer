@@ -12,7 +12,7 @@ private:
 	std::shared_ptr<NextStore> nextStore;
 
 public:
-	NextWriter(std::shared_ptr<NextStore> store);
+	explicit NextWriter(std::shared_ptr<NextStore> store);
 
 	void addRelationship(int precedingStmt, int followingStmt) override;
 

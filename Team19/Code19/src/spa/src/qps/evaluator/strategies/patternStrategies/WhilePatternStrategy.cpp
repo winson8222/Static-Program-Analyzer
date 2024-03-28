@@ -1,5 +1,4 @@
-#include "WhilePatternStrategy.h"
-
+#include "qps/evaluator/strategies/patternStrategies/WhilePatternStrategy.h"
 
 std::shared_ptr<ResultTable> WhilePatternStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) {
     auto resultTable = make_shared<ResultTable>();

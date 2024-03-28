@@ -1,8 +1,6 @@
 #pragma once
-#define USESSTRATEGY_H
 
-#include "StmtEntStrategy.h"
-
+#include "qps/evaluator/strategies/suchThatStrategies/StmtEntStrategy.h"
 
 using namespace std;
 
@@ -25,4 +23,3 @@ public:
 
 
 };
-

@@ -1,7 +1,10 @@
 #pragma once // Ensures the file is included only once during compilation
 
-#include "StmtStmtStrategy.h"
+#include <string>
+#include <unordered_set>
+#include <iostream>
 #include <memory> // For std::shared_ptr
+#include "qps/evaluator/strategies/suchThatStrategies/StmtStmtStrategy.h"
 
 /**
  * @file FollowsStrategy.h

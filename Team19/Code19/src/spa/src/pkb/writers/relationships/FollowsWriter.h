@@ -12,7 +12,7 @@ private:
     std::shared_ptr<FollowsStore> followsStore;
 
 public:
-    FollowsWriter(std::shared_ptr<FollowsStore> store);
+    explicit FollowsWriter(std::shared_ptr<FollowsStore> store);
 
     void addRelationship(int precedingStmt, int followingStmt) override;
 

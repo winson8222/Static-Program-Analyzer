@@ -1,5 +1,4 @@
 #include "ParsingResult.h"
-#include "Token.h"
 
 // Constructor
 ParsingResult::ParsingResult() {

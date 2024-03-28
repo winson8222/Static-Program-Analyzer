@@ -1,3 +1,5 @@
+#pragma once
+
 /**
 * @brief Abstraction that handles the counting of line numbers during the Simple code parsing process.
 */

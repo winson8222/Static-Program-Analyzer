@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "PKB.h"
+#include "pkb/PKB.h"
 
 #include "pkb/writers/entities/AssignWriter.h"
 #include "pkb/writers/entities/VariableWriter.h"

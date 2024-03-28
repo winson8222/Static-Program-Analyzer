@@ -29,7 +29,7 @@ public:
 	* @brief Constructor for creating a lexical token with specified type, setting vertical/horizontal line values
 	* to -1 for all, and value = ""
 	*/
-	LexicalToken(LexicalTokenType type);
+	explicit LexicalToken(LexicalTokenType type);
 
 	/*
 	* @brief Default constructor for creating a null lexical token.

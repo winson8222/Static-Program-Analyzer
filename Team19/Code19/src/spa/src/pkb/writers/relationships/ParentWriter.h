@@ -12,7 +12,7 @@ private:
     std::shared_ptr<ParentStore> parentStore;
 
 public:
-    ParentWriter(std::shared_ptr<ParentStore> store);
+    explicit ParentWriter(std::shared_ptr<ParentStore> store);
     void addRelationship(int parent, int child) override;
     void clear() override;
     // Custom methods
