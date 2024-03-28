@@ -73,6 +73,8 @@ public:
     // this function join the table on columns, combining the columns and merging the rows
     std::shared_ptr<ResultTable> joinOnColumns(const std::shared_ptr<ResultTable>& table2);
 
+    std::shared_ptr<ResultTable> excludeOnColumns(const std::shared_ptr<ResultTable>& table2);
+
 
     // identify common and unique columns
     void identifyColumns(const std::shared_ptr<ResultTable>& table2,
