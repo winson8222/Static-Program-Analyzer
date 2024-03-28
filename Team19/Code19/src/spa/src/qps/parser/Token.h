@@ -56,7 +56,8 @@ enum class TokenType {
     LeftAngleBracket,
     RightAngleBracket,
     Ref,
-    Elem
+    Elem,
+    NotKeyword
 
 
 
