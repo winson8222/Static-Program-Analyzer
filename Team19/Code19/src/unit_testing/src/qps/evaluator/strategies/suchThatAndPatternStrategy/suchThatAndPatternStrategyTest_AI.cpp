@@ -1204,3 +1204,4 @@ TEST_CASE("if i; Select i such that Next(1, i) pattern i(_, _, _)") {
     nextWriter->addNext(1, 2);
     nextWriter->addNext(1,6);
 }
+

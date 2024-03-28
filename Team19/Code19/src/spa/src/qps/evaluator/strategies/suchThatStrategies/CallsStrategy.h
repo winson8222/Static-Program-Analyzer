@@ -7,8 +7,7 @@ using namespace std;
 
 class CallsStrategy : public EntEntStrategy {
 private:
-    std::shared_ptr<CallsReader> callsPReader;
-    std::shared_ptr<CallsTReader> callsTReader;
+    shared_ptr<IRelationshipReader<std::string, std::string>> reader;
     std::string variant;
     Token firstParam;
     Token secondParam;
