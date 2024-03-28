@@ -1,0 +1,35 @@
+1 - Test Basic boolean with not False
+while w1;
+Select BOOLEAN such that not Modifies(w1, "x")
+TRUE
+5000
+2 - Test Basic boolean with not True
+while w1;
+Select BOOLEAN such that not Modifies(w1, "i")
+FALSE
+5000
+3 - Test Basic not Pattern
+assign a;
+Select a pattern not a(_, _"x"_)
+11, 9, 5, 15, 1
+5000
+4 - Test Basic not Pattern with multiple variables
+assign a;
+Select a pattern not a(_, _"x"_) and a(_, _"y"_)
+5
+5000
+5 - Test Basic not Pattern with variable and wildcard
+assign a; variable v, v1;
+Select <a, v, v1> pattern not a(v, _"x"_) and a(v1, _"y"_)
+5 y z, 5 z z, 5 i z, 5 a z, 5 b z, 5 x z, 13 z a, 13 y a, 13 i a, 13 b a, 13 x a
+5000
+6 - Test Basic not Pattern with variable and wildcard
+assign a, a2; variable v, v1;
+Select <a, v> pattern not a(v, _"x"_) and not a(v, _"y"_) and a(v, _"z"_) and a2(v1, _"z"_)
+9 i
+5000
+7 - Test While with not Pattern
+while w; variable v;
+Select <w, v> pattern not w(v, _)
+10 x, 10 y, 10 z, 10 a, 10 b
+5000

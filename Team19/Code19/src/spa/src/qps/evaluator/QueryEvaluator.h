@@ -127,11 +127,13 @@ public:
     string convertToProcName(const string& synonym ,string ref);
     void convertToAttrSet(const string& synonym, std::unordered_set<std::string>& valueSet, std::unordered_set<std::string>& attrSet);
     std::vector<std::string> removeAllAttrRefs(const std::vector<std::string>& requiredSynonyms);
+    std::vector<std::shared_ptr<Clause>> addAllClauses(ParsingResult& parsingResult);
 
     void initializeProcNameMap();
     void initializeVarNameMap();
     void throwNoSuchMethodException();
     bool handleTableTrue(shared_ptr<Clause> clause);
     bool handleTableFalse(shared_ptr<Clause> clause);
-    ResultTable populateWithInverse(ResultTable resultTable);
+    void populateEntityCombinations(std::shared_ptr<ResultTable> table);
+    std::shared_ptr<ResultTable> getInverse(std::shared_ptr<ResultTable>);
 };

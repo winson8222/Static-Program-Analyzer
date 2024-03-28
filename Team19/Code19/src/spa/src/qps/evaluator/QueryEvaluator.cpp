@@ -135,9 +135,31 @@ void QueryEvaluator::evaluateMultipleReturnValues(std::unordered_set<std::string
 	}
 }
 
-std::shared_ptr<ResultTable> QueryEvaluator::populateEntityCombinations(const std::string& colA, const std::string& colB) {
-    auto resultTable = std::make_shared<ResultTable>();
-    resultTable->addColumnsSet({colA, colB});
+std::shared_ptr<ResultTable> QueryEvaluator::getInverse(std::shared_ptr<ResultTable> table) {
+    if (table->isTableTrue()) {
+        return std::make_shared<ResultTable>();
+    }
+    std::shared_ptr<ResultTable> inverseTable = std::make_shared<ResultTable>();
+    // add columns to the inverse table
+    vector<string> colSet = table->getColSet();
+    inverseTable->insertAllColumns(colSet);
+
+    populateEntityCombinations(inverseTable);
+    return inverseTable->excludeOnColumns(table);
+}
+
+void QueryEvaluator::populateEntityCombinations(std::shared_ptr<ResultTable> table) {
+    vector<string> allCol = table->getColSet();
+
+    if (allCol.size() == 1) {
+        string col = allCol[0];
+        string type = parsingResult.getRequiredSynonymType(col);
+        auto entities = getAllEntities(type);
+        table->populateWithOneColumn(col, entities);
+        return;
+    }
+    string colA = allCol[0];
+    string colB = allCol[1];
 
     // Retrieve the entity types for the specified columns from ParsingResult
     std::string typeA = parsingResult.getRequiredSynonymType(colA);
@@ -148,16 +170,8 @@ std::shared_ptr<ResultTable> QueryEvaluator::populateEntityCombinations(const st
     auto entitiesB = getAllEntities(typeB);
 
     // Generate all possible combinations of entities A and B
-    for (const auto& entityA : entitiesA) {
-        for (const auto& entityB : entitiesB) {
-            std::unordered_map<std::string, std::string> newRow;
-            newRow[colA] = entityA;
-            newRow[colB] = entityB;
-            resultTable->insertNewRow(newRow);
-        }
-    }
+    table->populateWithTwoColumns(colA, colB, entitiesA, entitiesB);
 
-    return resultTable;
 }
 
 std::unordered_set<string> QueryEvaluator::evaluateQuery() {
@@ -166,7 +180,7 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
     result = std::make_shared<ResultTable>();
     result->setAsTruthTable();
     // create a vector of Clauses
-    std::vector<std::shared_ptr<Clause>> clauses;
+
 
     // Check if the query is valid. If not, return an error message.
     if (!parsingResult.isQueryValid()) {
@@ -174,22 +188,9 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
         error.insert(parsingResult.getErrorMessage());
         return error;
     }
-    vector<SuchThatClause> suchThatClauses = parsingResult.getSuchThatClauses();
-    // Add such-that-strategies based on the relationship specified in the query.
-    for (auto clause : suchThatClauses) {
-        clauses.push_back(std::make_shared<SuchThatClause>(clause));
-    }
-    
-    vector<PatternClause> patternClauses = parsingResult.getPatternClauses();
-    // Add PatternStrategy if pattern clause exists in the query.
-    for (auto clause : patternClauses) {
-        clauses.push_back(std::make_shared<PatternClause>(clause));
-    }
-    
-    vector<WithClause> withClauses = parsingResult.getWithClauses();
-    for (auto clause : withClauses) {
-        clauses.push_back(std::make_shared<WithClause>(clause));
-    }
+
+    const std::vector<std::shared_ptr<Clause>> clauses = addAllClauses(parsingResult);
+
 
     // Evaluate the query using the strategies and compile the results.
     bool isFirstStrategy = true;
@@ -220,6 +221,8 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
             if (handleTableTrue(clause)) {
                 continue;
             } else {
+                tempResult->setTableFalse();
+                result = tempResult;
                 break;
             }
         }
@@ -239,8 +242,9 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
             if (clause->getClauseOperation() == Clause::ClauseOperations::AND) {
                 result = tempResult;
             } else {
-                //
-//                result = result->populateWithInverse(tempResult);
+                std::shared_ptr<ResultTable> inversedResult;
+                inversedResult = getInverse(tempResult);
+                result = inversedResult;
             }
         }
         else {
@@ -249,7 +253,9 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
                 result = result->joinOnColumns(tempResult);
             } else {
                 // if it is a non true and non empty table, join the result with the tempResult
-//                result = result->getInverse(tempResult);
+                std::shared_ptr<ResultTable> inversedResult;
+                inversedResult = getInverse(tempResult);
+                result = result->joinOnColumns(inversedResult);
             }
         }
     }
@@ -549,6 +555,26 @@ void QueryEvaluator::initializeVarNameMap() {
     };
 }
 
+std::vector<std::shared_ptr<Clause>> QueryEvaluator::addAllClauses(ParsingResult &parsingResult) {
+    std::vector<std::shared_ptr<Clause>> clauses;
+    vector<SuchThatClause> suchThatClauses = parsingResult.getSuchThatClauses();
+    // Add such-that-strategies based on the relationship specified in the query.
+    for (auto clause : suchThatClauses) {
+        clauses.push_back(std::make_shared<SuchThatClause>(clause));
+    }
+
+    vector<PatternClause> patternClauses = parsingResult.getPatternClauses();
+    // Add PatternStrategy if pattern clause exists in the query.
+    for (auto clause : patternClauses) {
+        clauses.push_back(std::make_shared<PatternClause>(clause));
+    }
+
+    vector<WithClause> withClauses = parsingResult.getWithClauses();
+    for (auto clause : withClauses) {
+        clauses.push_back(std::make_shared<WithClause>(clause));
+    }
+    return clauses;
+}
 
 
 

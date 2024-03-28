@@ -83,7 +83,10 @@ std::shared_ptr<ResultTable> ResultTable::excludeOnColumns(const std::shared_ptr
     }
 
     return result;
+
 }
+
+
 
 // this function merge the rows of two tables where the common columns match
 std::unordered_map<std::string, std::string> ResultTable::mergeRows(const std::unordered_map<std::string, std::string>& row1,
@@ -294,5 +297,27 @@ bool ResultTable::isTableFalse() {
     return !isTruthTable && isEmpty();
 }
 
+void ResultTable::setTableFalse() {
+    isTruthTable = false;
+}
+
+void ResultTable::populateWithTwoColumns(std::string col1, std::string col2, std::unordered_set <std::string> values,
+                                         std::unordered_set <std::string> values2) {
+    for (const auto& entityA : values) {
+        for (const auto& entityB : values2) {
+            std::unordered_map<std::string, std::string> newRow;
+            newRow[col1] = entityA;
+            newRow[col2] = entityB;
+            this->insertNewRow(newRow);
+        }
+    }
+}
 
 
+void ResultTable::populateWithOneColumn(std::string col1, std::unordered_set<std::string> values) {
+    for (const auto& entity : values) {
+        std::unordered_map<std::string, std::string> newRow;
+        newRow[col1] = entity;
+        this->insertNewRow(newRow);
+    }
+}
