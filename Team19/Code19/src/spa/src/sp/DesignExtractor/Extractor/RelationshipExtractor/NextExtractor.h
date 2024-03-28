@@ -1,3 +1,5 @@
+#pragma once
+
 #include "sp/DesignExtractor/Extractor/RelationshipExtractor/IRelationshipExtractor.h"
 #include "sp/ControlFlow/CFGNode.h"
 

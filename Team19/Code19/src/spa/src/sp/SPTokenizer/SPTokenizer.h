@@ -2,7 +2,6 @@
 
 #include "LexicalToken.h"
 
-
 /**
  * @brief Represents a tokenizer which takes in a string and tokenizes it.
  */

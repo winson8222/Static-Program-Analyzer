@@ -1,7 +1,7 @@
 #pragma once
 
-#include "sp/DesignExtractor/Extractor/EntityExtractor/IEntityExtractor.h"
 #include <stdexcept>
+#include "sp/DesignExtractor/Extractor/EntityExtractor/IEntityExtractor.h"
 
 /*
 * Extracts all the procedures from the AST and writes them to the PKB.

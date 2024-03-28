@@ -1,7 +1,7 @@
 #pragma once
 
-#include "sp/DesignExtractor/Extractor/EntityExtractor/IEntityExtractor.h"
 #include <stdexcept>
+#include "sp/DesignExtractor/Extractor/EntityExtractor/IEntityExtractor.h"
 /*
 * Extracts the read statement from the AST and writes the information to the PKB.
 * This class implements the IExtractor interface. The methods are documented

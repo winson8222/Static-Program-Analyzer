@@ -1,7 +1,7 @@
 #pragma once
 
-#include "sp/DesignExtractor/Extractor/PatternExtractor/IPatternExtractor.h"
 #include <stdexcept>
+#include "sp/DesignExtractor/Extractor/PatternExtractor/IPatternExtractor.h"
 
 /*
 * Extracts the pattern statement from the AST and writes the information to the PKB.

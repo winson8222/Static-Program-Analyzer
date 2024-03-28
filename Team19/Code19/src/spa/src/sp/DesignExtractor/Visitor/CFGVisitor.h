@@ -1,11 +1,10 @@
 #pragma once
 
+#include <memory>
+#include <vector>
 #include "sp/DesignExtractor/Visitor/ProcedureVisitor.h"
 #include "sp/ControlFlow/SimpleControlFlow.h"
 #include "sp/DesignExtractor/Extractor/RelationshipExtractor/NextExtractor.h"
-
-#include <vector>
-#include <memory>
 
 // ai-gen start(copilot, 2, e)
 
