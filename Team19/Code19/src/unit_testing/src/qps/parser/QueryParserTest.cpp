@@ -368,7 +368,7 @@ TEST_CASE("src/qps/parser/QueryParser") {
 
         };
 
-        REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "");
+        REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SyntaxError");
 
     }
 
@@ -392,7 +392,7 @@ TEST_CASE("src/qps/parser/QueryParser") {
 
         };
 
-        REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "");
+        REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SyntaxError");
 
     }
 
@@ -1620,7 +1620,7 @@ TEST_CASE("use not") {
     }
 
     SECTION("assign a; Select a such that Follows(3, a) not Parent(a, 5) pattern a(v, _\"2\"_) not a(_, _)") {
-        Tokenizer tokenizer("assign a; Select a such that Follows(3, a) and not Parent(a, 5) pattern a(v, _\"2\"_) and not a(_, _)");
+        Tokenizer tokenizer("assign a; variable v; Select a such that Follows(3, a) and not Parent(a, 5) pattern a(v, _\"2\"_) and not a(_, _)");
         vector<Token> tokens = tokenizer.tokenize();
         QueryParser queryParser(tokens);
         ParsingResult parsingResult = queryParser.parse();
@@ -1693,4 +1693,6 @@ TEST_CASE("use not") {
 
 
 }
+
+
 

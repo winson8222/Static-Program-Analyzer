@@ -207,5 +207,5 @@ bool Tokenizer::isSynonym() {
         || tokens.back().getType() == TokenType::Comma 
         || (tokens.back().getType() == TokenType::PatternKeyword && nextToken == "(")
         || tokens.back().getType() == TokenType::LeftAngleBracket
-        || (tokens.back().getType() == TokenType::AndKeyword && tokens.back().getValue() == "pattern");
+        || (tokens.back().getType() == TokenType::AndKeyword && tokens.back().getValue() == "pattern" && nextToken == "(");
 }

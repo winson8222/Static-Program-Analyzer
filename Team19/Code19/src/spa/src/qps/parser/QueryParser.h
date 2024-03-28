@@ -26,6 +26,10 @@ public:
     ParsingResult getParsingResult();  // Method to retrieve the result
 private:
     bool semanticError;
+    void checkValidOperand(const string& operand);
+    void checkBracketsBalanced(const string& expr);
+    void checkExprSyntax(const string& expr);
+    void checkValidExpr(const string& expr);
     void throwSyntaxError();
     ParsingResult makeResult(ParsingResult parsingResult);
 	void setSemanticError();
