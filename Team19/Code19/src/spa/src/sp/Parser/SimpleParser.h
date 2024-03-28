@@ -17,7 +17,7 @@ public:
 	/**
 	* @brief The constructor for the Simple Parser.
 	*/
-	SimpleParser(std::shared_ptr<std::vector<LexicalToken>> tokens);
+	explicit SimpleParser(std::shared_ptr<std::vector<LexicalToken>> tokens);
 
 	/**
 	* @brief Parses the SIMPLE program based on a token stream as given.

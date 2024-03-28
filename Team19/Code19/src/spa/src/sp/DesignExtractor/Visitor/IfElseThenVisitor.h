@@ -1,11 +1,11 @@
 #pragma once
 
+#include <stdexcept>
 #include "sp/DesignExtractor/Extractor/EntityExtractor/IfElseThenExtractor.h"
 #include "sp/DesignExtractor/Extractor/RelationshipExtractor/ParentExtractor.h"
 #include "sp/DesignExtractor/Visitor/IVisitor.h"
 #include "sp/DesignExtractor/Visitor/ExpressionVisitor.h"
 #include "sp/DesignExtractor/Visitor/StatementListVisitor.h"
-#include <stdexcept>
 
 constexpr int IF_EXPR_INDEX = 0;
 constexpr int THEN_STMT_INDEX = 1;

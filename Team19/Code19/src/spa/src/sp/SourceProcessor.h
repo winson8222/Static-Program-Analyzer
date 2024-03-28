@@ -1,3 +1,5 @@
+#pragma once
+
 #include "sp/SPTokenizer/SPTokenizer.h"
 #include "sp/SPTokenizer/LexicalToken.h"
 #include "sp/DesignExtractor/DesignExtractorFacade.h"
