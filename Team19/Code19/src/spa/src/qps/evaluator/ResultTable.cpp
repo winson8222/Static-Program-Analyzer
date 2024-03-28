@@ -53,6 +53,38 @@ std::shared_ptr<ResultTable> ResultTable::joinOnColumns(const std::shared_ptr<Re
 
 }
 
+std::shared_ptr<ResultTable> ResultTable::excludeOnColumns(const std::shared_ptr<ResultTable>& table2) {
+    // Create a new result table
+    auto result = std::make_shared<ResultTable>();
+
+    // Identify common columns between the two tables and columns unique to each table
+    std::vector<std::string> commonColumns;
+    std::vector<std::string> uniqueToTable1;
+    std::vector<std::string> uniqueToTable2;
+    identifyColumns(table2, commonColumns, uniqueToTable1, uniqueToTable2);
+
+    // Set up the columns of the result table
+    result->addColumnsSet(this->colSet);
+
+    // Iterate through rows of this table to check against all rows in table2
+    for (auto& row1 : this->rows) {
+        bool excludeRow = false;
+        for (auto& row2 : table2->rows) {
+            // If the common columns match between a row in this table and a row in table2, exclude the row
+            if (commonColumnsMatch(row1, row2, commonColumns)) {
+                excludeRow = true;
+                break; // A matching row was found, so this row is excluded
+            }
+        }
+        // If the row from this table has no matches in table2, include it in the result
+        if (!excludeRow) {
+            result->insertNewRow(row1);
+        }
+    }
+
+    return result;
+}
+
 // this function merge the rows of two tables where the common columns match
 std::unordered_map<std::string, std::string> ResultTable::mergeRows(const std::unordered_map<std::string, std::string>& row1,
     const std::unordered_map<std::string, std::string>& row2,
