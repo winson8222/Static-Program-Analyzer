@@ -5,7 +5,7 @@ Select s such that Uses(s, "x")
 5000
 2 - Just Select s
 
-Select s;
+Select s
 SemanticError
 5000
 3 - Pattern and uses mix
