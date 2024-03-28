@@ -135,35 +135,7 @@ void QueryEvaluator::evaluateMultipleReturnValues(std::unordered_set<std::string
 	}
 }
 
-std::vector<std::string> getEntitiesByType(const std::shared_ptr<PKBReaderManager>& pkbReaderManager, const std::string& entityType) {
-    std::vector<std::string> entities;
-
-    // Handle each entity type accordingly
-    if (entityType == "procedure") {
-        auto procedures = pkbReaderManager->getProcedureReader()->getAllProcedures();
-        entities.insert(entities.end(), procedures.begin(), procedures.end());
-    } else if (entityType == "variable") {
-        auto variables = pkbReaderManager->getVariableReader()->getAllEntities();
-        entities.insert(entities.end(), variables.begin(), variables.end());
-    } else if (entityType == "constant") {
-        auto constants = pkbReaderManager->getConstantReader()->getAllEntities();
-        for (const auto& constant : constants) {
-            entities.push_back(std::to_string(constant)); // Assuming constants are stored as strings
-        }
-    } else if (entityType == "stmt" || entityType == "read" || entityType == "print" ||
-               entityType == "assign" || entityType == "call" || entityType == "while" ||
-               entityType == "if") {
-        // Assuming there's a generic way to get statements by type, this part needs adjustment based on actual implementation
-        std::unordered_set<std::string> statements; // Placeholder
-        entities.insert(entities.end(), statements.begin(), statements.end());
-    } else {
-        // Handle error for unsupported entity type
-    }
-
-    return entities;
-}
-
-std::shared_ptr<ResultTable> populateEntityCombinations(const PKBReaderManager& pkbReaderManager, const std::string& colA, const std::string& colB, const ParsingResult& parsingResult) {
+std::shared_ptr<ResultTable> QueryEvaluator::populateEntityCombinations(const std::string& colA, const std::string& colB) {
     auto resultTable = std::make_shared<ResultTable>();
     resultTable->addColumnsSet({colA, colB});
 
@@ -172,8 +144,8 @@ std::shared_ptr<ResultTable> populateEntityCombinations(const PKBReaderManager& 
     std::string typeB = parsingResult.getRequiredSynonymType(colB);
 
     // Fetch entities for both types
-    auto entitiesA = getEntitiesByType(pkbReaderManager, typeA);
-    auto entitiesB = getEntitiesByType(pkbReaderManager, typeB);
+    auto entitiesA = getAllEntities(typeA);
+    auto entitiesB = getAllEntities(typeB);
 
     // Generate all possible combinations of entities A and B
     for (const auto& entityA : entitiesA) {
