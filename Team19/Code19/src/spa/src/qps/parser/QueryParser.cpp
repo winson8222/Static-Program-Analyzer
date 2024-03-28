@@ -495,14 +495,104 @@ void QueryParser::parseWhileParams(PatternClause &clause) {
 
 
 
-
-
+void QueryParser::checkBracketsBalanced(const std::string& expr) {
+    int count = 0;
+    for (char c : expr) {
+        if (c == '(') {
+            count++;
+        } else if (c == ')') {
+            count--;
+        }
+        if (count < 0) {
+            throwSyntaxError();
+        }
+    }
+    if (count != 0) {
+        throwSyntaxError();
+    }
+}
+void QueryParser::checkValidOperand(const std::string &operand) {
+    if (operand.empty()) {
+        throwSyntaxError();
+    }
+    std::regex pattern("^(?:[a-zA-Z][a-zA-Z0-9]*|[1-9][0-9]*|0)$");
+    if (!std::regex_match(operand, pattern)) throwSyntaxError();
+}
+void QueryParser::checkExprSyntax(const std::string &expr) {
+    bool prevOperand = false;
+    bool prevOperator = false;
+    bool prevRightBracket = false;
+    string operand;
+    for (char c : expr) {
+        if (c == '(') {
+            if (prevOperand && !operand.empty()) {
+                throwSyntaxError();
+            }
+            prevOperand = true;
+            prevOperator = false;
+            prevRightBracket = false;
+        } else if (c == ')') {
+            if (prevOperator) {
+                throwSyntaxError();
+            }
+            if (prevOperand) {
+                checkValidOperand(operand);
+                operand = "";
+            }
+            prevOperand = false;
+            prevOperator = false;
+            prevRightBracket = true;
+        } else if (c == '+' || c == '-' || c == '*' || c == '%' || c == '/') {
+            if (prevOperator) {
+                throwSyntaxError();
+            }
+            if (!prevOperand && !prevRightBracket) {
+                throwSyntaxError();
+            }
+            if (prevOperand) {
+                checkValidOperand(operand);
+                operand = "";
+            }
+            prevOperand = false;
+            prevOperator = true;
+            prevRightBracket = false;
+        } else if (c == ' ') {
+            continue;
+        } else {
+            if (prevRightBracket) {
+                throwSyntaxError();
+            }
+            operand += c;
+            prevOperand = true;
+            prevOperator = false;
+            prevRightBracket = false;
+        }
+    }
+    if (prevOperator) {
+        throwSyntaxError();
+    }
+    if (prevOperand) {
+        checkValidOperand(operand);
+    }
+}
+void QueryParser::checkValidExpr(const std::string& expr) {
+    // check if expr is at least len 2
+    if (expr.length() <= 2) {
+        throwSyntaxError();
+    }
+    // Removes '"' from front and back of expr
+    std::string exprWithoutQuotes = expr.substr(1, expr.length() - 2);
+    checkBracketsBalanced(exprWithoutQuotes);
+    checkExprSyntax(exprWithoutQuotes);
+}
 // Parses the expression specification in the query.
 // Handles different forms of expressions like quoted constants, wildcards, or quoted expressions.
 void QueryParser::parseExpressionSpec(PatternClause &clause) {
-
+    string expr;
     if (match(TokenType::QuoutConst) || match(TokenType::QuoutIDENT) || match(TokenType::ExpressionSpec)) {
-        clause.setSecondParam(Token(TokenType::ExpressionSpec, currentToken().getValue()));
+        expr = currentToken().getValue();
+        checkValidExpr(expr);
+        clause.setSecondParam(Token(TokenType::ExpressionSpec, expr));
         return;
     } else if (match(TokenType::Wildcard)) {
 
@@ -515,12 +605,11 @@ void QueryParser::parseExpressionSpec(PatternClause &clause) {
         if (!match(TokenType::QuoutIDENT) && !match(TokenType::QuoutConst) && !match(TokenType::ExpressionSpec)) {
             throwSyntaxError();
         }
-        string partialMatchValue = currentToken().getValue();
-
+        expr = currentToken().getValue();
+        checkValidExpr(expr);
         advanceToken();
-
         ensureToken(TokenType::Wildcard);
-        clause.setSecondParam(Token(TokenType::PartialExpressionSpec, partialMatchValue));
+        clause.setSecondParam(Token(TokenType::PartialExpressionSpec, expr));
 
         // building expressionspec with wildcards
     } else {

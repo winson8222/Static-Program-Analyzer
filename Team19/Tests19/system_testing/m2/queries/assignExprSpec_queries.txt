@@ -1,0 +1,95 @@
+1 - None
+assign a; call c;
+Select a such that Uses(a, c) pattern a("8", _)
+SyntaxError
+5000
+2 - None
+assign a; call c;
+Select a pattern a("a", _)
+none
+5000
+3 - Invalid Pattern
+assign a;
+Select a pattern a(_, _"+x"_)
+SyntaxError
+5000
+4 - Invalid Pattern
+assign a; call c;
+Select a pattern a(_, "")
+SyntaxError
+5000
+5 - Invalid Pattern
+assign a; call c;
+Select a pattern a(_, _""_)
+SyntaxError
+5000
+6 - Invalid Pattern
+assign a; call c;
+Select a pattern a(_, "1+")
+SyntaxError
+5000
+7 - Invalid Pattern
+assign a; call c;
+Select a pattern a(_, "1+(1+)")
+SyntaxError
+5000
+8 - Invalid Pattern
+assign a; call c;
+Select a pattern a(_, "1+1+")
+SyntaxError
+5000
+9 - Valid Pattern
+assign a; call c;
+Select a pattern a(_, "1+(1)")
+none
+5000
+10 - Valid Pattern
+assign a; call c;
+Select a pattern a(_, "1+((1))")
+none
+5000
+11 - Invalid Pattern
+assign a; call c;
+Select a pattern a(_, "1+()")
+SyntaxError
+5000
+12 - Invalid Pattern
+assign a;
+Select a pattern a(_, "1+(1+1")
+SyntaxError
+5000
+13 - Invalid Pattern
+assign a;
+Select a pattern a(_, "1+((1+1)")
+SyntaxError
+5000
+14 - Invalid Pattern
+assign a;
+Select a pattern a(_, "1 + ( 1 + ( 1 + ))")
+SyntaxError
+5000
+15 - Invalid Pattern
+assign a;
+Select a pattern a(_, "1 + 1 (1)")
+SyntaxError
+5000
+16 - Invalid Pattern
+assign a;
+Select a pattern a(_, "1 + (1 + ((1)))")
+none
+5000
+17 - Invalid Pattern
+assign a;
+Select a pattern a(_, "1 + (1 + ((1) + 1))")
+none
+5000
+18 - Invalid Pattern
+assign a;
+Select a pattern a(_, "1a")
+SyntaxError
+5000
+19 - Invalid Pattern
+assign a;
+Select a pattern a(_, "1 + (a + x) + 1a")
+SyntaxError
+5000
