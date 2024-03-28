@@ -101,6 +101,23 @@ public:
 	 * @param strategy The strategy to be added
 	 */
     void addStrategy(std::unique_ptr<QueryEvaluationStrategy> strategy); // Method to add strategies
+
+    /**
+     * Populates a result table with all possible combinations of entities for two specified columns.
+     *
+     * This method dynamically determines the entity types for the specified columns based on the
+     * ParsingResult. It then retrieves all entities for each type and generates a result table
+     * containing every possible combination of these entities across the two columns.
+     *
+     * @param colA The name of the first column, which will contain entities of the first type.
+     * @param colB The name of the second column, which will contain entities of the second type.
+     * @param parsingResult The ParsingResult instance containing information about declared synonyms
+     *                      and their types, which is used to determine the types of entities to retrieve.
+     * @return A shared pointer to a ResultTable populated with all possible combinations of entities
+     *         for the specified columns.
+     */
+    std::shared_ptr<ResultTable> populateEntityCombinations(const std::string& colA, const std::string& colB);
+
     void initializeStrategyFactory(); // Method to initialize the strategy factory
     void initializeEntityFactory(); // Method to initialize the entity factory
     string join(const unordered_set<string>& elements, const string& delimiter);
