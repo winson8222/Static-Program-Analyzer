@@ -368,7 +368,7 @@ TEST_CASE("src/qps/parser/QueryParser") {
 
         };
 
-        REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "");
+        REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SyntaxError");
 
     }
 
@@ -392,7 +392,7 @@ TEST_CASE("src/qps/parser/QueryParser") {
 
         };
 
-        REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "");
+        REQUIRE(QueryParser(tokens).parse().getErrorMessage() == "SyntaxError");
 
     }
 
