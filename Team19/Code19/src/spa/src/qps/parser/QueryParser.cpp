@@ -112,10 +112,6 @@ void QueryParser::parseDeclarations() {
 
         numberOfDeclarations++;
     }
-
-    if (numberOfDeclarations == 0) {
-        throwSyntaxError();
-    }
     
 }
 
@@ -197,6 +193,10 @@ void QueryParser::parseSuchThatClause() {
     SuchThatClause clause;
     
     advanceToken();
+    if (match(TokenType::NotKeyword)) {
+        clause.setAsNegated();
+		advanceToken();
+    }
     parseRelRef(clause);
     parsingResult.addSuchThatClause(clause);
 }
@@ -408,6 +408,10 @@ void QueryParser::parseEntRef() {
 void QueryParser::parsePatternClause() {
     PatternClause clause;
     advanceToken();
+    if (match(TokenType::NotKeyword)) {
+        clause.setAsNegated();
+        advanceToken();
+    }
     // check if it is a syn-assign
     ensureToken(TokenType::IDENT);
     clause.setRelationship(currentToken());
@@ -728,6 +732,10 @@ void QueryParser::parseWithClause() {
 
     clause.setRelationship(currentToken());
     advanceToken();
+    if (match(TokenType::NotKeyword)) {
+        clause.setAsNegated();
+        advanceToken();
+    }
 
     size_t startIndex = currentTokenIndex;
     TokenType firstRefType = parseRef();
