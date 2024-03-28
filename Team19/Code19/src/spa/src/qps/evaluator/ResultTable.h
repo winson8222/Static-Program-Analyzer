@@ -76,6 +76,8 @@ public:
     std::shared_ptr<ResultTable> excludeOnColumns(const std::shared_ptr<ResultTable>& table2);
 
 
+
+
     // identify common and unique columns
     void identifyColumns(const std::shared_ptr<ResultTable>& table2,
         std::vector<std::string>& commonColumns,
