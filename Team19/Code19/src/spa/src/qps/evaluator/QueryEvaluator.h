@@ -116,4 +116,5 @@ public:
     void throwNoSuchMethodException();
     bool handleTableTrue(shared_ptr<Clause> clause);
     bool handleTableFalse(shared_ptr<Clause> clause);
+    ResultTable populateWithInverse(ResultTable resultTable);
 };
