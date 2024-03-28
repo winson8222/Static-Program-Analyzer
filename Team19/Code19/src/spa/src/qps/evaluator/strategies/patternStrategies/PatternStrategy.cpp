@@ -1,5 +1,4 @@
-#include "PatternStrategy.h"
-
+#include "qps/evaluator/strategies/patternStrategies/PatternStrategy.h"
 
 std::shared_ptr<StatementReader> PatternStrategy::getStatementReader() {
     return statementReader;
@@ -20,4 +19,3 @@ void PatternStrategy::insertRowsWithTwoCols(Token firstParam, Token relationship
         }
     }
 }
-

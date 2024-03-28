@@ -1,9 +1,7 @@
 #pragma once
-// FollowsStrategy.h
-#define FOLLOWSSTRATEGY_H
 
+#include <iostream>
 #include "StmtStmtStrategy.h"
-
 
 using namespace std;
 

@@ -1,5 +1,4 @@
-#include "ParsingResult.h"
-#include "Token.h"
+#include "qps/parser/ParsingResult.h"
 
 // Constructor
 ParsingResult::ParsingResult() {

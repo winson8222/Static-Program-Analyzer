@@ -1,12 +1,6 @@
-//
-// Created by Winson Zheng on 15/2/24.
-//
-
-#include "StmtStmtStrategy.h"
+#include "qps/evaluator/strategies/suchThatStrategies/StmtStmtStrategy.h"
 
 using namespace std;
-
-
 
 bool StmtStmtStrategy::isBothParamsInteger(const Token& firstParam, const Token& secondParam) {
     // Implementation to check if both parameters are integers
@@ -60,4 +54,3 @@ void StmtStmtStrategy::insertRowsWithTwoCols(const Token &firstParam, const Toke
         }
     }
 }
-

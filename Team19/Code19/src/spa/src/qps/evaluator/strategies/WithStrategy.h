@@ -1,8 +1,10 @@
 #pragma once // Ensures the file is included only once during compilation
 
-#include "qps/evaluator/strategies/suchThatStrategies/StmtStmtStrategy.h"
 #include <memory> // For std::shared_ptr
-
+#include <string>
+#include <unordered_set>
+#include <iostream>
+#include "qps/evaluator/strategies/suchThatStrategies/StmtStmtStrategy.h"
 
 /**
  * @file WithStrategy.h
@@ -62,7 +64,7 @@ public:
     std::unordered_set<std::string> processParam(Token param, PKBReaderManager& pkbReaderManager, const std::shared_ptr<ResultTable>& resultTable);
 
 
-    pair<string, string> extractAttributes(Token param, PKBReaderManager& pkbReaderManager);
+    std::pair<string, string> extractAttributes(Token param, PKBReaderManager& pkbReaderManager);
     bool isInteger(const std::string& str);
     bool isQuotedString(const std::string& str);
 
@@ -70,6 +72,6 @@ public:
 
     bool isIntegerStored(string synyonymType, string attribute);
     vector<std::string> mapStringSetToIntSet(PKBReaderManager& pkbReaderManager, const vector<string>& stringSet, string& synonymType);
-    std::vector<pair<string, string>> populateResultTable(const std::shared_ptr<ResultTable>& resultTable, const std::vector<std::string>& intersection, Token param, PKBReaderManager& pkbReaderManager);
+    std::vector<std::pair<string, string>> populateResultTable(const std::shared_ptr<ResultTable>& resultTable, const std::vector<std::string>& intersection, Token param, PKBReaderManager& pkbReaderManager);
     
 };

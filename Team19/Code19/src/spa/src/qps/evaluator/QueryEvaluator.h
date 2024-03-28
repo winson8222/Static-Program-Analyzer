@@ -1,11 +1,11 @@
 #pragma once
 
-#include <vector> // For storing multiple strategies
-#include <memory>
 #include <map>
-#include "QueryEvaluationStrategy.h" // Include the strategy interface
+#include <memory>
+#include <variant>
+#include <vector> // For storing multiple strategies
+#include "qps/evaluator/QueryEvaluationStrategy.h" // Include the strategy interface
 #include "qps/evaluator/ResultTable.h"
-#include "qps/parser/Token.h"
 #include "qps/evaluator/strategies/suchThatStrategies/FollowsStrategy.h" // Include FollowsStrategy
 #include "qps/evaluator/strategies/suchThatStrategies/ParentStrategy.h" // Include ParentStrategy
 #include "qps/evaluator/strategies/suchThatStrategies/ModifiesStrategy.h" // Include ModifiesStrategy
@@ -18,8 +18,7 @@
 #include "qps/evaluator/strategies/patternStrategies/AssignPatternStrategy.h" // Include AssignPatternStrategy
 #include "qps/evaluator/strategies/patternStrategies/WhilePatternStrategy.h" // Include WhilePatternStrategy
 #include "qps/evaluator/strategies/patternStrategies/IfPatternStrategy.h" // Include IfPatternStrategy
-#include <variant>
-
+#include "qps/parser/Token.h"
 
 class QueryEvaluator {
 private:
@@ -79,6 +78,7 @@ private:
 	 * @return std::vector<std::unordered_map<std::string, std::string>> The cross join map list
 	 */
 	std::vector<std::unordered_map<std::string, std::string>> getCrossJoinMapList(std::vector<std::string> requiredSynonyms);
+
 public:
     QueryEvaluator(std::shared_ptr<PKBReaderManager> pkbReaderManager, ParsingResult& parsingResult);
 

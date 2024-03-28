@@ -1,4 +1,4 @@
-#include "NextStrategy.h"
+#include "qps/evaluator/strategies/suchThatStrategies/NextStrategy.h"
 
 std::shared_ptr<ResultTable> NextStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) {
     auto resultTable = std::make_shared<ResultTable>();

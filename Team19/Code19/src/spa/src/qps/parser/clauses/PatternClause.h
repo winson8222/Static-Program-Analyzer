@@ -1,5 +1,4 @@
-#ifndef PATTERNCLAUSE_H
-#define PATTERNCLAUSE_H
+#pragma once
 
 #include "qps/parser/clauses/Clause.h"
 #include "qps/parser/Token.h"
@@ -28,5 +27,3 @@ public:
     void setThirdParam(const Token& param) { thirdParam = param; }
     void setAsNegated() { negated = true; }
 };
-
-#endif // PATTERNCLAUSE_H

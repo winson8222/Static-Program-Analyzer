@@ -1,5 +1,5 @@
 // Include the parser class header.
-#include "../../spa/src/qps/parser/QueryParser.h"
+#include "qps/parser/QueryParser.h"
 #include <stdexcept>
 #include <unordered_set>
 #include <iostream>
@@ -946,4 +946,3 @@ string QueryParser::concatTokens(size_t start, size_t end) {
     }
     return concatenatedTokens;
 }
-

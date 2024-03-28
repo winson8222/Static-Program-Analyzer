@@ -1,6 +1,4 @@
-// Header guards to prevent multiple inclusions of this header file.
-#ifndef TOKEN_H
-#define TOKEN_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -59,13 +57,7 @@ enum class TokenType {
     Elem,
     NotKeyword
 
-
-
-
-
 };
-
-
 
 // The Token class represents a token with a type and a string value.
 class Token {
@@ -90,9 +82,3 @@ private:
     TokenType type;    // Stores the type of the token
     string value; // Stores the string value of the token
 };
-
-// Subclasses for different token types can be defined here...
-
-
-
-#endif

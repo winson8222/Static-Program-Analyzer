@@ -1,4 +1,4 @@
-#include "../../spa/src/qps/Parser/Token.h"
+#include "qps/Parser/Token.h"
 
 using namespace std;
 
@@ -8,13 +8,11 @@ using namespace std;
 Token::Token(TokenType type, string value)
 : type(type), value(std::move(value)) {}  // Initializer list used for efficiency.
 
-
 // Returns the type of the token.
 // @return TokenType: The type of this token.
 TokenType Token::getType() const {
     return type; 
 }
-
 
 // Returns the string value of the token.
 // @return string: The value of this token.
@@ -23,7 +21,6 @@ string Token::getValue() const {
 }
 
 // Implementations for subclasses would go here...
-
 
 void Token::setType(TokenType type) {
     this->type = type;

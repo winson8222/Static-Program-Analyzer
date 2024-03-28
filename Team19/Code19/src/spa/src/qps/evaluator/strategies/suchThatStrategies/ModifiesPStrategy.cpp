@@ -1,4 +1,3 @@
-#pragma once
 #include "qps/evaluator/strategies/suchThatStrategies/ModifiesPStrategy.h"
 
 std::shared_ptr<ResultTable> ModifiesPStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause)

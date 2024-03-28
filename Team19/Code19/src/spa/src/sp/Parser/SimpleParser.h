@@ -2,7 +2,6 @@
 
 #include <memory>
 #include <vector>
-#include "sp/AST/AST.h"
 #include "sp/AST/ASTNode.h"
 #include "sp/AST/ASTUtility.h"
 #include "sp/SPTokenizer/LexicalToken.h"

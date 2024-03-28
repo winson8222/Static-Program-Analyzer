@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PatternStrategy.h"
+#include "qps/evaluator/strategies/patternStrategies/PatternStrategy.h"
 #include "commons/ShuntingYard.h"
 
 class IfPatternStrategy : public PatternStrategy {
@@ -18,4 +18,3 @@ public:
     void processQuotedIdent(ParsingResult parsingResult, std::shared_ptr<ResultTable> result) override;
     void processWildcard(ParsingResult parsingResult, std::shared_ptr<ResultTable> result) override;
 };
-
