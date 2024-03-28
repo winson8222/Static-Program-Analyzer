@@ -1,13 +1,13 @@
 #pragma once
 
+#include <regex>
+#include <string>
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
 #include "pkb/templates/TemplateMapSet.h"
-#include "string"
 #include "IAssignPatternReader.h"
 #include "IAssignPatternWriter.h"
-#include <regex>
 
 // ai-gen start(copilot, 2, e)
 // prompt: used copilot

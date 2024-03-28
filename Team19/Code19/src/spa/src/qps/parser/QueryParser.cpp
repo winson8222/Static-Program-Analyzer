@@ -1,5 +1,5 @@
 // Include the parser class header.
-#include "qps/parser/QueryParser.h"
+#include "QueryParser.h"
 #include <stdexcept>
 #include <unordered_set>
 #include <iostream>

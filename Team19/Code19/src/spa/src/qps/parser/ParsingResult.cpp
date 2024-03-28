@@ -1,4 +1,4 @@
-#include "qps/parser/ParsingResult.h"
+#include "ParsingResult.h"
 
 // Constructor
 ParsingResult::ParsingResult() {

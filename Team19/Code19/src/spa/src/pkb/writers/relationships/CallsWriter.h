@@ -18,7 +18,7 @@ private:
     std::shared_ptr<CallsStore> callsStore;
 
 public:
-    CallsWriter(std::shared_ptr<CallsStore> store);
+    explicit CallsWriter(std::shared_ptr<CallsStore> store);
 
     void addRelationship( std::string caller,  std::string callee) override;
     void clear() override;

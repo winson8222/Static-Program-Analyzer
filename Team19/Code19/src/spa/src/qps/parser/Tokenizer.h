@@ -1,11 +1,11 @@
 #pragma once
 
-#include "qps/parser/Token.h"
 #include <string>
 #include <vector>
 #include <regex>
 #include <map>
 #include <functional>
+#include "qps/parser/Token.h"
 
 // The Tokenizer class is used for converting a string query into tokens.
 class Tokenizer {

@@ -1,4 +1,4 @@
-#include "qps/Parser/Token.h"
+#include "Token.h"
 
 using namespace std;
 

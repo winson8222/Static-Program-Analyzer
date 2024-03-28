@@ -1,5 +1,7 @@
+#pragma once
+
 #include <memory>
-#include "PKB.h"
+#include "pkb/PKB.h"
 
 // ai-gen start(copilot, 2, e)
 // prompt: used copilot

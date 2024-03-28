@@ -1,11 +1,11 @@
 #pragma once
 
-#include "pkb/stores/relationships/IRelationshipReader.h"
-#include "pkb/stores/relationships/types/UsesSStore.h"
 #include <memory>
 #include <string>
 #include <unordered_set>
 #include <unordered_map>
+#include "pkb/stores/relationships/IRelationshipReader.h"
+#include "pkb/stores/relationships/types/UsesSStore.h"
 
 class UsesSReader : public IRelationshipReader<int, std::string> {
 private:

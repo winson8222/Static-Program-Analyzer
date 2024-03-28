@@ -1,7 +1,7 @@
-#pragma
+#pragma once
 
-#include "string"
-#include "stack"
+#include <string>
+#include <stack>
 
 class Shunt {
 private:
@@ -19,5 +19,3 @@ public:
     void addToStack(char c);
     char popFromStack();
 };
-
-
