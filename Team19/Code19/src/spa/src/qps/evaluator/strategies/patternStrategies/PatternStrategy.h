@@ -2,7 +2,6 @@
 
 #include "qps/evaluator/QueryEvaluationStrategy.h"
 
-
 using namespace std;
 
 class PatternStrategy : public QueryEvaluationStrategy {
@@ -19,4 +18,3 @@ public:
 
     static void insertRowsWithTwoCols(Token firstParam, Token relationship, ParsingResult parsingResult, shared_ptr<IControlPatternReader> reader, shared_ptr<ResultTable> resultTable);
 };
-

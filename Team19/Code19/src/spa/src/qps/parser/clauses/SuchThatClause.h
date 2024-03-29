@@ -1,5 +1,4 @@
-#ifndef SUCHTHATCLAUSE_H
-#define SUCHTHATCLAUSE_H
+#pragma once
 
 #include "qps/parser/clauses/Clause.h"
 #include "qps/parser/Token.h"
@@ -30,5 +29,3 @@ public:
     void setSecondParam(const Token& param) { secondParam = param; }
 
 };
-
-#endif // SUCHTHATCLAUSE_H

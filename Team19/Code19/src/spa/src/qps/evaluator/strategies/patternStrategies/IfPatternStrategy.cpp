@@ -1,5 +1,4 @@
-#include "IfPatternStrategy.h"
-
+#include "qps/evaluator/strategies/patternStrategies/IfPatternStrategy.h"
 
 std::shared_ptr<ResultTable> IfPatternStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) {
     auto resultTable = make_shared<ResultTable>();

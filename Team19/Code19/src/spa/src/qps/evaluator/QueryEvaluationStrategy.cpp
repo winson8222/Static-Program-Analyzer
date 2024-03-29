@@ -1,6 +1,3 @@
-//
-// Created by Winson Zheng on 21/2/24.
-//
 #include "QueryEvaluationStrategy.h"
 #include <regex>
 
@@ -153,4 +150,3 @@ void QueryEvaluationStrategy::insertRowsWithSingleColumn(std::string colName, st
         insertSingleColRowToTable(colPair, resultTable);
     }
 }
-

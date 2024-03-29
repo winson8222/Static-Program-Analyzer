@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "PKB.h"
+#include "pkb/PKB.h"
 
 #include "pkb/readers/entities/AssignReader.h"
 #include "pkb/readers/entities/VariableReader.h"

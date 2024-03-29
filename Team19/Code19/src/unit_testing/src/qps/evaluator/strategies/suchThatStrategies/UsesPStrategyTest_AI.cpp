@@ -116,25 +116,21 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesPStrategy/4") {
     statementWriter->insertStatement(1);
     statementWriter->insertStatement(2);
     statementWriter->insertStatement(3);
-    usesPWriter->addUsesP("proc1", "x");
+    usesPWriter->addUsesP("Init", "x");
     usesPWriter->addUsesP("proc2", "y");
-    procedureWriter->insertProcedure("proc1");
+    procedureWriter->insertProcedure("Init");
     procedureWriter->insertProcedure("proc2");
     variableWriter->insertVariable("x");
     variableWriter->insertVariable("y");
 
-    ParsingResult parsingResult;
-    parsingResult.addDeclaredSynonym("v", "variable");
-    parsingResult.setRequiredSynonym("v" );
-    SuchThatClause clause;
-    clause.setRelationship(Token(TokenType::UsesP, "Uses"));
-    clause.setFirstParam(Token(TokenType::Wildcard, "_"));
-    clause.setSecondParam(Token(TokenType::Wildcard, "_"));
-    parsingResult.addSuchThatClause(clause);
+    Tokenizer tokenizer("variable v; Select v such that Uses(\"Init\", v)");
+    vector<Token> tokens = tokenizer.tokenize();
 
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
     std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{ "x", "y" });
+    REQUIRE(res == std::unordered_set<string>{ "x" });
 
 }
 

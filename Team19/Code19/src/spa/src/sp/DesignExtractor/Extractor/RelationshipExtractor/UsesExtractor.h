@@ -1,8 +1,8 @@
 #pragma once
 
+#include <stdexcept>
 #include "sp/DesignExtractor/Extractor/RelationshipExtractor/IRelationshipExtractor.h"
 #include "sp/AST/ASTUtility.h"
-#include <stdexcept>
 
 /*
 * Extracts the Uses relationship between an entity and a variable

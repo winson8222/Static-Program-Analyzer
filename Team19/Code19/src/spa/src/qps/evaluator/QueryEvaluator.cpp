@@ -1,9 +1,7 @@
-#include "QueryEvaluator.h"
-#include "qps/evaluator/ResultTable.h"
 #include <variant>
-#include "strategies/WithStrategy.h"
-
-using namespace std;
+#include "qps/evaluator/QueryEvaluator.h"
+#include "qps/evaluator/ResultTable.h"
+#include "qps/evaluator/strategies/WithStrategy.h"
 
 // ai-gen start(copilot, 2, e)
 // prompt: used copilot
@@ -23,9 +21,9 @@ void QueryEvaluator::addStrategy(std::unique_ptr<QueryEvaluationStrategy> strate
 void QueryEvaluator::constructEntryString(std::string& entry, std::string& synonym, std::unordered_map<std::string, std::string>& map) {
     // i check if synonym is a AttrRef
     if (ParsingResult::isAttrRef(synonym)) {
-        string synonymSyn = ParsingResult::getSynFromAttrRef(synonym);
+        std::string synonymSyn = ParsingResult::getSynFromAttrRef(synonym);
         std::string ref = map.at(synonymSyn);
-        string convertedAttr = convertToAttr(synonym, ref);
+        std::string convertedAttr = convertToAttr(synonym, ref);
         entry.empty() ? entry = convertedAttr : entry += " " + convertedAttr;
         return;
     }
@@ -46,7 +44,7 @@ void QueryEvaluator::addEntriesToFinalWithCrossJoinAndResult(std::unordered_set<
 	for (auto row: result->getRows()) {
 		std::string toAdd;
 		for (auto requiredSynonym : requiredSynonyms) {
-            string requiredSynonymForChecking;
+            std::string requiredSynonymForChecking;
             if (ParsingResult::isAttrRef(requiredSynonym)) {
                 requiredSynonymForChecking = ParsingResult::getSynFromAttrRef(requiredSynonym);
             } else {
@@ -76,7 +74,7 @@ std::vector<std::unordered_map<std::string, std::string>> QueryEvaluator::getCro
 	for (auto requiredSynonym: requiredSynonyms) {
 		if (result->hasColumn(requiredSynonym)) continue;
 		std::string requiredType = parsingResult.getRequiredSynonymType(requiredSynonym);
-		unordered_set<string> currentResult = getAllEntities(requiredType);
+		unordered_set<std::string> currentResult = getAllEntities(requiredType);
 		if (crossJoinMapList.empty()) {
 			for (auto entity : currentResult) {
 				std::unordered_map<std::string, std::string> tempMap;
@@ -102,7 +100,7 @@ std::vector<std::string> QueryEvaluator::removeAllAttrRefs(const std::vector<std
     std::vector<std::string> processedSynonyms;
     std::unordered_set<std::string> seen; // To ensure uniqueness without duplicates
 
-    for (const string& synonym : requiredSynonyms) {
+    for (const std::string& synonym : requiredSynonyms) {
         std::string processedSynonym = synonym;
         if (ParsingResult::isAttrRef(synonym)) {
             processedSynonym = ParsingResult::getSynFromAttrRef(synonym);
@@ -174,7 +172,8 @@ void QueryEvaluator::populateEntityCombinations(std::shared_ptr<ResultTable> tab
 
 }
 
-std::unordered_set<string> QueryEvaluator::evaluateQuery() {
+
+std::unordered_set<std::string> QueryEvaluator::evaluateQuery() {
 
     // Create a new result table for storing query results.
     result = std::make_shared<ResultTable>();
@@ -184,7 +183,7 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
 
     // Check if the query is valid. If not, return an error message.
     if (!parsingResult.isQueryValid()) {
-        unordered_set<string> error;
+        std::unordered_set<std::string> error;
         error.insert(parsingResult.getErrorMessage());
         return error;
     }
@@ -264,16 +263,16 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
     std::vector<std::string> requiredSynonyms = parsingResult.getRequiredSynonyms();
     std::unordered_set<std::string> finalSet;
 
-    const string requiredSynonym = requiredSynonyms[0];
-    const string requiredSynonymForCheck = ParsingResult::isAttrRef(requiredSynonym) ? ParsingResult::getSynFromAttrRef(requiredSynonym) : requiredSynonym;
+    const std::string requiredSynonym = requiredSynonyms[0];
+    const std::string requiredSynonymForCheck = ParsingResult::isAttrRef(requiredSynonym) ? ParsingResult::getSynFromAttrRef(requiredSynonym) : requiredSynonym;
     std::string requiredType = parsingResult.getRequiredSynonymType(requiredSynonym);
     if (requiredSynonyms.size() == 1) {
         if (requiredSynonym == "BOOLEAN") {
             if (result->isTableTrue() || !result->isEmpty()) {
-                return unordered_set<string>{"TRUE"};
+                return std::unordered_set<std::string>{"TRUE"};
             }
             else {
-                return unordered_set<string>{"FALSE"};
+                return std::unordered_set<std::string>{"FALSE"};
             }
         }
 
@@ -281,7 +280,7 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
             return {};
         }
 
-        unordered_set<string> currentResult;
+        std::unordered_set<std::string> currentResult;
         if (result->hasColumn(requiredSynonymForCheck)) {
             currentResult = result->getColumnValues(requiredSynonymForCheck);
         }
@@ -308,9 +307,9 @@ std::unordered_set<string> QueryEvaluator::evaluateQuery() {
 }
 
 // Retrieves all entities of a specified type.
-// Returns a vector of strings representing these entities.
+// Returns a std::vector of std::strings representing these entities.
 std::unordered_set<std::string> QueryEvaluator::getAllEntities(const std::string& requiredType) {
-    std::unordered_set<string> entities;
+    std::unordered_set<std::string> entities;
     // Find the entity retriever for the required type and get the entities.
     auto it = entityFactory.find(requiredType);
     if (it != entityFactory.end()) {
@@ -321,7 +320,7 @@ std::unordered_set<std::string> QueryEvaluator::getAllEntities(const std::string
             }
         }
         else {
-            for (const string& entity : std::get<std::unordered_set<string>>(variantEntities)) {
+            for (const std::string& entity : std::get<std::unordered_set<std::string>>(variantEntities)) {
                 entities.insert(entity);
             }
         }
@@ -333,7 +332,7 @@ std::unordered_set<std::string> QueryEvaluator::getAllEntities(const std::string
     return entities;
 }
 
-bool QueryEvaluator::handleTableTrue(shared_ptr<Clause> clause) {
+bool QueryEvaluator::handleTableTrue(std::shared_ptr<Clause> clause) {
     Clause::ClauseOperations op = clause->getClauseOperation();
         if (op == Clause::ClauseOperations::AND) {
             result->setAsTruthTable();
@@ -417,36 +416,36 @@ void QueryEvaluator::initializeEntityFactory() {
     entityFactory = {
         // Mapping of entity types to functions that retrieve these entities.
         {"assign", [&]() {
-            return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getAssignReader()->getAllEntities());
+            return std::variant<std::unordered_set<int>, std::unordered_set<std::string>>(pkbReaderManager->getAssignReader()->getAllEntities());
         }},
         {"call", [&]() {
-            return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getCallReader()->getAllEntities());
+            return std::variant<std::unordered_set<int>, std::unordered_set<std::string>>(pkbReaderManager->getCallReader()->getAllEntities());
         }},
         {"constant", [&]() {
-            return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getConstantReader()->getAllEntities());
+            return std::variant<std::unordered_set<int>, std::unordered_set<std::string>>(pkbReaderManager->getConstantReader()->getAllEntities());
         }},
         {"if", [&]() {
-            return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getIfReader()->getAllEntities());
+            return std::variant<std::unordered_set<int>, std::unordered_set<std::string>>(pkbReaderManager->getIfReader()->getAllEntities());
         }},
         {"print", [&]() {
-            return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getPrintReader()->getAllEntities());
+            return std::variant<std::unordered_set<int>, std::unordered_set<std::string>>(pkbReaderManager->getPrintReader()->getAllEntities());
         }},
         {"read", [&]() {
-            return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getReadReader()->getAllEntities());
+            return std::variant<std::unordered_set<int>, std::unordered_set<std::string>>(pkbReaderManager->getReadReader()->getAllEntities());
         }},
         {"stmt", [&]() {
-            return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getStatementReader()->getAllEntities());
+            return std::variant<std::unordered_set<int>, std::unordered_set<std::string>>(pkbReaderManager->getStatementReader()->getAllEntities());
         }},
         {"while", [&]() {
-            return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getWhileReader()->getAllEntities());
+            return std::variant<std::unordered_set<int>, std::unordered_set<std::string>>(pkbReaderManager->getWhileReader()->getAllEntities());
         }},
 
-        // Entities returning unordered_set<string>
+        // Entities returning std::unordered_set<std::string>
         {"variable", [&]() {
-            return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getVariableReader()->getAllEntities());
+            return std::variant<std::unordered_set<int>, std::unordered_set<std::string>>(pkbReaderManager->getVariableReader()->getAllEntities());
         }},
         {"procedure", [&]() {
-            return variant<unordered_set<int>, unordered_set<string>>(pkbReaderManager->getProcedureReader()->getAllEntities());
+            return std::variant<std::unordered_set<int>, std::unordered_set<std::string>>(pkbReaderManager->getProcedureReader()->getAllEntities());
         }}
         // Additional entity types can be added here as needed.
 
@@ -454,8 +453,8 @@ void QueryEvaluator::initializeEntityFactory() {
     };
 }
 
-string QueryEvaluator::join(const unordered_set<string>& elements, const string& delimiter) {
-    string result;
+std::string QueryEvaluator::join(const std::unordered_set<std::string>& elements, const std::string& delimiter) {
+    std::string result;
     for (const auto& element : elements) {
         if (!result.empty()) {
             result += delimiter;
@@ -465,12 +464,9 @@ string QueryEvaluator::join(const unordered_set<string>& elements, const string&
     return result;
 }
 
-
-
-void QueryEvaluator::convertToAttrSet(const std::string &synonym, std::unordered_set<std::string> &valueSet,
-                                      std::unordered_set<std::string> &attrSet) {
+void QueryEvaluator::convertToAttrSet(const std::string &synonym, std::unordered_set<std::string> &valueSet, std::unordered_set<std::string> &attrSet) {
     if (ParsingResult::isAttrRef(synonym)) {
-        for (const string& value : valueSet) {
+        for (const std::string& value : valueSet) {
             attrSet.insert(convertToAttr(synonym, value));
         }
     } else {
@@ -478,11 +474,11 @@ void QueryEvaluator::convertToAttrSet(const std::string &synonym, std::unordered
     };
 }
 
-string QueryEvaluator::convertToAttr(const string& synonym , string ref) {
+std::string QueryEvaluator::convertToAttr(const std::string& synonym , std::string ref) {
     // check take the syn par from the AttrRef
-    string declaredSynonymType = parsingResult.getRequiredSynonymType(synonym);
+    std::string declaredSynonymType = parsingResult.getRequiredSynonymType(synonym);
     // check the type of Attr
-    string attrType = ParsingResult::getAttrFromAttrRef(synonym);
+    std::string attrType = ParsingResult::getAttrFromAttrRef(synonym);
     if (attrType == "stmt#" || attrType == "value") {
         return ref;
     } else if (attrType == "procName") {
@@ -494,9 +490,9 @@ string QueryEvaluator::convertToAttr(const string& synonym , string ref) {
 }
 
 
-string QueryEvaluator::convertToProcName(const std::string& declaredSynonym, std::string ref) {
+std::string QueryEvaluator::convertToProcName(const std::string& declaredSynonym, std::string ref) {
     initializeProcNameMap();
-    // find from the map the corresponding method based on the declaredSynonym and call the method to return the string
+    // find from the map the corresponding method based on the declaredSynonym and call the method to return the std::string
     if (declaredSynonym == "procedure") {
         return ref;
     }
@@ -511,9 +507,9 @@ string QueryEvaluator::convertToProcName(const std::string& declaredSynonym, std
 }
 
 
-string QueryEvaluator::convertToVarName(const std::string& declaredSynonym, std::string ref) {
+std::string QueryEvaluator::convertToVarName(const std::string& declaredSynonym, std::string ref) {
     initializeVarNameMap();
-    // find from the map the corresponding method based on the declaredSynonym and call the method to return the string
+    // find from the map the corresponding method based on the declaredSynonym and call the method to return the std::string
     if (declaredSynonym == "variable") {
         return ref;
     }
@@ -529,12 +525,11 @@ void QueryEvaluator::throwNoSuchMethodException() {
     throw "No such method for the declared synonym";
 }
 
-
 void QueryEvaluator::initializeProcNameMap() {
     this->procNameMap = {
             {"call",      [this](int ref) -> std::string {
                 // Assuming getCallProcName is a valid method for demonstration
-                shared_ptr<CallProcNameReader> callProcNameReader = pkbReaderManager->getCallProcNameReader();
+                std::shared_ptr<CallProcNameReader> callProcNameReader = pkbReaderManager->getCallProcNameReader();
                 return callProcNameReader->getCalledProcedureName(ref);
             }}
     };
@@ -544,12 +539,12 @@ void QueryEvaluator::initializeVarNameMap() {
     this->varNameMap = {
             {"read",     [this](int ref) -> std::string {
                 // Assuming getReadVarName is a valid method for demonstration
-                shared_ptr<ReadVarNameReader> readVarNameReader = pkbReaderManager->getReadVarNameReader();
+                std::shared_ptr<ReadVarNameReader> readVarNameReader = pkbReaderManager->getReadVarNameReader();
                 return readVarNameReader->getReadVariableName(ref);
             }},
             {"print",    [this](int ref) -> std::string {
                 // Assuming getPrintVarName is a valid method for demonstration
-                shared_ptr<PrintVarNameReader> printVarNameReader = pkbReaderManager->getPrintVarNameReader();
+                std::shared_ptr<PrintVarNameReader> printVarNameReader = pkbReaderManager->getPrintVarNameReader();
                 return printVarNameReader->getPrintVariableName(ref);
             }}
     };

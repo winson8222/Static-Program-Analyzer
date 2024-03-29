@@ -1,5 +1,4 @@
-#ifndef CLAUSE_H
-#define CLAUSE_H
+#pragma once
 
 #include <string>
 
@@ -27,5 +26,3 @@ private:
     ClauseOperations clauseOperation = AND;
 
 };
-
-#endif // CLAUSE_H

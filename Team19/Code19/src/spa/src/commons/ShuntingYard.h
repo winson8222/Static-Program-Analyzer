@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "stack"
+#include <stack>
 #include "Shunt.h"
 
 // ai-gen start(copilot, 0, e)

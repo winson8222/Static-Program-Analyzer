@@ -1,14 +1,11 @@
 #pragma once
 
+#include <stdexcept>
 #include "sp/DesignExtractor/Visitor/IVisitor.h"
 #include "sp/DesignExtractor/Visitor/VariableVisitor.h"
-
 #include "sp/DesignExtractor/Extractor/EntityExtractor/ReadExtractor.h"
 #include "sp/DesignExtractor/Extractor/RelationshipExtractor/ParentExtractor.h"
 #include "sp/DesignExtractor/Extractor/RelationshipExtractor/ReadVarExtractor.h"
-
-#include <stdexcept>
-
 
 constexpr int READ_VARIABLE_INDEX = 0;
 /*

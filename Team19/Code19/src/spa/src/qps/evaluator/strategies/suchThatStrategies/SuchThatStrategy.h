@@ -1,7 +1,5 @@
 #pragma once
 
-
-
 #include "qps/evaluator/QueryEvaluationStrategy.h"
 
 using namespace std;
@@ -18,6 +16,4 @@ class SuchThatStrategy : public QueryEvaluationStrategy {
 
 public:
     SuchThatStrategy() = default;
-
-
 };

@@ -2,7 +2,7 @@
 // Created by Winson Zheng on 22/2/24.
 //
 
-#include "EntEntStrategy.h"
+#include "qps/evaluator/strategies/suchThatStrategies/EntEntStrategy.h"
 void EntEntStrategy::setTrueIfRelationShipExist(const Token &firstParam, const Token &secondParam,
                                                          const std::shared_ptr<IRelationshipReader<std::string, std::string>> &reader,
                                                          std::shared_ptr<ResultTable> resultTable) {

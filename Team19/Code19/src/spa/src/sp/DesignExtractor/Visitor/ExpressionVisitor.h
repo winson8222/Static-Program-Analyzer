@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdexcept>
 #include "sp/DesignExtractor/Visitor/IVisitor.h"
 #include "sp/DesignExtractor/Visitor/VariableVisitor.h"
 #include "sp/DesignExtractor/Extractor/EntityExtractor/VariableExtractor.h"
@@ -7,7 +8,6 @@
 #include "sp/DesignExtractor/Extractor/PatternExtractor/IfsPatternExtractor.h"
 #include "sp/DesignExtractor/Extractor/PatternExtractor/WhilePatternExtractor.h"
 #include "sp/AST/ASTUtility.h"
-#include <stdexcept>
 
 constexpr int EXPR_LHS_INDEX = 0;
 constexpr int EXPR_RHS_INDEX = 1;

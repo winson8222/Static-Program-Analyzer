@@ -1,12 +1,12 @@
 #pragma once
 
+#include <stdexcept>
+#include <vector>
 #include "sp/DesignExtractor/Visitor/IVisitor.h"
 #include "sp/DesignExtractor/Visitor/VisitoryFactory.h"
 #include "sp/DesignExtractor/Extractor/RelationshipExtractor/FollowsExtractor.h"
 #include "sp/DesignExtractor/Extractor/EntityExtractor/StatementExtractor.h"
 #include "sp/AST/ASTUtility.h"
-#include <stdexcept>
-#include <vector>
 
 /*
 * A visitor for the statement list which should

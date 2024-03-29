@@ -1,12 +1,8 @@
-#include "WithStrategy.h"
-
+#include "qps/evaluator/strategies/WithStrategy.h"
 #include "qps/parser/Token.h" // Include for Token definition
 
 // Standard library dependencies
-#include <string>
-#include <unordered_set>
-#include <iostream>
-#include "WithStrategy.h"
+
 
 /**
  * Evaluates equality between 2 parameters.
@@ -142,8 +138,6 @@ std::unordered_set<std::string> WithStrategy::processParam(Token param, PKBReade
         string attribute = attributes.second;
         string synonymType = parsingResult.getDeclaredSynonym(synonym);
 
-
-
         if (synonymType == "stmt" && attribute == "stmt#") {
             return retrieveIntEntities(synonym, resultTable, statementReader);
 		}
@@ -183,11 +177,8 @@ std::unordered_set<std::string> WithStrategy::processParam(Token param, PKBReade
         else if (synonymType == "procedure" && attribute == "procName") {
             return retrieveStringEntities(synonym, resultTable, procedureReader);
 		}
-        return std::unordered_set<std::string>();
-
-        
     }
-    
+    return std::unordered_set<std::string>();
 }
 
 /**

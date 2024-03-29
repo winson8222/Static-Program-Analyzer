@@ -1,7 +1,7 @@
 #pragma once
 
-#include "sp/DesignExtractor/Extractor/EntityExtractor/IEntityExtractor.h"
 #include <stdexcept>
+#include "sp/DesignExtractor/Extractor/EntityExtractor/IEntityExtractor.h"
 
 /*
 * ConstantExtractor is responsible for extracting constant information from the AST

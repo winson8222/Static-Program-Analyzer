@@ -1,8 +1,8 @@
 #pragma once
 
+#include <unordered_map>
 #include "sp/AST/ASTNode.h"
 #include "sp/AST/ASTUtility.h"
-#include <unordered_map>
 
 /*
 * This class is used to link all calls to procedures to the procedure node.
@@ -12,7 +12,7 @@ public:
 	/*
 	* Constructor for SimpleCallLinker that takes in the root of the AST.
 	*/
-	SimpleCallLinker(std::shared_ptr<ASTNode> root);
+	explicit SimpleCallLinker(std::shared_ptr<ASTNode> root);
 
 	/*
 	* Links all calls to procedures to the procedure node.

@@ -2,10 +2,10 @@
 
 // ai-gen start(gpt,1,e)
 // Prompt: https://platform.openai.com/playground/p/TSrBejqZDhzJU0nYh4NsepD0
+#include <memory>
 #include "SimpleParser.h"
 #include "sp/SPTokenizer/SPTokenizer.h"
 #include "sp/SPTokenizer/FileProcessor.h"
-#include <memory>
 
 /**
 * @brief Facade class to handle input Simple program, and generate its abstract syntax tree (AST) representation.
@@ -20,7 +20,7 @@ public:
 	*
 	* @param filename The filename of the file containing the SIMPLE source code.
 	*/
-	SimpleParserFacade(const std::string& filename);
+	explicit SimpleParserFacade(const std::string& filename);
 
 	/**
 	* @brief Parses the program file and returns AST representation.

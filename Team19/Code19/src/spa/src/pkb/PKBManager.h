@@ -1,9 +1,9 @@
 #pragma once
 
-#include "PKB.h"
-#include "PKBCacheManager.h"
-#include "PKBReaderManager.h"
-#include "PKBWriterManager.h"
+#include "pkb/PKB.h"
+#include "pkb/PKBCacheManager.h"
+#include "pkb/PKBReaderManager.h"
+#include "pkb/PKBWriterManager.h"
 
 // ai-gen start(copilot, 2, e)
 // prompt: used copilot

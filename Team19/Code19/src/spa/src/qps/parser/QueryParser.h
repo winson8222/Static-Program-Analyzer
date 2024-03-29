@@ -1,14 +1,12 @@
-// Include guard to prevent multiple inclusions of this header.
-#ifndef QUERYPARSER_H
-#define QUERYPARSER_H
+#pragma once
 
 // Include necessary headers.
-#include "../../spa/src/qps/parser/Token.h"
 #include <vector>
 #include <string>
 #include <unordered_set>
-#include "../../spa/src/qps/parser/Tokenizer.h"
-#include "../../spa/src/qps/parser/ParsingResult.h"
+#include "qps/parser/Token.h"
+#include "qps/parser/Tokenizer.h"
+#include "qps/parser/ParsingResult.h"
 
 using namespace std;
 
@@ -70,12 +68,9 @@ private:
 
     // Current index in the tokens vector.
     size_t currentTokenIndex;
-
-
     ParsingResult parsingResult;
 
     Token currentSuchThatToken;
-
 
     // Private methods for parsing different parts of the input.
     void parseDeclarations();
@@ -132,25 +127,12 @@ private:
     // helper function to replace concatenation of tokens
     string concatTokens(size_t start, size_t end);
 
-
-
-
-
-
     void ensureToken(TokenType expected);
-
-
     bool checkValidStmtNum();
     bool checkValidAttr(Token synToken);
     bool checkIfStmt();
     bool checkIfEnt();
     bool checkIfPatternSyn();
-
     void ensureNextBlank();
     void ensureCorrectPatternParams(PatternClause &clause);
-
 };
-
-#endif // QUERYPARSER_H
-
-

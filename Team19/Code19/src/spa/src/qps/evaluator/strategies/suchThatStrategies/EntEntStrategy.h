@@ -1,5 +1,5 @@
 #pragma once
-#include "SuchThatStrategy.h"
+#include "qps/evaluator/strategies/suchThatStrategies/SuchThatStrategy.h"
 
 class EntEntStrategy : public SuchThatStrategy {
 

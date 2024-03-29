@@ -1,13 +1,10 @@
-// QueryEvaluationStrategy.h
-#ifndef QUERYEVALUATIONSTRATEGY_H
-#define QUERYEVALUATIONSTRATEGY_H
+#pragma once
 
 #include <unordered_set>
 #include <string>
+#include "qps/evaluator/ResultTable.h"
 #include "qps/parser/ParsingResult.h" // Include your ParsingResult header
 #include "pkb/PKBReaderManager.h" // Include your PKBReader header
-#include "qps/evaluator/ResultTable.h"
-
 
 class QueryEvaluationStrategy {
 
@@ -38,5 +35,3 @@ protected:
     static void insertStmtRowsWithSingleCol(unordered_set<int> filteredStmts, shared_ptr<ResultTable> resultTable, string colName);
 
 };
-
-#endif //QUERYEVALUATIONSTRATEGY_H

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PatternStrategy.h"
+#include "qps/evaluator/strategies/patternStrategies/PatternStrategy.h"
 #include "commons/ShuntingYard.h"
 
 class WhilePatternStrategy : public PatternStrategy {

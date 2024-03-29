@@ -12,7 +12,7 @@ private:
     std::shared_ptr<UsesPStore> usesPStore;
 
 public:
-    UsesPWriter(std::shared_ptr<UsesPStore> store);
+    explicit UsesPWriter(std::shared_ptr<UsesPStore> store);
     void addRelationship(std::string proc, std::string var) override;
     void clear() override;
 

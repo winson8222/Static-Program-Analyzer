@@ -35,8 +35,6 @@
 #include "pkb/stores/links/types/ReadVarNameStore.h"
 #include "pkb/stores/links/types/PrintVarNameStore.h"
 
-#include <memory>
-
 // ai-gen start(copilot, 2, e)
 // prompt: used copilot
 class PKB {

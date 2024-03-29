@@ -1,7 +1,6 @@
 #pragma once
 
-
-#include "SuchThatStrategy.h"
+#include "qps/evaluator/strategies/suchThatStrategies/SuchThatStrategy.h"
 
 using namespace std;
 /**
@@ -31,4 +30,3 @@ protected:
 
 
 };
-

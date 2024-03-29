@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdexcept>
 #include "sp/DesignExtractor/Visitor/IVisitor.h"
 #include "sp/DesignExtractor/Visitor/VariableVisitor.h"
 #include "sp/DesignExtractor/Extractor/EntityExtractor/AssignExtractor.h"
@@ -7,7 +8,6 @@
 #include "sp/DesignExtractor/Extractor/EntityExtractor/VariableExtractor.h"
 #include "sp/DesignExtractor/Extractor/RelationshipExtractor/ParentExtractor.h"
 #include "sp/DesignExtractor/Visitor/ExpressionVisitor.h"
-#include <stdexcept>
 
 // ai-gen start (gpt, 2, e)
 // prompt: https://platform.openai.com/playground/p/WEPuYktjSFWSXYtIjbHMb5KZ?model=gpt-4&mode=chat

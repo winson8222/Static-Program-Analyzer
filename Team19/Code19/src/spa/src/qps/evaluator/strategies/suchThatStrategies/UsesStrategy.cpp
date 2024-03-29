@@ -1,4 +1,4 @@
-#include "UsesStrategy.h"
+#include "qps/evaluator/strategies/suchThatStrategies/UsesStrategy.h"
 
 std::shared_ptr<ResultTable> UsesStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause)
 {
@@ -107,4 +107,3 @@ void UsesStrategy::processBothConstants(const Token &firstParam, const Token &se
         setTrueIfRelationShipExist(firstParam, secondParam, usesSReader, resultTable);
     }
 }
-

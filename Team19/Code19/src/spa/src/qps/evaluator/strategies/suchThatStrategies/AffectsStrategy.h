@@ -1,7 +1,7 @@
 #pragma once
 
-#include "qps/evaluator/strategies/suchThatStrategies/StmtStmtStrategy.h"
 #include <memory>
+#include "qps/evaluator/strategies/suchThatStrategies/StmtStmtStrategy.h"
 #include "pkb/readers/relationships/AffectsReader.h"
 
 class AffectsStrategy : public StmtStmtStrategy {
@@ -26,4 +26,3 @@ public:
     // Evaluate Affects when both parameters are specific statement numbers
     void processIntegerParams(std::shared_ptr<ResultTable> resultTable) override;
 };
-
