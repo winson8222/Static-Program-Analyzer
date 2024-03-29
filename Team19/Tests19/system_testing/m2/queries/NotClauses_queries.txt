@@ -33,3 +33,23 @@ while w; variable v;
 Select <w, v> pattern not w(v, _)
 10 x, 10 y, 10 z, 10 a, 10 b
 5000
+8 - Identify Procedures that Do Not Modify 'y'
+procedure p;
+Select p such that not Modifies(p, "y")
+Process, Finalize, Helper
+5000
+9 - Find Procedures Not Called by 'Compute'
+procedure q;
+Select q such that not Calls("Compute", q)
+Helper, Main, Compute
+5000
+10 - Procedures Not Involved in Recursive Calls
+procedure p;
+Select p such that not Calls*(p, p)
+Main, Process, Compute, Finalize, Helper
+5000
+11 - Variables Not Used in 'Process'
+variable v;
+Select v such that not Uses("Process", v)
+x, y, a, b
+5000

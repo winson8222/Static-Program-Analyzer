@@ -1,0 +1,85 @@
+<?xml-stylesheet type="text/xsl" href="analysis.xsl"?>
+<test_results>
+<info>
+<name>m2</name><parsing_time_taken>50.540000</parsing_time_taken>
+</info>
+<queries>
+<query>
+<id ReturnBoolean="1" Modifies="1" SuchThat="1" CondNum="3" RelNum="1" comment="Test Basic boolean with not False">1</id><querystr><![CDATA[while w1; Select BOOLEAN such that not Modifies(w1, "x")]]></querystr>
+<stuans>TRUE</stuans>
+<correct>TRUE</correct>
+<time_taken>1.675000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnBoolean="1" Modifies="1" SuchThat="1" CondNum="3" RelNum="1" comment="Test Basic boolean with not True">2</id><querystr><![CDATA[while w1; Select BOOLEAN such that not Modifies(w1, "i")]]></querystr>
+<stuans>FALSE</stuans>
+<correct>FALSE</correct>
+<time_taken>1.255000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" UnnamedVar="2" Pattern="1" CondNum="4" RelNum="0" comment="Test Basic not Pattern">3</id><querystr><![CDATA[assign a; Select a pattern not a(_, _"x"_)]]></querystr>
+<stuans>15,1,5,11,9</stuans>
+<correct>11,9,5,15,1</correct>
+<time_taken>1.342000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" UnnamedVar="4" Pattern="1" CondNum="6" RelNum="0" comment="Test Basic not Pattern with multiple variables">4</id><querystr><![CDATA[assign a; Select a pattern not a(_, _"x"_) and a(_, _"y"_)]]></querystr>
+<stuans>5</stuans>
+<correct>5</correct>
+<time_taken>1.547000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" UnnamedVar="2" Pattern="1" CondNum="4" RelNum="0" comment="Test Basic not Pattern with variable and wildcard">5</id><querystr><![CDATA[assign a; variable v, v1; Select <a, v, v1> pattern not a(v, _"x"_) and a(v1, _"y"_)]]></querystr>
+<stuans>13 x a,13 b a,13 i a,13 z a,13 y a,5 x z,5 b z,5 a z,5 z z,5 i z,5 y z</stuans>
+<correct>5 y z,5 z z,5 i z,5 a z,5 b z,5 x z,13 z a,13 y a,13 i a,13 b a,13 x a</correct>
+<time_taken>2.611000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" UnnamedVar="4" Pattern="1" CondNum="6" RelNum="0" comment="Test Basic not Pattern with variable and wildcard">6</id><querystr><![CDATA[assign a, a2; variable v, v1; Select <a, v> pattern not a(v, _"x"_) and not a(v, _"y"_) and a(v, _"z"_) and a2(v1, _"z"_)]]></querystr>
+<stuans>9 i</stuans>
+<correct>9 i</correct>
+<time_taken>4.414000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" UnnamedVar="1" Pattern="1" CondNum="3" RelNum="0" comment="Test While with not Pattern">7</id><querystr><![CDATA[while w; variable v; Select <w, v> pattern not w(v, _)]]></querystr>
+<stuans>10 x,10 b,10 z,10 a,10 y</stuans>
+<correct>10 x,10 y,10 z,10 a,10 b</correct>
+<time_taken>1.711000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Modifies="1" SuchThat="1" CondNum="3" RelNum="1" comment="Identify Procedures that Do Not Modify 'y'">8</id><querystr><![CDATA[procedure p; Select p such that not Modifies(p, "y")]]></querystr>
+<stuans>Process,Finalize,Helper</stuans>
+<correct>Process,Finalize,Helper</correct>
+<time_taken>1.253000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Calls="1" SuchThat="1" CondNum="3" RelNum="1" comment="Find Procedures Not Called by 'Compute'">9</id><querystr><![CDATA[procedure q; Select q such that not Calls("Compute", q)]]></querystr>
+<stuans>Main,Helper,Compute</stuans>
+<correct>Helper,Main,Compute</correct>
+<time_taken>1.298000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Callsstar="1" SuchThat="1" CondNum="3" RelNum="1" comment="Procedures Not Involved in Recursive Calls">10</id><querystr><![CDATA[procedure p; Select p such that not Calls*(p, p)]]></querystr>
+<stuans>Main,Process,Compute,Finalize,Helper</stuans>
+<correct>Main,Process,Compute,Finalize,Helper</correct>
+<time_taken>1.317000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Uses="1" SuchThat="1" CondNum="3" RelNum="1" comment="Variables Not Used in 'Process'">11</id><querystr><![CDATA[variable v; Select v such that not Uses("Process", v)]]></querystr>
+<stuans>x,y,a,b</stuans>
+<correct>x,y,a,b</correct>
+<time_taken>1.266000</time_taken>
+<passed/>
+</query>
+</queries>
+</test_results>
