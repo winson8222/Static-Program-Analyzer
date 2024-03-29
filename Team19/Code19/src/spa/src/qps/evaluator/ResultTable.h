@@ -67,6 +67,11 @@ public:
     // this function join the table on columns, combining the columns and merging the rows
     std::shared_ptr<ResultTable> joinOnColumns(const std::shared_ptr<ResultTable>& table2);
 
+    std::shared_ptr<ResultTable> excludeOnColumns(const std::shared_ptr<ResultTable>& table2);
+    void setTableFalse();
+
+
+
 
     // identify common and unique columns
     void identifyColumns(const std::shared_ptr<ResultTable>& table2,
@@ -86,4 +91,6 @@ public:
 
     bool isEmpty();
     bool isTableFalse();
+    void populateWithTwoColumns(std::string col1, std::string col2, std::unordered_set<std::string> values, std::unordered_set<std::string> values2);
+    void populateWithOneColumn(std::string col1, std::unordered_set<std::string> values);
 };
