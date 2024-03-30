@@ -4,6 +4,8 @@
 #include <string>
 #include <unordered_set>
 #include <iostream>
+#include <functional>
+#include <map>
 #include "qps/evaluator/strategies/suchThatStrategies/StmtStmtStrategy.h"
 
 /**
@@ -64,7 +66,7 @@ public:
     std::unordered_set<std::string> processParam(Token param, PKBReaderManager& pkbReaderManager, const std::shared_ptr<ResultTable>& resultTable);
 
 
-    std::pair<string, string> extractAttributes(Token param, PKBReaderManager& pkbReaderManager);
+    std::pair<string, string> extractAttributes(Token param);
     bool isInteger(const std::string& str);
     bool isQuotedString(const std::string& str);
 
@@ -73,5 +75,119 @@ public:
     bool isIntegerStored(string synyonymType, string attribute);
     vector<std::string> mapStringSetToIntSet(PKBReaderManager& pkbReaderManager, const vector<string>& stringSet, string& synonymType);
     std::vector<std::pair<string, string>> populateResultTable(const std::shared_ptr<ResultTable>& resultTable, const std::vector<std::string>& intersection, Token param, PKBReaderManager& pkbReaderManager);
-    
+    const std::map<std::string, std::function<std::unordered_set<std::string>(std::string, PKBReaderManager&)>> refToOriginalValueMap = {
+            {"stmt.stmt#", [](std::string attr, PKBReaderManager& pkbReaderManager) {
+                std::shared_ptr<StatementReader> statemetnReader = pkbReaderManager.getStatementReader();
+                if (statemetnReader->contains(std::stoi(attr))) {
+                    return std::unordered_set<std::string>{attr};
+                } else {
+                    return std::unordered_set<std::string>{};
+                }
+            }},
+
+            {"read.varName",[](std::string attr, PKBReaderManager& pkbReaderManager) {
+                std::shared_ptr<ReadVarNameReader> readerVarNameReader = pkbReaderManager.getReadVarNameReader();
+                std::unordered_set<int> readStmt = readerVarNameReader->getLinker(attr);
+                std::unordered_set<std::string> readStmtString;
+                QueryEvaluationStrategy::convertIntSetToStringSet(readStmt, readStmtString);
+                return readStmtString;
+            }},
+            {"read.stmt#",[](std::string attr, PKBReaderManager& pkbReaderManager) {
+                std::shared_ptr<ReadReader> readReader = pkbReaderManager.getReadReader();
+                if (readReader->contains(std::stoi(attr))) {
+                    return std::unordered_set<std::string>{attr};
+                } else {
+                    return std::unordered_set<std::string>{};
+                }
+            }},
+            {"print.varName",[](std::string attr, PKBReaderManager& pkbReaderManager) {
+                std::shared_ptr<PrintVarNameReader> printVarNameReader = pkbReaderManager.getPrintVarNameReader();
+                std::unordered_set<int> printStmt = printVarNameReader->getLinker(attr);
+                std::unordered_set<std::string> printStmtString;
+                QueryEvaluationStrategy::convertIntSetToStringSet(printStmt, printStmtString);
+                return printStmtString;
+            }},
+            {"print.stmt#",[](std::string attr, PKBReaderManager& pkbReaderManager) {
+                std::shared_ptr<PrintReader> printReader = pkbReaderManager.getPrintReader();
+                if (printReader->contains(std::stoi(attr))) {
+                    return std::unordered_set<std::string>{attr};
+                } else {
+                    return std::unordered_set<std::string>{};
+                }
+            }},
+            {"call.procName",[](std::string attr, PKBReaderManager& pkbReaderManager) {
+                std::shared_ptr<CallProcNameReader> callProcNameReader = pkbReaderManager.getCallProcNameReader();
+                std::unordered_set<int> callStmts = callProcNameReader->getLinker(attr);
+                std::unordered_set<std::string> callStmtsString;
+                QueryEvaluationStrategy::convertIntSetToStringSet(callStmts, callStmtsString);
+                return callStmtsString;
+            }},
+            {"call.stmt#",[](std::string attr, PKBReaderManager& pkbReaderManager) {
+                std::shared_ptr<CallReader> callReader = pkbReaderManager.getCallReader();
+                if (callReader->contains(std::stoi(attr))) {
+                    return std::unordered_set<std::string>{attr};
+                } else {
+                    return std::unordered_set<std::string>{};
+                }
+            }},
+            {"while.stmt#",[](std::string attr, PKBReaderManager& pkbReaderManager) {
+                std::shared_ptr<WhileReader> whileReader = pkbReaderManager.getWhileReader();
+                if (whileReader->contains(std::stoi(attr))) {
+                    return std::unordered_set<std::string>{attr};
+                } else {
+                    return std::unordered_set<std::string>{};
+                }
+            }},
+            {"if.stmt#",[](std::string attr, PKBReaderManager& pkbReaderManager) {
+                std::shared_ptr<IfReader> ifReader = pkbReaderManager.getIfReader();
+                if (ifReader->contains(std::stoi(attr))) {
+                    return std::unordered_set<std::string>{attr};
+                } else {
+                    return std::unordered_set<std::string>{};
+                }
+            }},
+            {"assign.stmt#",[](std::string attr, PKBReaderManager& pkbReaderManager) {
+                std::shared_ptr<AssignReader> assignReader = pkbReaderManager.getAssignReader();
+                if (assignReader->contains(std::stoi(attr))) {
+                    return std::unordered_set<std::string>{attr};
+                } else {
+                    return std::unordered_set<std::string>{};
+                }
+            }},
+            {"variable.varName",[](std::string attr, PKBReaderManager& pkbReaderManager) {
+                std::shared_ptr<VariableReader> variableReader = pkbReaderManager.getVariableReader();
+                if (variableReader->contains(attr)) {
+                    return std::unordered_set<std::string>{attr};
+                } else {
+                    return std::unordered_set<std::string>{};
+                }
+            }},
+            {"constant.value",[](std::string attr, PKBReaderManager& pkbReaderManager) {
+                std::shared_ptr<ConstantReader> constantReader = pkbReaderManager.getConstantReader();
+                if (constantReader->contains(std::stoi(attr))) {
+                    return std::unordered_set<std::string>{attr};
+                } else {
+                    return std::unordered_set<std::string>{};
+                }
+            }},
+            {"procedure.procName",[](std::string attr, PKBReaderManager& pkbReaderManager) {
+                std::shared_ptr<ProcedureReader> procedureReader = pkbReaderManager.getProcedureReader();
+                if (procedureReader->contains(attr)) {
+                    return std::unordered_set<std::string>{attr};
+                } else {
+                    return std::unordered_set<std::string>{};
+                }
+            }}
+
+    };
+    string getAttrRefType(const Token& token);
+
+    void populateWithIntersection(const std::vector<std::string>& intersection, PKBReaderManager& pkbReaderManager, const std::shared_ptr<ResultTable>& resultTable,
+                                                const Token& firstParam, const Token& secondParam);
+
+    void populateWithFirstParam(const std::shared_ptr<ResultTable>& resultTable, PKBReaderManager& pkbReaderManager, const Token& firstParam, const Token& secondParam);
+    void populateWithSecondParam(const std::shared_ptr<ResultTable>& resultTable, PKBReaderManager& pkbReaderManager, const Token& firstParam, const Token& secondParam);
+    bool isAttrRef(Token token);
+
+
 };
