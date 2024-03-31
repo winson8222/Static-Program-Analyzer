@@ -20,33 +20,27 @@ std::shared_ptr<ResultTable> WithStrategy::evaluateQuery(PKBReaderManager& pkbRe
         this->firstParam = withClause->getFirstParam();
         this->secondParam = withClause->getSecondParam();
         this->parsingResult = parsingResult;
-    
-        if (isInteger(firstParam.getValue()) && isInteger(secondParam.getValue())) {
-            if (firstParam.getValue() == secondParam.getValue()) {
+
+        if (isAttrRefIdentical(firstParam, secondParam)) {
+            resultTable->setAsTruthTable();
+            return resultTable;
+        }
+
+        std::unordered_set<std::string> lhsValue = processParam(firstParam, pkbReaderManager, originalResultTable);
+        std::unordered_set<std::string> rhsValue = processParam(secondParam, pkbReaderManager, originalResultTable);
+        std::vector<std::string> intersection = findIntersection(lhsValue, rhsValue);
+        if (isAttrRef(firstParam) && isAttrRef(secondParam)) {
+            populateWithIntersection(intersection, pkbReaderManager, resultTable, firstParam, secondParam);
+        }
+        else if (isAttrRef(firstParam)) {
+            populateWithFirstParam(resultTable, pkbReaderManager, firstParam, secondParam);
+        } else if (isAttrRef(secondParam)) {
+            populateWithSecondParam(resultTable, pkbReaderManager, firstParam, secondParam);
+        } else {
+            if (!intersection.empty()) {
                 resultTable->setAsTruthTable();
             }
         }
-        else if (isQuotedString(firstParam.getValue()) && isQuotedString(secondParam.getValue())) {
-            if (firstParam.getValue() == secondParam.getValue()) {
-                resultTable->setAsTruthTable();
-            }
-        }
-        else {
-            std::unordered_set<std::string> lhsValue = processParam(firstParam, pkbReaderManager, originalResultTable);
-            std::unordered_set<std::string> rhsValue = processParam(secondParam, pkbReaderManager, originalResultTable);
-            std::vector<std::string> intersection = findIntersection(lhsValue, rhsValue);
-            if (isAttrRef(firstParam) && isAttrRef(secondParam)) {
-                populateWithIntersection(intersection, pkbReaderManager, resultTable, firstParam, secondParam);
-            }
-            else if (isAttrRef(firstParam)) {
-                populateWithFirstParam(resultTable, pkbReaderManager, firstParam, secondParam);
-            } else if (isAttrRef(secondParam)) {
-                populateWithSecondParam(resultTable, pkbReaderManager, firstParam, secondParam);
-            } else {
-                if (!intersection.empty()) {
-                    resultTable->setAsTruthTable();
-                }
-            }
 
 
              
@@ -400,4 +394,8 @@ void WithStrategy::populateWithSecondParam(const std::shared_ptr<ResultTable> &r
 bool WithStrategy::isAttrRef(Token token) {
     const std::string& value = token.getValue();
     return value.find('.') != std::string::npos;
+}
+
+bool WithStrategy::isAttrRefIdentical(const Token& firstParam, const Token& secondParam) {
+    return firstParam.getValue() == secondParam.getValue();
 }

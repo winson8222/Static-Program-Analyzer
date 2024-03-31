@@ -188,6 +188,7 @@ public:
     void populateWithFirstParam(const std::shared_ptr<ResultTable>& resultTable, PKBReaderManager& pkbReaderManager, const Token& firstParam, const Token& secondParam);
     void populateWithSecondParam(const std::shared_ptr<ResultTable>& resultTable, PKBReaderManager& pkbReaderManager, const Token& firstParam, const Token& secondParam);
     bool isAttrRef(Token token);
+    bool isAttrRefIdentical(const Token& firstParam, const Token& secondParam);
 
 
 };
