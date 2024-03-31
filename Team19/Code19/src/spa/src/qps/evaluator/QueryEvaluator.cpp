@@ -209,11 +209,9 @@ std::unordered_set<std::string> QueryEvaluator::evaluateQuery() {
         }
 
         // evaluate the strategy
-        if (clause->getTypeName() == "WithClause") {
-            tempResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult, *clause, result);
-        } else {
-            tempResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult, *clause);
-        }
+
+        tempResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult, *clause);
+
 
 
         if (tempResult->isTableTrue()) {

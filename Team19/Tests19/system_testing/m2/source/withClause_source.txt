@@ -18,6 +18,7 @@ procedure Decrement {
         number = number - 1;
         call LogStatus;
     }
+    call Finish;
 }
 
 procedure LogStatus {

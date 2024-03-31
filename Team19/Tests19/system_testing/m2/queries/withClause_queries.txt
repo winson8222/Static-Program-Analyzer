@@ -98,3 +98,33 @@ assign a; constant c;
 Select a with a.stmt# = c.value
 1
 5000
+21 - finding proc that are called in multiple stmts
+call c; procedure p;
+Select <p, c> with p.procName = c.procName
+Calculate 2, Decrement 4, Finish 11, Finish 7, LogStatus 10, LogStatus 5
+5000
+22 - finding proc that are called in multiple stmts with another clause in front (Caller)
+call c; procedure p;
+Select <p, c> such that Calls(p, _) with p.procName = c.procName
+Calculate 2, Decrement 4
+5000
+23 - finding proc that are called in multiple stmts with another clause in front (Callee)
+call c; procedure p;
+Select <p, c> such that Calls(_, p) with p.procName = c.procName
+Calculate 2, Decrement 4, Finish 11, Finish 7, LogStatus 10, LogStatus 5
+5000
+24 - finding proc that are calls specific method with another clause in front (Caller)
+call c; procedure p;
+Select <p, c> such that Calls(p, "Finish") with p.procName = c.procName
+Calculate 2, Decrement 4
+5000
+25 - finding proc that are calls specific method True statements in front
+call c; procedure p;
+Select <p, c> such that Calls("Main", "Calculate") with p.procName = c.procName
+Calculate 2, Decrement 4, Finish 11, Finish 7, LogStatus 10, LogStatus 5
+5000
+26 - finding proc that are calls specific method False statements in front
+call c; procedure p;
+Select <p, c> such that Calls("Calculate", "Main") with p.procName = c.procName
+none
+5000

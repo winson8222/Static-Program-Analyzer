@@ -252,7 +252,7 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
         std::unordered_set<string> actualResults = evaluator.evaluateQuery();
-        std::unordered_set<string> expectedResults = { "FALSE" };
+        std::unordered_set<string> expectedResults = { "0" };
 
 
         REQUIRE(actualResults == a);
@@ -333,8 +333,10 @@ TEST_CASE("Multiple Clauses with with") {
     printVarNameWriter->addPrintVarName(7, "total");
     printWriter->insertPrint(18);
     printVarNameWriter->addPrintVarName(18, "middle");
-//    printWriter->insertPrint(8);
-//    printVarNameWriter->addPrintVarName(8, "variable");
+//    printWriter->insertPrint(7);
+//    printVarNameWriter->addPrintVarName(7, "end");
+    printWriter->insertPrint(8);
+    printVarNameWriter->addPrintVarName(8, "variable");
 
 
     SECTION("variable v; print pr; Select <v, pr> with pr.varName = v.varName") {
@@ -345,11 +347,48 @@ TEST_CASE("Multiple Clauses with with") {
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
         std::unordered_set<string> actualResults = evaluator.evaluateQuery();
-        std::unordered_set<string> expectedResults = { "variable 3", "start 22", "end 32", "total 7", "middle 18" };
+        std::unordered_set<string> expectedResults = { "variable 3", "start 22", "end 32", "total 7", "middle 18", "variable 8" };
         REQUIRE(actualResults == expectedResults);
     }
 }
 
 
+
+TEST_CASE("M2 failing after Fix") {
+    shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<ProcedureWriter> procedureWriter = pkbWriterManager->getProcedureWriter();
+    procedureWriter->insertProcedure("hello");
+
+    Tokenizer tokenizer("procedure p; Select p with p.procName = p.procName");
+    vector<Token> tokens = tokenizer.tokenize();
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> actualResults = evaluator.evaluateQuery();
+    std::unordered_set<string> expectedResults = { "hello" };
+    REQUIRE(actualResults == expectedResults);
+}
+
+TEST_CASE("M2 failing after Fix 2") {
+    shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<VariableWriter> variableWriter = pkbWriterManager->getVariableWriter();
+    variableWriter->insertVariable("hello");
+//    variable v;
+//    Select BOOLEAN with v.varName = "ea"
+    Tokenizer tokenizer("variable v; Select BOOLEAN with v.varName = \"ea\"");
+    vector<Token> tokens = tokenizer.tokenize();
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<string> actualResults = evaluator.evaluateQuery();
+    std::unordered_set<string> expectedResults = { "FALSE" };
+    REQUIRE(actualResults == expectedResults);
+}
 
 
