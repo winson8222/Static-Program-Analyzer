@@ -1694,5 +1694,16 @@ TEST_CASE("use not") {
 
 }
 
+TEST_CASE("With error/no error handling") {
+
+    std::string query = "procedure p1,p2,p3; Select <p1,p2> with p1.procName=p2.procName and p2.procName=p3.procName and not p1.procName=p3.procName";
+    Tokenizer tokenizer(query);
+    vector<Token> tokens = tokenizer.tokenize();
+    QueryParser queryParser(tokens);
+    ParsingResult parsingResult = queryParser.parse();
+
+    REQUIRE(parsingResult.isQueryValid());
+}
+
 
 

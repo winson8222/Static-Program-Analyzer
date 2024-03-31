@@ -5,7 +5,8 @@
 // Initializes the Tokenizer with a given query string.
 Tokenizer::Tokenizer(const std::string& query) : query(query) {
     // Regex to split based on quouted text, whitespaces, parentheses, commas, semicolons
-    tokenRegex = std::regex(R"("[^"]*"|[\w`~@#$%^&*+={}:-]+|_|[,;.<>()\"\'])");
+    tokenRegex = std::regex(R"("[^"]*"|[\w`~@#$%^&*+{}:-]+|_|[,;.<>()\"\'']|[=])");
+
 }
 
 // This method tokenizes the stored query and returns a vector of Token objects.
