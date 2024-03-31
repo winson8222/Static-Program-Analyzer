@@ -14,8 +14,13 @@ std::string QueryEvaluationStrategy::extractQuotedExpression(const Token& token)
     std::regex pattern(R"(["](.*?)["])");
     std::smatch matches;
     std::string tokenValue = token.getValue();
-    std::regex_search(tokenValue, matches, pattern);
-    return matches[1].str();
+    if (std::regex_search(tokenValue, matches, pattern) && matches.size() > 1) {
+        // If a quoted expression is found, return the first captured group
+        return matches[1].str();
+    } else {
+        // If no quoted expression is found, return the original token value
+        return tokenValue;
+    }
 }
 
 

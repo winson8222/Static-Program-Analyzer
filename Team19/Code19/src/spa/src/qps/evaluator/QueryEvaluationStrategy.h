@@ -10,9 +10,7 @@ class QueryEvaluationStrategy {
 
 public:
     virtual std::shared_ptr<ResultTable> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) = 0;
-    virtual std::shared_ptr<ResultTable> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause, const std::shared_ptr<ResultTable>& resultTable) {
-        return std::make_shared<ResultTable>();
-    }
+
     virtual ~QueryEvaluationStrategy() = default;
 
 protected:
