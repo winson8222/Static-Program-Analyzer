@@ -1,4 +1,5 @@
-#include "qps/evaluator/strategies/suchThatStrategies/FollowsStrategy.h"
+#include "FollowsStrategy.h"
+#include <memory>
 #include "qps/parser/Token.h" // Include for Token definition
 
 // Standard library dependencies

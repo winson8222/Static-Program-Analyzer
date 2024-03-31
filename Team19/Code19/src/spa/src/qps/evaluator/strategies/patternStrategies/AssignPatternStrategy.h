@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include "qps/evaluator/strategies/patternStrategies/PatternStrategy.h"
 #include "commons/ShuntingYard.h"
 
@@ -10,7 +11,6 @@ private:
     Token firstParam;
     Token secondParam;
     Token relationShip;
-
 
 public:
     std::shared_ptr<ResultTable> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) override;

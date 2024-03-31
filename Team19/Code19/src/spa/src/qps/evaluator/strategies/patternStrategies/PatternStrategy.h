@@ -2,8 +2,6 @@
 
 #include "qps/evaluator/QueryEvaluationStrategy.h"
 
-using namespace std;
-
 class PatternStrategy : public QueryEvaluationStrategy {
 private:
     std::shared_ptr<StatementReader> statementReader;
@@ -15,6 +13,6 @@ public:
     virtual void processSynonyms(ParsingResult parsingResult, std::shared_ptr<ResultTable> result) = 0;
     virtual void processQuotedIdent(ParsingResult parsingResult, std::shared_ptr<ResultTable> result) = 0;
     virtual void processWildcard(ParsingResult parsingResult, std::shared_ptr<ResultTable> result) = 0;
-
-    static void insertRowsWithTwoCols(Token firstParam, Token relationship, ParsingResult parsingResult, shared_ptr<IControlPatternReader> reader, shared_ptr<ResultTable> resultTable);
+    static void insertRowsWithTwoCols(Token firstParam, Token relationship, ParsingResult parsingResult, 
+        std::shared_ptr<IControlPatternReader> reader, std::shared_ptr<ResultTable> resultTable);
 };
