@@ -44,14 +44,14 @@ void NextStrategy::processSynonyms(std::shared_ptr<ResultTable> resultTable, con
 
     // Fetch all relationships from the selected reader
     std::string firstParamType = parsingResult.getDeclaredSynonym(firstParam.getValue());
-    unordered_set<int> allPreviousStmts = reader->getKeys();
-    unordered_set<int> filteredPreviousStmts = getFilteredStmtsNumByType(allPreviousStmts, firstParamType, pkbReaderManager);
+    std::unordered_set<int> allPreviousStmts = reader->getKeys();
+    std::unordered_set<int> filteredPreviousStmts = getFilteredStmtsNumByType(allPreviousStmts, firstParamType, pkbReaderManager);
 
     // Iterate through all relationships, filtering based on the synonyms' criteria
     for (const int stmt : filteredPreviousStmts) {
-        unordered_set<int> allNextStmts = reader->getRelationshipsByKey(stmt);
+        std::unordered_set<int> allNextStmts = reader->getRelationshipsByKey(stmt);
         std::string secondStatementType = parsingResult.getDeclaredSynonym(secondParam.getValue());
-        unordered_set<int>  filteredNextStatements = getFilteredStmtsNumByType(allNextStmts, secondStatementType, pkbReaderManager);
+        std::unordered_set<int>  filteredNextStatements = getFilteredStmtsNumByType(allNextStmts, secondStatementType, pkbReaderManager);
         for (int nextStmt : filteredNextStatements) {
             // Insert each relevant pair into the result table
             std::pair<std::string, std::string> col1Pair = std::make_pair<std::string, std::string>(firstParam.getValue(), std::to_string(stmt));

@@ -48,8 +48,8 @@ void StmtStmtStrategy::insertRowsWithTwoCols(const Token &firstParam, const Toke
         filteredChildren = getFilteredStmtsNumByType(children, secondStatementType, pkbReaderManager);
         // For each stmt1, iterate through all its postFollows
         for (int stmt2 : filteredChildren) {
-            std::pair<std::string, std::string> col1Pair = make_pair<std::string, std::string>(firstParam.getValue(), std::to_string(stmt1));
-            std::pair<std::string, std::string> col2Pair = make_pair<std::string, std::string>(secondParam.getValue(), std::to_string(stmt2));
+            std::pair<std::string, std::string> col1Pair = std::make_pair<std::string, std::string>(firstParam.getValue(), std::to_string(stmt1));
+            std::pair<std::string, std::string> col2Pair = std::make_pair<std::string, std::string>(secondParam.getValue(), std::to_string(stmt2));
             insertRowToTable(col1Pair, col2Pair, resultTable);
         }
     }

@@ -1,10 +1,12 @@
 #include "ModifiesPStrategy.h"
+
+#include <memory>
 #include <unordered_set>
 
 std::shared_ptr<ResultTable> ModifiesPStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, 
 	const ParsingResult& parsingResult, const Clause& clause)
 {
-	auto resultTable = make_shared<ResultTable>();
+	auto resultTable = std::make_shared<ResultTable>();
 	this->modifiesPReader = pkbReaderManager.getModifiesPReader();
 
 	const SuchThatClause* suchClause = dynamic_cast<const SuchThatClause*>(&clause);

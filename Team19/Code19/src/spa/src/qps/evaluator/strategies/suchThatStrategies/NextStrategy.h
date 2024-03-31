@@ -9,7 +9,7 @@ private:
     std::shared_ptr<StatementReader> statementReader;
     Token firstParam;
     Token secondParam;
-    string variant;
+    std::string variant;
 
 public:
 

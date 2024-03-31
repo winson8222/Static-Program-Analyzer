@@ -28,7 +28,7 @@ void ModifiesStrategy::processBothSynonyms(const Token& firstParam, const Token&
     std::unordered_set<int> allModifiesStmts = modifiesSReader
             ->getAllStmtsThatModifyAnyVariable();
     // check what type of statement is the firstParam
-    string statementType = parsingResult.getDeclaredSynonym(firstParam.getValue());
+    std::string statementType = parsingResult.getDeclaredSynonym(firstParam.getValue());
     // filter the statements that modifies the variable based on the stmt type
     std::unordered_set<int> allFilteredModifiesStmts;
     allFilteredModifiesStmts = getFilteredStmtsNumByType(allModifiesStmts, statementType, pkbReaderManager);
@@ -61,7 +61,7 @@ void ModifiesStrategy::processFirstParam(const Token& firstParam, const Token& s
     }
 
     // check what type of statement is the firstParam
-    string statementType = parsingResult.getDeclaredSynonym(firstParam.getValue());
+    std::string statementType = parsingResult.getDeclaredSynonym(firstParam.getValue());
     // filter the statements that modifies the variable based on the stmt type
     std::unordered_set<int> allFilteredModifiesStmts;
     allFilteredModifiesStmts = getFilteredStmtsNumByType(allModifiesStmts, statementType, pkbReaderManager);
@@ -71,7 +71,7 @@ void ModifiesStrategy::processFirstParam(const Token& firstParam, const Token& s
     resultTable->insertColumn(firstParam.getValue());
     for (int stmt: allFilteredModifiesStmts) {
         std::unordered_map<std::string,std::string> newRow;
-        newRow[firstParam.getValue()] = to_string(stmt);
+        newRow[firstParam.getValue()] = std::to_string(stmt);
         resultTable->insertNewRow(newRow);
     }
 }

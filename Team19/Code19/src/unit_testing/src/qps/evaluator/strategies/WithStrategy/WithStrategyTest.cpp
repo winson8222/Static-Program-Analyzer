@@ -69,13 +69,13 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
     SECTION("Check Evaluation result of a with clause and procname ") {
 
         Tokenizer tokenizer("procedure p, q; Select p such that Calls(p, q) with q.procName = \"proc3\"");
-        vector<Token> tokens = tokenizer.tokenize();
+        std::vector<Token> tokens = tokenizer.tokenize();
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
-        std::unordered_set<string> expectedResults = { "proc1" };
+        std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
+        std::unordered_set<std::string> expectedResults = { "proc1" };
         REQUIRE(actualResults == expectedResults);
 
     }
@@ -84,13 +84,13 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
     SECTION("Check Evaluation result of BOOLEAN  with clause") {
 
         Tokenizer tokenizer("Select BOOLEAN with 1 = 1");
-        vector<Token> tokens = tokenizer.tokenize();
+        std::vector<Token> tokens = tokenizer.tokenize();
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
-        std::unordered_set<string> expectedResults = { "TRUE" };
+        std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
+        std::unordered_set<std::string> expectedResults = { "TRUE" };
         REQUIRE(actualResults == expectedResults);
 
     }
@@ -99,13 +99,13 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
     SECTION("Check Evaluation result of a with clause with select all statements") {
 
         Tokenizer tokenizer("stmt s; Select s with 2 = 2");
-        vector<Token> tokens = tokenizer.tokenize();
+        std::vector<Token> tokens = tokenizer.tokenize();
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
-        std::unordered_set<string> expectedResults = { "1", "2", "3", "4", "5"};
+        std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
+        std::unordered_set<std::string> expectedResults = { "1", "2", "3", "4", "5"};
         REQUIRE(actualResults == expectedResults);
 
     }
@@ -114,13 +114,13 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
     SECTION("Check Evaluation result of a with clause and procname ") {
 
         Tokenizer tokenizer("Select BOOLEAN with \"q\" = \"s\"");
-        vector<Token> tokens = tokenizer.tokenize();
+        std::vector<Token> tokens = tokenizer.tokenize();
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
-        std::unordered_set<string> expectedResults = { "FALSE" };
+        std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
+        std::unordered_set<std::string> expectedResults = { "FALSE" };
         REQUIRE(actualResults == expectedResults);
 
     }
@@ -129,13 +129,13 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
     SECTION("Check Evaluation result of a with clause on attribute stmt#") {
 
         Tokenizer tokenizer("stmt s; assign a; Select s with s.stmt# = a.stmt#");
-        vector<Token> tokens = tokenizer.tokenize();
+        std::vector<Token> tokens = tokenizer.tokenize();
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
-        std::unordered_set<string> expectedResults = { "1" };
+        std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
+        std::unordered_set<std::string> expectedResults = { "1" };
         REQUIRE(actualResults == expectedResults);
 
     }
@@ -143,13 +143,13 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
     SECTION("Check Evaluation result of a with clause on attribute stmt#") {
 
         Tokenizer tokenizer("call c; Select BOOLEAN with c.procName = \"proc3\"");
-        vector<Token> tokens = tokenizer.tokenize();
+        std::vector<Token> tokens = tokenizer.tokenize();
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
-        std::unordered_set<string> expectedResults = { "TRUE" };
+        std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
+        std::unordered_set<std::string> expectedResults = { "TRUE" };
         REQUIRE(actualResults == expectedResults);
 
     }
@@ -157,13 +157,13 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
     SECTION("Check Evaluation result of a with clause on attribute stmt#") {
 
         Tokenizer tokenizer("print p; Select BOOLEAN with p.varName = \"y\"");
-        vector<Token> tokens = tokenizer.tokenize();
+        std::vector<Token> tokens = tokenizer.tokenize();
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
-        std::unordered_set<string> expectedResults = { "TRUE" };
+        std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
+        std::unordered_set<std::string> expectedResults = { "TRUE" };
         REQUIRE(actualResults == expectedResults);
 
     }
@@ -171,13 +171,13 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
     SECTION("Check Evaluation result of a with clause on attribute stmt#") {
 
         Tokenizer tokenizer("print p; Select BOOLEAN with p.varName = \"x\"");
-        vector<Token> tokens = tokenizer.tokenize();
+        std::vector<Token> tokens = tokenizer.tokenize();
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
-        std::unordered_set<string> expectedResults = { "FALSE" };
+        std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
+        std::unordered_set<std::string> expectedResults = { "FALSE" };
         REQUIRE(actualResults == expectedResults);
 
     }
@@ -185,13 +185,13 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
     SECTION("Check Evaluation result of a with clause on attribute stmt#") {
 
         Tokenizer tokenizer("read r; Select BOOLEAN with r.varName = \"x\"");
-        vector<Token> tokens = tokenizer.tokenize();
+        std::vector<Token> tokens = tokenizer.tokenize();
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
-        std::unordered_set<string> expectedResults = { "TRUE" };
+        std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
+        std::unordered_set<std::string> expectedResults = { "TRUE" };
         REQUIRE(actualResults == expectedResults);
 
     }
@@ -199,13 +199,13 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
     SECTION("Check Evaluation result of a with clause on attribute stmt#") {
 
         Tokenizer tokenizer("read r; Select BOOLEAN with r.varName = \"y\"");
-        vector<Token> tokens = tokenizer.tokenize();
+        std::vector<Token> tokens = tokenizer.tokenize();
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
-        std::unordered_set<string> expectedResults = { "FALSE" };
+        std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
+        std::unordered_set<std::string> expectedResults = { "FALSE" };
         REQUIRE(actualResults == expectedResults);
 
     }
@@ -213,13 +213,13 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
     SECTION("Check Evaluation result of a with clause on attribute stmt#") {
 
         Tokenizer tokenizer("read r; Select r with r.varName = \"z\"");
-        vector<Token> tokens = tokenizer.tokenize();
+        std::vector<Token> tokens = tokenizer.tokenize();
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
-        std::unordered_set<string> expectedResults = { "5" };
+        std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
+        std::unordered_set<std::string> expectedResults = { "5" };
         REQUIRE(actualResults == expectedResults);
 
     }
@@ -227,32 +227,32 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
     SECTION("Select BOOLEAN with 1 = 0") {
 
         Tokenizer tokenizer("Select BOOLEAN with 1 = 0");
-        vector<Token> tokens = tokenizer.tokenize();
+        std::vector<Token> tokens = tokenizer.tokenize();
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
-        std::unordered_set<string> expectedResults = { "FALSE" };
+        std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
+        std::unordered_set<std::string> expectedResults = { "FALSE" };
         REQUIRE(actualResults == expectedResults);
 
     }
 
     SECTION("constant c; Select c with 0 = c.value") {
-        unordered_set<string> a;
+        unordered_set<std::string> a;
         auto x = constantReader->getAllConstants();
 
         for (auto i : x) {
             a.insert(to_string(i));
         }
         Tokenizer tokenizer("constant c; Select c with 0 = c.value");
-        vector<Token> tokens = tokenizer.tokenize();
+        std::vector<Token> tokens = tokenizer.tokenize();
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
-        std::unordered_set<string> expectedResults = { "0" };
+        std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
+        std::unordered_set<std::string> expectedResults = { "0" };
 
 
         REQUIRE(actualResults == a);
@@ -291,12 +291,12 @@ TEST_CASE("With strategy with multiple clauses") {
     SECTION("read r; call c; variable v; procedure p; Select r.varName with r.varName = c.procName and v.varName = p.procName with 1 = 1") {
         string query = "read r; call c; variable v; procedure p; Select r.varName with r.varName = c.procName and v.varName = p.procName with 1 = 1";
         Tokenizer tokenizer(query);
-        vector<Token> tokens = tokenizer.tokenize();
+        std::vector<Token> tokens = tokenizer.tokenize();
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
-        REQUIRE(actualResults == std::unordered_set<string>{"hello"});
+        std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
+        REQUIRE(actualResults == std::unordered_set<std::string>{"hello"});
     }
 }
 
@@ -341,13 +341,13 @@ TEST_CASE("Multiple Clauses with with") {
 
     SECTION("variable v; print pr; Select <v, pr> with pr.varName = v.varName") {
         Tokenizer tokenizer("variable v; print pr; Select <v, pr> with pr.varName = v.varName");
-        vector<Token> tokens = tokenizer.tokenize();
+        std::vector<Token> tokens = tokenizer.tokenize();
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> actualResults = evaluator.evaluateQuery();
-        std::unordered_set<string> expectedResults = { "variable 3", "start 22", "end 32", "total 7", "middle 18", "variable 8" };
+        std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
+        std::unordered_set<std::string> expectedResults = { "variable 3", "start 22", "end 32", "total 7", "middle 18", "variable 8" };
         REQUIRE(actualResults == expectedResults);
     }
 }
@@ -362,13 +362,13 @@ TEST_CASE("M2 failing after Fix") {
     procedureWriter->insertProcedure("hello");
 
     Tokenizer tokenizer("procedure p; Select p with p.procName = p.procName");
-    vector<Token> tokens = tokenizer.tokenize();
+    std::vector<Token> tokens = tokenizer.tokenize();
 
     QueryParser parser(tokens);
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> actualResults = evaluator.evaluateQuery();
-    std::unordered_set<string> expectedResults = { "hello" };
+    std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
+    std::unordered_set<std::string> expectedResults = { "hello" };
     REQUIRE(actualResults == expectedResults);
 }
 
@@ -381,13 +381,13 @@ TEST_CASE("M2 failing after Fix 2") {
 //    variable v;
 //    Select BOOLEAN with v.varName = "ea"
     Tokenizer tokenizer("variable v; Select BOOLEAN with v.varName = \"ea\"");
-    vector<Token> tokens = tokenizer.tokenize();
+    std::vector<Token> tokens = tokenizer.tokenize();
 
     QueryParser parser(tokens);
     auto parsingResult = parser.parse();
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> actualResults = evaluator.evaluateQuery();
-    std::unordered_set<string> expectedResults = { "FALSE" };
+    std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
+    std::unordered_set<std::string> expectedResults = { "FALSE" };
     REQUIRE(actualResults == expectedResults);
 }
 

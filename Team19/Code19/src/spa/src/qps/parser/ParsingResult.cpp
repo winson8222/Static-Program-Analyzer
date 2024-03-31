@@ -1,9 +1,10 @@
 #include "ParsingResult.h"
+#include <vector>
+#include <unordered_map>
+#include <string>
 
 // Constructor
-ParsingResult::ParsingResult() {
-    // Initialize members if needed
-}
+ParsingResult::ParsingResult() {}
 
 // Adds a single synonym to the declaredSynonyms map
 void ParsingResult::addDeclaredSynonym(const std::string& key, const std::string& value) {
@@ -40,7 +41,7 @@ const std::vector<WithClause>& ParsingResult::getWithClauses() const {
 }
 
 // Getters
-const unordered_map<std::string, std::string>& ParsingResult::getDeclaredSynonyms() const {
+const std::unordered_map<std::string, std::string>& ParsingResult::getDeclaredSynonyms() const {
     return declaredSynonyms;
 }
 
@@ -96,7 +97,6 @@ const bool ParsingResult::isAttrRef(const std::string &attrRef) {
     // check if it has .
     size_t pos = attrRef.find('.');
     return pos != std::string::npos;
-
 }
 
 

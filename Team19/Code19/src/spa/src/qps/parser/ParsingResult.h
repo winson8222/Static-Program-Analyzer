@@ -48,7 +48,7 @@ public:
 
 private:
     std::unordered_map<std::string, std::string> declaredSynonyms;
-    std::vector<string> requiredSynonyms;
+    std::vector<std::string> requiredSynonyms;
 
     // Use vectors of clause structs
     std::vector<SuchThatClause> suchThatClauses;
