@@ -2,8 +2,7 @@
 
 #include <iostream>
 #include "qps/evaluator/strategies/suchThatStrategies/StmtStmtStrategy.h"
-
-using namespace std;
+#include "qps/parser/Token.h" 
 
 class ParentStrategy : public StmtStmtStrategy {
 private:
@@ -11,7 +10,7 @@ private:
     std::shared_ptr<StatementReader> statementReader;
     Token firstParam;
     Token secondParam;
-    string variant;
+    std::string variant;
 
 public:
     std::shared_ptr<ResultTable> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) override;
@@ -20,5 +19,4 @@ public:
     void processFirstParam(std::shared_ptr<ResultTable> resultTable,const ParsingResult& parsingResult,PKBReaderManager& pkbReaderManager) override;
     void processSecondParam(std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult,PKBReaderManager& pkbReaderManager) override;
     void processIntegerParams(std::shared_ptr<ResultTable> resultTable) override;
-
 };

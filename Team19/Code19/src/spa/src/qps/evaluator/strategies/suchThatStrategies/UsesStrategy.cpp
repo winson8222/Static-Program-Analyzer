@@ -1,4 +1,6 @@
 #include "UsesStrategy.h"
+#include <memory>
+#include <unordered_map>
 
 std::shared_ptr<ResultTable> UsesStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause)
 {
@@ -68,7 +70,7 @@ void UsesStrategy::processFirstParam(const Token& firstParam, const Token& secon
     resultTable->insertColumn(firstParam.getValue());
     for (int stmt: allFilteredModifiesStmts) {
         std::unordered_map<std::string,std::string> newRow;
-        newRow[firstParam.getValue()] = to_string(stmt);
+        newRow[firstParam.getValue()] = std::to_string(stmt);
         resultTable->insertNewRow(newRow);
     }
 }
@@ -101,10 +103,10 @@ void UsesStrategy::processBothConstants(const Token &firstParam, const Token &se
                                             std::shared_ptr<ResultTable> resultTable) {
     // check if the statement modifies the variable
     if (isBothParamsWildcard(firstParam, secondParam)) {
-        if (usesSReader->getAllStmtsThatUseAnyVariable().empty()) {
+        if (this->usesSReader->getAllStmtsThatUseAnyVariable().empty()) {
             resultTable->setAsTruthTable();
         }
     } else {
-        setTrueIfRelationShipExist(firstParam, secondParam, usesSReader, resultTable);
+        setTrueIfRelationShipExist(firstParam, secondParam, this->usesSReader, resultTable);
     }
 }

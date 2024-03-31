@@ -1,8 +1,8 @@
-#include "qps/evaluator/strategies/suchThatStrategies/ModifiesStrategy.h"
+#include "ModifiesStrategy.h"
 
 std::shared_ptr<ResultTable> ModifiesStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause)
 {
-    auto resultTable = make_shared<ResultTable>();
+    auto resultTable = std::make_shared<ResultTable>();
     this->modifiesSReader= pkbReaderManager.getModifiesSReader();
 
 

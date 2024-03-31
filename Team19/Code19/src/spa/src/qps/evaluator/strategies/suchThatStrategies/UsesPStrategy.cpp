@@ -35,7 +35,7 @@ void UsesPStrategy::processBothSynonyms(const ParsingResult &parsingResult,
     if (firstParamType == "procedure") {
         std::unordered_set<std::string> allProcs =
                 this->usesPReader->getAllProcsThatUseAnyVariable();
-        for (string proc : allProcs) {
+        for (std::string proc : allProcs) {
             std::unordered_set<std::string> allVars =
                     this->usesPReader->getAllVariablesUsedByProc(proc);
             // copy the value of procs to a rvalue string
