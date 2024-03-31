@@ -13,7 +13,7 @@
  * @param parsingResult Contains the parsed query details.
  * @return A shared pointer to the populated result table.
  */
-std::shared_ptr<ResultTable> WithStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause, const std::shared_ptr<ResultTable>& originalResultTable) {
+std::shared_ptr<ResultTable> WithStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) {
         auto resultTable = std::make_shared<ResultTable>();
         // Initializing PKB readers for With clause
         const WithClause* withClause = dynamic_cast<const WithClause*>(&clause);
@@ -62,9 +62,6 @@ std::unordered_set<std::string> WithStrategy::retrieveStringEntities(std::string
     return entityReader->getAllEntities();
 }
 
-std::shared_ptr<ResultTable> WithStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) {
-    return std::shared_ptr<ResultTable>();
-}
 
 
 /**

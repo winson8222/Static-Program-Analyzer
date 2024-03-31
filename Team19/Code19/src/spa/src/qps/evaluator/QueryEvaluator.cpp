@@ -187,7 +187,7 @@ std::unordered_set<std::string> QueryEvaluator::evaluateQuery() {
             patternCounter++;
         }
         else if (withCounter < withClauses.size()) {
-            tempResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult, withClauses[withCounter], result);
+            tempResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult, withClauses[withCounter]);
 			withCounter++;
 		}
       
