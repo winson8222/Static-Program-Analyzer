@@ -75,9 +75,7 @@ std::unordered_set<std::string> WithStrategy::processParam(Token param, PKBReade
     }
     else if (isQuotedString(param.getValue())) {
         // Extracts the value within the quotes
-        size_t QUOTE_OFFSET = 1;
-        size_t QUOTE_PAIR_LENGTH = 2;
-        std::string extractedValue = param.getValue().substr(QUOTE_OFFSET, param.getValue().length() - QUOTE_PAIR_LENGTH);
+        std::string extractedValue = extractQuotedExpression(param);
         return {extractedValue};
 	}
     else if (param.getType() == TokenType::Ref) {
@@ -91,7 +89,7 @@ std::unordered_set<std::string> WithStrategy::processParam(Token param, PKBReade
             return it->second(synonym, pkbReaderManager, resultTable);
         }
     }
-    return std::unordered_set<std::string>();
+    return {};
 }
 
 /**
@@ -135,87 +133,7 @@ std::vector<std::string> WithStrategy::findIntersection(const std::unordered_set
     return intersection;
 }
 
-bool WithStrategy::isIntegerStored(std::string synyonymType, std::string attribute)
-{
-    if ((synyonymType == "read" || synyonymType == "print" || synyonymType == "call")
-        && (attribute == "varName" || attribute == "procName"))
-    {
-        return true;
-	}
-    return false;
-}
 
-vector<std::string> WithStrategy::mapStringSetToIntSet(PKBReaderManager &pkbReaderManager,
-                                                       const vector<std::string> &stringSet, std::string &synonymType) {
-    // function that takes in the std::string set and retrieves all the linked statements for each std::string within the set
-    // and returns a set of integers
-    vector<int> intSet;
-    if (synonymType == "read")
-    {
-		auto readVarNameReader = pkbReaderManager.getReadVarNameReader();
-        for (std::string varName : stringSet)
-        {
-			unordered_set<int> linkedStmts = readVarNameReader->getLinker(varName);
-            intSet.insert(intSet.end(), linkedStmts.begin(), linkedStmts.end());
-            
-		}
-	}
-    else if (synonymType == "print")
-    {
-		auto printVarNameReader = pkbReaderManager.getPrintVarNameReader();
-        for (std::string varName : stringSet)
-        {
-			unordered_set<int> linkedStmts = printVarNameReader->getLinker(varName);
-            intSet.insert(intSet.end(), linkedStmts.begin(), linkedStmts.end());
-		}
-	}
-    else if (synonymType == "call")
-    {
-		auto callProcNameReader = pkbReaderManager.getCallProcNameReader();
-        for (std::string procName : stringSet)
-        {
-			unordered_set<int> linkedStmts = callProcNameReader->getLinker(procName);
-            intSet.insert(intSet.end(), linkedStmts.begin(), linkedStmts.end());
-		}
-	}
-    vector<std::string> mappedIntSet;
-    for (int i : intSet) {
-        mappedIntSet.push_back(to_string(i));
-    }
-	return mappedIntSet;
-}
-
-//std::vector<pair<std::string, std::string>> WithStrategy::populateResultTable(
-//    const std::shared_ptr<ResultTable>& resultTable,
-//    const std::vector<std::string>& intersection, Token param, PKBReaderManager& pkbReaderManager)
-//{
-//    std::vector<pair<std::string, std::string>> rows;
-//    if (!isQuotedstd::string(param.getValue()) && !isInteger(param.getValue())) {
-//
-//        pair<std::string, std::string> attributes = extractAttributes(param);
-//        std::string synonym = attributes.first;
-//        std::string attribute = attributes.second;
-//        std::string synonymType = parsingResult.getDeclaredSynonym(synonym);
-//        if (!resultTable->hasColumn(synonym)) {
-//            resultTable->insertColumn(synonym);
-//        }
-//        if (isIntegerStored(synonymType, attribute)) {
-//            vector<std::string> mappedIntersection = mapstd::stringSetToIntSet(pkbReaderManager, intersection, synonymType);
-//            // insert column with value of synonym and rows with the intersection of the two sets
-//            for (std::string elem : mappedIntersection) {
-//                rows.push_back(make_pair(synonym, elem));
-//            }
-//        }
-//        else {
-//            for (std::string elem : intersection) {
-//                rows.push_back(make_pair(synonym, elem));
-//            }
-//        }
-//
-//
-//    }
-//    return rows;
-//}
 
 std::string WithStrategy::getAttrRefType(const Token& token) {
     std::pair<std::string, std::string> attRef = extractAttributes(token);
@@ -246,35 +164,34 @@ void WithStrategy::populateWithIntersection(const std::vector<std::string>& inte
     std::string firstAttrRefType = getAttrRefType(firstParam);
     std::string secondAttrRefType = getAttrRefType(secondParam);
     for (const std::string& attrValue : intersection) {
-        std::unordered_set<std::string> allPossibleFirstParam;
-        auto it = refToOriginalValueMap.find(firstAttrRefType);
-        if (it != refToOriginalValueMap.end()) {
-            // find all possible values of firstParam (non attr)
-            allPossibleFirstParam = it->second(attrValue, pkbReaderManager);
-        } else {
-            continue;
-        }
-
-        std::unordered_set<std::string> allPossibleSecondParam;
-        it = refToOriginalValueMap.find(secondAttrRefType);
-        if (it != refToOriginalValueMap.end()) {
-            // find all possible values of secondParam (non attr)
-            allPossibleSecondParam = it->second(attrValue, pkbReaderManager);
-        } else {
-            continue;
-        }
-
-        // insert into result table
-        for (const std::string& firstParamValue : allPossibleFirstParam) {
-            for (const std::string& secondParamValue : allPossibleSecondParam) {
-                std::pair<std::string, std::string> firstCol = {firstSynonym, firstParamValue};
-                std::pair<std::string, std::string> secondCol = {secondSynonym, secondParamValue};
-                QueryEvaluationStrategy::insertRowToTable(firstCol, secondCol, resultTable);
-            }
-        }
+        populateTwoColumns(attrValue, firstSynonym, firstAttrRefType, secondSynonym,  secondAttrRefType, pkbReaderManager, resultTable);
     }
 
+}
 
+void WithStrategy::populateTwoColumns(std::string commonAttrValue, std::string firstParam,
+                                      std::string firstParamAttrType, std::string secondParam,
+                                      std::string secondParamAttrType, PKBReaderManager &pkbReaderManager,
+                                      const std::shared_ptr<ResultTable> &resultTable) {
+    std::unordered_set<std::string> allPossibleFirstParam;
+    auto it = refToOriginalValueMap.find(firstParamAttrType);
+    if (it != refToOriginalValueMap.end()) {
+        allPossibleFirstParam = it->second(commonAttrValue, pkbReaderManager);
+    }
+
+    std::unordered_set<std::string> allPossibleSecondParam;
+    it = refToOriginalValueMap.find(secondParamAttrType);
+    if (it != refToOriginalValueMap.end()) {
+        allPossibleSecondParam = it->second(commonAttrValue, pkbReaderManager);
+    }
+
+    for (const std::string& firstParamValue : allPossibleFirstParam) {
+        for (const std::string& secondParamValue : allPossibleSecondParam) {
+            std::pair<std::string, std::string> firstCol = {firstParam, firstParamValue};
+            std::pair<std::string, std::string> secondCol = {secondParam, secondParamValue};
+            QueryEvaluationStrategy::insertRowToTable(firstCol, secondCol, resultTable);
+        }
+    }
 }
 
 
@@ -288,14 +205,7 @@ void WithStrategy::populateWithFirstParam(const std::shared_ptr<ResultTable> &re
     std::pair<std::string, std::string> firstParamAttributes = extractAttributes(firstParam);
     std::string firstSynonym = firstParamAttributes.first;
     std::string firstAttrRefType = getAttrRefType(firstParam);
-    auto it = refToOriginalValueMap.find(firstAttrRefType);
-    resultTable->insertColumn(firstSynonym);
-    if (it != refToOriginalValueMap.end()) {
-        std::unordered_set<std::string> allPossibleFirstParam = it->second(secondParamValue, pkbReaderManager);
-
-        QueryEvaluationStrategy::insertRowsWithSingleColumn(firstSynonym, allPossibleFirstParam, resultTable);
-
-    }
+    populateSingleColumn(firstSynonym, firstAttrRefType, secondParamValue, pkbReaderManager, resultTable);
 
 }
 
@@ -307,11 +217,17 @@ void WithStrategy::populateWithSecondParam(const std::shared_ptr<ResultTable> &r
     std::pair<std::string, std::string> secondParamAttributes = extractAttributes(secondParam);
     std::string secondSynonym = secondParamAttributes.first;
     std::string secondAttrRefType = getAttrRefType(secondParam);
-    auto it = refToOriginalValueMap.find(secondAttrRefType);
-    resultTable->insertColumn(secondSynonym);
+    populateSingleColumn(secondSynonym, secondAttrRefType, firstParamValue, pkbReaderManager, resultTable);
+}
+
+void WithStrategy::populateSingleColumn(std::string synonym, std::string attrType, std::string toSearch,
+                                        PKBReaderManager &pkbReaderManager,
+                                        const std::shared_ptr<ResultTable> &resultTable) {
+    auto it = refToOriginalValueMap.find(attrType);
+    resultTable->insertColumn(synonym);
     if (it != refToOriginalValueMap.end()) {
-        std::unordered_set<std::string> allPossibleSecondParam = it->second(firstParamValue, pkbReaderManager);
-        QueryEvaluationStrategy::insertRowsWithSingleColumn(secondSynonym, allPossibleSecondParam, resultTable);
+        std::unordered_set<std::string> allPossibleValues = it->second(toSearch, pkbReaderManager);
+        QueryEvaluationStrategy::insertRowsWithSingleColumn(synonym, allPossibleValues, resultTable);
     }
 }
 

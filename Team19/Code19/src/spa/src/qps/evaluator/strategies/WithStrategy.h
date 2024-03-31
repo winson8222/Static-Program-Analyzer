@@ -72,7 +72,7 @@ public:
 
     std::vector<std::string> findIntersection(const std::unordered_set<std::string>& set1, const std::unordered_set<std::string>& set2);
 
-    bool isIntegerStored(string synyonymType, string attribute);
+
     vector<std::string> mapStringSetToIntSet(PKBReaderManager& pkbReaderManager, const vector<string>& stringSet, string& synonymType);
     std::vector<std::pair<string, string>> populateResultTable(const std::shared_ptr<ResultTable>& resultTable, const std::vector<std::string>& intersection, Token param, PKBReaderManager& pkbReaderManager);
     const std::map<std::string, std::function<std::unordered_set<std::string>(std::string, PKBReaderManager&)>> refToOriginalValueMap = {
@@ -252,6 +252,7 @@ public:
     void populateWithSecondParam(const std::shared_ptr<ResultTable>& resultTable, PKBReaderManager& pkbReaderManager, const Token& firstParam, const Token& secondParam);
     bool isAttrRef(Token token);
     bool isAttrRefIdentical(const Token& firstParam, const Token& secondParam);
-
+    void populateSingleColumn(std::string synonym, std::string attrType, std::string toSearch, PKBReaderManager& pkbReaderManager, const std::shared_ptr<ResultTable>& resultTable);
+    void populateTwoColumns(std::string commonAttrValue, std::string firstParam, std::string firstParamAttrType, std::string secondParam, std::string secondParamAttrType, PKBReaderManager& pkbReaderManager, const std::shared_ptr<ResultTable>& resultTable);
 
 };
