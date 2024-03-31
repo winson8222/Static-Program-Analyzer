@@ -1,5 +1,8 @@
 #include "QueryEvaluationStrategy.h"
 #include <regex>
+#include <string>
+#include <unordered_set>
+#include <memory>
 
 void QueryEvaluationStrategy::convertIntSetToStringSet(const std::unordered_set<int>& intSet, std::unordered_set<std::string>& stringSet) {
     for (int i : intSet) {
@@ -7,10 +10,10 @@ void QueryEvaluationStrategy::convertIntSetToStringSet(const std::unordered_set<
     }
 }
 
-string QueryEvaluationStrategy::extractQuotedExpression(const Token& token) {    // extract the quoted expression from the token using regex
-    regex pattern(R"(["](.*?)["])");
-    smatch matches;
-    string tokenValue = token.getValue();
+std::string QueryEvaluationStrategy::extractQuotedExpression(const Token& token) {    // extract the quoted expression from the token using regex
+    std::regex pattern(R"(["](.*?)["])");
+    std::smatch matches;
+    std::string tokenValue = token.getValue();
     std::regex_search(tokenValue, matches, pattern);
     return matches[1].str();
 }
@@ -27,8 +30,8 @@ bool QueryEvaluationStrategy::isBothParamsWildcard(const Token& firstParam, cons
  * @param result - The existing set of statements numbers to be updated.
  * @return The updated set of statements numbers.
  */
-std::unordered_set<int> QueryEvaluationStrategy::combineFoundStatements(const unordered_set<int> &newResult,
-                                                                        const unordered_set<int> &result) {
+std::unordered_set<int> QueryEvaluationStrategy::combineFoundStatements(const std::unordered_set<int> &newResult,
+                                                                        const std::unordered_set<int> &result) {
     std::unordered_set<int> combinedResult;
     for (const auto& elem : newResult) {
         if (std::find(result.begin(), result.end(), elem) != result.end()) {
@@ -38,23 +41,23 @@ std::unordered_set<int> QueryEvaluationStrategy::combineFoundStatements(const un
     return combinedResult;
 }
 
-const unordered_map<string, std::function<shared_ptr<IEntityReader<int>>(PKBReaderManager&)>> stmtTypeToEntities = {
-        {"read",   [](PKBReaderManager &manager) -> shared_ptr<IEntityReader<int>> {
+const std::unordered_map<std::string, std::function<std::shared_ptr<IEntityReader<int>>(PKBReaderManager&)>> stmtTypeToEntities = {
+        {"read",   [](PKBReaderManager &manager) -> std::shared_ptr<IEntityReader<int>> {
             return manager.getReadReader();
         }},
-        {"assign", [](PKBReaderManager &manager) -> shared_ptr<IEntityReader<int>> {
+        {"assign", [](PKBReaderManager &manager) -> std::shared_ptr<IEntityReader<int>> {
             return manager.getAssignReader();
         }},
-        {"while",  [](PKBReaderManager &manager) -> shared_ptr<IEntityReader<int>> {
+        {"while",  [](PKBReaderManager &manager) -> std::shared_ptr<IEntityReader<int>> {
             return manager.getWhileReader();
         }},
-        {"if",     [](PKBReaderManager &manager) -> shared_ptr<IEntityReader<int>> {
+        {"if",     [](PKBReaderManager &manager) -> std::shared_ptr<IEntityReader<int>> {
             return manager.getIfReader();
         }},
-        {"print",  [](PKBReaderManager &manager) -> shared_ptr<IEntityReader<int>> {
+        {"print",  [](PKBReaderManager &manager) -> std::shared_ptr<IEntityReader<int>> {
             return manager.getPrintReader();
         }},
-        {"call",   [](PKBReaderManager &manager) -> shared_ptr<IEntityReader<int>> {
+        {"call",   [](PKBReaderManager &manager) -> std::shared_ptr<IEntityReader<int>> {
             return manager.getCallReader();
         }}
 
@@ -62,10 +65,10 @@ const unordered_map<string, std::function<shared_ptr<IEntityReader<int>>(PKBRead
 
 
 // Get the statements numbers based on the type of statement
-unordered_set<int> QueryEvaluationStrategy::getFilteredStmtsNumByType(unordered_set<int> allStatements, string statementType, PKBReaderManager& pkbReaderManager) {
-    unordered_set<int> filteredResult;
+std::unordered_set<int> QueryEvaluationStrategy::getFilteredStmtsNumByType(std::unordered_set<int> allStatements, std::string statementType, PKBReaderManager& pkbReaderManager) {
+    std::unordered_set<int> filteredResult;
     std::unordered_set<int> allFoundEntities;
-    shared_ptr<IEntityReader<int>> entityReader;
+    std::shared_ptr<IEntityReader<int>> entityReader;
 
     if (statementType == "stmt") {
         return allStatements;
@@ -100,7 +103,7 @@ void QueryEvaluationStrategy::insertColsToTable(const Token firstToken, const To
     }
 }
 
-void QueryEvaluationStrategy::insertRowToTable(const pair<string,string> col1Pair, const pair<string,string> col2Pair, std::shared_ptr<ResultTable> resultTable) {
+void QueryEvaluationStrategy::insertRowToTable(const std::pair<std::string,std::string> col1Pair, const std::pair<std::string,std::string> col2Pair, std::shared_ptr<ResultTable> resultTable) {
     std::string colName1 = col1Pair.first;
     std::string colName2 = col2Pair.first;
     std::string stmt1 = col1Pair.second;
@@ -111,14 +114,14 @@ void QueryEvaluationStrategy::insertRowToTable(const pair<string,string> col1Pai
             resultTable->insertNewRow({{colName1, stmt1}});
         }
     } else {
-        unordered_map<string, string> row;
+        std::unordered_map<std::string, std::string> row;
         row[colName1] = stmt1;
         row[colName2] = stmt2;
         resultTable->insertNewRow(row);
     }
 }
 
-void QueryEvaluationStrategy::insertSingleColRowToTable(const pair<string,string> col1Pair, std::shared_ptr<ResultTable> resultTable) {
+void QueryEvaluationStrategy::insertSingleColRowToTable(const std::pair<std::string,std::string> col1Pair, std::shared_ptr<ResultTable> resultTable) {
     std::string colName1 = col1Pair.first;
     std::string stmt1 = col1Pair.second;
     resultTable->insertNewRow({{colName1, stmt1}});
@@ -128,25 +131,25 @@ bool QueryEvaluationStrategy::isBothParamsSynonym(const Token& firstParam, const
     return firstParam.getType() == TokenType::IDENT && secondParam.getType() == TokenType::IDENT;
 }
 
-void QueryEvaluationStrategy::insertRowsWithMatchedResults(const Token& firstParam, const Token& secondParam, string searched, std::unordered_set<string> results,
+void QueryEvaluationStrategy::insertRowsWithMatchedResults(const Token& firstParam, const Token& secondParam, std::string searched, std::unordered_set<std::string> results,
                                                            const std::shared_ptr<ResultTable>& resultTable) {
-    pair<string, string> col1Pair = make_pair<string, string>(firstParam.getValue(), std::move(searched));
-    for (string result : results) {
-        pair<string, string> col2Pair = make_pair<string, string>(secondParam.getValue(), std::move(result));
+    std::pair<std::string, std::string> col1Pair = std::make_pair<std::string, std::string>(firstParam.getValue(), std::move(searched));
+    for (std::string result : results) {
+        std::pair<std::string, std::string> col2Pair = std::make_pair<std::string, std::string>(secondParam.getValue(), std::move(result));
         insertRowToTable(col1Pair, col2Pair, resultTable);
     }
 }
 
-void QueryEvaluationStrategy::insertStmtRowsWithSingleCol(unordered_set<int> filteredStmts, shared_ptr<ResultTable> resultTable, string colName){
-    unordered_set<string> filteredStmtsStr;
+void QueryEvaluationStrategy::insertStmtRowsWithSingleCol(std::unordered_set<int> filteredStmts, std::shared_ptr<ResultTable> resultTable, std::string colName){
+    std::unordered_set<std::string> filteredStmtsStr;
     convertIntSetToStringSet(filteredStmts,filteredStmtsStr);
     insertRowsWithSingleColumn(colName, filteredStmtsStr, resultTable);
 }
 
 void QueryEvaluationStrategy::insertRowsWithSingleColumn(std::string colName, std::unordered_set<std::string> results,
                                                          std::shared_ptr<ResultTable> resultTable) {
-    for (string result : results) {
-        pair<string, string> colPair = make_pair(colName, std::move(result));
+    for (std::string result : results) {
+        std::pair<std::string, std::string> colPair = make_pair(colName, std::move(result));
         insertSingleColRowToTable(colPair, resultTable);
     }
 }

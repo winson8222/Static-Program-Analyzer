@@ -9,8 +9,6 @@ private:
     Token firstParam;
     Token secondParam;
 
-
-
 public:
     std::shared_ptr<ResultTable> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) override;
     void processBothSynonyms(const ParsingResult& parsingResult

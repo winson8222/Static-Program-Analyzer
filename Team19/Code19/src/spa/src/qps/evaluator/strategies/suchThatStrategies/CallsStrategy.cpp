@@ -46,7 +46,6 @@ void CallsStrategy::processBothSynonyms(const ParsingResult &parsingResult,
             insertRowsWithMatchedResults(this->firstParam, this->secondParam, caller, allCallees, resultTable);
         }
     }
-
 }
 
 
