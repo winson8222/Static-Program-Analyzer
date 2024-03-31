@@ -133,11 +133,53 @@ void QueryEvaluator::evaluateMultipleReturnValues(std::unordered_set<std::string
 	}
 }
 
+std::shared_ptr<ResultTable> QueryEvaluator::getInverse(std::shared_ptr<ResultTable> table) {
+    if (table->isTableTrue()) {
+        return std::make_shared<ResultTable>();
+    }
+    std::shared_ptr<ResultTable> inverseTable = std::make_shared<ResultTable>();
+    // add columns to the inverse table
+    vector<string> colSet = table->getColSet();
+    inverseTable->insertAllColumns(colSet);
+
+    populateEntityCombinations(inverseTable);
+    return inverseTable->excludeOnColumns(table);
+}
+
+void QueryEvaluator::populateEntityCombinations(std::shared_ptr<ResultTable> table) {
+    vector<string> allCol = table->getColSet();
+
+    if (allCol.size() == 1) {
+        string col = allCol[0];
+        string type = parsingResult.getRequiredSynonymType(col);
+        auto entities = getAllEntities(type);
+        table->populateWithOneColumn(col, entities);
+        return;
+    }
+    string colA = allCol[0];
+    string colB = allCol[1];
+
+    // Retrieve the entity types for the specified columns from ParsingResult
+    std::string typeA = parsingResult.getRequiredSynonymType(colA);
+    std::string typeB = parsingResult.getRequiredSynonymType(colB);
+
+    // Fetch entities for both types
+    auto entitiesA = getAllEntities(typeA);
+    auto entitiesB = getAllEntities(typeB);
+
+    // Generate all possible combinations of entities A and B
+    table->populateWithTwoColumns(colA, colB, entitiesA, entitiesB);
+
+}
+
+
 std::unordered_set<std::string> QueryEvaluator::evaluateQuery() {
 
     // Create a new result table for storing query results.
     result = std::make_shared<ResultTable>();
     result->setAsTruthTable();
+    // create a vector of Clauses
+
 
     // Check if the query is valid. If not, return an error message.
     if (!parsingResult.isQueryValid()) {
@@ -145,71 +187,73 @@ std::unordered_set<std::string> QueryEvaluator::evaluateQuery() {
         error.insert(parsingResult.getErrorMessage());
         return error;
     }
-    std::vector<SuchThatClause> suchThatClauses = parsingResult.getSuchThatClauses();
-    // Add such-that-strategies based on the relationship specified in the query.
-    for (auto clause : suchThatClauses) {
-        TokenType suchThatRelationship = clause.getRelationship().getType();
-        auto it = suchThatStrategyFactory.find(suchThatRelationship);
-        if (it != suchThatStrategyFactory.end()) {
-            addStrategy(it->second());
-        }
-    }
-    
-    std::vector<PatternClause> patternClauses = parsingResult.getPatternClauses();
-    // Add PatternStrategy if pattern clause exists in the query.
-    for (auto clause : patternClauses) {
-        std::string patternType = parsingResult.getPatternClauseType(clause);
-        auto it = patternStrategyFactory.find(patternType);
-        if (it != patternStrategyFactory.end()) {
-            addStrategy(it->second());
-        }
-    }
-    
-    std::vector<WithClause> withClauses = parsingResult.getWithClauses();
-    for (auto cluase : withClauses) {
-        addStrategy(std::make_unique<WithStrategy>());
-    }
+
+    const std::vector<std::shared_ptr<Clause>> clauses = addAllClauses(parsingResult);
+
 
     // Evaluate the query using the strategies and compile the results.
     bool isFirstStrategy = true;
-    int suchThatCounter = 0;
-    int patternCounter = 0;
-    int withCounter = 0;
     bool isOnlyBoolean = true;
-    for (auto& strategy : strategies) {
-        std::shared_ptr<ResultTable> tempResult;
-        if (suchThatCounter < suchThatClauses.size()) {
-            tempResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult, suchThatClauses[suchThatCounter]);
-            suchThatCounter++;
+    for (auto& clause : clauses) {
+        shared_ptr<ResultTable> tempResult;
+        unique_ptr<QueryEvaluationStrategy> strategy;
+
+        // get the strategy based on the clause type
+        // make unique pointer to the clause
+
+        auto it = clauseToStrategiesMap.find(clause->getTypeName());
+        if (it != clauseToStrategiesMap.end()) {
+            strategy = it->second(clause);
+        } else {
+            throw "No such strategy found";
         }
-        else if (patternCounter < patternClauses.size()) {
-            tempResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult, patternClauses[patternCounter]);
-            patternCounter++;
-        }
-        else if (withCounter < withClauses.size()) {
-            tempResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult, withClauses[withCounter]);
-			withCounter++;
-		}
-      
-        // if it is a true table skip to next strategy
+
+        // evaluate the strategy
+
+        tempResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult, *clause);
+
+
+
         if (tempResult->isTableTrue()) {
-            continue;
+            if (handleTableTrue(clause)) {
+                continue;
+            } else {
+                tempResult->setTableFalse();
+                result = tempResult;
+                break;
+            }
         }
 
         // if it is a false table, we can break early since the result will be false
         if (tempResult->isTableFalse()) {
-            result = tempResult;
-            break;
+            if (handleTableFalse(clause)) {
+                result = tempResult;
+                break;
+            } else {
+                continue;
+            }
         }
 
         if (isFirstStrategy) {
-            // if it is a false table, we can break early since the result will be false
             isFirstStrategy = false;
-            result = tempResult;
+            if (clause->getClauseOperation() == Clause::ClauseOperations::AND) {
+                result = tempResult;
+            } else {
+                std::shared_ptr<ResultTable> inversedResult;
+                inversedResult = getInverse(tempResult);
+                result = inversedResult;
+            }
         }
         else {
             // if it is a non true and non empty table, join the result with the tempResult
-            result = result->joinOnColumns(tempResult);
+            if (clause->getClauseOperation() == Clause::ClauseOperations::AND) {
+                result = result->joinOnColumns(tempResult);
+            } else {
+                // if it is a non true and non empty table, join the result with the tempResult
+                std::shared_ptr<ResultTable> inversedResult;
+                inversedResult = getInverse(tempResult);
+                result = result->joinOnColumns(inversedResult);
+            }
         }
     }
 
@@ -286,10 +330,34 @@ std::unordered_set<std::string> QueryEvaluator::getAllEntities(const std::string
     return entities;
 }
 
+bool QueryEvaluator::handleTableTrue(std::shared_ptr<Clause> clause) {
+    Clause::ClauseOperations op = clause->getClauseOperation();
+        if (op == Clause::ClauseOperations::AND) {
+            result->setAsTruthTable();
+            return true;
+        }
+        else if (op == Clause::ClauseOperations::NOT) {
+//            result->setAsFalseTable();
+            return false;
+        }
+
+}
+
+bool QueryEvaluator::handleTableFalse(shared_ptr<Clause> clause) {
+    if (clause->getClauseOperation() == Clause::ClauseOperations::AND) {
+        return true;
+    }
+    else if (clause->getClauseOperation() == Clause::ClauseOperations::NOT) {
+        return false;
+    }
+}
+
 
 
 // Initializes the strategy factory with various query evaluation strategies..
 void QueryEvaluator::initializeStrategyFactory() {
+
+
 
     // Mapping of query types to their corresponding strategies.
     QueryEvaluator::suchThatStrategyFactory = {
@@ -313,6 +381,31 @@ void QueryEvaluator::initializeStrategyFactory() {
             {"assign", []() { return std::make_unique<AssignPatternStrategy>(); }},
             {"while", []() { return std::make_unique<WhilePatternStrategy>();}},
             {"if", []() { return std::make_unique<IfPatternStrategy>();}}
+    };
+
+    QueryEvaluator::clauseToStrategiesMap = {
+            {"SuchThatClause", [this](shared_ptr<Clause> clause)-> std::unique_ptr<QueryEvaluationStrategy> {
+                auto suchThatClause = dynamic_cast<SuchThatClause*>(clause.get());
+                if (suchThatClause) {
+                    TokenType suchThatRelationship = suchThatClause->getRelationship().getType();
+                    auto it = suchThatStrategyFactory.find(suchThatRelationship);
+                    if (it != suchThatStrategyFactory.end()) {
+                        return it->second();
+                    }
+                }
+            }},
+            {"PatternClause", [this](shared_ptr<Clause> clause) -> std::unique_ptr<QueryEvaluationStrategy> {
+                auto patternClause = dynamic_cast<PatternClause*>(clause.get());
+                if (patternClause) {
+                    string patternType = parsingResult.getPatternClauseType(*patternClause);
+                    auto it = patternStrategyFactory.find(patternType);
+                    if (it != patternStrategyFactory.end()) {
+                        return it->second();
+                    }
+
+                }
+            }},
+            {"WithClause", [](shared_ptr<Clause> clause) -> std::unique_ptr<QueryEvaluationStrategy> { return std::make_unique<WithStrategy>(); }}
     };
 }
 
@@ -454,4 +547,28 @@ void QueryEvaluator::initializeVarNameMap() {
             }}
     };
 }
+
+std::vector<std::shared_ptr<Clause>> QueryEvaluator::addAllClauses(ParsingResult &parsingResult) {
+    std::vector<std::shared_ptr<Clause>> clauses;
+    vector<SuchThatClause> suchThatClauses = parsingResult.getSuchThatClauses();
+    // Add such-that-strategies based on the relationship specified in the query.
+    for (auto clause : suchThatClauses) {
+        clauses.push_back(std::make_shared<SuchThatClause>(clause));
+    }
+
+    vector<PatternClause> patternClauses = parsingResult.getPatternClauses();
+    // Add PatternStrategy if pattern clause exists in the query.
+    for (auto clause : patternClauses) {
+        clauses.push_back(std::make_shared<PatternClause>(clause));
+    }
+
+    vector<WithClause> withClauses = parsingResult.getWithClauses();
+    for (auto clause : withClauses) {
+        clauses.push_back(std::make_shared<WithClause>(clause));
+    }
+    return clauses;
+}
+
+
+
 // ai-gen end

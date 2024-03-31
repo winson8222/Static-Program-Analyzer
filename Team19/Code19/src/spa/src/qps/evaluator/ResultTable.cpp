@@ -49,6 +49,41 @@ std::shared_ptr<ResultTable> ResultTable::joinOnColumns(const std::shared_ptr<Re
 
 }
 
+std::shared_ptr<ResultTable> ResultTable::excludeOnColumns(const std::shared_ptr<ResultTable>& table2) {
+    // Create a new result table
+    auto result = std::make_shared<ResultTable>();
+
+    // Identify common columns between the two tables and columns unique to each table
+    std::vector<std::string> commonColumns;
+    std::vector<std::string> uniqueToTable1;
+    std::vector<std::string> uniqueToTable2;
+    identifyColumns(table2, commonColumns, uniqueToTable1, uniqueToTable2);
+
+    // Set up the columns of the result table
+    result->addColumnsSet(this->colSet);
+
+    // Iterate through rows of this table to check against all rows in table2
+    for (auto& row1 : this->rows) {
+        bool excludeRow = false;
+        for (auto& row2 : table2->rows) {
+            // If the common columns match between a row in this table and a row in table2, exclude the row
+            if (commonColumnsMatch(row1, row2, commonColumns)) {
+                excludeRow = true;
+                break; // A matching row was found, so this row is excluded
+            }
+        }
+        // If the row from this table has no matches in table2, include it in the result
+        if (!excludeRow) {
+            result->insertNewRow(row1);
+        }
+    }
+
+    return result;
+
+}
+
+
+
 // this function merge the rows of two tables where the common columns match
 std::unordered_map<std::string, std::string> ResultTable::mergeRows(const std::unordered_map<std::string, std::string>& row1,
     const std::unordered_map<std::string, std::string>& row2,
@@ -256,4 +291,29 @@ bool ResultTable::isEmpty() {
 
 bool ResultTable::isTableFalse() {
     return !isTruthTable && isEmpty();
+}
+
+void ResultTable::setTableFalse() {
+    isTruthTable = false;
+}
+
+void ResultTable::populateWithTwoColumns(std::string col1, std::string col2, std::unordered_set <std::string> values,
+                                         std::unordered_set <std::string> values2) {
+    for (const auto& entityA : values) {
+        for (const auto& entityB : values2) {
+            std::unordered_map<std::string, std::string> newRow;
+            newRow[col1] = entityA;
+            newRow[col2] = entityB;
+            this->insertNewRow(newRow);
+        }
+    }
+}
+
+
+void ResultTable::populateWithOneColumn(std::string col1, std::unordered_set<std::string> values) {
+    for (const auto& entity : values) {
+        std::unordered_map<std::string, std::string> newRow;
+        newRow[col1] = entity;
+        this->insertNewRow(newRow);
+    }
 }

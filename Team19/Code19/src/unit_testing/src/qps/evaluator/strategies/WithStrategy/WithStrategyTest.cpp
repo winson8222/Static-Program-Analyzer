@@ -309,12 +309,12 @@ TEST_CASE("Multiple Clauses with with") {
     shared_ptr<VariableWriter> variableWriter = pkbWriterManager->getVariableWriter();
     shared_ptr<PrintVarNameWriter> printVarNameWriter = pkbWriterManager->getPrintVarNameWriter();
     shared_ptr<PrintWriter> printWriter = pkbWriterManager->getPrintWriter();
-    statementWriter->insertStatement(1);
-    statementWriter->insertStatement(2);
     statementWriter->insertStatement(3);
-    statementWriter->insertStatement(4);
-    statementWriter->insertStatement(5);
-    statementWriter->insertStatement(6);
+    statementWriter->insertStatement(22);
+    statementWriter->insertStatement(32);
+    statementWriter->insertStatement(7);
+    statementWriter->insertStatement(18);
+    statementWriter->insertStatement(7);
     variableWriter->insertVariable("n");
     variableWriter->insertVariable("x");
     variableWriter->insertVariable("y");

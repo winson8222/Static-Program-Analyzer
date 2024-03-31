@@ -26,6 +26,7 @@ private:
     ParsingResult& parsingResult;
     std::shared_ptr<ResultTable> result;
     std::vector<std::unique_ptr<QueryEvaluationStrategy>> strategies; // Store multiple strategies
+    std::map<string, std::function<std::unique_ptr<QueryEvaluationStrategy>(shared_ptr<Clause>)>>clauseToStrategiesMap;
     std::map<TokenType, std::function<std::unique_ptr<QueryEvaluationStrategy>()>> suchThatStrategyFactory; // Map of strategy factory
     std::map<string, std::function<std::unique_ptr<QueryEvaluationStrategy>()>> patternStrategyFactory; // Map of strategy factory
     std::map<std::string, std::function<std::variant<std::unordered_set<int>, std::unordered_set<std::string>>()>> entityFactory;
@@ -100,6 +101,23 @@ public:
 	 * @param strategy The strategy to be added
 	 */
     void addStrategy(std::unique_ptr<QueryEvaluationStrategy> strategy); // Method to add strategies
+
+    /**
+     * Populates a result table with all possible combinations of entities for two specified columns.
+     *
+     * This method dynamically determines the entity types for the specified columns based on the
+     * ParsingResult. It then retrieves all entities for each type and generates a result table
+     * containing every possible combination of these entities across the two columns.
+     *
+     * @param colA The name of the first column, which will contain entities of the first type.
+     * @param colB The name of the second column, which will contain entities of the second type.
+     * @param parsingResult The ParsingResult instance containing information about declared synonyms
+     *                      and their types, which is used to determine the types of entities to retrieve.
+     * @return A shared pointer to a ResultTable populated with all possible combinations of entities
+     *         for the specified columns.
+     */
+    std::shared_ptr<ResultTable> populateEntityCombinations(const std::string& colA, const std::string& colB);
+
     void initializeStrategyFactory(); // Method to initialize the strategy factory
     void initializeEntityFactory(); // Method to initialize the entity factory
     string join(const unordered_set<string>& elements, const string& delimiter);
@@ -109,8 +127,13 @@ public:
     string convertToProcName(const string& synonym ,string ref);
     void convertToAttrSet(const string& synonym, std::unordered_set<std::string>& valueSet, std::unordered_set<std::string>& attrSet);
     std::vector<std::string> removeAllAttrRefs(const std::vector<std::string>& requiredSynonyms);
+    std::vector<std::shared_ptr<Clause>> addAllClauses(ParsingResult& parsingResult);
 
     void initializeProcNameMap();
     void initializeVarNameMap();
     void throwNoSuchMethodException();
+    bool handleTableTrue(shared_ptr<Clause> clause);
+    bool handleTableFalse(shared_ptr<Clause> clause);
+    void populateEntityCombinations(std::shared_ptr<ResultTable> table);
+    std::shared_ptr<ResultTable> getInverse(std::shared_ptr<ResultTable>);
 };

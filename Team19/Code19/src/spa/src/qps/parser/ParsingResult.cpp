@@ -115,3 +115,4 @@ string ParsingResult::getAttrFromAttrRef(const string &attrRef) {
     }
     return "";
 }
+
