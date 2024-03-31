@@ -6,8 +6,11 @@
 #include <iostream>
 #include <functional>
 #include <map>
-#include "qps/parser/Token.h" // Include for Token definition
-#include "qps/evaluator/strategies/suchThatStrategies/StmtStmtStrategy.h"
+#include "qps/evaluator/QueryEvaluationStrategy.h"
+#include "qps/parser/Token.h"
+#include "qps/parser/ParsingResult.h"
+#include <utility>
+#include <vector>
 
 /**
  * @file WithStrategy.h
@@ -72,10 +75,6 @@ public:
 	bool isQuotedString(const std::string& str);
 
 	std::vector<std::string> findIntersection(const std::unordered_set<std::string>& set1, const std::unordered_set<std::string>& set2);
-
-	std::vector<std::string> mapStringSetToIntSet(PKBReaderManager& pkbReaderManager, const std::vector<std::string>& stringSet, std::string& synonymType);
-	std::vector<std::pair<std::string, std::string>> populateResultTable(const std::shared_ptr<ResultTable>& resultTable, 
-		const std::vector<std::string>& intersection, Token param, PKBReaderManager& pkbReaderManager);
 
 	const std::map<std::string, std::function<std::unordered_set<std::string>(std::string, PKBReaderManager&)>> refToOriginalValueMap = {
 		{

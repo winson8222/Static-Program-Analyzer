@@ -11,7 +11,7 @@ public:
 	virtual void processFirstParam(const ParsingResult& parsingResult, std::shared_ptr<ResultTable> resultTable) = 0;
 	virtual void processSecondParam(const ParsingResult& parsingResult, std::shared_ptr<ResultTable> resultTable) = 0;
 	virtual void processBothConstants(const ParsingResult& parsingResult, std::shared_ptr<ResultTable> resultTable) = 0;
-	static void setTrueIfRelationShipExist(const Token& firstParam, const Token& secondParam, 
+	static void setTrueIfRelationShipExist(const Token& firstParam, const Token& secondParam,
 		const std::shared_ptr<IRelationshipReader<std::string, std::string> >& reader, std::shared_ptr<ResultTable> resultTable);
 
 };

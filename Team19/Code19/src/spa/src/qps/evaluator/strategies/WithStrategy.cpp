@@ -1,5 +1,11 @@
 #include "WithStrategy.h"
 
+#include <string>
+#include <unordered_set>
+#include <utility>
+#include <vector>
+#include "qps/parser/clauses/WithClause.h"
+
 /**
  * Evaluates equality between 2 parameters.
  * Determines the relationship based on the parsing result and updates the result table accordingly.
@@ -47,7 +53,6 @@ std::unordered_set<std::string> WithStrategy::retrieveIntStringLinks(std::string
 }
 
 std::unordered_set<std::string> WithStrategy::retrieveIntEntities(std::string synonym, const std::shared_ptr<ResultTable>& resultTable, const std::shared_ptr<IEntityReader<int>>& entityReader) {
-
     std::unordered_set<int> list = entityReader->getAllEntities();
     std::unordered_set<std::string> entities;
     convertIntSetToStringSet(list, entities);
@@ -57,8 +62,6 @@ std::unordered_set<std::string> WithStrategy::retrieveIntEntities(std::string sy
 std::unordered_set<std::string> WithStrategy::retrieveStringEntities(std::string synonym, const std::shared_ptr<ResultTable>& resultTable, const std::shared_ptr<IEntityReader<std::string>>& entityReader) {
     return entityReader->getAllEntities();
 }
-
-
 
 /**
  * Processes first parameter of the query.
@@ -97,7 +100,7 @@ std::pair<std::string, std::string> WithStrategy::extractAttributes(Token param)
     size_t dotPosition = paramValue.find(".");
     std::string synonym = paramValue.substr(0, dotPosition);
     std::string attribute = paramValue.substr(dotPosition + 1);
-    return make_pair(synonym, attribute);
+    return std::make_pair(synonym, attribute);
 }
 
 // Function to check if a std::string is an integer

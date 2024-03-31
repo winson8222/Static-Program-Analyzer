@@ -4,7 +4,7 @@
 
 class CallsStrategy : public EntEntStrategy {
 private:
-    shared_ptr<IRelationshipReader<std::string, std::string>> reader;
+    std::shared_ptr<IRelationshipReader<std::string, std::string>> reader;
     std::string variant;
     Token firstParam;
     Token secondParam;
@@ -19,6 +19,4 @@ public:
             ,std::shared_ptr<ResultTable> resultTable) override;
     void processBothConstants(const ParsingResult& parsingResult
             ,std::shared_ptr<ResultTable> resultTable) override;
-
-
 };
