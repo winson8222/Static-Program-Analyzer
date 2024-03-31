@@ -5,7 +5,8 @@
 // Initializes the Tokenizer with a given query string.
 Tokenizer::Tokenizer(const std::string& query) : query(query) {
     // Regex to split based on quouted text, whitespaces, parentheses, commas, semicolons
-    tokenRegex = std::regex(R"("[^"]*"|[\w`~@#$%^&*+={}:-]+|_|[,;.<>()\"\'])");
+    tokenRegex = std::regex(R"("[^"]*"|[\w`~@#$%^&*+{}:-]+|_|[,;.<>()\"\'']|[=])");
+
 }
 
 // This method tokenizes the stored query and returns a vector of Token objects.
@@ -140,7 +141,7 @@ TokenType Tokenizer::determineSingleCharToken(const std::string& tokenStr) {
 
 TokenType Tokenizer::determineDesignEntityToken(const std::string& tokenStr) {
     if (std::regex_match(tokenStr, std::regex("^(stmt|read|print|while|if|assign|variable|constant|procedure|call)$"))) {
-        if (!tokens.empty() && (isSynonym() || tokens.back().getType() == TokenType::SelectKeyword)) {
+        if (!tokens.empty() && (isSynonym() || tokens.back().getType() == TokenType::SelectKeyword))  {
             return TokenType::IDENT;
         } else {
             return TokenType::DesignEntity;
@@ -198,5 +199,7 @@ bool Tokenizer::isSynonym() {
         || tokens.back().getType() == TokenType::Comma 
         || (tokens.back().getType() == TokenType::PatternKeyword && nextToken == "(")
         || tokens.back().getType() == TokenType::LeftAngleBracket
-        || (tokens.back().getType() == TokenType::AndKeyword && tokens.back().getValue() == "pattern" && nextToken == "(");
+        || (tokens.back().getType() == TokenType::AndKeyword && (tokens.back().getValue() == "pattern" && nextToken == "("))
+        || (tokens.back().getType() == TokenType::AndKeyword && tokens.back().getValue() == "with" && nextToken == "value")
+        || (tokens.back().getType() == TokenType::WithKeyword && nextToken == ".");
 }
