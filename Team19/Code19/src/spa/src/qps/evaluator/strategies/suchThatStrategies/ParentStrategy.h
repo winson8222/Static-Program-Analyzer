@@ -1,7 +1,7 @@
 #pragma once
 
 #include <iostream>
-#include "StmtStmtStrategy.h"
+#include "qps/evaluator/strategies/suchThatStrategies/StmtStmtStrategy.h"
 
 using namespace std;
 

@@ -1,6 +1,5 @@
-#include "qps/evaluator/strategies/suchThatStrategies/StmtStmtStrategy.h"
-
-using namespace std;
+#include "StmtStmtStrategy.h"
+#include <string>
 
 bool StmtStmtStrategy::isBothParamsInteger(const Token& firstParam, const Token& secondParam) {
     // Implementation to check if both parameters are integers
@@ -25,15 +24,14 @@ void StmtStmtStrategy::setTrueIfRelationShipExist(const Token &firstParam, const
             resultTable->setAsTruthTable();
         }
     }
-
 }
 
 void StmtStmtStrategy::insertRowsWithTwoCols(const Token &firstParam, const Token &secondParam,std::shared_ptr<IRelationshipReader<int ,int>> reader,
                            const ParsingResult &parsingResult, std::shared_ptr<ResultTable> resultTable, PKBReaderManager &pkbReaderManager) {
-    string firstParamValue = firstParam.getValue();
-    string secondParamValue = secondParam.getValue();
-    const string& firstStatementType = parsingResult.getRequiredSynonymType(firstParamValue);
-    const string& secondStatementType = parsingResult.getRequiredSynonymType(secondParamValue);
+    std::string firstParamValue = firstParam.getValue();
+    std::string secondParamValue = secondParam.getValue();
+    const std::string& firstStatementType = parsingResult.getRequiredSynonymType(firstParamValue);
+    const std::string& secondStatementType = parsingResult.getRequiredSynonymType(secondParamValue);
     // Retrieve the relationships
     unordered_set<int> filteredParents;
     const unordered_set<int>& parents = reader->getKeys();
@@ -47,10 +45,9 @@ void StmtStmtStrategy::insertRowsWithTwoCols(const Token &firstParam, const Toke
         filteredChildren = getFilteredStmtsNumByType(children, secondStatementType, pkbReaderManager);
         // For each stmt1, iterate through all its postFollows
         for (int stmt2 : filteredChildren) {
-            pair<string, string> col1Pair = make_pair<string, string>(firstParam.getValue(), to_string(stmt1));
-            pair<string, string> col2Pair = make_pair<string, string>(secondParam.getValue(), to_string(stmt2));
+            pair<std::string, std::string> col1Pair = make_pair<std::string, std::string>(firstParam.getValue(), std::to_string(stmt1));
+            pair<std::string, std::string> col2Pair = make_pair<std::string, std::string>(secondParam.getValue(), std::to_string(stmt2));
             insertRowToTable(col1Pair, col2Pair, resultTable);
-
         }
     }
 }

@@ -1,4 +1,4 @@
-#include "qps/evaluator/strategies/suchThatStrategies/ParentStrategy.h"
+#include "ParentStrategy.h"
 #include "qps/parser/Token.h" // Include the Token header
 
 using namespace std;

@@ -1,4 +1,4 @@
-#include "qps/evaluator/strategies/suchThatStrategies/StmtEntStrategy.h"
+#include "StmtEntStrategy.h"
 
 void StmtEntStrategy::setTrueIfRelationShipExist(const Token &firstParam, const Token &secondParam,
                                                   const std::shared_ptr<IRelationshipReader<int, string>> &reader,

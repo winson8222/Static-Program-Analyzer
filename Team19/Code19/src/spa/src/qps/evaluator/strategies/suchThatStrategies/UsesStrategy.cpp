@@ -1,8 +1,8 @@
-#include "qps/evaluator/strategies/suchThatStrategies/UsesStrategy.h"
+#include "UsesStrategy.h"
 
 std::shared_ptr<ResultTable> UsesStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause)
 {
-    auto resultTable = make_shared<ResultTable>();
+    auto resultTable = std::make_shared<ResultTable>();
     this->usesSReader = pkbReaderManager.getUsesSReader();
 
     const SuchThatClause* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
@@ -22,12 +22,13 @@ std::shared_ptr<ResultTable> UsesStrategy::evaluateQuery(PKBReaderManager& pkbRe
     return resultTable;
 }
 
-void UsesStrategy::processBothSynonyms(const Token& firstParam, const Token& secondParam, const ParsingResult& parsingResult
-        ,std::shared_ptr<ResultTable> resultTable,PKBReaderManager& pkbReaderManager) {
+void UsesStrategy::processBothSynonyms(const Token& firstParam, const Token& secondParam, const ParsingResult& parsingResult, 
+    std::shared_ptr<ResultTable> resultTable, PKBReaderManager& pkbReaderManager) 
+{
     // get all statements that modifies a variable
     std::unordered_set<int> allModifiesStmts = usesSReader->getAllStmtsThatUseAnyVariable();
     // check what type of statement is the firstParam
-    string statementType = parsingResult.getDeclaredSynonym(firstParam.getValue());
+    std::string statementType = parsingResult.getDeclaredSynonym(firstParam.getValue());
     // filter the statements that modifies the variable based on the stmt type
     std::unordered_set<int> allFilteredModifiesStmts;
     allFilteredModifiesStmts = getFilteredStmtsNumByType(allModifiesStmts,statementType, pkbReaderManager);
@@ -52,12 +53,12 @@ void UsesStrategy::processFirstParam(const Token& firstParam, const Token& secon
     if (secondParam.getType() == TokenType::Wildcard) {
         allModifiesStmts = usesSReader->getAllStmtsThatUseAnyVariable();
     } else {
-        string unquotedValue = extractQuotedExpression(secondParam);
+        std::string unquotedValue = extractQuotedExpression(secondParam);
         allModifiesStmts = usesSReader->getAllStmtsThatUseVariable(unquotedValue);
     }
 
     // check what type of statement is the firstParam
-    string statementType = parsingResult.getDeclaredSynonym(firstParam.getValue());
+    std::string statementType = parsingResult.getDeclaredSynonym(firstParam.getValue());
     // filter the statements that modifies the variable based on the stmt type
     std::unordered_set<int> allFilteredModifiesStmts;
     allFilteredModifiesStmts = getFilteredStmtsNumByType(allModifiesStmts,statementType, pkbReaderManager);

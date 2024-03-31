@@ -10,7 +10,7 @@ void ParsingResult::addDeclaredSynonym(const std::string& key, const std::string
     declaredSynonyms[key] = value;
 }
 
-void ParsingResult::setRequiredSynonym(const string& synonym) {
+void ParsingResult::setRequiredSynonym(const std::string& synonym) {
     requiredSynonyms.push_back(synonym);
 }
 
@@ -27,24 +27,24 @@ void ParsingResult::addWithClause(const WithClause& clause) {
     withClauses.push_back(clause);
 }
 
-const vector<SuchThatClause>& ParsingResult::getSuchThatClauses() const {
+const std::vector<SuchThatClause>& ParsingResult::getSuchThatClauses() const {
     return suchThatClauses;
 }
 
-const vector<PatternClause>& ParsingResult::getPatternClauses() const {
+const std::vector<PatternClause>& ParsingResult::getPatternClauses() const {
     return patternClauses;
 }
 
-const vector<WithClause>& ParsingResult::getWithClauses() const {
+const std::vector<WithClause>& ParsingResult::getWithClauses() const {
     return withClauses;
 }
 
 // Getters
-const unordered_map<string, string>& ParsingResult::getDeclaredSynonyms() const {
+const unordered_map<std::string, std::string>& ParsingResult::getDeclaredSynonyms() const {
     return declaredSynonyms;
 }
 
-const string& ParsingResult::getDeclaredSynonym(const string& key) const {
+const std::string& ParsingResult::getDeclaredSynonym(const std::string& key) const {
     auto it = declaredSynonyms.find(key);
     if (it != declaredSynonyms.end()) {
         return it->second;
@@ -54,11 +54,11 @@ const string& ParsingResult::getDeclaredSynonym(const string& key) const {
 }
 
 
-const vector<string>& ParsingResult::getRequiredSynonyms() const {
+const std::vector<std::string>& ParsingResult::getRequiredSynonyms() const {
     return requiredSynonyms;
 }
 
-const string& ParsingResult::getRequiredSynonymType(const string& requiredSynonym) const {
+const std::string& ParsingResult::getRequiredSynonymType(const std::string& requiredSynonym) const {
     if (ParsingResult::isAttrRef(requiredSynonym)) {
         return getDeclaredSynonym(getSynFromAttrRef(requiredSynonym));
     }
@@ -72,27 +72,27 @@ bool ParsingResult::isQueryValid() {
 }
 
 // get the error message
-string ParsingResult::getErrorMessage() {
+std::string ParsingResult::getErrorMessage() {
     return errorMessage;
 }
 
 // set the error message
-void ParsingResult::setErrorMessage(const string& message) {
+void ParsingResult::setErrorMessage(const std::string& message) {
     if (errorMessage.empty()) {
         errorMessage = message;
     }
 
 }
 
-bool ParsingResult::isSynonymDeclared(const string& synonym) {
+bool ParsingResult::isSynonymDeclared(const std::string& synonym) {
     return declaredSynonyms.find(synonym) != declaredSynonyms.end();
 }
 
-const string& ParsingResult::getPatternClauseType(const PatternClause &clause) const {
+const std::string& ParsingResult::getPatternClauseType(const PatternClause &clause) const {
     return getDeclaredSynonym(clause.getRelationship().getValue());
 }
 
-const bool ParsingResult::isAttrRef(const string &attrRef) {
+const bool ParsingResult::isAttrRef(const std::string &attrRef) {
     // check if it has .
     size_t pos = attrRef.find('.');
     return pos != std::string::npos;
@@ -100,7 +100,7 @@ const bool ParsingResult::isAttrRef(const string &attrRef) {
 }
 
 
-string ParsingResult::getSynFromAttrRef(const string &attrRef) {
+std::string ParsingResult::getSynFromAttrRef(const std::string &attrRef) {
     size_t pos = attrRef.find('.');
     if (pos != std::string::npos) { // Check if the period is found
         return attrRef.substr(0, pos); // Extract substring from the beginning to the position of the period
@@ -108,11 +108,10 @@ string ParsingResult::getSynFromAttrRef(const string &attrRef) {
     return "";
 }
 
-string ParsingResult::getAttrFromAttrRef(const string &attrRef) {
+std::string ParsingResult::getAttrFromAttrRef(const std::string &attrRef) {
     size_t pos = attrRef.find('.');
     if (pos != std::string::npos) { // Check if the period is found
         return attrRef.substr(pos + 1); // Extract substring from just after the position of the period to the end
     }
     return "";
 }
-

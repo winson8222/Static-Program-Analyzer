@@ -4,8 +4,6 @@
 #include <vector>
 #include <unordered_set>
 
-using namespace std;
-
 // Define an enumeration class TokenType.
 // This enum class lists different types of tokens that can be recognized.
 enum class TokenType {
@@ -64,7 +62,7 @@ class Token {
 public:
     Token() = default;  // Default constructor
     // Constructor: creates a Token with a given type and value.
-    Token(TokenType type, string value);
+    Token(TokenType type, std::string value);
 
     // Virtual Destructor: properly destroys Token objects.
     virtual ~Token() = default;
@@ -74,11 +72,11 @@ public:
     TokenType getType() const;
 
     // getValue: returns the string value of the token.
-    string getValue() const;
+    std::string getValue() const;
 
     void setType(TokenType type);
 
 private:
     TokenType type;    // Stores the type of the token
-    string value; // Stores the string value of the token
+    std::string value; // Stores the string value of the token
 };

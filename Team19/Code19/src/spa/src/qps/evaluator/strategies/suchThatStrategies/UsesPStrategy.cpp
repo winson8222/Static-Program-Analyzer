@@ -1,13 +1,12 @@
-#pragma once
-
-#include "qps/evaluator/strategies/suchThatStrategies/UsesPStrategy.h"
+#include "UsesPStrategy.h"
+#include <string>
+#include <memory>
+#include <unordered_set>
 
 std::shared_ptr<ResultTable> UsesPStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause)
 {
-    auto resultTable = make_shared<ResultTable>();
+    auto resultTable = std::make_shared<ResultTable>();
     this->usesPReader = pkbReaderManager.getUsesPReader();
-
-
 
     const SuchThatClause* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
     this->firstParam = suchClause->getFirstParam();
@@ -29,8 +28,8 @@ std::shared_ptr<ResultTable> UsesPStrategy::evaluateQuery(PKBReaderManager& pkbR
 void UsesPStrategy::processBothSynonyms(const ParsingResult &parsingResult,
                                             std::shared_ptr<ResultTable> resultTable) {
     // get the types of both synonyms
-    string firstParamType = parsingResult.getDeclaredSynonym(this->firstParam.getValue());
-    string secondParamType = parsingResult.getDeclaredSynonym(secondParam.getValue());
+    std::string firstParamType = parsingResult.getDeclaredSynonym(this->firstParam.getValue());
+    std::string secondParamType = parsingResult.getDeclaredSynonym(secondParam.getValue());
     insertColsToTable(this->firstParam, secondParam, resultTable);
 
     if (firstParamType == "procedure") {
@@ -43,16 +42,15 @@ void UsesPStrategy::processBothSynonyms(const ParsingResult &parsingResult,
             insertRowsWithMatchedResults(this->firstParam, secondParam, proc, allVars, resultTable);
         }
     }
-
 }
 
 
 void UsesPStrategy::processFirstParam(const ParsingResult &parsingResult, std::shared_ptr<ResultTable> resultTable) {
-    string colName = this->firstParam.getValue();
+    std::string colName = this->firstParam.getValue();
     insertSingleColToTable(this->firstParam, resultTable);
     std::unordered_set<std::string> allProcs;
     if (secondParam.getType() == TokenType::QuoutIDENT) {
-        string secondParamValue = extractQuotedExpression(secondParam);
+        std::string secondParamValue = extractQuotedExpression(secondParam);
         allProcs = this->usesPReader->getAllProcsThatUseVariable(secondParamValue);
 
     } else {
@@ -64,11 +62,11 @@ void UsesPStrategy::processFirstParam(const ParsingResult &parsingResult, std::s
 }
 
 void UsesPStrategy::processSecondParam(const ParsingResult &parsingResult, std::shared_ptr<ResultTable> resultTable) {
-    string colName = secondParam.getValue();
+    std::string colName = secondParam.getValue();
     insertSingleColToTable(secondParam, resultTable);
     std::unordered_set<std::string> allVars;
     if (this->firstParam.getType() == TokenType::QuoutIDENT) {
-        string firstParamValue = extractQuotedExpression(this->firstParam);
+        std::string firstParamValue = extractQuotedExpression(this->firstParam);
         allVars = this->usesPReader->getAllVariablesUsedByProc(firstParamValue);
 
     } else {
