@@ -180,7 +180,70 @@ public:
             }}
 
     };
-    string getAttrRefType(const Token& token);
+
+    const std::map<std::string, std::function<std::unordered_set<std::string>(std::string, PKBReaderManager&, const std::shared_ptr<ResultTable>&)>> attrToAllEntitiesMap = {
+            {"stmt.stmt#",
+             [this](std::string synonym, PKBReaderManager &pkbReaderManager, const std::shared_ptr<ResultTable> &resultTable) {
+                 std::shared_ptr<StatementReader> statementReader = pkbReaderManager.getStatementReader();
+                 return retrieveIntEntities(synonym, resultTable, statementReader);
+             }},
+
+            {"read.varName",
+             [this](std::string synonym, PKBReaderManager &pkbReaderManager, const std::shared_ptr<ResultTable> &resultTable) {
+                 std::shared_ptr<ReadVarNameReader> readerVarNameReader = pkbReaderManager.getReadVarNameReader();
+                 return retrieveIntStringLinks(synonym, resultTable, readerVarNameReader);
+             }},
+            {"read.stmt#",
+             [this](std::string synonym, PKBReaderManager &pkbReaderManager, const std::shared_ptr<ResultTable> &resultTable) {
+                 std::shared_ptr<ReadReader> readReader = pkbReaderManager.getReadReader();
+                 return retrieveIntEntities(synonym, resultTable, readReader);
+             }},
+            {"print.varName",
+             [this](std::string synonym, PKBReaderManager &pkbReaderManager, const std::shared_ptr<ResultTable> &resultTable) {
+                 std::shared_ptr<PrintVarNameReader> printVarNameReader = pkbReaderManager.getPrintVarNameReader();
+                 return retrieveIntStringLinks(synonym, resultTable, printVarNameReader);
+             }},
+            {"print.stmt#",
+             [this](std::string synonym, PKBReaderManager &pkbReaderManager, const std::shared_ptr<ResultTable> &resultTable) {
+                 std::shared_ptr<PrintReader> printReader = pkbReaderManager.getPrintReader();
+                 return retrieveIntEntities(synonym, resultTable, printReader);
+             }
+            },
+            {"call.procName", [this](std::string synonym, PKBReaderManager &pkbReaderManager, const std::shared_ptr<ResultTable> &resultTable) {
+                std::shared_ptr<CallProcNameReader> callProcNameReader = pkbReaderManager.getCallProcNameReader();
+                return retrieveIntStringLinks(synonym, resultTable, callProcNameReader);
+            }},
+            {"call.stmt#", [this](std::string synonym, PKBReaderManager &pkbReaderManager, const std::shared_ptr<ResultTable> &resultTable) {
+                std::shared_ptr<CallReader> callReader = pkbReaderManager.getCallReader();
+                return retrieveIntEntities(synonym, resultTable, callReader);
+            }},
+            {"while.stmt#", [this](std::string synonym, PKBReaderManager &pkbReaderManager, const std::shared_ptr<ResultTable> &resultTable) {
+                std::shared_ptr<WhileReader> whileReader = pkbReaderManager.getWhileReader();
+                return retrieveIntEntities(synonym, resultTable, whileReader);
+            }},
+            {"if.stmt#", [this](std::string synonym, PKBReaderManager &pkbReaderManager, const std::shared_ptr<ResultTable> &resultTable) {
+                std::shared_ptr<IfReader> ifReader = pkbReaderManager.getIfReader();
+                return retrieveIntEntities(synonym, resultTable, ifReader);
+            }},
+            {"assign.stmt#", [this](std::string synonym, PKBReaderManager &pkbReaderManager, const std::shared_ptr<ResultTable> &resultTable) {
+                std::shared_ptr<AssignReader> assignReader = pkbReaderManager.getAssignReader();
+                return retrieveIntEntities(synonym, resultTable, assignReader);
+            }},
+            {"variable.varName", [this](std::string synonym, PKBReaderManager &pkbReaderManager, const std::shared_ptr<ResultTable> &resultTable) {
+                std::shared_ptr<VariableReader> variableReader = pkbReaderManager.getVariableReader();
+                return retrieveStringEntities(synonym, resultTable, variableReader);
+            }},
+            {"constant.value", [this](std::string synonym, PKBReaderManager &pkbReaderManager, const std::shared_ptr<ResultTable> &resultTable) {
+                std::shared_ptr<ConstantReader> constantReader = pkbReaderManager.getConstantReader();
+                return retrieveIntEntities(synonym, resultTable, constantReader);
+            }},
+            {"procedure.procName", [this](std::string synonym, PKBReaderManager &pkbReaderManager, const std::shared_ptr<ResultTable> &resultTable) {
+                std::shared_ptr<ProcedureReader> procedureReader = pkbReaderManager.getProcedureReader();
+                return retrieveStringEntities(synonym, resultTable, procedureReader);
+            }},
+
+    };
+    std::string getAttrRefType(const Token& token);
 
     void populateWithIntersection(const std::vector<std::string>& intersection, PKBReaderManager& pkbReaderManager, const std::shared_ptr<ResultTable>& resultTable,
                                                 const Token& firstParam, const Token& secondParam);
