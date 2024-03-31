@@ -23,8 +23,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/PatternStrategy") {
     statementWriter->insertStatement(4);
     statementWriter->insertStatement(6); // Adding statement 6 as expected
 
-    string minus = "minus";
-    string print = "print";
+    std::string minus = "minus";
+    std::string print = "print";
     variableWriter->insertVariable(minus);
     variableWriter->insertVariable(print);
 
@@ -52,9 +52,9 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/PatternStrategy") {
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> res = evaluator.evaluateQuery();
+        std::unordered_set<std::string> res = evaluator.evaluateQuery();
 
-        REQUIRE(res == std::unordered_set<string>{"6"}); // Statement 6 expected to match the pattern
+        REQUIRE(res == std::unordered_set<std::string>{"6"}); // Statement 6 expected to match the pattern
     }
 
     SECTION("QueryParser correctly parses Pattern with expressionSpec") {

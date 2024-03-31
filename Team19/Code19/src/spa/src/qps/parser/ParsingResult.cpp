@@ -51,7 +51,8 @@ const std::string& ParsingResult::getDeclaredSynonym(const std::string& key) con
         return it->second;
     }
     
-    return ""; 
+    std::string emptyString = "";
+    return emptyString; 
 }
 
 
