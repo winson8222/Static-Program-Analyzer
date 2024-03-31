@@ -547,7 +547,7 @@ QueryParser parser(tokens);
 auto parsingResult = parser.parse();
 QueryEvaluator evaluator(pkbReaderManager, parsingResult);
 std::unordered_set<string> res = evaluator.evaluateQuery();
-REQUIRE(res == std::unordered_set<string>{"3 4", "2 4", "1 3", "1 4", "2 3", "1 2"});
+REQUIRE(res == std::unordered_set<string>{"3 4", "2 4", "1 3", "1 4", "2 3", "1 2", "1 1", "2 2"});
 }
 
 

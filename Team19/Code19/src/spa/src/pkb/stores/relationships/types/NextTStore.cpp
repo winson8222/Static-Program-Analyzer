@@ -3,11 +3,14 @@
 // ai-gen start(copilot, 2, e)
 // prompt: used copilot
 
-NextTStore::NextTStore(std::shared_ptr<NextStore> nextStore) :nextStore(std::move(nextStore)) {}
+NextTStore::NextTStore(std::shared_ptr<NextStore> nextStore, std::shared_ptr<WhileStore> whileStore) :nextStore(std::move(nextStore)), whileStore(std::move(whileStore)) {}
 
 std::unordered_set<int> NextTStore::populateAndGetPreviousT(int stmt, std::unordered_set<int> visited) {
 	if (hasPreviousTPopulated(stmt)) {
 		return NextTStore::getRelationshipsByValue(stmt);
+	}
+	if (whileStore->contains(stmt)) {
+		addRelationship(stmt, stmt);
 	}
 	std::unordered_set<int> result;
 	std::unordered_set<int> previousSet = nextStore->getRelationshipsByValue(stmt);
@@ -25,6 +28,9 @@ std::unordered_set<int> NextTStore::populateAndGetPreviousT(int stmt, std::unord
 std::unordered_set<int> NextTStore::populateAndGetNextT(int stmt, std::unordered_set<int> visited) {
 	if (hasNextTPopulated(stmt)) {
 		return NextTStore::getRelationshipsByKey(stmt);
+	}
+	if (whileStore->contains(stmt)) {
+		addRelationship(stmt, stmt);
 	}
 	std::unordered_set<int> result;
 	std::unordered_set<int> nextSet = nextStore->getRelationshipsByKey(stmt);
