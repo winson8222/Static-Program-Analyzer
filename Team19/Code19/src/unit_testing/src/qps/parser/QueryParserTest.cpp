@@ -1694,5 +1694,15 @@ TEST_CASE("use not") {
 
 }
 
+TEST_CASE("With error/no error handling") {
+
+    std::string query = "read r; Select r with call.varName = 1";
+    Tokenizer tokenizer(query);
+    vector<Token> tokens = tokenizer.tokenize();
+    QueryParser queryParser(tokens);
+    ParsingResult parsingResult = queryParser.parse();
+    REQUIRE(parsingResult.getErrorMessage() == "SemanticError");
+}
+
 
 
