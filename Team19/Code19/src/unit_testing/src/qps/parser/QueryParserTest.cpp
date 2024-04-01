@@ -1704,5 +1704,16 @@ TEST_CASE("With error/no error handling") {
     REQUIRE(parsingResult.getErrorMessage() == "SemanticError");
 }
 
+TEST_CASE("Two Declarations") {
+
+    std::string query = "stmt s1; stmt and; Select s1 such that Next(s1, and) and Follows*(s1, and)";
+    Tokenizer tokenizer(query);
+    vector<Token> tokens = tokenizer.tokenize();
+    QueryParser queryParser(tokens);
+    ParsingResult parsingResult = queryParser.parse();
+    REQUIRE(parsingResult.getErrorMessage() == "SemanticError");
+}
+
+
 
 
