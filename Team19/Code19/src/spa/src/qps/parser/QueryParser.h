@@ -24,10 +24,10 @@ public:
     ParsingResult getParsingResult();  // Method to retrieve the result
 private:
     bool semanticError;
-    void checkValidOperand(const string& operand);
-    void checkBracketsBalanced(const string& expr);
-    void checkExprSyntax(const string& expr);
-    void checkValidExpr(const string& expr);
+    void checkValidOperand(const std::string& operand);
+    void checkBracketsBalanced(const std::string& expr);
+    void checkExprSyntax(const std::string& expr);
+    void checkValidExpr(const std::string& expr);
     void throwSyntaxError();
     ParsingResult makeResult(ParsingResult parsingResult);
 	void setSemanticError();
@@ -44,7 +44,7 @@ private:
     };
 
 
-    const std::unordered_map<string, std::unordered_set<std::string>> validAttrMap = {
+    const std::unordered_map<std::string, std::unordered_set<std::string>> validAttrMap = {
             {"stmt", {"stmt#"}},
             {"assign", {"stmt#"}},
             {"while", {"stmt#"}},
@@ -57,7 +57,7 @@ private:
             {"constant", {"value"}}
     };
 
-    const std::unordered_map<string, TokenType> attrToTypeMap = {
+    const std::unordered_map<std::string, TokenType> attrToTypeMap = {
             {"stmt#", TokenType::INTEGER},
             {"varName", TokenType::QuoutIDENT},
             {"procName", TokenType::QuoutIDENT},
@@ -121,11 +121,11 @@ private:
     void parseEntSynonym();
     void parseStmtSynonyms();
     void parsePatternSynonym();
-    void ensureSynonymType(string synType);
+    void ensureSynonymType(std::string synType);
 
 
     // helper function to replace concatenation of tokens
-    string concatTokens(size_t start, size_t end);
+    std::string concatTokens(size_t start, size_t end);
 
     void ensureToken(TokenType expected);
     bool checkValidStmtNum();

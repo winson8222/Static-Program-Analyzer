@@ -90,7 +90,7 @@ void QueryParser::parseDeclarations() {
     int numberOfDeclarations = 0;
     while (!match(TokenType::SelectKeyword)) {
         parseDesignEntity();
-        string assignmentType = currentToken().getValue();
+        std::string assignmentType = currentToken().getValue();
         advanceToken();
 
         parseSynonym();
@@ -158,7 +158,7 @@ void QueryParser::parseSelectClause() {
                 ensureToken(TokenType::IDENT);
             }
             
-            string concatenatedTokens = concatTokens(startIndex, currentTokenIndex);
+            std::string concatenatedTokens = concatTokens(startIndex, currentTokenIndex);
             parsingResult.setRequiredSynonym(concatenatedTokens);
             numberOfSynonymsSelected++;
             if (parsingResult.getDeclaredSynonym(currentSuchThatToken.getValue()).empty()) {
@@ -187,7 +187,7 @@ void QueryParser::parseSelectClause() {
                 parsingResult.setBooleanSelection();
             }
         }
-        string concatenatedTokens = concatTokens(startIndex, currentTokenIndex);
+        std::string concatenatedTokens = concatTokens(startIndex, currentTokenIndex);
         parsingResult.setRequiredSynonym(concatenatedTokens);
         if (parsingResult.getDeclaredSynonym(currentSuchThatToken.getValue()).empty() && currentSuchThatToken.getValue() != "BOOLEAN") {
             setSemanticError();
@@ -456,15 +456,15 @@ void QueryParser::parsePatternClause() {
 
 
 
-    string patternType = parsingResult.getPatternClauseType(clause);
+    std::string patternType = parsingResult.getPatternClauseType(clause);
     ensureCorrectPatternParams(clause);
 }
 
 void QueryParser::ensureCorrectPatternParams(PatternClause &clause) {
-    string patternType = parsingResult.getPatternClauseType(clause);
+    std::string patternType = parsingResult.getPatternClauseType(clause);
     TokenType secondParamType = clause.getSecondParam().getType();
     TokenType thirdParamType = clause.getThirdParam().getType();
-    string thirdParamValue = clause.getThirdParam().getValue();
+    std::string thirdParamValue = clause.getThirdParam().getValue();
     if (patternType == "if") {
         if (secondParamType != TokenType::Wildcard || thirdParamType != TokenType::Wildcard) {
             setSemanticError();
@@ -536,7 +536,7 @@ void QueryParser::checkExprSyntax(const std::string &expr) {
     bool prevOperand = false;
     bool prevOperator = false;
     bool prevRightBracket = false;
-    string operand;
+    std::string operand;
     for (char c : expr) {
         if (c == '(') {
             if (prevOperand && !operand.empty()) {
@@ -602,7 +602,7 @@ void QueryParser::checkValidExpr(const std::string& expr) {
 // Parses the expression specification in the query.
 // Handles different forms of expressions like quoted constants, wildcards, or quoted expressions.
 void QueryParser::parseExpressionSpec(PatternClause &clause) {
-    string expr;
+    std::string expr;
     if (match(TokenType::QuoutConst) || match(TokenType::QuoutIDENT) || match(TokenType::ExpressionSpec)) {
         expr = currentToken().getValue();
         checkValidExpr(expr);
@@ -819,11 +819,8 @@ void QueryParser::ensureNextBlank() {
 }
 
 bool QueryParser::checkValidStmtNum() {
-    string stringValue = currentToken().getValue();
+    std::string stringValue = currentToken().getValue();
     if (stoi(stringValue) <= 0) {
-        if (stoi(stringValue) < 0) {
-            throwSyntaxError();
-        }
         return false;
     }
     return true;
@@ -842,7 +839,7 @@ void QueryParser::parseWithClause() {
 
     size_t startIndex = currentTokenIndex;
     TokenType firstRefType = parseRef();
-    string concatenatedTokens = concatTokens(startIndex, currentTokenIndex);
+    std::string concatenatedTokens = concatTokens(startIndex, currentTokenIndex);
     Token firstParam = Token(TokenType::Ref, concatenatedTokens);
     clause.setFirstParam(firstParam);
 
@@ -901,9 +898,9 @@ void QueryParser::parseAttr() {
 
 bool QueryParser::checkValidAttr(Token synToken) {
     ensureToken(TokenType::AttrName);
-    string synValue = synToken.getValue();
-    string synType = parsingResult.getRequiredSynonymType(synValue);
-    string attrValue = currentToken().getValue();
+    std::string synValue = synToken.getValue();
+    std::string synType = parsingResult.getRequiredSynonymType(synValue);
+    std::string attrValue = currentToken().getValue();
     // find from validAttrMap if it of the right type
     auto validAttrIt = validAttrMap.find(synType);
     if (validAttrIt != validAttrMap.end()) {
@@ -953,8 +950,8 @@ bool QueryParser::checkIfPatternSyn() {
     return patternTypes.find(currentValue) != patternTypes.end();
 }
 
-string QueryParser::concatTokens(size_t start, size_t end) {
-    string concatenatedTokens;
+std::string QueryParser::concatTokens(size_t start, size_t end) {
+    std::string concatenatedTokens;
     for (size_t i = start; i <= end; ++i) {
         concatenatedTokens += tokens[i].getValue();
     }
