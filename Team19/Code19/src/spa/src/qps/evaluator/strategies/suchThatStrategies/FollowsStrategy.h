@@ -3,8 +3,9 @@
 #include <string>
 #include <unordered_set>
 #include <iostream>
-#include <memory> // For std::shared_ptr
+#include <memory> 
 #include "qps/evaluator/strategies/suchThatStrategies/StmtStmtStrategy.h"
+#include "qps/parser/Token.h" 
 
 /**
  * @file FollowsStrategy.h
@@ -21,8 +22,7 @@ private:
     std::shared_ptr<StatementReader> statementReader; ///< Reader to access statement-related information.
     Token firstParam;
     Token secondParam;
-    string variant;
-
+    std::string variant;
 
 public:
     /**

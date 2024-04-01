@@ -1,5 +1,6 @@
-#include "qps/parser/Tokenizer.h"
-#include <algorithm> // For std::remove
+#include "Tokenizer.h"
+
+#include <memory>
 #include <string>
 
 // Initializes the Tokenizer with a given query string.

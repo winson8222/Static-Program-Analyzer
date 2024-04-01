@@ -1,13 +1,16 @@
 #include "NextTStore.h"
-
+#include <iostream>
 // ai-gen start(copilot, 2, e)
 // prompt: used copilot
 
-NextTStore::NextTStore(std::shared_ptr<NextStore> nextStore) :nextStore(std::move(nextStore)) {}
+NextTStore::NextTStore(std::shared_ptr<NextStore> nextStore, std::shared_ptr<WhileStore> whileStore, std::shared_ptr<ParentTStore> parentTStore) :nextStore(std::move(nextStore)), whileStore(std::move(whileStore)), parentTStore(std::move(parentTStore)) {}
 
 std::unordered_set<int> NextTStore::populateAndGetPreviousT(int stmt, std::unordered_set<int> visited) {
 	if (hasPreviousTPopulated(stmt)) {
 		return NextTStore::getRelationshipsByValue(stmt);
+	}
+	if (whileStore->contains(stmt)) {
+		addRelationship(stmt, stmt);
 	}
 	std::unordered_set<int> result;
 	std::unordered_set<int> previousSet = nextStore->getRelationshipsByValue(stmt);
@@ -26,7 +29,12 @@ std::unordered_set<int> NextTStore::populateAndGetNextT(int stmt, std::unordered
 	if (hasNextTPopulated(stmt)) {
 		return NextTStore::getRelationshipsByKey(stmt);
 	}
+
 	std::unordered_set<int> result;
+	if (whileStore->contains(stmt)) {
+		addRelationship(stmt, stmt);
+		result.insert(stmt);
+	}
 	std::unordered_set<int> nextSet = nextStore->getRelationshipsByKey(stmt);
 	visited.insert(stmt);
 	for (int next : nextSet) {
@@ -77,6 +85,7 @@ std::unordered_set<int> NextTStore::populateAndGetAllNextT() {
 			continue;
 		}
 		std::unordered_set<int> nextTSet = NextTStore::populateAndGetNextT(i, std::unordered_set<int>{});
+
 		for (int j : nextTSet) {
 			result.insert(j);
 		}
@@ -88,6 +97,13 @@ std::unordered_set<int> NextTStore::populateAndGetAllNextT() {
 void NextTStore::populateAllNextT() {
     for (int i : nextStore->getKeys()) {
         if (NextTStore::hasNextTPopulated(i)) continue;
+		if (whileStore->contains(i)) {
+			addRelationship(i, i);
+			std::unordered_set<int> whileChildren = parentTStore->getRelationshipsByKey(i);
+			for (int child : whileChildren) {
+				addRelationship(child, child);
+			}
+		}
         NextTStore::populateNextT(i, {});
         NextTStore::logNextTAdded(i);
     }

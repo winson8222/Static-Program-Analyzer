@@ -101,7 +101,7 @@ public:
         callsStore = std::make_shared<CallsStore>();
         callsTStore = std::make_shared<CallsTStore>();
         nextStore = std::make_shared<NextStore>();
-        nextTStore = std::make_shared<NextTStore>(nextStore);
+        nextTStore = std::make_shared<NextTStore>(nextStore, whileStore, parentTStore);
         affectsStore = std::make_shared<AffectsStore>(assignStore, nextStore, usesSStore, modifiesSStore, whileStore, ifStore);
 
         // Initialize all pattern stores
