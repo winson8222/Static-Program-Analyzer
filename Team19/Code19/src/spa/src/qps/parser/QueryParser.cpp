@@ -142,6 +142,7 @@ void QueryParser::parseSelectClause() {
     advanceToken();
     if (match(TokenType::LeftAngleBracket)) {
         advanceToken();
+        int numberOfSynonymsSelected = 0;
         while (!match(TokenType::RightAngleBracket)) {
             currentSuchThatToken = currentToken();
             size_t startIndex = currentTokenIndex;
@@ -155,6 +156,7 @@ void QueryParser::parseSelectClause() {
             
             string concatenatedTokens = concatTokens(startIndex, currentTokenIndex);
             parsingResult.setRequiredSynonym(concatenatedTokens);
+            numberOfSynonymsSelected++;
             if (parsingResult.getDeclaredSynonym(currentSuchThatToken.getValue()).empty()) {
                 setSemanticError();
             }
@@ -164,6 +166,9 @@ void QueryParser::parseSelectClause() {
             }
             ensureToken(TokenType::Comma);
             advanceToken();
+        }
+        if (numberOfSynonymsSelected == 0) {
+            throwSyntaxError();
         }
     }
     else {
