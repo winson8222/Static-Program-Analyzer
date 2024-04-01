@@ -63,7 +63,7 @@ jobs:
               Write-Output "No 'using namespace std;' statements found."
           }
           exit $EXIT_CODE
-      shell: bash
+      shell: powershell 
 
     # Upload cpplint results file as artifact
     - name: Upload cpplint Results

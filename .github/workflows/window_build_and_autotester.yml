@@ -54,7 +54,6 @@ jobs:
       # Run autotester tests for Milestone 1 
       - name: Run Autotester Tests in Milestone 1
         shell: pwsh
-        continue-on-error: true
         working-directory: ${{ env.AUTOTESTER_M1_DIR }}
         run: |
             Write-Host "[System Test] Running all tests for Milestone 1"
@@ -65,7 +64,7 @@ jobs:
                 Write-Host "Run test"
                 $test_name = ($file.Name -split "_source.txt")[0]  # Extract test name from file name
                 Write-Host "[System Test] Running Test: $test_name"
-                $commandToRun = { & ${{ env.TEST_DIR }}/${{ env.BUILD_TYPE }}/autotester.exe "source/${test_name}_source.txt" "queries/${test_name}_queries.txt" "outputs/${test_name}_output.xml" > "logs/log_${test_name}.txt" }
+                & ${{ env.TEST_DIR }}/${{ env.BUILD_TYPE }}/autotester.exe "source/${test_name}_source.txt" "queries/${test_name}_queries.txt" "outputs/${test_name}_output.xml" > "logs/log_${test_name}.txt"
     
                 if ($LASTEXITCODE -ne 0) {
                     Write-Host "[System Test] Test $test_name cannot compile"
@@ -79,14 +78,6 @@ jobs:
                     $QUERIES = ((Get-Content $FILENAME) -match '</query>').Count
                     $PASSES = ((Get-Content $FILENAME) -match '<passed/>').Count
                     $FAILS = ((Get-Content $FILENAME) -match '</failed>').Count
-                    # Measure the execution time of the command
-                    $executionTime = Measure-Command -Expression $commandToRun
-
-                    # Convert execution time to a more readable format (e.g., seconds)
-                    $runtimeInSeconds = $executionTime.TotalSeconds
-
-                    # Print or use the runtime variable
-                    Write-Host "Runtime was: $runtimeInSeconds seconds"
                     Write-Host "[System Test] Queries: $QUERIES; Passes: $PASSES; Fails: $FAILS"
 
                     if ($QUERIES -ne $PASSES) {
