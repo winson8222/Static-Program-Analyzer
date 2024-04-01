@@ -1,11 +1,12 @@
 #include "catch.hpp"
 
-#include "pkb/stores/relationships/types/NextStore.h"
 #include "pkb/stores/relationships/types/NextTStore.h"
 
 TEST_CASE("pkb/stores/relationships/types/NextTStore") {
 	auto nextStore = std::make_shared<NextStore>();
-	auto nextTStore = std::make_shared<NextTStore>(nextStore);
+	auto whileStore = std::make_shared<WhileStore>();
+	auto parentTStore = std::make_shared<ParentTStore>();
+	auto nextTStore = std::make_shared<NextTStore>(nextStore, whileStore, parentTStore);
 	nextStore->addRelationship(1, 2);
 	nextStore->addRelationship(2, 3);
 	nextStore->addRelationship(3, 4);

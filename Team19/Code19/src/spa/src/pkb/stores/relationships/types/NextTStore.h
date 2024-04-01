@@ -7,6 +7,8 @@
 
 #include "pkb/stores/relationships/RelationshipStore.h"
 #include "pkb/stores/relationships/types/NextStore.h"
+#include "pkb/stores/relationships/types/ParentTStore.h"
+#include "pkb/stores/entities/types/WhileStore.h"
 
 // ai-gen start(copilot, 2, e)
 // prompt: used copilot
@@ -25,6 +27,8 @@
 class NextTStore : public RelationshipStore<int, int> {
 private:
 	std::shared_ptr<NextStore> nextStore;
+	std::shared_ptr<WhileStore> whileStore;
+	std::shared_ptr<ParentTStore> parentTStore;
 	std::unordered_set<int> nextTPopulated;
 	std::unordered_set<int> previousTPopulated;
 
@@ -45,7 +49,7 @@ private:
      */
     void addRelationshipOnly(int stmt, const std::unordered_set<int>& set, bool reversed);
 public:
-	NextTStore(std::shared_ptr<NextStore> nextStore);
+	NextTStore(std::shared_ptr<NextStore> nextStore, std::shared_ptr<WhileStore> whileStore, std::shared_ptr<ParentTStore> parentTStore);
 
     /**
      * Checks if the previousT relationships for a given statement are populated.

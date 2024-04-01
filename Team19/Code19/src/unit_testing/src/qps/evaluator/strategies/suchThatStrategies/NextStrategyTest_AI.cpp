@@ -357,6 +357,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/NextStrategy/1") {
 
 TEST_CASE("src/qps/evaluator/suchThatStrategies/NextStrategy/2") {
 
+
 	// Setup PKB with necessary entities and relationships
 	auto pkbManager = std::make_shared<PKBManager>();
 	auto pkbReaderManager = pkbManager->getPKBReaderManager();
@@ -540,6 +541,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/NextStrategy/2") {
 
 
 	}
+
 }
 
 TEST_CASE("src/qps/evaluator/suchThatStrategies/NextStrategy/3") {

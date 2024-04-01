@@ -16,7 +16,7 @@ Select a such that Next*(w, a) and Next*(a, if)
 4 - Select all statements such that there is a preceding while and a following if
 while w; if if; stmt s;
 Select s such that Next*(w, s) and Next*(s, if)
-11, 13, 14
+10, 11, 12, 13, 14
 5000
 5 - Select all while statements that use "x" that is after a call statement
 call c; while w;
@@ -52,4 +52,9 @@ Select s such that Next*(p, s)
 read r; print p;
 Select p such that Next*(p, r)
 23
+5000
+12 - Select all reads after a print statement
+stmt s;
+Select s such that Next*(s, 10) and Next*(10, s)
+10, 11, 12, 13, 14
 5000
