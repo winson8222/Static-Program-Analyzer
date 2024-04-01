@@ -12,7 +12,7 @@ ParsingResult createParsingResultForParent(int stmt1, int stmt2, bool isTransiti
     ParsingResult parsingResult;
     TokenType relationshipType = isTransitive ? TokenType::ParentT : TokenType::Parent;
     SuchThatClause clause;
-    string relationshipString = isTransitive ? "Parent*" : "Parent";
+    std::string relationshipString = isTransitive ? "Parent*" : "Parent";
     clause.setRelationship(Token(relationshipType, relationshipString));
     clause.setFirstParam(Token(TokenType::INTEGER, std::to_string(stmt1)));
     clause.setSecondParam(Token(TokenType::INTEGER, std::to_string(stmt2)));
@@ -103,8 +103,8 @@ std::shared_ptr<ParentTWriter> parentTWriter = pkbWriterManager->getParentTWrite
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> res = evaluator.evaluateQuery();
-        REQUIRE(res == std::unordered_set<string>{ "1" });
+        std::unordered_set<std::string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<std::string>{ "1" });
     }
 
     SECTION("Verifying Direct Parent Relation: Children of Statement 2") {
@@ -127,8 +127,8 @@ std::shared_ptr<ParentTWriter> parentTWriter = pkbWriterManager->getParentTWrite
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> res = evaluator.evaluateQuery();
-        REQUIRE(res == std::unordered_set<string>{ "3" });
+        std::unordered_set<std::string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<std::string>{ "3" });
     }
 
 
@@ -255,8 +255,8 @@ std::shared_ptr<ParentTWriter> parentTWriter = pkbWriterManager->getParentTWrite
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> res = evaluator.evaluateQuery();
-        REQUIRE(res == std::unordered_set<string>{ "1 2", "1 3", "2 3"});
+        std::unordered_set<std::string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<std::string>{ "1 2", "1 3", "2 3"});
     }
 
     SECTION("Selecting true boolean") {
@@ -278,8 +278,8 @@ std::shared_ptr<ParentTWriter> parentTWriter = pkbWriterManager->getParentTWrite
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> res = evaluator.evaluateQuery();
-        REQUIRE(res == std::unordered_set<string>{ "TRUE" });
+        std::unordered_set<std::string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<std::string>{ "TRUE" });
 
     }
 
@@ -302,8 +302,8 @@ std::shared_ptr<ParentTWriter> parentTWriter = pkbWriterManager->getParentTWrite
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> res = evaluator.evaluateQuery();
-        REQUIRE(res == std::unordered_set<string>{ "TRUE" });
+        std::unordered_set<std::string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<std::string>{ "TRUE" });
 
     }
 
@@ -326,8 +326,8 @@ std::shared_ptr<ParentTWriter> parentTWriter = pkbWriterManager->getParentTWrite
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> res = evaluator.evaluateQuery();
-        REQUIRE(res == std::unordered_set<string>{ "FALSE" });
+        std::unordered_set<std::string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<std::string>{ "FALSE" });
 
     }
 
@@ -353,8 +353,8 @@ std::shared_ptr<ParentTWriter> parentTWriter = pkbWriterManager->getParentTWrite
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> res = evaluator.evaluateQuery();
-        REQUIRE(res == std::unordered_set<string>{ "TRUE" });
+        std::unordered_set<std::string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<std::string>{ "TRUE" });
 
     }
 }

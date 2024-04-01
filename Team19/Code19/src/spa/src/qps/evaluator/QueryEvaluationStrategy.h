@@ -10,26 +10,24 @@ class QueryEvaluationStrategy {
 
 public:
     virtual std::shared_ptr<ResultTable> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) = 0;
-
     virtual ~QueryEvaluationStrategy() = default;
 
 protected:
     static void convertIntSetToStringSet(const std::unordered_set<int>& intSet, std::unordered_set<std::string>& stringSet);
-    static string extractQuotedExpression(const Token& token);
+    static std::string extractQuotedExpression(const Token& token);
     static bool isBothParamsWildcard(const Token& firstParam, const Token& secondParam);
     static bool isBothParamsSynonym(const Token& firstParam, const Token& secondParam);
-    static unordered_set<int> combineFoundStatements(const unordered_set<int>& newResult, const unordered_set<int>& result);
-    static unordered_set<int> getFilteredStmtsNumByType(unordered_set<int> allStatements, string stmtType, PKBReaderManager& pkbReaderManager);
+    static std::unordered_set<int> combineFoundStatements(const std::unordered_set<int>& newResult, const std::unordered_set<int>& result);
+    static std::unordered_set<int> getFilteredStmtsNumByType(std::unordered_set<int> allStatements, std::string stmtType, PKBReaderManager& pkbReaderManager);
     static void insertColsToTable(const Token firstToken, const Token secondToken, std::shared_ptr<ResultTable> resultTable);
-    static void insertRowToTable(const pair<string,string> col1Pair, const pair<string,string> col2Pair, std::shared_ptr<ResultTable> resultTable);
-    static void insertSingleColRowToTable(const pair<string,string> col1Pair, std::shared_ptr<ResultTable> resultTable);
+    static void insertRowToTable(const std::pair<std::string,std::string> col1Pair, const std::pair<std::string,std::string> col2Pair, std::shared_ptr<ResultTable> resultTable);
+    static void insertSingleColRowToTable(const std::pair<std::string,std::string> col1Pair, std::shared_ptr<ResultTable> resultTable);
     static void insertSingleColToTable(const Token token,std::shared_ptr<ResultTable> resultTable);
 
     // used when there is 2 columns, example a matched with x y z, this will fill the table with ax, ay, az
-    static void insertRowsWithMatchedResults(const Token& firstParam, const Token& secondParam, string searched, std::unordered_set<string> results,
+    static void insertRowsWithMatchedResults(const Token& firstParam, const Token& secondParam, std::string searched, std::unordered_set<std::string> results,
                                              const std::shared_ptr<ResultTable>& resultTable);
     // used with there is only 1 column, it will fills the table with all possible results of this synonym
-    static void insertRowsWithSingleColumn(string colName, std::unordered_set<std::string> results, std::shared_ptr<ResultTable> resultTable);
-    static void insertStmtRowsWithSingleCol(unordered_set<int> filteredStmts, shared_ptr<ResultTable> resultTable, string colName);
-
+    static void insertRowsWithSingleColumn(std::string colName, std::unordered_set<std::string> results, std::shared_ptr<ResultTable> resultTable);
+    static void insertStmtRowsWithSingleCol(std::unordered_set<int> filteredStmts, std::shared_ptr<ResultTable> resultTable, std::string colName);
 };

@@ -1,7 +1,10 @@
-#include "qps/evaluator/strategies/patternStrategies/WhilePatternStrategy.h"
+#include "WhilePatternStrategy.h"
+#include <memory>
+#include <string>
+#include <unordered_set>
 
 std::shared_ptr<ResultTable> WhilePatternStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) {
-    auto resultTable = make_shared<ResultTable>();
+    auto resultTable = std::make_shared<ResultTable>();
     this->whilePatternReader = pkbReaderManager.getWhilePatternReader();
     this->whileReader = pkbReaderManager.getWhileReader();
 
@@ -27,14 +30,14 @@ std::shared_ptr<ResultTable> WhilePatternStrategy::evaluateQuery(PKBReaderManage
 }
 
 void WhilePatternStrategy::processSynonyms(ParsingResult parsingResult, std::shared_ptr<ResultTable> resultTable) {
-    string firstColName = this->relationShip.getValue();
-    string secondColName = this->firstParam.getValue();
+    std::string firstColName = this->relationShip.getValue();
+    std::string secondColName = this->firstParam.getValue();
     insertColsToTable(this->relationShip, this->firstParam, resultTable);
     insertRowsWithTwoCols(firstParam, relationShip,  parsingResult, whilePatternReader, resultTable);
 }
 
 void WhilePatternStrategy::processQuotedIdent(ParsingResult parsingResult, std::shared_ptr<ResultTable> result) {
-    string firstColName = this->relationShip.getValue();
+    std::string firstColName = this->relationShip.getValue();
     insertSingleColToTable(this->relationShip, result);
     std::unordered_set<int> allStmts;
     std::string firstParamValue;
@@ -48,7 +51,7 @@ void WhilePatternStrategy::processQuotedIdent(ParsingResult parsingResult, std::
 
 
 void WhilePatternStrategy::processWildcard(ParsingResult parsingResult, std::shared_ptr<ResultTable> result) {
-    string firstColName = this->relationShip.getValue();
+    std::string firstColName = this->relationShip.getValue();
     insertSingleColToTable(this->relationShip, result);
     std::unordered_set<int> allStmts;
     allStmts = whileReader->getAllWhiles();

@@ -1,15 +1,15 @@
-#include "qps/evaluator/strategies/suchThatStrategies/ParentStrategy.h"
-#include "qps/parser/Token.h" // Include the Token header
-
-using namespace std;
+#include "ParentStrategy.h"
+#include <memory>
+#include <string>
+#include <unordered_set>
 
 // The ParentStrategy class evaluates queries to find parents relationships in a program.
 // A parents relationship is defined between two statements (stmtRef, stmtRef),
 // where a stmtRef can be a wildcard, an integer, or a synonym.
 
 std::shared_ptr<ResultTable> ParentStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) {
-    auto resultTable = make_shared<ResultTable>();
-    string requiredSynonym;
+    auto resultTable = std::make_shared<ResultTable>();
+    std::string requiredSynonym;
     if (!parsingResult.getRequiredSynonyms().empty()) {
         requiredSynonym = parsingResult.getRequiredSynonyms()[0];
     } else {
@@ -45,8 +45,6 @@ std::shared_ptr<ResultTable> ParentStrategy::evaluateQuery(PKBReaderManager& pkb
     return resultTable;
 }
 
-
-
 void ParentStrategy::processSynonyms(std::shared_ptr<ResultTable> resultTable,
                                      const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager)
 {
@@ -60,12 +58,12 @@ void ParentStrategy::processSynonyms(std::shared_ptr<ResultTable> resultTable,
 void ParentStrategy::processFirstParam(
         std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
     // Implementation of processing when the first parameter matches the required synonym
-    string col1 = firstParam.getValue();
-    string firstStatementType = parsingResult.getDeclaredSynonyms().at(col1);
+    std::string col1 = firstParam.getValue();
+    std::string firstStatementType = parsingResult.getDeclaredSynonyms().at(col1);
     resultTable->insertAllColumns({ col1 });
 
-    unordered_set<int> filteredParents;
-    unordered_set<int> parents;
+    std::unordered_set<int> filteredParents;
+    std::unordered_set<int> parents;
     if (secondParam.getType() == TokenType::INTEGER) {
         int stmtNum = stoi(secondParam.getValue());
         parents = reader->getRelationshipsByValue(stmtNum);
@@ -78,14 +76,14 @@ void ParentStrategy::processFirstParam(
     insertStmtRowsWithSingleCol(filteredParents, resultTable, col1);
 }
 
-void ParentStrategy::processSecondParam(
-            std::shared_ptr<ResultTable> resultTable,const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
+void ParentStrategy::processSecondParam(std::shared_ptr<ResultTable> resultTable,
+    const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
     // Implementation of processing when the second parameter matches the required synonym
-    string col2 = secondParam.getValue();
-    string secondStatementType = parsingResult.getDeclaredSynonyms().at(col2);
+    std::string col2 = secondParam.getValue();
+    std::string secondStatementType = parsingResult.getDeclaredSynonyms().at(col2);
     resultTable->insertAllColumns({ col2 });
-    unordered_set<int> parents;
-    unordered_set<int> filteredParents;
+    std::unordered_set<int> parents;
+    std::unordered_set<int> filteredParents;
     if (firstParam.getType() == TokenType::INTEGER) {
         int stmtNum = stoi(firstParam.getValue());
         parents = reader->getRelationshipsByKey(stmtNum);
@@ -97,8 +95,6 @@ void ParentStrategy::processSecondParam(
     filteredParents = getFilteredStmtsNumByType(parents, secondStatementType, pkbReaderManager);
     insertStmtRowsWithSingleCol(filteredParents, resultTable, col2);
 }
-
-
 
 void ParentStrategy::processIntegerParams(
             std::shared_ptr<ResultTable> resultTable) {

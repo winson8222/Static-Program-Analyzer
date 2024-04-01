@@ -3,15 +3,13 @@
 #include <memory>
 #include "qps/evaluator/strategies/suchThatStrategies/StmtStmtStrategy.h"
 
-
 class NextStrategy : public StmtStmtStrategy {
 private:
     std::shared_ptr<IRelationshipReader<int ,int>> reader;
     std::shared_ptr<StatementReader> statementReader;
     Token firstParam;
     Token secondParam;
-    string variant;
-
+    std::string variant;
 
 public:
 
