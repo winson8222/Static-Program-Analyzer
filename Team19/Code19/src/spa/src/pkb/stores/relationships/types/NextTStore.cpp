@@ -44,6 +44,7 @@ std::unordered_set<int> NextTStore::populateAndGetNextT(int stmt, std::unordered
 		std::unordered_set<int> nextNextSet = NextTStore::populateAndGetNextT(next, visited);
 		addRelationshipAndResult(stmt, result, nextNextSet, false);
 	}
+	logNextTAdded(stmt);
 	return result;
 };
 
@@ -96,6 +97,13 @@ std::unordered_set<int> NextTStore::populateAndGetAllNextT() {
 
 void NextTStore::populateAllNextT() {
     for (int i : nextStore->getKeys()) {
+		if (whileStore->contains(i)) {
+			addRelationship(i, i);
+			std::unordered_set<int> whileChildren = parentTStore->getRelationshipsByKey(i);
+			for (int child : whileChildren) {
+				addRelationship(child, child);
+			}
+		}
         if (NextTStore::hasNextTPopulated(i)) continue;
 		if (whileStore->contains(i)) {
 			addRelationship(i, i);
@@ -119,6 +127,7 @@ void NextTStore::populateNextT(int stmt, std::unordered_set<int> visited) {
         std::unordered_set<int> nextNextSet = NextTStore::populateAndGetNextT(next, visited);
         addRelationshipOnly(stmt, nextNextSet, false);
     }
+    logNextTAdded(stmt);
 }
 
 void NextTStore::populateAllPreviousT() {
