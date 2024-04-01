@@ -116,3 +116,11 @@ string ParsingResult::getAttrFromAttrRef(const string &attrRef) {
     return "";
 }
 
+bool ParsingResult::isBooleanSelection() {
+    return isBoolean;
+}
+
+void ParsingResult::setBooleanSelection() {
+    isBoolean = true;
+}
+

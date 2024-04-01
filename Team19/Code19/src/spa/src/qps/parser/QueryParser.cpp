@@ -24,10 +24,14 @@ ParsingResult QueryParser::makeResult(ParsingResult parsingResult) {
 }
 
 ParsingResult QueryParser::parse() {
+
     try {
+        checkForExistingSyntaxError();
         if (match(TokenType::DesignEntity)) {
             parseDeclarations();
         }
+
+
         parseSelectClause();
         if (currentTokenIndex == tokens.size() - 1) {
             return makeResult(parsingResult);
@@ -180,6 +184,7 @@ void QueryParser::parseSelectClause() {
         else {
             if (!match(TokenType::IDENT)) {
                 ensureToken(TokenType::BooleanKeyword);
+                parsingResult.setBooleanSelection();
             }
         }
         string concatenatedTokens = concatTokens(startIndex, currentTokenIndex);
@@ -814,7 +819,11 @@ void QueryParser::ensureNextBlank() {
 }
 
 bool QueryParser::checkValidStmtNum() {
-    if (stoi(currentToken().getValue()) <= 0) {
+    string stringValue = currentToken().getValue();
+    if (stoi(stringValue) <= 0) {
+        if (stoi(stringValue) < 0) {
+            throwSyntaxError();
+        }
         return false;
     }
     return true;
@@ -951,3 +960,12 @@ string QueryParser::concatTokens(size_t start, size_t end) {
     }
     return concatenatedTokens;
 }
+
+void QueryParser::checkForExistingSyntaxError() {
+    for (const Token &token : tokens) {
+        if (token.getType() == TokenType::SyntaxError) {
+            throwSyntaxError();
+        }
+    }
+}
+

@@ -11,6 +11,8 @@
 using namespace std;
 
 class ParsingResult {
+
+
 public:
     // Constructor
     ParsingResult();
@@ -47,10 +49,13 @@ public:
     static string getSynFromAttrRef(const string &attrRef);
     static string getAttrFromAttrRef(const string &attrRef);
     static const bool isAttrRef(const string &attrRef);
+    bool isBooleanSelection();
+    void setBooleanSelection();
 
 
 
 private:
+    bool isBoolean = false;
     unordered_map<string, string> declaredSynonyms;
     vector<string> requiredSynonyms;
 

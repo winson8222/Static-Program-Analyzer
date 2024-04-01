@@ -135,4 +135,6 @@ private:
     bool checkIfPatternSyn();
     void ensureNextBlank();
     void ensureCorrectPatternParams(PatternClause &clause);
+    void checkForExistingSyntaxError();
+
 };
