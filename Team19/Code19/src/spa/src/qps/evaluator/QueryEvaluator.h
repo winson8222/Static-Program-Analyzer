@@ -26,9 +26,9 @@ private:
     ParsingResult& parsingResult;
     std::shared_ptr<ResultTable> result;
     std::vector<std::unique_ptr<QueryEvaluationStrategy>> strategies; // Store multiple strategies
-    std::map<string, std::function<std::unique_ptr<QueryEvaluationStrategy>(shared_ptr<Clause>)>>clauseToStrategiesMap;
+    std::map<std::string, std::function<std::unique_ptr<QueryEvaluationStrategy>(std::shared_ptr<Clause>)>>clauseToStrategiesMap;
     std::map<TokenType, std::function<std::unique_ptr<QueryEvaluationStrategy>()>> suchThatStrategyFactory; // Map of strategy factory
-    std::map<string, std::function<std::unique_ptr<QueryEvaluationStrategy>()>> patternStrategyFactory; // Map of strategy factory
+    std::map<std::string, std::function<std::unique_ptr<QueryEvaluationStrategy>()>> patternStrategyFactory; // Map of strategy factory
     std::map<std::string, std::function<std::variant<std::unordered_set<int>, std::unordered_set<std::string>>()>> entityFactory;
     std::vector<std::pair<std::unique_ptr<QueryEvaluationStrategy>, const Clause*>> strategyAndClausePairs;
     std::unordered_map<std::string, std::function<std::string(int)>> procNameMap;
@@ -87,7 +87,7 @@ public:
 	 * @brief Evaluates the query
 	 * @return std::unordered_set<std::string> The result set
 	 */
-	std::unordered_set<string> evaluateQuery();
+	std::unordered_set<std::string> evaluateQuery();
 
 	/**
 	 * @brief Gets all the entities of a required type from the PKB
@@ -120,20 +120,20 @@ public:
 
     void initializeStrategyFactory(); // Method to initialize the strategy factory
     void initializeEntityFactory(); // Method to initialize the entity factory
-    string join(const unordered_set<string>& elements, const string& delimiter);
-    string convertToAttr(const string& synonym ,string ref);
-    string convertToStmtNumber(string synonym ,string ref);
-    string convertToVarName(const string& synonym ,string ref);
-    string convertToProcName(const string& synonym ,string ref);
-    void convertToAttrSet(const string& synonym, std::unordered_set<std::string>& valueSet, std::unordered_set<std::string>& attrSet);
+    std::string join(const std::unordered_set<std::string>& elements, const std::string& delimiter);
+    std::string convertToAttr(const std::string& synonym , std::string ref);
+    std::string convertToStmtNumber(std::string synonym , std::string ref);
+    std::string convertToVarName(const std::string& synonym , std::string ref);
+    std::string convertToProcName(const std::string& synonym , std::string ref);
+    void convertToAttrSet(const std::string& synonym, std::unordered_set<std::string>& valueSet, std::unordered_set<std::string>& attrSet);
     std::vector<std::string> removeAllAttrRefs(const std::vector<std::string>& requiredSynonyms);
     std::vector<std::shared_ptr<Clause>> addAllClauses(ParsingResult& parsingResult);
 
     void initializeProcNameMap();
     void initializeVarNameMap();
     void throwNoSuchMethodException();
-    bool handleTableTrue(shared_ptr<Clause> clause);
-    bool handleTableFalse(shared_ptr<Clause> clause);
+    bool handleTableTrue(std::shared_ptr<Clause> clause);
+    bool handleTableFalse(std::shared_ptr<Clause> clause);
     void populateEntityCombinations(std::shared_ptr<ResultTable> table);
     std::shared_ptr<ResultTable> getInverse(std::shared_ptr<ResultTable>);
 };

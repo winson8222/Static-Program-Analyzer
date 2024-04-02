@@ -28,3 +28,8 @@ if i1; while w1;
 Select w1 such that Next(w1, i1)
 17
 5000
+6 - Get Next* of child of a while
+stmt s;
+Select s such that Next*(5, s)
+2, 3, 4, 5, 6, 7, 8, 9
+5000

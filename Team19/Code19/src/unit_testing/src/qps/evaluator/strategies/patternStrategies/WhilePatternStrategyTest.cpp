@@ -37,8 +37,8 @@ parsingResult.addDeclaredSynonym("w", "while");
 parsingResult.setRequiredSynonym("w");
 
 QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-std::unordered_set<string> res = evaluator.evaluateQuery();
-REQUIRE(res == std::unordered_set<string>{ "1" });
+std::unordered_set<std::string> res = evaluator.evaluateQuery();
+REQUIRE(res == std::unordered_set<std::string>{ "1" });
 }
 
 TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/WhilePatternStrategy/2") {
@@ -70,8 +70,8 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/WhilePatternStrategy/2")
     parsingResult.setRequiredSynonym("w");
 
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{ "3" });
+    std::unordered_set<std::string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<std::string>{ "3" });
 }
 
 
@@ -105,8 +105,8 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/WhilePatternStrategy/3")
     parsingResult.setRequiredSynonym("v");
 
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{ "x", "y", "z" });
+    std::unordered_set<std::string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<std::string>{ "x", "y", "z" });
 }
 
 TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/WhilePatternStrategy/4") {
@@ -138,6 +138,6 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/WhilePatternStrategy/4")
     parsingResult.setRequiredSynonym("w");
 
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{ "1", "2", "3" });
+    std::unordered_set<std::string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<std::string>{ "1", "2", "3" });
 }

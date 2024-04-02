@@ -41,8 +41,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/1") {
     parsingResult.addSuchThatClause(clause);
 
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{ "proc1" });
+    std::unordered_set<std::string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<std::string>{ "proc1" });
 
 }
 
@@ -74,8 +74,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/2") {
     parsingResult.addSuchThatClause(clause);
 
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{ "proc1", "proc2" });
+    std::unordered_set<std::string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<std::string>{ "proc1", "proc2" });
 
 }
 
@@ -108,8 +108,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/3") {
     parsingResult.addSuchThatClause(clause);
 
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{ "proc3" });
+    std::unordered_set<std::string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<std::string>{ "proc3" });
 
 }
 
@@ -126,7 +126,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/4") {
     statementWriter->insertStatement(2);
     statementWriter->insertStatement(3);
 
-    string query = "procedure p, q; Select p such that Calls*(p, q)";
+    std::string query = "procedure p, q; Select p such that Calls*(p, q)";
     Tokenizer tokenizer(query);
     std::vector<Token> tokens = tokenizer.tokenize();
     QueryParser parser(tokens);
@@ -145,8 +145,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/4") {
 
 
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{ "proc1", "proc4" });
+    std::unordered_set<std::string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<std::string>{ "proc1", "proc4" });
 
 }
 
@@ -179,8 +179,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/5") {
     parsingResult.addSuchThatClause(clause);
 
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{ "proc3", "proc4", "proc1", "proc2"});
+    std::unordered_set<std::string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<std::string>{ "proc3", "proc4", "proc1", "proc2"});
 
 }
 
@@ -213,8 +213,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/6") {
     parsingResult.addSuchThatClause(clause);
 
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{});
+    std::unordered_set<std::string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<std::string>{});
 
 }
 
@@ -249,8 +249,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/7") {
     parsingResult.addSuchThatClause(clause);
 
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{"proc1" , "proc2", "proc3", "proc4"});
+    std::unordered_set<std::string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<std::string>{"proc1" , "proc2", "proc3", "proc4"});
 
 }
 
@@ -273,7 +273,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/8") {
     procedureWriter->insertProcedure("proc3");
     procedureWriter->insertProcedure("proc4");
 
-    string query = "procedure p, q; Select p such that Calls(p, q)";
+    std::string query = "procedure p, q; Select p such that Calls(p, q)";
 
     Tokenizer tokenizer(query);
     std::vector<Token> tokens = tokenizer.tokenize();
@@ -285,8 +285,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/8") {
 
 
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{ "proc1", "proc2"});
+    std::unordered_set<std::string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<std::string>{ "proc1", "proc2"});
 
 }
 
@@ -320,8 +320,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/9") {
     parsingResult.addSuchThatClause(clause);
 
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{ "proc2", "proc3"});
+    std::unordered_set<std::string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<std::string>{ "proc2", "proc3"});
 
 }
 
@@ -355,8 +355,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/10") {
     parsingResult.addSuchThatClause(clause);
 
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{ "proc1", "proc2", "proc3"});
+    std::unordered_set<std::string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<std::string>{ "proc1", "proc2", "proc3"});
 
 }
 
@@ -391,8 +391,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/11") {
     parsingResult.addSuchThatClause(clause);
 
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{ "proc5" });
+    std::unordered_set<std::string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<std::string>{ "proc5" });
 
 }
 
@@ -426,8 +426,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/12") {
     parsingResult.addSuchThatClause(clause);
 
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{ "proc3", "proc4", "proc1", "proc2", "proc5"});
+    std::unordered_set<std::string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<std::string>{ "proc3", "proc4", "proc1", "proc2", "proc5"});
 
 }
 
@@ -461,8 +461,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/13") {
     parsingResult.addSuchThatClause(clause);
 
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{});
+    std::unordered_set<std::string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<std::string>{});
 
 }
 
@@ -493,13 +493,13 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/14") {
 //    clause.setFirstParam(Token(TokenType::QuoutIDENT, "\"proc2\""));
 //    clause.setSecondParam(Token(TokenType::QuoutIDENT, "\"proc4\""));
 //    parsingResult.addSuchThatClause(clause);
-    string query = "Select BOOLEAN such that Calls*(\"proc2\", \"proc4\")";
+    std::string query = "Select BOOLEAN such that Calls*(\"proc2\", \"proc4\")";
     Tokenizer tokenizer(query);
     ParsingResult parsingResult = QueryParser(tokenizer.tokenize()).parse();
 
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{"TRUE"});
+    std::unordered_set<std::string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<std::string>{"TRUE"});
 
 }
 
@@ -532,8 +532,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/15") {
     parsingResult.addSuchThatClause(clause);
 
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{});
+    std::unordered_set<std::string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<std::string>{});
 
 }
 
@@ -545,7 +545,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/16") {
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
     std::shared_ptr<CallsTWriter> CallsTWriter = pkbWriterManager->getCallsTWriter();
     std::shared_ptr<ProcedureWriter> procedureWriter = pkbWriterManager->getProcedureWriter();
-    string query = "procedure p; Select p such that Calls*(p, \"proc4\")";
+    std::string query = "procedure p; Select p such that Calls*(p, \"proc4\")";
 
     Tokenizer tokenizer(query);
     std::vector<Token> tokens = tokenizer.tokenize();
@@ -565,8 +565,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/16") {
     parsingResult = QueryParser(tokens).parse();
 
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{ "proc2", "proc3", "proc1"});
+    std::unordered_set<std::string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<std::string>{ "proc2", "proc3", "proc1"});
 
 }
 
@@ -625,8 +625,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/18") {
 
         ParsingResult parsingResult = QueryParser(tokens).parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> res = evaluator.evaluateQuery();
-        REQUIRE(res == std::unordered_set<string>{ "proc1", "proc2", "proc3", "proc4", "proc5"});
+        std::unordered_set<std::string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<std::string>{ "proc1", "proc2", "proc3", "proc4", "proc5"});
     }
 
     SECTION("simple select of procsName using call") {
@@ -642,8 +642,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/18") {
 
         ParsingResult parsingResult = QueryParser(tokens).parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> res = evaluator.evaluateQuery();
-        REQUIRE(res == std::unordered_set<string>{ "proc2", "proc3", "proc4", "proc5"});
+        std::unordered_set<std::string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<std::string>{ "proc2", "proc3", "proc4", "proc5"});
     }
 
     SECTION("simple select of stmt# using call") {
@@ -659,8 +659,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/18") {
 
         ParsingResult parsingResult = QueryParser(tokens).parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> res = evaluator.evaluateQuery();
-        REQUIRE(res == std::unordered_set<string>{ "2", "3", "4", "5", "6"});
+        std::unordered_set<std::string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<std::string>{ "2", "3", "4", "5", "6"});
     }
 
     SECTION("mutiple select of stmt# using call") {
@@ -682,8 +682,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/18") {
 
         ParsingResult parsingResult = QueryParser(tokens).parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> res = evaluator.evaluateQuery();
-        REQUIRE(res == std::unordered_set<string>{ "2 proc2", "3 proc3", "4 proc4", "6 proc4", "5 proc5"});
+        std::unordered_set<std::string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<std::string>{ "2 proc2", "3 proc3", "4 proc4", "6 proc4", "5 proc5"});
     }
 
     SECTION("mutiple select of stmt# using call if it is in result table") {
@@ -713,8 +713,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/18") {
 
         ParsingResult parsingResult = QueryParser(tokens).parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> res = evaluator.evaluateQuery();
-        REQUIRE(res == std::unordered_set<string>{ "4 proc4", "2 proc2" });
+        std::unordered_set<std::string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<std::string>{ "4 proc4", "2 proc2" });
     }
 
     SECTION("mutiple select of stmt# using call if it is in result table, if variable not in result table") {
@@ -751,8 +751,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/18") {
 
         ParsingResult parsingResult = QueryParser(tokens).parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> res = evaluator.evaluateQuery();
-        REQUIRE(res == std::unordered_set<string>{ "4 proc4 v", "2 proc2 v", "4 proc4 x", "2 proc2 x" });
+        std::unordered_set<std::string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<std::string>{ "4 proc4 v", "2 proc2 v", "4 proc4 x", "2 proc2 x" });
     }
 
     SECTION("mutiple select of stmt# using call if it is in result table, if call not in result table") {
@@ -791,8 +791,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/18") {
 
         ParsingResult parsingResult = QueryParser(tokens).parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> res = evaluator.evaluateQuery();
-        REQUIRE(res == std::unordered_set<string>{ "2 proc2 v", "4 proc4 v", "6 proc4 v", "3 proc3 v", "5 proc5 v" });
+        std::unordered_set<std::string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<std::string>{ "2 proc2 v", "4 proc4 v", "6 proc4 v", "3 proc3 v", "5 proc5 v" });
     }
 
     SECTION("mutiple select of stmt# using call if it is in result table, both are in result table") {
@@ -831,8 +831,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/18") {
 
         ParsingResult parsingResult = QueryParser(tokens).parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> res = evaluator.evaluateQuery();
-        REQUIRE(res == std::unordered_set<string>{ "4 proc4 proc4", "3 proc3 x", "2 proc2 proc2" });
+        std::unordered_set<std::string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<std::string>{ "4 proc4 proc4", "3 proc3 x", "2 proc2 proc2" });
     }
 
     SECTION("mutiple select of stmt# using call if it is in result table, if call not in result table") {
@@ -869,8 +869,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/18") {
 
         ParsingResult parsingResult = QueryParser(tokens).parse();
         QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-        std::unordered_set<string> res = evaluator.evaluateQuery();
-        REQUIRE(res == std::unordered_set<string>{ "2 proc2 v", "2 proc2 x" });
+        std::unordered_set<std::string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<std::string>{ "2 proc2 v", "2 proc2 x" });
     }
 
 
