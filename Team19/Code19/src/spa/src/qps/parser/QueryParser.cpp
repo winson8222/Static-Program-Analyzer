@@ -811,7 +811,7 @@ void QueryParser::ensureNextBlank() {
 }
 
 bool QueryParser::checkValidStmtNum() {
-    string stringValue = currentToken().getValue();
+    std::string stringValue = currentToken().getValue();
     if (stoi(stringValue) <= 0) {
         if (stoi(stringValue) < 0) {
             throwSyntaxError();

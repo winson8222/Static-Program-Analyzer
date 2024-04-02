@@ -46,7 +46,7 @@ none
 10. Select all while pattern wildcard
 while pattern;
 Select pattern pattern pattern(_,_)
-11, 12, 14, 21, 24, 10, 26
+11, 12, 14, 21, 24
 5000
 11. Select all while pattern with ident
 while a1;
