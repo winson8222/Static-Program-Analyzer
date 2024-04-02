@@ -5,6 +5,8 @@
 #include <memory>
 #include "qps/parser/clauses/Clause.h"
 #include "qps/evaluator/QueryGroup.h"
+#include "unordered_set"
+#include "unordered_map"
 
 class QueryOptimiser {
 
