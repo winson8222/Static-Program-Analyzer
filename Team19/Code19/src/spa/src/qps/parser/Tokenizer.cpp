@@ -29,7 +29,7 @@ void Tokenizer::splitQuery() {
         auto nextIter = std::next(iter, 1);
         nextToken = nextIter != end ? *nextIter : std::string("");
         auto tokenType = determineTokenType(*iter);  // Determine the type of each token.
-        if (*iter == "and") {
+        if (tokenType == TokenType::AndKeyword) {
             tokens.emplace_back(tokenType, lastRelationship);  // Add the token to the vector.
         }
         else {
@@ -197,7 +197,8 @@ std::string Tokenizer::removeSpaces(std::string str) {
 
 bool Tokenizer::isSynonym() {
     return checkIfDeclaration() || tokens.back().getType() == TokenType::Lparenthesis
-        || tokens.back().getType() == TokenType::Comma 
+           || tokens.back().getType() == TokenType::Comma
+           || nextToken == ")"
         || (tokens.back().getType() == TokenType::PatternKeyword && nextToken == "(")
         || tokens.back().getType() == TokenType::LeftAngleBracket
         || (tokens.back().getType() == TokenType::AndKeyword && (tokens.back().getValue() == "pattern" && nextToken == "("))

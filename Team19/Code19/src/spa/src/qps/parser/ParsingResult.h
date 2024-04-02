@@ -45,8 +45,13 @@ public:
     static std::string getSynFromAttrRef(const std::string &attrRef);
     static std::string getAttrFromAttrRef(const std::string &attrRef);
     static const bool isAttrRef(const std::string &attrRef);
+    bool isBooleanSelection();
+    void setBooleanSelection();
+
+
 
 private:
+    bool isBoolean = false;
     std::unordered_map<std::string, std::string> declaredSynonyms;
     std::vector<std::string> requiredSynonyms;
 

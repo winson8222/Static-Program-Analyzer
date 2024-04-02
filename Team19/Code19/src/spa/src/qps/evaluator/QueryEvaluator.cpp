@@ -277,7 +277,7 @@ std::unordered_set<std::string> QueryEvaluator::evaluateQuery() {
     const std::string requiredSynonymForCheck = ParsingResult::isAttrRef(requiredSynonym) ? ParsingResult::getSynFromAttrRef(requiredSynonym) : requiredSynonym;
     std::string requiredType = parsingResult.getRequiredSynonymType(requiredSynonym);
     if (requiredSynonyms.size() == 1) {
-        if (requiredSynonym == "BOOLEAN") {
+        if (parsingResult.isBooleanSelection()) {
             if (result->isTableTrue() || !result->isEmpty()) {
                 return std::unordered_set<std::string>{"TRUE"};
             }

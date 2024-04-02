@@ -52,7 +52,7 @@ const std::string& ParsingResult::getDeclaredSynonym(const std::string& key) con
     }
     
     std::string emptyString = "";
-    return emptyString; 
+    return emptyString;
 }
 
 
@@ -116,3 +116,12 @@ std::string ParsingResult::getAttrFromAttrRef(const std::string &attrRef) {
     }
     return "";
 }
+
+bool ParsingResult::isBooleanSelection() {
+    return isBoolean;
+}
+
+void ParsingResult::setBooleanSelection() {
+    isBoolean = true;
+}
+

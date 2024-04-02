@@ -23,10 +23,14 @@ ParsingResult QueryParser::makeResult(ParsingResult parsingResult) {
 }
 
 ParsingResult QueryParser::parse() {
+
     try {
+        checkForExistingSyntaxError();
         if (match(TokenType::DesignEntity)) {
             parseDeclarations();
         }
+
+
         parseSelectClause();
         if (currentTokenIndex == tokens.size() - 1) {
             return makeResult(parsingResult);
@@ -141,6 +145,7 @@ void QueryParser::parseSelectClause() {
     advanceToken();
     if (match(TokenType::LeftAngleBracket)) {
         advanceToken();
+        int numberOfSynonymsSelected = 0;
         while (!match(TokenType::RightAngleBracket)) {
             currentSuchThatToken = currentToken();
             size_t startIndex = currentTokenIndex;
@@ -154,6 +159,7 @@ void QueryParser::parseSelectClause() {
             
             std::string concatenatedTokens = concatTokens(startIndex, currentTokenIndex);
             parsingResult.setRequiredSynonym(concatenatedTokens);
+            numberOfSynonymsSelected++;
             if (parsingResult.getDeclaredSynonym(currentSuchThatToken.getValue()).empty()) {
                 setSemanticError();
             }
@@ -163,6 +169,9 @@ void QueryParser::parseSelectClause() {
             }
             ensureToken(TokenType::Comma);
             advanceToken();
+        }
+        if (numberOfSynonymsSelected == 0) {
+            throwSyntaxError();
         }
     }
     else {
@@ -174,6 +183,7 @@ void QueryParser::parseSelectClause() {
         else {
             if (!match(TokenType::IDENT)) {
                 ensureToken(TokenType::BooleanKeyword);
+                parsingResult.setBooleanSelection();
             }
         }
         std::string concatenatedTokens = concatTokens(startIndex, currentTokenIndex);
@@ -801,7 +811,8 @@ void QueryParser::ensureNextBlank() {
 }
 
 bool QueryParser::checkValidStmtNum() {
-    if (stoi(currentToken().getValue()) <= 0) {
+    std::string stringValue = currentToken().getValue();
+    if (stoi(stringValue) <= 0) {
         return false;
     }
     return true;
@@ -938,3 +949,12 @@ std::string QueryParser::concatTokens(size_t start, size_t end) {
     }
     return concatenatedTokens;
 }
+
+void QueryParser::checkForExistingSyntaxError() {
+    for (const Token &token : tokens) {
+        if (token.getType() == TokenType::SyntaxError) {
+            throwSyntaxError();
+        }
+    }
+}
+
