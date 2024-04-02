@@ -53,6 +53,6 @@ void IfPatternStrategy::processWildcard(ParsingResult parsingResult, std::shared
     std::string firstColName = this->relationShip.getValue();
     insertSingleColToTable(this->relationShip, result);
     std::unordered_set<int> allStmts;
-    allStmts = ifReader->getAllEntities();
+    allStmts = ifPatternReader->getAllStatementNumbersOfIfControlVariables();
     insertStmtRowsWithSingleCol(allStmts, result, firstColName);
 }
