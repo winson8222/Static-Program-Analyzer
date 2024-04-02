@@ -1,9 +1,12 @@
-#include "qps/evaluator/strategies/suchThatStrategies/CallsStrategy.h"
+#include "CallsStrategy.h"
+
+#include <string>
+#include <unordered_set>
+#include <memory>
 
 std::shared_ptr<ResultTable> CallsStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause)
 {
-    auto resultTable = make_shared<ResultTable>();
-
+    auto resultTable = std::make_shared<ResultTable>();
 
     const SuchThatClause* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
     this->firstParam = suchClause->getFirstParam();
@@ -32,29 +35,28 @@ std::shared_ptr<ResultTable> CallsStrategy::evaluateQuery(PKBReaderManager& pkbR
 void CallsStrategy::processBothSynonyms(const ParsingResult &parsingResult,
                                             std::shared_ptr<ResultTable> resultTable) {
     // get the types of both synonyms
-    string firstParamType = parsingResult.getDeclaredSynonym(this->firstParam.getValue());
-    string secondParamType = parsingResult.getDeclaredSynonym(this->secondParam.getValue());
+    std::string firstParamType = parsingResult.getDeclaredSynonym(this->firstParam.getValue());
+    std::string secondParamType = parsingResult.getDeclaredSynonym(this->secondParam.getValue());
     insertColsToTable(this->firstParam, this->secondParam, resultTable);
-    unordered_set<string> allCallees;
+    std::unordered_set<std::string> allCallees;
 
     if (firstParamType == "procedure" && secondParamType == "procedure") {
         std::unordered_set<std::string> allProcs = this->reader->getKeys();
-        for (string caller : allProcs) {
+        for (std::string caller : allProcs) {
             allCallees = this->reader->getRelationshipsByKey(caller);
             insertRowsWithMatchedResults(this->firstParam, this->secondParam, caller, allCallees, resultTable);
         }
     }
-
 }
 
 
 void CallsStrategy::processFirstParam(const ParsingResult &parsingResult, std::shared_ptr<ResultTable> resultTable) {
-    string colName = this->firstParam.getValue();
+    std::string colName = this->firstParam.getValue();
     insertSingleColToTable(this->firstParam, resultTable);
     std::unordered_set<std::string> allCallers;
 
     if (this->secondParam.getType() == TokenType::QuoutIDENT ) {
-        string secondParamValue = extractQuotedExpression(this->secondParam);
+        std::string secondParamValue = extractQuotedExpression(this->secondParam);
         allCallers = this->reader->getRelationshipsByValue(secondParamValue);
     } else {
         // it is a wildcard
@@ -64,11 +66,11 @@ void CallsStrategy::processFirstParam(const ParsingResult &parsingResult, std::s
 }
 
 void CallsStrategy::processSecondParam(const ParsingResult &parsingResult, std::shared_ptr<ResultTable> resultTable) {
-    string colName = this->secondParam.getValue();
+    std::string colName = this->secondParam.getValue();
     insertSingleColToTable(this->secondParam, resultTable);
     std::unordered_set<std::string> allCallees;
     if (this->firstParam.getType() == TokenType::QuoutIDENT) {
-        string firstParamValue = extractQuotedExpression(this->firstParam);
+        std::string firstParamValue = extractQuotedExpression(this->firstParam);
         allCallees = this->reader->getRelationshipsByKey(firstParamValue);
     } else {
         // it is a wildcard
@@ -86,5 +88,4 @@ void CallsStrategy::processBothConstants(const ParsingResult &parsingResult,
     } else {
         setTrueIfRelationShipExist(this->firstParam, this->secondParam, this->reader, resultTable);
     }
-
 }

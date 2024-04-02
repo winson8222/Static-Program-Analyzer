@@ -1,5 +1,7 @@
-#include "qps/evaluator/strategies/suchThatStrategies/FollowsStrategy.h"
-#include "qps/parser/Token.h" // Include for Token definition
+#include "FollowsStrategy.h"
+#include <memory>
+#include <unordered_set>
+#include <string>
 
 // Standard library dependencies
 
@@ -11,35 +13,40 @@
  * @param parsingResult Contains the parsed query details.
  * @return A shared pointer to the populated result table.
  */
-std::shared_ptr<ResultTable> FollowsStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) {
-    auto resultTable = std::make_shared<ResultTable>();
+std::shared_ptr<ResultTable> FollowsStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager,
+	const ParsingResult& parsingResult, const Clause& clause) {
+	auto resultTable = std::make_shared<ResultTable>();
 
-    // Initializing PKB readers for Follows relationships
+	// Initializing PKB readers for Follows relationships
 
-    const SuchThatClause* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
-    this->firstParam = suchClause->getFirstParam();
-    this->secondParam = suchClause->getSecondParam();
-    this->variant = suchClause->getRelationship().getValue();
+	const SuchThatClause* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
+	this->firstParam = suchClause->getFirstParam();
+	this->secondParam = suchClause->getSecondParam();
+	this->variant = suchClause->getRelationship().getValue();
 
-    if (variant == "Follows") {
-        reader = pkbReaderManager.getFollowsReader();
-    } else {
-        reader = pkbReaderManager.getFollowsTReader();
-    }
+	if (variant == "Follows") {
+		reader = pkbReaderManager.getFollowsReader();
+	}
+	else {
+		reader = pkbReaderManager.getFollowsTReader();
+	}
 
 
-    // Handling different parameter types for the Follows relationship
-    if (isBothParamsSynonym(firstParam, secondParam)) {
-        processSynonyms(resultTable, parsingResult, pkbReaderManager);
-    } else if (firstParam.getType() == TokenType::IDENT) {
-        processFirstParam(resultTable, parsingResult, pkbReaderManager);
-    } else if (secondParam.getType() == TokenType::IDENT) {
-        processSecondParam(resultTable, parsingResult, pkbReaderManager);
-    } else {
-        processIntegerParams(resultTable);
-    }
+	// Handling different parameter types for the Follows relationship
+	if (isBothParamsSynonym(firstParam, secondParam)) {
+		processSynonyms(resultTable, parsingResult, pkbReaderManager);
+	}
+	else if (firstParam.getType() == TokenType::IDENT) {
+		processFirstParam(resultTable, parsingResult, pkbReaderManager);
+	}
+	else if (secondParam.getType() == TokenType::IDENT) {
+		processSecondParam(resultTable, parsingResult, pkbReaderManager);
+	}
+	else {
+		processIntegerParams(resultTable);
+	}
 
-    return resultTable;
+	return resultTable;
 }
 
 /**
@@ -52,16 +59,16 @@ std::shared_ptr<ResultTable> FollowsStrategy::evaluateQuery(PKBReaderManager& pk
  * @param resultTable The table to be populated with query results.
  */
 void FollowsStrategy::processSynonyms(std::shared_ptr<ResultTable> resultTable,
-                                      const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
-    insertColsToTable(firstParam, secondParam, resultTable);
+	const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
+	insertColsToTable(firstParam, secondParam, resultTable);
 
-    string firstStatementType = parsingResult.getDeclaredSynonym(firstParam.getValue());
-    string secondStatementType = parsingResult.getDeclaredSynonym(secondParam.getValue());
-    unordered_set<int> filteredPreFollows;
-    unordered_set<int> allPreFollowsStmts = reader->getKeys();
-    filteredPreFollows = getFilteredStmtsNumByType(allPreFollowsStmts, firstStatementType, pkbReaderManager);
+	std::string firstStatementType = parsingResult.getDeclaredSynonym(firstParam.getValue());
+	std::string secondStatementType = parsingResult.getDeclaredSynonym(secondParam.getValue());
+	std::unordered_set<int> filteredPreFollows;
+	std::unordered_set<int> allPreFollowsStmts = reader->getKeys();
+	filteredPreFollows = getFilteredStmtsNumByType(allPreFollowsStmts, firstStatementType, pkbReaderManager);
 
-    insertRowsWithTwoCols(firstParam, secondParam, reader, parsingResult, resultTable, pkbReaderManager);
+	insertRowsWithTwoCols(firstParam, secondParam, reader, parsingResult, resultTable, pkbReaderManager);
 }
 
 /**
@@ -73,24 +80,24 @@ void FollowsStrategy::processSynonyms(std::shared_ptr<ResultTable> resultTable,
  * @param variant Specifies whether it's a direct Follows or transitive Follows* relationship.
  * @param resultTable The table to be populated with query results.
  */
-void FollowsStrategy::processFirstParam(
-                                        std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult,
-                                        PKBReaderManager& pkbReaderManager) {
-    string col1 = firstParam.getValue();
-    resultTable->insertAllColumns({col1});
-    string firstStatementType = parsingResult.getDeclaredSynonym(firstParam.getValue());
-    unordered_set<int> filteredPreFollows;
-    if (secondParam.getType() == TokenType::INTEGER) {
-        int stmtNum = std::stoi(secondParam.getValue());
+void FollowsStrategy::processFirstParam(std::shared_ptr<ResultTable> resultTable,
+	const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
+	std::string col1 = firstParam.getValue();
+	resultTable->insertAllColumns({ col1 });
+	std::string firstStatementType = parsingResult.getDeclaredSynonym(firstParam.getValue());
+	std::unordered_set<int> filteredPreFollows;
+	if (secondParam.getType() == TokenType::INTEGER) {
+		int stmtNum = std::stoi(secondParam.getValue());
 
-        const auto& follows = reader->getRelationshipsByValue(stmtNum);
-        filteredPreFollows = getFilteredStmtsNumByType(follows, firstStatementType, pkbReaderManager);
-        insertStmtRowsWithSingleCol(filteredPreFollows, resultTable, col1);
-    } else if (secondParam.getType() == TokenType::Wildcard) {
-        const auto& follows = reader->getKeys();
-        filteredPreFollows = getFilteredStmtsNumByType(follows, firstStatementType, pkbReaderManager);
-        insertStmtRowsWithSingleCol(filteredPreFollows, resultTable, col1);
-    }
+		const auto& follows = reader->getRelationshipsByValue(stmtNum);
+		filteredPreFollows = getFilteredStmtsNumByType(follows, firstStatementType, pkbReaderManager);
+		insertStmtRowsWithSingleCol(filteredPreFollows, resultTable, col1);
+	}
+	else if (secondParam.getType() == TokenType::Wildcard) {
+		const auto& follows = reader->getKeys();
+		filteredPreFollows = getFilteredStmtsNumByType(follows, firstStatementType, pkbReaderManager);
+		insertStmtRowsWithSingleCol(filteredPreFollows, resultTable, col1);
+	}
 }
 
 /**
@@ -103,24 +110,25 @@ void FollowsStrategy::processFirstParam(
  * @param resultTable The table to be populated with query results.
  */
 void FollowsStrategy::processSecondParam(
-                                         std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult,
-                                         PKBReaderManager& pkbReaderManager) {
-    string col2 = secondParam.getValue();
-    resultTable->insertAllColumns({col2});
-    string secondStatementType = parsingResult.getDeclaredSynonym(secondParam.getValue());
-    unordered_set<int> filteredPostFollows;
-    if (firstParam.getType() == TokenType::INTEGER) {
-        int stmtNum = std::stoi(firstParam.getValue());
-        const auto& follows = reader->getRelationshipsByKey(stmtNum);
+	std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult,
+	PKBReaderManager& pkbReaderManager) {
+	std::string col2 = secondParam.getValue();
+	resultTable->insertAllColumns({ col2 });
+	std::string secondStatementType = parsingResult.getDeclaredSynonym(secondParam.getValue());
+	std::unordered_set<int> filteredPostFollows;
+	if (firstParam.getType() == TokenType::INTEGER) {
+		int stmtNum = std::stoi(firstParam.getValue());
+		const auto& follows = reader->getRelationshipsByKey(stmtNum);
 
-        filteredPostFollows = getFilteredStmtsNumByType(follows, secondStatementType, pkbReaderManager);
-        insertStmtRowsWithSingleCol(filteredPostFollows, resultTable, col2);
-    } else if (firstParam.getType() == TokenType::Wildcard) {
-        const auto& follows = reader->getValues();
+		filteredPostFollows = getFilteredStmtsNumByType(follows, secondStatementType, pkbReaderManager);
+		insertStmtRowsWithSingleCol(filteredPostFollows, resultTable, col2);
+	}
+	else if (firstParam.getType() == TokenType::Wildcard) {
+		const auto& follows = reader->getValues();
 
-        filteredPostFollows = getFilteredStmtsNumByType(follows, secondStatementType, pkbReaderManager);
-        insertStmtRowsWithSingleCol(filteredPostFollows, resultTable, col2);
-    }
+		filteredPostFollows = getFilteredStmtsNumByType(follows, secondStatementType, pkbReaderManager);
+		insertStmtRowsWithSingleCol(filteredPostFollows, resultTable, col2);
+	}
 }
 
 /**
@@ -132,15 +140,14 @@ void FollowsStrategy::processSecondParam(
  * @param resultTable The table to be set as a truth table if the Follows relationship exists.
  */
 void FollowsStrategy::processIntegerParams(std::shared_ptr<ResultTable> resultTable) {
-    if (isBothParamsWildcard(firstParam, secondParam)) {
-        bool hasRelationship = !reader->isEmpty();
-        if (hasRelationship) {
-            resultTable->setAsTruthTable();
-        }
-        return;
-    } else {
-        setTrueIfRelationShipExist(firstParam, secondParam, reader, resultTable);
-
-
-    }
+	if (isBothParamsWildcard(firstParam, secondParam)) {
+		bool hasRelationship = !reader->isEmpty();
+		if (hasRelationship) {
+			resultTable->setAsTruthTable();
+		}
+		return;
+	}
+	else {
+		setTrueIfRelationShipExist(firstParam, secondParam, reader, resultTable);
+	}
 }

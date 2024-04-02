@@ -65,8 +65,18 @@ jobs:
                 # shellcheck disable=SC2001
                 test_name=$(echo "$file" | sed 's|.*/\(.*\)_source\.txt$|\1|') # regex generated with aid of ChatGPT
                 echo "[System Test] Running Test: $test_name"
-                ${{ env.TEST_DIR }}/autotester "$file" queries/"$test_name"_queries.txt outputs/"$test_name"_output.xml > logs/log_"$test_name".txt
-                echo "[System Test] Test $test_name complete"
+                
+                # Run the test and capture the time
+                TIME_FILE="logs/time_${test_name}.txt"
+                (time ${{ env.TEST_DIR }}/autotester "$file" queries/"$test_name"_queries.txt outputs/"$test_name"_output.xml > logs/log_"$test_name".txt) 2>&1 | tee "$TIME_FILE"
+
+                # Extract the real time, convert to milliseconds
+                real_seconds=$(grep real "$TIME_FILE" | awk '{print $2}' | sed -E 's/([0-9]+)m([0-9.]+)s/\1*60+\2/' | bc)
+                milliseconds=$(echo "$real_seconds*1000/1" | bc)
+
+                echo "[System Test] Test $test_name completed in $milliseconds milliseconds"
+
+
                 if [ "$?" != 0 ]; then
                 echo "[System Test] Test $test_name has failed"
                 EXIT_CODE="1"
@@ -101,8 +111,17 @@ jobs:
                 # shellcheck disable=SC2001
                 test_name=$(echo "$file" | sed 's|.*/\(.*\)_source\.txt$|\1|') # regex generated with aid of ChatGPT
                 echo "[System Test] Running Test: $test_name"
-                ${{ env.TEST_DIR }}/autotester "$file" queries/"$test_name"_queries.txt outputs/"$test_name"_output.xml > logs/log_"$test_name".txt
-                echo "[System Test] Test $test_name complete"
+                # Start time measurement in milliseconds
+                # Run the test and capture the time
+                TIME_FILE="logs/time_${test_name}.txt"
+                (time ${{ env.TEST_DIR }}/autotester "$file" queries/"$test_name"_queries.txt outputs/"$test_name"_output.xml > logs/log_"$test_name".txt) 2>&1 | tee "$TIME_FILE"
+
+                # Extract the real time, convert to milliseconds
+                real_seconds=$(grep real "$TIME_FILE" | awk '{print $2}' | sed -E 's/([0-9]+)m([0-9.]+)s/\1*60+\2/' | bc)
+                milliseconds=$(echo "$real_seconds*1000/1" | bc)
+
+                echo "[System Test] Test $test_name completed in $milliseconds milliseconds"
+
                 if [ "$?" != 0 ]; then
                 echo "[System Test] Test $test_name has failed"
                 EXIT_CODE="1"

@@ -1,4 +1,7 @@
-#include "qps/evaluator/strategies/suchThatStrategies/AffectsStrategy.h"
+#include "AffectsStrategy.h"
+#include <memory>
+#include <string>
+#include <unordered_set>
 
 std::shared_ptr<ResultTable> AffectsStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) {
     auto resultTable = std::make_shared<ResultTable>();
@@ -35,10 +38,10 @@ void AffectsStrategy::processSynonyms(std::shared_ptr<ResultTable> resultTable, 
 }
 
 void AffectsStrategy::processFirstParam(std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
-    string colName = firstParam.getValue();
+    std::string colName = firstParam.getValue();
     resultTable->insertAllColumns({colName});
-    unordered_set<string> affectingStatementsInString;
-    unordered_set<int> affectingStatements;
+    std::unordered_set<std::string> affectingStatementsInString;
+    std::unordered_set<int> affectingStatements;
     if (secondParam.getType() == TokenType::INTEGER) {
         int stmtNum = std::stoi(secondParam.getValue());
         // Get all statements that affect a specific statement number
@@ -48,16 +51,16 @@ void AffectsStrategy::processFirstParam(std::shared_ptr<ResultTable> resultTable
         affectingStatements = affectsReader->getAllAffecting();
     }
 
-    string statementType = parsingResult.getDeclaredSynonym(firstParam.getValue());
+    std::string statementType = parsingResult.getDeclaredSynonym(firstParam.getValue());
     std::unordered_set<int> allFilteredAffectingStmts = getFilteredStmtsNumByType(affectingStatements, statementType, pkbReaderManager);
     insertStmtRowsWithSingleCol(allFilteredAffectingStmts, resultTable, colName);
 }
 
 void AffectsStrategy::processSecondParam(std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
-    string colName = secondParam.getValue();
+    std::string colName = secondParam.getValue();
     resultTable->insertAllColumns({colName});
-    unordered_set<string> affectedStatementsInString;
-    unordered_set<int> affectedStatements;
+    std::unordered_set<std::string> affectedStatementsInString;
+    std::unordered_set<int> affectedStatements;
     if (firstParam.getType() == TokenType::INTEGER) {
         // Specific statement number provided for the first parameter
         int stmtNum = std::stoi(firstParam.getValue());
@@ -67,7 +70,7 @@ void AffectsStrategy::processSecondParam(std::shared_ptr<ResultTable> resultTabl
         // If the first parameter is a wildcard, fetch all statements that are affected by others
         affectedStatements = affectsReader->getAllAffected();
     }
-    string statementType = parsingResult.getDeclaredSynonym(secondParam.getValue());
+    std::string statementType = parsingResult.getDeclaredSynonym(secondParam.getValue());
     std::unordered_set<int> allFilteredAffectedStmts = getFilteredStmtsNumByType(affectedStatements, statementType, pkbReaderManager);
     insertStmtRowsWithSingleCol(allFilteredAffectedStmts, resultTable, colName);
 }

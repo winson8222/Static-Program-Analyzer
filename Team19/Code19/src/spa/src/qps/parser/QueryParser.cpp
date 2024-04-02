@@ -3,12 +3,11 @@
 #include <stdexcept>
 #include <unordered_set>
 #include <iostream>
-
-using namespace std;
+#include <regex>
 
 // Constructor of the QueryParser class.
 // Initializes the QueryParser with a vector of Token objects to be parsed.
-QueryParser::QueryParser(const vector<Token>& tokens) : tokens(tokens), currentTokenIndex(0), parsingResult(), semanticError(false) {}
+QueryParser::QueryParser(const std::vector<Token>& tokens) : tokens(tokens), currentTokenIndex(0), parsingResult(), semanticError(false) {}
 
 void QueryParser::setSemanticError() {
 	semanticError = true;
@@ -410,9 +409,6 @@ void QueryParser::parseEntRef() {
 
 }
 
-
-
-
 // Parses the pattern clause in the query.
 // Ensures the correct syntax and processes entity references and expression specifications.
 void QueryParser::parsePatternClause() {
@@ -506,8 +502,6 @@ void QueryParser::parseWhileParams(PatternClause &clause) {
     clause.setSecondParam(currentToken());
 
 }
-
-
 
 void QueryParser::checkBracketsBalanced(const std::string& expr) {
     int count = 0;
@@ -639,8 +633,6 @@ void QueryParser::parseQuotedExpression() {
     advanceToken();
     parseExpression();
     ensureToken(TokenType::DoubleQuote);
-
-
 }
 
 // Parses an expression in the query.

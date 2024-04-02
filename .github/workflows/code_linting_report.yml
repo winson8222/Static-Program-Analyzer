@@ -44,6 +44,27 @@ jobs:
          }
       shell: powershell
 
+    - name: Ensure no declaration of namespace std
+      working-directory: ${{ github.workspace }}/Team19/Code19/src/spa
+      run: | 
+          # Get-ChildItem -Recurse -Include *.cpp, *.h | Select-String -Pattern "using namespace std;" 
+          $searchResults = Get-ChildItem -Recurse -Include *.cpp, *.h | Select-String -Pattern "using namespace std;"
+          $EXIT_CODE = 0
+          # Check if anything was found
+          if ($searchResults) {
+              # If the pattern was found, print the results for reference
+              $searchResults | ForEach-Object { Write-Output $_.ToString() }
+    
+              # Set exit code to 1
+              $EXIT_CODE = 1
+          }
+          else {
+              # Pattern not found, exit code will default to 0
+              Write-Output "No 'using namespace std;' statements found."
+          }
+          exit $EXIT_CODE
+      shell: powershell 
+
     # Upload cpplint results file as artifact
     - name: Upload cpplint Results
       if: always()

@@ -2,7 +2,6 @@
 
 #include "qps/evaluator/QueryEvaluationStrategy.h"
 
-using namespace std;
 /**
  * @brief Base class for implementing evaluation strategies for "such that" clauses in queries.
  *

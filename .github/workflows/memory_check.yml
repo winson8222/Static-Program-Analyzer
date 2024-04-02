@@ -1,0 +1,25 @@
+name: Memory check and management
+
+# ai-gen start (gpt, 2, e)
+# prompt: https://chat.openai.com/share/889297a9-013e-4b5c-a215-ac8fcd331431
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  schedule:
+    - cron: "0 09,23 * * *"
+
+env:
+  BUILD_TYPE: Debug
+
+jobs:
+  lint:
+    name: Setup memory check
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    

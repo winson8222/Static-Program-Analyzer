@@ -8,14 +8,12 @@
 #include "qps/parser/Tokenizer.h"
 #include "qps/parser/ParsingResult.h"
 
-using namespace std;
-
 // The parser class is used for parsing a sequence of tokens.
 class QueryParser {
 public:
     // Initializes the parser with a vector of tokens to be parsed.
     // The 'explicit' keyword prevents implicit conversions from vector<Token> to parser.
-    explicit QueryParser(const vector<Token>& tokens);
+    explicit QueryParser(const std::vector<Token>& tokens);
 
     // The parse method initiates the parsing process.
     // Returns true if parsing is successful, false otherwise.
@@ -64,7 +62,7 @@ private:
             {"value", TokenType::INTEGER}
     };
     // Vector of tokens to be parsed.
-    vector<Token> tokens;
+    std::vector<Token> tokens;
 
     // Current index in the tokens vector.
     size_t currentTokenIndex;
@@ -122,7 +120,6 @@ private:
     void parseStmtSynonyms();
     void parsePatternSynonym();
     void ensureSynonymType(std::string synType);
-
 
     // helper function to replace concatenation of tokens
     std::string concatTokens(size_t start, size_t end);

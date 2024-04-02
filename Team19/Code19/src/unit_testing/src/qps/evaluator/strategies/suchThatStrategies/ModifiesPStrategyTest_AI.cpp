@@ -1,4 +1,3 @@
-
 #include "catch.hpp"
 #include "qps/evaluator/strategies/suchThatStrategies/ModifiesStrategy.h"
 #include "qps/evaluator/strategies/suchThatStrategies/ModifiesPStrategy.h"
@@ -35,8 +34,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesPStrategy/1") {
     parsingResult.addSuchThatClause(clause);
 
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{ "proc1" });
+    std::unordered_set<std::string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<std::string>{ "proc1" });
 
 }
 
@@ -66,8 +65,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesPStrategy/2") {
     parsingResult.addSuchThatClause(clause);
 
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{ "proc1", "proc2" });
+    std::unordered_set<std::string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<std::string>{ "proc1", "proc2" });
 
 }
 
@@ -100,8 +99,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesPStrategy/3") {
     parsingResult.addSuchThatClause(clause);
 
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{ "x" });
+    std::unordered_set<std::string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<std::string>{ "x" });
 
 }
 
@@ -134,8 +133,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesPStrategy/4") {
     parsingResult.addSuchThatClause(clause);
 
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{ "x", "y" });
+    std::unordered_set<std::string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<std::string>{ "x", "y" });
 
 }
 
@@ -168,8 +167,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesPStrategy/5") {
     parsingResult.addSuchThatClause(clause);
 
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{});
+    std::unordered_set<std::string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<std::string>{});
 
 }
 
@@ -202,7 +201,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ModifiesPStrategy/6") {
     parsingResult.addSuchThatClause(clause);
 
     QueryEvaluator evaluator(pkbReaderManager, parsingResult);
-    std::unordered_set<string> res = evaluator.evaluateQuery();
-    REQUIRE(res == std::unordered_set<string>{"proc1" , "proc2"});
+    std::unordered_set<std::string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<std::string>{"proc1" , "proc2"});
 
 }

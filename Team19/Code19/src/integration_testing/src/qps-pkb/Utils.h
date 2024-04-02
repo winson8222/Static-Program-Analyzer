@@ -10,5 +10,5 @@
 class Utils {
 
 public:
-    static unordered_set<std::string> getResultsFromQuery(const string& query, std::shared_ptr<PKBReaderManager> pkbReaderManager);
+    static std::unordered_set<std::string> getResultsFromQuery(const std::string& query, std::shared_ptr<PKBReaderManager> pkbReaderManager);
 };
