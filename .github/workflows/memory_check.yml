@@ -18,7 +18,7 @@ env:
 
 jobs:
   lint:
-    name: Lint C++ Code
+    name: Setup memory check
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
