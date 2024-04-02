@@ -7,6 +7,7 @@
 #include "qps/evaluator/QueryGroup.h"
 #include "unordered_set"
 #include "unordered_map"
+#include "algorithm"
 
 class QueryOptimiser {
 

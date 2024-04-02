@@ -1,8 +1,11 @@
 #pragma once
-
 #include <vector>
 #include <unordered_set>
+#include <memory>
+#include <string>
 #include "qps/parser/clauses/Clause.h"
+
+
 class QueryGroup {
 
 private:
