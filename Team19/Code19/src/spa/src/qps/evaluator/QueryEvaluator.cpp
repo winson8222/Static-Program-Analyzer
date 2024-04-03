@@ -197,7 +197,7 @@ std::unordered_set<std::string> QueryEvaluator::evaluateQuery() {
 
     const std::vector<std::shared_ptr<Clause>> clauses = addAllClauses(parsingResult);
     QueryOptimiser queryOptimiser(clauses);
-    std::vector<std::shared_ptr<QueryGroup>> queryGroups = queryOptimiser.optimise(isOptimised);
+    std::vector<std::shared_ptr<QueryGroup>> queryGroups = queryOptimiser.optimise(true);
 
 
 
