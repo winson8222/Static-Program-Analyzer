@@ -13,6 +13,7 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
 	// Setup shared PKBManager and related components for use in test cases
 	auto pkbManager = std::make_shared<PKBManager>();
 	auto pkbReaderManager = pkbManager->getPKBReaderManager();
+    auto pkbCacheManager = pkbManager->getPKBCacheManager();
 	auto pkbWriterManager = pkbManager->getPKBWriterManager();
 	auto statementWriter = pkbWriterManager->getStatementWriter();
 	auto parentTWriter = pkbWriterManager->getParentTWriter();
@@ -73,7 +74,7 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
 		std::unordered_set<std::string> expectedResults = { "proc1" };
 		REQUIRE(actualResults == expectedResults);
@@ -88,7 +89,7 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
 		std::unordered_set<std::string> expectedResults = { "TRUE" };
 		REQUIRE(actualResults == expectedResults);
@@ -103,7 +104,7 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
 		std::unordered_set<std::string> expectedResults = { "1", "2", "3", "4", "5" };
 		REQUIRE(actualResults == expectedResults);
@@ -118,7 +119,7 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
 		std::unordered_set<std::string> expectedResults = { "FALSE" };
 		REQUIRE(actualResults == expectedResults);
@@ -133,7 +134,7 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
 		std::unordered_set<std::string> expectedResults = { "1" };
 		REQUIRE(actualResults == expectedResults);
@@ -147,7 +148,7 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
 		std::unordered_set<std::string> expectedResults = { "TRUE" };
 		REQUIRE(actualResults == expectedResults);
@@ -161,7 +162,7 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
 		std::unordered_set<std::string> expectedResults = { "TRUE" };
 		REQUIRE(actualResults == expectedResults);
@@ -175,7 +176,7 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
 		std::unordered_set<std::string> expectedResults = { "FALSE" };
 		REQUIRE(actualResults == expectedResults);
@@ -189,7 +190,7 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
 		std::unordered_set<std::string> expectedResults = { "TRUE" };
 		REQUIRE(actualResults == expectedResults);
@@ -203,7 +204,7 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
 		std::unordered_set<std::string> expectedResults = { "FALSE" };
 		REQUIRE(actualResults == expectedResults);
@@ -217,7 +218,7 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
 		std::unordered_set<std::string> expectedResults = { "5" };
 		REQUIRE(actualResults == expectedResults);
@@ -231,7 +232,7 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
 		std::unordered_set<std::string> expectedResults = { "FALSE" };
 		REQUIRE(actualResults == expectedResults);
@@ -250,7 +251,7 @@ TEST_CASE("src/qps/evaluator/WithStrategy/WithStrategyTest/1") {
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
 		std::unordered_set<std::string> expectedResults = { "0" };
 
@@ -265,6 +266,7 @@ TEST_CASE("With strategy with multiple clauses") {
 	auto pkbManager = std::make_shared<PKBManager>();
 	auto pkbReaderManager = pkbManager->getPKBReaderManager();
 	auto pkbWriterManager = pkbManager->getPKBWriterManager();
+    auto pkbCacheManager = pkbManager->getPKBCacheManager();
 	auto statementWriter = pkbWriterManager->getStatementWriter();
 	auto readWriter = pkbWriterManager->getReadWriter();
 	auto readVarWriter = pkbWriterManager->getReadVarNameWriter();
@@ -289,7 +291,7 @@ TEST_CASE("With strategy with multiple clauses") {
 		std::vector<Token> tokens = tokenizer.tokenize();
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
 		REQUIRE(actualResults == std::unordered_set<std::string>{"hello"});
 	}
@@ -340,7 +342,7 @@ TEST_CASE("Multiple Clauses with with") {
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
 		std::unordered_set<std::string> expectedResults = { "variable 3", "start 22", "end 32", "total 7", "middle 18", "variable 8" };
 		REQUIRE(actualResults == expectedResults);
@@ -361,7 +363,7 @@ TEST_CASE("M2 failing after Fix") {
 
 	QueryParser parser(tokens);
 	auto parsingResult = parser.parse();
-	QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+	QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 	std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
 	std::unordered_set<std::string> expectedResults = { "hello" };
 	REQUIRE(actualResults == expectedResults);
@@ -371,6 +373,7 @@ TEST_CASE("M2 failing after Fix 2") {
 	std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 	std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 	std::shared_ptr<VariableWriter> variableWriter = pkbWriterManager->getVariableWriter();
 	variableWriter->insertVariable("hello");
 	//    variable v;
@@ -380,7 +383,7 @@ TEST_CASE("M2 failing after Fix 2") {
 
 	QueryParser parser(tokens);
 	auto parsingResult = parser.parse();
-	QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+	QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 	std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
 	std::unordered_set<std::string> expectedResults = { "FALSE" };
 	REQUIRE(actualResults == expectedResults);

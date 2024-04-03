@@ -9,6 +9,8 @@ TEST_CASE("src/qps/parser/SelectStatements") {
     SECTION("Check Evaluation result of a simple select all statements query") {
         std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
         std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
+
         std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
         std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -28,7 +30,7 @@ TEST_CASE("src/qps/parser/SelectStatements") {
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<string>{"3", "2", "1"});
 
@@ -37,6 +39,8 @@ TEST_CASE("src/qps/parser/SelectStatements") {
     SECTION("Check Evaluation result of a simple select all variables query") {
         std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
         std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
+
         std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
         std::shared_ptr<VariableWriter> variableWriter = pkbWriterManager->getVariableWriter();
@@ -59,7 +63,7 @@ TEST_CASE("src/qps/parser/SelectStatements") {
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<string>{"x", "y", "z"});
 
@@ -68,6 +72,8 @@ TEST_CASE("src/qps/parser/SelectStatements") {
     SECTION("Check Evaluation result of a simple select all procedures query") {
         std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
         std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
+
         std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
         std::shared_ptr<ProcedureWriter> proWriter = pkbWriterManager->getProcedureWriter();
@@ -88,7 +94,7 @@ TEST_CASE("src/qps/parser/SelectStatements") {
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<string>{"main", "proc1"});
 
@@ -97,6 +103,8 @@ TEST_CASE("src/qps/parser/SelectStatements") {
     SECTION("Check Evaluation result of a simple select all whiles query") {
         std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
         std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
+
         std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
         std::shared_ptr<WhileWriter> whileWriter = pkbWriterManager->getWhileWriter();
@@ -119,7 +127,7 @@ TEST_CASE("src/qps/parser/SelectStatements") {
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<string>{"3", "2", "1"});
 
@@ -128,6 +136,8 @@ TEST_CASE("src/qps/parser/SelectStatements") {
 //    SECTION("Check Evaluation result of a simple select pattern assign query") {
 //        std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 //        std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
+
 //        std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 //
 //        std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -161,7 +171,7 @@ TEST_CASE("src/qps/parser/SelectStatements") {
 //
 //        QueryParser parser(tokens);
 //        auto parsingResult = parser.parse();
-//        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+//        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 //        std::unordered_set<string> res = evaluator.evaluateQuery();
 //        REQUIRE(res == std::unordered_set<string>{"1"});
 //    }
@@ -169,6 +179,8 @@ TEST_CASE("src/qps/parser/SelectStatements") {
 //    SECTION("Check Evaluation result of a simple select all procedures query with true clause") {
 //        std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 //        std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
+
 //        std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 //
 //        std::shared_ptr<ProcedureWriter> proWriter = pkbWriterManager->getProcedureWriter();
@@ -203,7 +215,7 @@ TEST_CASE("src/qps/parser/SelectStatements") {
 //
 //        QueryParser parser(tokens);
 //        auto parsingResult = parser.parse();
-//        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+//        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 //        std::unordered_set<string> res = evaluator.evaluateQuery();
 //        REQUIRE(res == std::unordered_set<string>{"main", "proc1"});
 //
@@ -212,6 +224,8 @@ TEST_CASE("src/qps/parser/SelectStatements") {
 //    SECTION("Check Evaluation result of a select pattern query with variable") {
 //        std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 //        std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
+
 //        std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 //
 //        std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -244,7 +258,7 @@ TEST_CASE("src/qps/parser/SelectStatements") {
 //
 //        QueryParser parser(tokens);
 //        auto parsingResult = parser.parse();
-//        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+//        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 //        std::unordered_set<string> res = evaluator.evaluateQuery();
 //        REQUIRE(res == std::unordered_set<string>{"2"});
 //
@@ -253,6 +267,8 @@ TEST_CASE("src/qps/parser/SelectStatements") {
     SECTION("Check Evaluation result of a select pattern query with wildcard on RHS") {
         std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
         std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
+
         std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
         std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -286,7 +302,7 @@ TEST_CASE("src/qps/parser/SelectStatements") {
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<string> res = evaluator.evaluateQuery();
 
         REQUIRE((res == std::unordered_set<string>{"2", "3"}));
@@ -296,6 +312,8 @@ TEST_CASE("src/qps/parser/SelectStatements") {
     SECTION("Check Evaluation result of a select pattern query with wildcard on RHS and LHS") {
         std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
         std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
+
         std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
         std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -329,7 +347,7 @@ TEST_CASE("src/qps/parser/SelectStatements") {
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<string> res = evaluator.evaluateQuery();
         REQUIRE((res == std::unordered_set<string>{"3", "2", "1"} || res == std::unordered_set<string>{"1", "2", "3"}));
 
@@ -338,6 +356,8 @@ TEST_CASE("src/qps/parser/SelectStatements") {
 //    SECTION("Check Evaluation result of a select pattern query with wildcard on LHS") {
 //        std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 //        std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
+
 //        std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 //
 //        std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -373,7 +393,7 @@ TEST_CASE("src/qps/parser/SelectStatements") {
 //
 //        QueryParser parser(tokens);
 //        auto parsingResult = parser.parse();
-//        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+//        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 //        std::unordered_set<string> res = evaluator.evaluateQuery();
 //        REQUIRE(res == std::unordered_set<string>{"2"});
 //
@@ -382,6 +402,8 @@ TEST_CASE("src/qps/parser/SelectStatements") {
 //    SECTION("Check Evaluation result of a select variable query with assign pattern query with synonym on LHS") {
 //        std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 //        std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
+
 //        std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 //
 //        std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -420,7 +442,7 @@ TEST_CASE("src/qps/parser/SelectStatements") {
 //
 //        QueryParser parser(tokens);
 //        auto parsingResult = parser.parse();
-//        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+//        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 //        std::unordered_set<string> res = evaluator.evaluateQuery();
 //        REQUIRE(res == std::unordered_set<string>{"x"});
 //
@@ -429,6 +451,8 @@ TEST_CASE("src/qps/parser/SelectStatements") {
     SECTION("Check Evaluation result of a select variable query with assign pattern query with synonym on LHS and wild card on RHS") {
         std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
         std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
+
         std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
         std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -467,7 +491,7 @@ TEST_CASE("src/qps/parser/SelectStatements") {
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<string>{"y", "x"});
 
@@ -476,6 +500,8 @@ TEST_CASE("src/qps/parser/SelectStatements") {
 //    SECTION("Check Evaluation result of a select pattern assign query with partial pattern on RHS and LHS with Wildcard") {
 //        std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 //        std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
+
 //        std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 //
 //        std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -514,7 +540,7 @@ TEST_CASE("src/qps/parser/SelectStatements") {
 //
 //        QueryParser parser(tokens);
 //        auto parsingResult = parser.parse();
-//        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+//        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 //        std::unordered_set<string> res = evaluator.evaluateQuery();
 //        REQUIRE(res == std::unordered_set<string>{"1", "3", "4"});
 //

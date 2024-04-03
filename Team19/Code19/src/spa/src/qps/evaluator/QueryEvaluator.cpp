@@ -11,8 +11,8 @@
 // prompt: used copilot
 // Constructor for QueryEvaluator class.
 // Initializes the strategy and entity factories and sets up the PKB reader manager and parsing result.
-QueryEvaluator::QueryEvaluator(std::shared_ptr<PKBReaderManager> pkbReaderManager, ParsingResult& parsingResult)
-    : pkbReaderManager(pkbReaderManager), parsingResult(parsingResult) {
+QueryEvaluator::QueryEvaluator(std::shared_ptr<PKBReaderManager> pkbReaderManager, std::shared_ptr<PKBCacheManager> pkbCacheManager, ParsingResult& parsingResult)
+        : pkbReaderManager(pkbReaderManager), pkbCacheManager(pkbCacheManager), parsingResult(parsingResult){
     initializeStrategyFactory();
     initializeEntityFactory();
 }

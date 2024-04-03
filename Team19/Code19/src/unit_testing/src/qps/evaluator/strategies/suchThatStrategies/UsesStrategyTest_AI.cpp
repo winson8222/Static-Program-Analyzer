@@ -67,7 +67,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/1") {
 TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/2") {
     SECTION("Check Evaluation result of a simple select v for UseS") {
         std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-        std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr <PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr <PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
         std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
         std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -99,7 +100,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/2") {
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{"2"});
 
@@ -107,7 +108,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/2") {
 
     SECTION("Check Evaluation result of a simple select all s given true condition for UseS") {
         std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-        std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr <PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr <PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
         std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
         std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -139,7 +141,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/2") {
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{"SemanticError"});
     }
@@ -147,7 +149,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/2") {
 
     SECTION("Check Evaluation result of a simple select all s given true condition for UseS (opposite)") {
         std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-        std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr <PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr <PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
         std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
         std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -179,14 +182,15 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/2") {
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{"1", "2", "3", "4"});
     }
 
     SECTION("Check Evaluation result of a simple select variable given LHS for UsesS") {
         std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-        std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr <PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr <PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
         std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 
@@ -220,7 +224,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/2") {
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{"y"});
     }
@@ -228,7 +232,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/2") {
 
     SECTION("Check Evaluation result of 2 synonyms for UsesS and select statements") {
         std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-        std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr <PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr <PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
         std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 
@@ -265,14 +270,15 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/2") {
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{"x", "y", "z"});
     }
 
     SECTION("Check true boolean for uses") {
         std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-        std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr <PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr <PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
         std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 
@@ -301,14 +307,15 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/2") {
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{"TRUE"});
     }
 
     SECTION("Check true boolean for uses") {
         std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-        std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr <PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr <PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
         std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 
@@ -337,14 +344,15 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/2") {
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{"FALSE"});
     }
 
     SECTION("Check true boolean for uses with variable") {
         std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-        std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr <PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr <PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
         std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 
@@ -376,7 +384,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/2") {
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{"TRUE"});
     }
@@ -443,7 +451,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/3") {
     // Parse and evaluate the query
     QueryParser parser(tokens);
     auto parsingResult = parser.parse();
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
     auto res = evaluator.evaluateQuery();
 
     // Verify that all necessary statements are returned
@@ -520,7 +528,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/4") {
 TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/5") {
     //Select c such that Uses(c, "iter")
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr <PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr <PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
     pkbWriterManager->getPrintWriter()->insertPrint(2);
     pkbWriterManager->getPrintWriter()->insertPrint(3);
@@ -548,7 +557,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/5") {
 
         // Parse the query
         ParsingResult parsingResult = queryParser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{"x", "y"});
 
@@ -576,7 +585,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/5") {
 
         // Parse the query
         ParsingResult parsingResult = queryParser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{"2", "3"});
         // Additional checks can be performed here if needed, such as verifying the specific parsing output
@@ -587,7 +596,8 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/5") {
 TEST_CASE("Print Attr Select with Uses Clauses") {
 
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr <PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr <PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
     pkbWriterManager->getPrintWriter()->insertPrint(2);
     pkbWriterManager->getPrintWriter()->insertPrint(3);
@@ -627,7 +637,7 @@ TEST_CASE("Print Attr Select with Uses Clauses") {
 
         // Parse the query
         ParsingResult parsingResult = queryParser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{"x"});
 
@@ -664,7 +674,7 @@ TEST_CASE("Print Attr Select with Uses Clauses") {
 
         // Parse the query
         ParsingResult parsingResult = queryParser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{"2"});
 
@@ -678,7 +688,8 @@ TEST_CASE("Print Attr Select with Uses Clauses") {
 TEST_CASE("Read Attr Select with Uses Clauses") {
 
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
-    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr <PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr <PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
     pkbWriterManager->getReadWriter()->insertRead(2);
     pkbWriterManager->getReadWriter()->insertRead(3);
@@ -718,7 +729,7 @@ TEST_CASE("Read Attr Select with Uses Clauses") {
 
         // Parse the query
         ParsingResult parsingResult = queryParser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{"x"});
 
@@ -755,7 +766,7 @@ TEST_CASE("Read Attr Select with Uses Clauses") {
 
         // Parse the query
         ParsingResult parsingResult = queryParser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{"2"});
 

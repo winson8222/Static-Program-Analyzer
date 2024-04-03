@@ -23,6 +23,7 @@
 class QueryEvaluator {
 private:
     std::shared_ptr<PKBReaderManager> pkbReaderManager;
+    std::shared_ptr<PKBCacheManager> pkbCacheManager;
     ParsingResult& parsingResult;
     std::shared_ptr<ResultTable> result;
     std::vector<std::unique_ptr<QueryEvaluationStrategy>> strategies; // Store multiple strategies
@@ -81,7 +82,7 @@ private:
 	std::vector<std::unordered_map<std::string, std::string>> getCrossJoinMapList(std::vector<std::string> requiredSynonyms);
 
 public:
-    QueryEvaluator(std::shared_ptr<PKBReaderManager> pkbReaderManager, ParsingResult& parsingResult);
+    QueryEvaluator(std::shared_ptr<PKBReaderManager> pkbReaderManager, std::shared_ptr<PKBCacheManager> pkbCacheManager, ParsingResult& parsingResult);
 
 	/**
 	 * @brief Evaluates the query
