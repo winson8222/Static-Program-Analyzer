@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <iostream>
 #include "qps/evaluator/ResultTable.h"
 #include "qps/evaluator/strategies/WithStrategy.h"
 
@@ -195,7 +196,16 @@ std::unordered_set<std::string> QueryEvaluator::evaluateQuery() {
         return error;
     }
 
+
     const std::vector<std::shared_ptr<Clause>> clauses = addAllClauses(parsingResult);
+    for (auto& clause : clauses) {
+        TokenType clauseRelationshipType = clause->getRelationship().getType();
+        if (clauseRelationshipType == TokenType::Affects) {
+            pkbCacheManager->populateAffectsCache();
+        } else if (clauseRelationshipType == TokenType::NextT) {
+            pkbCacheManager->populateNextTCache();
+        }
+    }
     QueryOptimiser queryOptimiser(clauses);
     std::vector<std::shared_ptr<QueryGroup>> queryGroups = queryOptimiser.optimise(isOptimised);
 

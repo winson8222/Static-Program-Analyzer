@@ -425,6 +425,7 @@ TEST_CASE("stmt s1, s2; variable v; Select <v, s1, s2> such that Uses(s1, v) and
 	std::shared_ptr <PKBManager> pkbManager = std::make_shared<PKBManager>();
 	std::shared_ptr <PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
 	std::shared_ptr <PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    std::shared_ptr <PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 	std::shared_ptr <VariableWriter> variableWriter = pkbWriterManager->getVariableWriter();
 	std::shared_ptr <StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
 	std::shared_ptr <FollowsWriter> followWriter = pkbWriterManager->getFollowsWriter();

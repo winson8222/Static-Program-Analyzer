@@ -136,7 +136,6 @@ std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManage
 //    SECTION("Check Evaluation result of a simple select pattern assign query") {
 //        std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 //        std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
-std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 
 //        std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 //
@@ -179,7 +178,6 @@ std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManage
 //    SECTION("Check Evaluation result of a simple select all procedures query with true clause") {
 //        std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 //        std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
-std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 
 //        std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 //
@@ -224,7 +222,6 @@ std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManage
 //    SECTION("Check Evaluation result of a select pattern query with variable") {
 //        std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 //        std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
-std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 
 //        std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 //
@@ -356,7 +353,6 @@ std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManage
 //    SECTION("Check Evaluation result of a select pattern query with wildcard on LHS") {
 //        std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 //        std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
-std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 
 //        std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 //
@@ -402,7 +398,6 @@ std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManage
 //    SECTION("Check Evaluation result of a select variable query with assign pattern query with synonym on LHS") {
 //        std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 //        std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
-std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 
 //        std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 //
@@ -500,7 +495,6 @@ std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManage
 //    SECTION("Check Evaluation result of a select pattern assign query with partial pattern on RHS and LHS with Wildcard") {
 //        std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 //        std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
-std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 
 //        std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 //

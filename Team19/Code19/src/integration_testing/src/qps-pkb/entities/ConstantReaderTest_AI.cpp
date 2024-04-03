@@ -16,10 +16,11 @@ TEST_CASE("qps/QueryProcessingSubsystem: ConstantReader Integration Test") {
     constantWriter->insertConstant(3);
 
     auto pkbReaderManager = pkbManager->getPKBReaderManager();
+    auto pkbCacheManager = pkbManager->getPKBCacheManager();
 
     SECTION("Verify retrieval of all constants via QPS") {
         std::string query = "constant c; Select c";
-        auto results = Utils::getResultsFromQuery(query, pkbReaderManager);
+        auto results = Utils::getResultsFromQuery(query, pkbReaderManager, pkbCacheManager);
         std::unordered_set<std::string> expectedResults = {"1", "2", "3"};
         REQUIRE(results == expectedResults);
     }
@@ -27,7 +28,7 @@ TEST_CASE("qps/QueryProcessingSubsystem: ConstantReader Integration Test") {
 
     SECTION("Test for constants in expressions via QPS") {
         std::string queryForConstInExpressions = R"(assign a; Select a pattern a(_, _"1"_))";
-        auto resultsForConstInExpressions = Utils::getResultsFromQuery(queryForConstInExpressions, pkbReaderManager);
+        auto resultsForConstInExpressions = Utils::getResultsFromQuery(queryForConstInExpressions, pkbReaderManager, pkbCacheManager);
         std::unordered_set<std::string> expectedResultsForConstInExpressions;
         REQUIRE(resultsForConstInExpressions == expectedResultsForConstInExpressions);
     }

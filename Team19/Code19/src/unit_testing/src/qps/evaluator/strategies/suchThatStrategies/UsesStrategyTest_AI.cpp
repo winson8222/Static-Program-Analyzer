@@ -394,6 +394,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/2") {
 TEST_CASE("src/qps/evaluator/suchThatStrategies/UsesStrategy/3") {
     auto pkb = std::make_shared<PKB>();
     auto pkbReaderManager = std::make_shared<PKBReaderManager>(pkb);
+    auto pkbCacheManager = std::make_shared<PKBCacheManager>(pkb);
     auto pkbWriterManager = std::make_shared<PKBWriterManager>(pkb);
 
     auto statementWriter = pkbWriterManager->getStatementWriter();

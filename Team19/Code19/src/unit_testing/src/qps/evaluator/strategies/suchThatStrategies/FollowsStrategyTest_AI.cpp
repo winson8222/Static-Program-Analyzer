@@ -786,9 +786,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/FollowsStrategy/17 Select AttrRe
     variableWriter->insertVariable("y");
     variableWriter->insertVariable("z");
 
-    pkbManager->getPKBCacheManager()->populateCache();
-
-
 
     SECTION("Simple stmt# AttrRef") {
 

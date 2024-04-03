@@ -26,7 +26,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/NextStrategy/1") {
 	nextWriter->addNext(3, 4);
 	nextWriter->addNext(1, 4);
 	nextWriter->addNext(5, 6);
-	pkbManager->getPKBCacheManager()->populateCache();
 
 	SECTION("NextStrategy/Verify Direct Next Relationship") {
 		// Define tokens for the query
@@ -362,6 +361,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/NextStrategy/2") {
 	// Setup PKB with necessary entities and relationships
 	auto pkbManager = std::make_shared<PKBManager>();
 	auto pkbReaderManager = pkbManager->getPKBReaderManager();
+    auto pkbCacheManager = pkbManager->getPKBCacheManager();
 	auto pkbWriterManager = pkbManager->getPKBWriterManager();
 	auto whileWriter = pkbWriterManager->getWhileWriter();
 	auto nextWriter = pkbWriterManager->getNextWriter();
@@ -383,7 +383,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/NextStrategy/2") {
 
 
 	// Assuming PKBManager's cache or similar mechanism is updated after modifications
-	pkbManager->getPKBCacheManager()->populateCache();
 
 	SECTION("NextStrategy/Verify Direct NextT Relationship") {
 
@@ -563,7 +562,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/NextStrategy/3") {
 	nextWriter->addNext(2, 3);
 	nextWriter->addNext(3, 4);
 	nextWriter->addNext(1, 4);
-	pkbManager->getPKBCacheManager()->populateCache();
 
 	SECTION("Select stmt from NextT Relationship with 1 wild card and 1 Integer") {
 

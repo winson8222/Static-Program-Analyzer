@@ -771,6 +771,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 	SECTION("Evaluate Assign Pattern Strategy with Exact Match for Variable 'x' and Value '1'") {
 		std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 		std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 		std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 		std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -805,6 +806,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 	SECTION("Evaluate Assign Pattern Strategy with Variable Pattern Matching '1' Across Multiple Assignments") {
 		std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 		std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 		std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 		std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -843,6 +845,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 	SECTION("Evaluating AssignPattern with Variable Synonym Matching '1' in Assignments Returns Variable Names") {
 		std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 		std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 		std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 		std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -882,6 +885,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 	SECTION("Evaluating AssignPattern for Variable Synonyms in Diverse Assignments Returns Matching Variable Names") {
 		std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 		std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 		std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 		std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -920,6 +924,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 	SECTION("AssignPattern with Underscore and Specific Value Matches Only Relevant Assignments") {
 		std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 		std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 		std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 		std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -958,6 +963,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 	SECTION("AssignPattern with Variable and Underscore Matches Assignments with Specific Value") {
 		std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 		std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 		std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 		std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -997,6 +1003,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 	SECTION("Matching AssignPatterns with Wildcards for Exact Expressions") {
 		std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 		std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 		std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 		std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -1036,6 +1043,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 	SECTION("AssignPatternStrategy Evaluates Complex Expression Match with Wildcards") {
 		std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 		std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 		std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 		std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -1075,6 +1083,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 	SECTION("AssignPatternStrategy Evaluates Complex Expression Match with Wildcards") {
 		std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 		std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 		std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 		std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -1115,6 +1124,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 	SECTION("Variable Pattern Matching in Assignments with Specific Operations") {
 		std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 		std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 		std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 		std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -1154,6 +1164,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 	SECTION("Variable Pattern Matching in Assignments with Specific Operations") {
 		std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 		std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 		std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 		std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();

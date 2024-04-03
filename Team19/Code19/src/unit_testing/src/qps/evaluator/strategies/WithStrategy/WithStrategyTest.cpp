@@ -302,6 +302,7 @@ TEST_CASE("Multiple Clauses with with") {
 	std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 	std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 	std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
 	std::shared_ptr<VariableWriter> variableWriter = pkbWriterManager->getVariableWriter();
 	std::shared_ptr<PrintVarNameWriter> printVarNameWriter = pkbWriterManager->getPrintVarNameWriter();
@@ -354,6 +355,7 @@ TEST_CASE("Multiple Clauses with with") {
 TEST_CASE("M2 failing after Fix") {
 	std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 	std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
 	std::shared_ptr<ProcedureWriter> procedureWriter = pkbWriterManager->getProcedureWriter();
 	procedureWriter->insertProcedure("hello");

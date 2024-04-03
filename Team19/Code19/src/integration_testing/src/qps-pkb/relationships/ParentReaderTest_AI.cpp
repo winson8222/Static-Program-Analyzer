@@ -21,11 +21,12 @@ TEST_CASE("qps/QueryProcessingSubsystem: ParentReader Integration Test") {
     statementWriter->insertStatement(3);
 
     auto pkbReaderManager = pkbManager->getPKBReaderManager();
+    auto pkbCacheManager = pkbManager->getPKBCacheManager();
 
     SECTION("Verify statements with no parent via QPS") {
         // Query to find statements that are not a parent to any statement
         std::string queryNoParent = "stmt s; Select s such that Parent(s, _)";
-        auto resultsNoParent = Utils::getResultsFromQuery(queryNoParent, pkbReaderManager);
+        auto resultsNoParent = Utils::getResultsFromQuery(queryNoParent, pkbReaderManager, pkbCacheManager);
         std::unordered_set<std::string> expectedResultsNoParent = {"1", "2"};
         REQUIRE(resultsNoParent == expectedResultsNoParent);
     }
@@ -33,13 +34,13 @@ TEST_CASE("qps/QueryProcessingSubsystem: ParentReader Integration Test") {
     SECTION("Verify child statements of a specific parent via QPS") {
         // Query to find child statements of statement 1
         std::string queryChildOf1 = "stmt s; Select s such that Parent(1, s)";
-        auto resultsChildOf1 = Utils::getResultsFromQuery(queryChildOf1, pkbReaderManager);
+        auto resultsChildOf1 = Utils::getResultsFromQuery(queryChildOf1, pkbReaderManager, pkbCacheManager);
         std::unordered_set<std::string> expectedResultsChildOf1 = {"2"};
         REQUIRE(resultsChildOf1 == expectedResultsChildOf1);
 
         // Query to find child statements of statement 2
         std::string queryChildOf2 = "stmt s; Select s such that Parent(2, s)";
-        auto resultsChildOf2 = Utils::getResultsFromQuery(queryChildOf2, pkbReaderManager);
+        auto resultsChildOf2 = Utils::getResultsFromQuery(queryChildOf2, pkbReaderManager, pkbCacheManager);
         std::unordered_set<std::string> expectedResultsChildOf2 = {"3"};
         REQUIRE(resultsChildOf2 == expectedResultsChildOf2);
     }
@@ -47,7 +48,7 @@ TEST_CASE("qps/QueryProcessingSubsystem: ParentReader Integration Test") {
     SECTION("Verify non-existent Parent relationship via QPS") {
         // Query for a non-existent Parent relationship
         std::string queryNonExistentParent = "stmt s; Select s such that Parent(999, s)";
-        auto resultsNonExistentParent = Utils::getResultsFromQuery(queryNonExistentParent, pkbReaderManager);
+        auto resultsNonExistentParent = Utils::getResultsFromQuery(queryNonExistentParent, pkbReaderManager, pkbCacheManager);
         REQUIRE(resultsNonExistentParent.empty()); // Expect no results for a non-existent parent
     }
 }
