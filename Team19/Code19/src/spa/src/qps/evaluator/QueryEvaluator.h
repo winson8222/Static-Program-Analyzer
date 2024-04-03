@@ -19,6 +19,7 @@
 #include "qps/evaluator/strategies/patternStrategies/WhilePatternStrategy.h" // Include WhilePatternStrategy
 #include "qps/evaluator/strategies/patternStrategies/IfPatternStrategy.h" // Include IfPatternStrategy
 #include "qps/parser/Token.h"
+#include "qps/evaluator/QueryOptimiser.h"
 
 class QueryEvaluator {
 private:
@@ -34,6 +35,7 @@ private:
     std::vector<std::pair<std::unique_ptr<QueryEvaluationStrategy>, const Clause*>> strategyAndClausePairs;
     std::unordered_map<std::string, std::function<std::string(int)>> procNameMap;
     std::unordered_map<std::string, std::function<std::string(int)>> varNameMap;
+    bool isOptimised = false;
 
 	/**
 	 * @brief Handles multiple return values in select clause
@@ -137,4 +139,6 @@ public:
     bool handleTableFalse(std::shared_ptr<Clause> clause);
     void populateEntityCombinations(std::shared_ptr<ResultTable> table);
     std::shared_ptr<ResultTable> getInverse(std::shared_ptr<ResultTable>);
+    void evaluateClauses(std::vector<std::shared_ptr<Clause>> clauses, bool& isFirstStrategy);
+    void setOptimised(bool isOptimised);
 };
