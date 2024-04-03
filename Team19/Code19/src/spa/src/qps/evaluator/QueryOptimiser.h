@@ -31,8 +31,8 @@ private:
     void sortRelationshipsMap();
     void sortQueryGroup(std::shared_ptr<QueryGroup>& queryGroup);
     static bool comparePenalty(const std::shared_ptr<Clause>& a, const std::shared_ptr<Clause>& b);
-    void addRelatedClausesIfExists(std::string synonym, std::unordered_set<std::shared_ptr<Clause>> addedClauses, std::vector<std::shared_ptr<Clause>> sortedClauses);
-
+    void addRelatedClausesIfExists(std::string synonym, std::unordered_set<std::shared_ptr<Clause>>& addedClauses, std::vector<std::shared_ptr<Clause>>& sortedClauses);
+    void moveBooleanGroupToFront(std::vector<std::shared_ptr<QueryGroup>>& queryGroups);
 
 
 

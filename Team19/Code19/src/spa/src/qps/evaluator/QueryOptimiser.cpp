@@ -2,6 +2,7 @@
 #include "map"
 
 
+
 #include <utility>
 
 std::vector<std::shared_ptr<QueryGroup>> QueryOptimiser::optimise(bool isOptimised) {
@@ -24,7 +25,7 @@ std::vector<std::shared_ptr<QueryGroup>> QueryOptimiser::optimise(bool isOptimis
     for (size_t i = 0; i < mergedQueryGroups.size(); ++i) {
         sortQueryGroup(mergedQueryGroups[i]);
     }
-
+    moveBooleanGroupToFront(mergedQueryGroups);
     return mergedQueryGroups;
 }
 
@@ -138,13 +139,13 @@ bool QueryOptimiser::comparePenalty(const std::shared_ptr<Clause> &a, const std:
 }
 
 void QueryOptimiser::sortRelationshipsMap() {
-    for (auto& [synonym, clauses] : relationshipsMap) {
-        std::sort(clauses.begin(), clauses.end(),
+    for (auto& [synonym, currentClauses] : relationshipsMap) {
+        std::sort(currentClauses.begin(), currentClauses.end(),
                   comparePenalty);
     }
 }
 
-void QueryOptimiser::addRelatedClausesIfExists(std::string synonym, std::unordered_set<std::shared_ptr<Clause>> addedClauses, std::vector<std::shared_ptr<Clause>> sortedClauses) {
+void QueryOptimiser::addRelatedClausesIfExists(std::string synonym, std::unordered_set<std::shared_ptr<Clause>>& addedClauses, std::vector<std::shared_ptr<Clause>>& sortedClauses) {
     if (relationshipsMap.find(synonym) != relationshipsMap.end()) {
         for (const std::shared_ptr<Clause> relatedClause: relationshipsMap[synonym]) {
             if (addedClauses.find(relatedClause) == addedClauses.end()) {
@@ -159,13 +160,15 @@ void QueryOptimiser::addRelatedClausesIfExists(std::string synonym, std::unorder
 std::vector<std::shared_ptr<Clause>> QueryOptimiser::sortByRelatedClauses(const std::vector<std::shared_ptr<Clause>> &clauses) {
     std::unordered_set<std::shared_ptr<Clause>> addedClauses;
     std::vector<std::shared_ptr<Clause>> sortedClauses;
-
-    for (const std::shared_ptr<Clause> clause : clauses) {
-        if (addedClauses.find(clause) != addedClauses.end()) {
-            continue;
+    std::vector<std::shared_ptr<Clause>> preSortedClauses = clauses;
+    std::sort(preSortedClauses.begin(), preSortedClauses.end(), comparePenalty);
+    for (const std::shared_ptr<Clause> clause : preSortedClauses) {
+        if (addedClauses.find(clause) == addedClauses.end()) {
+            addedClauses.insert(clause);
+            sortedClauses.push_back(clause);
         }
-        addedClauses.insert(clause);
-        sortedClauses.push_back(clause);
+
+
         std::unordered_set<std::string> allSynonyms = clause->getAllSynonyms();
         for (std::string synonym : allSynonyms) {
             addRelatedClausesIfExists(synonym, addedClauses, sortedClauses);
@@ -174,7 +177,7 @@ std::vector<std::shared_ptr<Clause>> QueryOptimiser::sortByRelatedClauses(const 
 
     // move all nextT and affectT clauses to the end of the sorted clauses
     std::vector<std::shared_ptr<Clause>> highPenaltyClauses;
-    for (const std::shared_ptr<Clause> clause : clauses) {
+    for (const std::shared_ptr<Clause> clause : preSortedClauses) {
         Token relationshipToken = clause->getRelationship();
         TokenType relationshipType = relationshipToken.getType();
         if (relationshipType == TokenType::NextT || relationshipType == TokenType::Affects) {
@@ -197,5 +200,13 @@ void QueryOptimiser::insertIntoRelationshipsMap(std::string relatedSynonym, std:
         auto it = relationshipsMap.find(relatedSynonym);
         it->second.push_back(clause);
     }
+
+}
+
+void QueryOptimiser::moveBooleanGroupToFront(std::vector<std::shared_ptr<QueryGroup>> &queryGroups) {
+    std::stable_partition(queryGroups.begin(), queryGroups.end(),
+                          [](const std::shared_ptr<QueryGroup>& group) {
+                              return group->getCommonSynonyms().empty();
+                          });
 
 }
