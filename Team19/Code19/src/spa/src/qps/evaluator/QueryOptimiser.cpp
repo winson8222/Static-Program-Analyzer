@@ -27,26 +27,32 @@ std::vector<std::shared_ptr<QueryGroup>> QueryOptimiser::mergeCommonQueryGroups(
         return queryGroups;
     }
 
-    bool hasMerged = true;
-    while (hasMerged) {
-        hasMerged = false;
-        for (size_t i = 0; i < queryGroups.size() && !hasMerged; ++i) {
-            for (size_t j = i + 1; j < queryGroups.size(); ++j) {
-                if (std::any_of(queryGroups[j]->getCommonSynonyms().begin(), queryGroups[j]->getCommonSynonyms().end(),
-                                [&](const std::string& synonym) {
-                                    return queryGroups[i]->getCommonSynonyms().find(synonym) != queryGroups[i]->getCommonSynonyms().end();
-                                })) {
-                    queryGroups[i]->mergeQueryGroup(queryGroups[j]);
-                    queryGroups.erase(queryGroups.begin() + j);
-                    hasMerged = true;
-                    break; // Break to restart from the first group after a merge
-                }
+    std::vector<std::shared_ptr<QueryGroup>> mergedGroups;
+    std::vector<bool> merged(queryGroups.size(), false); // Keep track of which groups have been merged
+
+    for (size_t i = 0; i < queryGroups.size(); ++i) {
+        if (merged[i]) continue; // Skip already merged groups
+
+        auto currentGroup = queryGroups[i];
+        for (size_t j = i + 1; j < queryGroups.size(); ++j) {
+            if (merged[j]) continue; // Skip if already merged
+
+            // Check if currentGroup and queryGroups[j] have common synonyms
+            bool shouldMerge = std::any_of(queryGroups[j]->getCommonSynonyms().begin(), queryGroups[j]->getCommonSynonyms().end(), [&](const std::string& synonym) {
+                return currentGroup->getCommonSynonyms().find(synonym) != currentGroup->getCommonSynonyms().end();
+            });
+
+            if (shouldMerge) {
+                currentGroup->mergeQueryGroup(queryGroups[j]);
+                merged[j] = true; // Mark as merged
             }
         }
+        mergedGroups.push_back(currentGroup); // Add either merged group or the original if no merge occurred
     }
 
-    return queryGroups;
+    return mergedGroups;
 }
+
 
 std::vector<std::shared_ptr<QueryGroup>> QueryOptimiser::createQueryGroups() {
     std::vector<std::shared_ptr<QueryGroup>> queryGroups;
