@@ -354,7 +354,7 @@ TEST_CASE("CFG for complex nested if-while constructs") {
 	std::filesystem::remove(filename);
 }
 
-TEST_CASE("CFG for large program of SIMPLE size 400 lines") {
+TEST_CASE("CFG for large program of SIMPLE size 420 lines") {
 	std::string filename = "sample.txt";
 	std::string sampleProgram =
 		"procedure proc1 {"

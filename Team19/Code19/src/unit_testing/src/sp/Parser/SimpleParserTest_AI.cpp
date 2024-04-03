@@ -920,6 +920,7 @@ TEST_CASE("Long assignment statement") {
 	// Scan the AST tree and count each of the numbers 1-1000
 		// Number of constants in the program
 	const int numConsts = 1000;
+	bool foundAll = true;
 
 	// Container to store if a constant is found
 	std::vector<bool> found(numConsts + 1, false);
@@ -942,8 +943,11 @@ TEST_CASE("Long assignment statement") {
 
 	// Ensuring if all constants from 1 to 'numConsts' are found
 	for (int i = 1; i <= numConsts; ++i) {
-		REQUIRE(found[i]);
+		if (!found[i]) {
+			foundAll = false;
+		}
 	}
 
+	REQUIRE(foundAll);
 	std::filesystem::remove(filename);
 }
