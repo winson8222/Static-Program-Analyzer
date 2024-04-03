@@ -4,7 +4,6 @@
 #include <filesystem>
 #include <fstream>
 #include <utility>
-#include <functional>
 #include <string>
 #include <vector>
 
@@ -926,20 +925,20 @@ TEST_CASE("Long assignment statement") {
 	std::vector<bool> found(numConsts + 1, false);
 
 	// Function to recursively search for constants in the AST
-	std::function<void(std::shared_ptr<ASTNode>)> findConst = [&](std::shared_ptr<ASTNode> node) {
+	void findConst(std::shared_ptr<ASTNode> node, std::vector<bool>& found) {
 		if (node->getType() == ASTNodeType::CONSTANT) {
 			int value = std::stoi(node->getValue());
-			found[value] = true;
+	        	found[value] = true;
 		}
-
-		// Searching in each child of the current node
+	
+		// Recursive search in each child of the current node
 		for (auto& child : node->getChildren()) {
-			findConst(child);
-		}
-		};
+			findConstantsInAST(child, found);
+	    	}
+	}
 
 	// Searching for constants in the AST
-	findConst(statement);
+	findConst(statement, found);
 
 	// Ensuring if all constants from 1 to 'numConsts' are found
 	for (int i = 1; i <= numConsts; ++i) {
