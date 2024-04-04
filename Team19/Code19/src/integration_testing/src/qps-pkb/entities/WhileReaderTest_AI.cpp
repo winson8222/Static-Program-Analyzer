@@ -29,7 +29,7 @@ TEST_CASE_METHOD(WhileReaderFixture, "qps/QueryProcessingSubsystem: WhileReader 
 
     SECTION("Verify retrieval of all 'while' statement numbers via QPS") {
         std::string query = "while w; Select w";
-        auto results = Utils::getResultsFromQuery(query, pkbManager->getPKBReaderManager());
+        auto results = Utils::getResultsFromQuery(query, pkbManager->getPKBReaderManager(), pkbManager->getPKBCacheManager());
         std::unordered_set<std::string> expectedResults = {"1", "5"};
         REQUIRE(results == expectedResults);
     }
@@ -38,14 +38,14 @@ TEST_CASE_METHOD(WhileReaderFixture, "qps/QueryProcessingSubsystem: WhileReader 
         
 
         std::string queryNonExistentWhile = "while w; Select w such that Follows(1, w)";
-        auto resultNonExistentWhile = Utils::getResultsFromQuery(queryNonExistentWhile, pkbManager->getPKBReaderManager());
+        auto resultNonExistentWhile = Utils::getResultsFromQuery(queryNonExistentWhile, pkbManager->getPKBReaderManager(), pkbManager->getPKBCacheManager());
         REQUIRE(resultNonExistentWhile.empty());
     }
 
     SECTION("Verify store is cleared correctly via QPS") {
         whileWriter->clear(); // Clear all 'while' statements
         std::string query = "while w; Select w";
-        auto resultsAfterClear = Utils::getResultsFromQuery(query, pkbManager->getPKBReaderManager());
+        auto resultsAfterClear = Utils::getResultsFromQuery(query, pkbManager->getPKBReaderManager(), pkbManager->getPKBCacheManager());
         REQUIRE(resultsAfterClear.empty());
     }
 }

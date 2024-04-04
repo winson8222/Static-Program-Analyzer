@@ -27,7 +27,7 @@ TEST_CASE_METHOD(ReadReaderFixture, "qps/QueryProcessingSubsystem: ReadReader In
 
     SECTION("Verify retrieval of all 'read' statement numbers via QPS") {
         std::string query = "read r; Select r";
-        auto results = Utils::getResultsFromQuery(query, pkbManager->getPKBReaderManager());
+        auto results = Utils::getResultsFromQuery(query, pkbManager->getPKBReaderManager(), pkbManager->getPKBCacheManager());
         std::unordered_set<std::string> expectedResults = {"4", "8"};
         REQUIRE(results == expectedResults);
     }

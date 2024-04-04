@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <iostream>
 #include "qps/evaluator/ResultTable.h"
 #include "qps/evaluator/strategies/WithStrategy.h"
 
@@ -11,8 +12,8 @@
 // prompt: used copilot
 // Constructor for QueryEvaluator class.
 // Initializes the strategy and entity factories and sets up the PKB reader manager and parsing result.
-QueryEvaluator::QueryEvaluator(std::shared_ptr<PKBReaderManager> pkbReaderManager, ParsingResult& parsingResult)
-    : pkbReaderManager(pkbReaderManager), parsingResult(parsingResult) {
+QueryEvaluator::QueryEvaluator(std::shared_ptr<PKBReaderManager> pkbReaderManager, std::shared_ptr<PKBCacheManager> pkbCacheManager, ParsingResult& parsingResult)
+        : pkbReaderManager(pkbReaderManager), pkbCacheManager(pkbCacheManager), parsingResult(parsingResult){
     initializeStrategyFactory();
     initializeEntityFactory();
 }
@@ -195,7 +196,16 @@ std::unordered_set<std::string> QueryEvaluator::evaluateQuery() {
         return error;
     }
 
+
     const std::vector<std::shared_ptr<Clause>> clauses = addAllClauses(parsingResult);
+    for (auto& clause : clauses) {
+        TokenType clauseRelationshipType = clause->getRelationship().getType();
+        if (clauseRelationshipType == TokenType::Affects) {
+            pkbCacheManager->populateAffectsCache();
+        } else if (clauseRelationshipType == TokenType::NextT) {
+            pkbCacheManager->populateNextTCache();
+        }
+    }
     QueryOptimiser queryOptimiser(clauses);
     std::vector<std::shared_ptr<QueryGroup>> queryGroups = queryOptimiser.optimise(true);
 
