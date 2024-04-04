@@ -47,7 +47,7 @@ private:
     Token firstParam;
     Token secondParam;
     Token relationship;
-    int penalty;
+    int penalty = -1;
 
 
     // create an enum of clause type

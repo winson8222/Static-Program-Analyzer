@@ -2,6 +2,7 @@
 #include "qps/evaluator/QueryOptimiser.h"
 #include "qps/parser/clauses/Clause.h"
 #include "qps/parser/clauses/SuchThatClause.h"
+#include "qps/parser/Tokenizer.h"
 #include <memory>
 
 
@@ -382,6 +383,6 @@ TEST_CASE("Intra Group sorting of Related Groups") {
     QueryOptimiser queryOptimiser = QueryOptimiser(clauses);
     std::vector<std::shared_ptr<QueryGroup>> queryGroups = queryOptimiser.optimise(true);
     REQUIRE(queryGroups.size() == 2);
-
 }
+
 
