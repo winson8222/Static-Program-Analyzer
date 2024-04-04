@@ -609,13 +609,14 @@ TEST_CASE("Next Optimisation") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
     SECTION("IntraGroup prioritise one constant and one Synonym") {
         std::string query = "stmt s1, s2, s3, s4; Select s1 such that Next*(s1,s2) and Next*(s2,s3) and Next*(s3,s4) and Next*(s1, 2)";
         Tokenizer tokenizer = Tokenizer(query);
         std::vector<Token> tokens = tokenizer.tokenize();
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
-        QueryEvaluator evaluator = QueryEvaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator = QueryEvaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{ });
     }

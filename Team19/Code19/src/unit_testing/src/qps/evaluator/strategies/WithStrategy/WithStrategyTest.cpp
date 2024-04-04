@@ -397,6 +397,7 @@ TEST_CASE("With strategy with Optimisation") {
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<VariableWriter> variableWriter = pkbWriterManager->getVariableWriter();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
     variableWriter->insertVariable("hello");
     //    variable v;
     //    Select BOOLEAN with v.varName = "ea"
@@ -405,7 +406,7 @@ TEST_CASE("With strategy with Optimisation") {
 
     QueryParser parser(tokens);
     auto parsingResult = parser.parse();
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
     std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
     std::unordered_set<std::string> expectedResults = { "FALSE" };
     REQUIRE(actualResults == expectedResults);
