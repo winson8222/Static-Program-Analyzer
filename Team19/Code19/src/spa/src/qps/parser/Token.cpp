@@ -23,3 +23,8 @@ std::string Token::getValue() const {
 void Token::setType(TokenType type) {
     this->type = type;
 }
+
+
+bool Token::isEqual(Token &token) {
+    return this->type == token.getType() && this->value == token.getValue();
+}
