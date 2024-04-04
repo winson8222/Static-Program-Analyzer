@@ -385,3 +385,23 @@ TEST_CASE("M2 failing after Fix 2") {
 	std::unordered_set<std::string> expectedResults = { "FALSE" };
 	REQUIRE(actualResults == expectedResults);
 }
+
+
+TEST_CASE("With strategy with Optimisation") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<VariableWriter> variableWriter = pkbWriterManager->getVariableWriter();
+    variableWriter->insertVariable("hello");
+    //    variable v;
+    //    Select BOOLEAN with v.varName = "ea"
+    Tokenizer tokenizer("variable v; Select BOOLEAN with v.varName = \"ea\" and v.varName = \"ea\" such that Uses(\"hello\", v)");
+    std::vector<Token> tokens = tokenizer.tokenize();
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
+    std::unordered_set<std::string> expectedResults = { "FALSE" };
+    REQUIRE(actualResults == expectedResults);
+}
