@@ -1,0 +1,5 @@
+1 - Stress!!!!
+stmt s;
+Select s such that Next*(1, s)
+1
+50000
