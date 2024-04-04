@@ -70,6 +70,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/ParentStrategy/1") {
 TEST_CASE("src/qps/evaluator/suchThatStrategies/ParentStrategy/2") {
 std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
 std::shared_ptr<ParentWriter> parentWriter = pkbWriterManager->getParentWriter();
@@ -102,7 +103,7 @@ std::shared_ptr<ParentTWriter> parentTWriter = pkbWriterManager->getParentTWrite
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{ "1" });
     }
@@ -126,7 +127,7 @@ std::shared_ptr<ParentTWriter> parentTWriter = pkbWriterManager->getParentTWrite
         };
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{ "3" });
     }
@@ -152,7 +153,7 @@ std::shared_ptr<ParentTWriter> parentTWriter = pkbWriterManager->getParentTWrite
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{"1", "2"});
     }
@@ -176,7 +177,7 @@ std::shared_ptr<ParentTWriter> parentTWriter = pkbWriterManager->getParentTWrite
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res.empty());
     }
@@ -200,7 +201,7 @@ std::shared_ptr<ParentTWriter> parentTWriter = pkbWriterManager->getParentTWrite
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res.empty());
     }
@@ -224,7 +225,7 @@ std::shared_ptr<ParentTWriter> parentTWriter = pkbWriterManager->getParentTWrite
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res.empty());
     }
@@ -254,7 +255,7 @@ std::shared_ptr<ParentTWriter> parentTWriter = pkbWriterManager->getParentTWrite
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{ "1 2", "1 3", "2 3"});
     }
@@ -277,7 +278,7 @@ std::shared_ptr<ParentTWriter> parentTWriter = pkbWriterManager->getParentTWrite
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{ "TRUE" });
 
@@ -301,7 +302,7 @@ std::shared_ptr<ParentTWriter> parentTWriter = pkbWriterManager->getParentTWrite
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{ "TRUE" });
 
@@ -325,7 +326,7 @@ std::shared_ptr<ParentTWriter> parentTWriter = pkbWriterManager->getParentTWrite
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{ "FALSE" });
 
@@ -352,7 +353,7 @@ std::shared_ptr<ParentTWriter> parentTWriter = pkbWriterManager->getParentTWrite
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{ "TRUE" });
 

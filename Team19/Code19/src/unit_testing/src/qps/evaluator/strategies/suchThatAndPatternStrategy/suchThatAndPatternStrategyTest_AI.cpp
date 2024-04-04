@@ -13,6 +13,7 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrate
 	// Setup shared PKBManager and related components for use in test cases
 	auto pkbManager = std::make_shared<PKBManager>();
 	auto pkbReaderManager = pkbManager->getPKBReaderManager();
+    auto pkbCacheManager = pkbManager->getPKBCacheManager();
 	auto pkbWriterManager = pkbManager->getPKBWriterManager();
 	auto statementWriter = pkbWriterManager->getStatementWriter();
 	auto parentTWriter = pkbWriterManager->getParentTWriter();
@@ -66,7 +67,7 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrate
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
 		std::unordered_set<std::string> expectedResults = { "1" };
 		REQUIRE(actualResults == expectedResults);
@@ -120,7 +121,7 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrate
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
 		std::unordered_set<std::string> expectedResults = { "2", "1 3" };
 		//        REQUIRE(actualResults == expectedResults);
@@ -179,7 +180,7 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrate
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
 		std::unordered_set<std::string> expectedResults = { "1" };
 		REQUIRE(actualResults == expectedResults);
@@ -231,7 +232,7 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrate
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> res = evaluator.evaluateQuery();
 	}
 
@@ -289,7 +290,7 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrate
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> res = evaluator.evaluateQuery();
 		REQUIRE(res == std::unordered_set<std::string>{"11"});
 
@@ -339,7 +340,7 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrate
 	//
 	//        QueryParser parser(tokens);
 	//        auto parsingResult = parser.parse();
-	//        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+	//        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 	//        std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
 	//        std::unordered_set<std::string> expectedResults = {"12", "13"}; // Both statements should match
 	//        REQUIRE(actualResults == expectedResults);
@@ -387,7 +388,7 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrate
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		auto actualResults = evaluator.evaluateQuery();
 		std::unordered_set<std::string> expectedResults = { "11" }; // Both assignments modify "count"
 		REQUIRE(actualResults == expectedResults);
@@ -445,7 +446,7 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrate
 	//        // Parse and evaluate the query
 	//        QueryParser parser(tokens);
 	//        auto parsingResult = parser.parse();
-	//        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+	//        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 	//        auto actualResults = evaluator.evaluateQuery();
 	//        std::unordered_set<std::string> expectedResults = {"6", "7", "8", "12", "13"};
 	//        REQUIRE(actualResults == expectedResults);
@@ -492,7 +493,7 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrate
 		// Parse and evaluate the query
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		auto actualResults = evaluator.evaluateQuery();
 		std::unordered_set<std::string> expectedResults; // No assignments modify and use "x" directly
 		REQUIRE(actualResults == expectedResults);
@@ -539,7 +540,7 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrate
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> res = evaluator.evaluateQuery();
 		REQUIRE(res == std::unordered_set<std::string>{"TRUE"});
 	}
@@ -577,7 +578,7 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrate
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> res = evaluator.evaluateQuery();
 		REQUIRE(res == std::unordered_set<std::string>{"TRUE"});
 	}
@@ -615,7 +616,7 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrate
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> res = evaluator.evaluateQuery();
 		REQUIRE(res == std::unordered_set<std::string>{"FALSE"});
 	}
@@ -706,7 +707,7 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrate
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> res = evaluator.evaluateQuery();
 		REQUIRE(res == std::unordered_set<std::string>{"11"});
 
@@ -757,7 +758,7 @@ TEST_CASE("src/qps/evaluator/suchThatAndPatternStrategy/suchThatAndPatternStrate
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
 
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> res = evaluator.evaluateQuery();
 		REQUIRE(res == std::unordered_set<std::string>{"1"});
 
@@ -770,6 +771,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 	SECTION("Evaluate Assign Pattern Strategy with Exact Match for Variable 'x' and Value '1'") {
 		std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 		std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 		std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 		std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -796,7 +798,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
 
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> res = evaluator.evaluateQuery();
 		REQUIRE(res == std::unordered_set<std::string>{"1"});
 	}
@@ -804,6 +806,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 	SECTION("Evaluate Assign Pattern Strategy with Variable Pattern Matching '1' Across Multiple Assignments") {
 		std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 		std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 		std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 		std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -834,7 +837,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
 
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> res = evaluator.evaluateQuery();
 		REQUIRE(res == std::unordered_set<std::string>{"1", "2"});
 	}
@@ -842,6 +845,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 	SECTION("Evaluating AssignPattern with Variable Synonym Matching '1' in Assignments Returns Variable Names") {
 		std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 		std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 		std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 		std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -872,7 +876,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
 
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> res = evaluator.evaluateQuery();
 		REQUIRE(res == std::unordered_set<std::string>{"x", "y"});
 	}
@@ -881,6 +885,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 	SECTION("Evaluating AssignPattern for Variable Synonyms in Diverse Assignments Returns Matching Variable Names") {
 		std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 		std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 		std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 		std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -911,7 +916,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
 
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> res = evaluator.evaluateQuery();
 		REQUIRE(res == std::unordered_set<std::string>{"x", "y"});
 	}
@@ -919,6 +924,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 	SECTION("AssignPattern with Underscore and Specific Value Matches Only Relevant Assignments") {
 		std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 		std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 		std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 		std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -949,7 +955,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
 
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> res = evaluator.evaluateQuery();
 		REQUIRE(res == std::unordered_set<std::string>{"3"});
 	}
@@ -957,6 +963,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 	SECTION("AssignPattern with Variable and Underscore Matches Assignments with Specific Value") {
 		std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 		std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 		std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 		std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -988,7 +995,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
 
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> res = evaluator.evaluateQuery();
 		REQUIRE(res == std::unordered_set<std::string>{"1", "3"});
 	}
@@ -996,6 +1003,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 	SECTION("Matching AssignPatterns with Wildcards for Exact Expressions") {
 		std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 		std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 		std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 		std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -1027,7 +1035,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
 
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> res = evaluator.evaluateQuery();
 		REQUIRE(res == std::unordered_set<std::string>{"1"});
 	}
@@ -1035,6 +1043,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 	SECTION("AssignPatternStrategy Evaluates Complex Expression Match with Wildcards") {
 		std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 		std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 		std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 		std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -1066,7 +1075,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
 
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> res = evaluator.evaluateQuery();
 		REQUIRE(res == std::unordered_set<std::string>{"1"});
 	}
@@ -1074,6 +1083,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 	SECTION("AssignPatternStrategy Evaluates Complex Expression Match with Wildcards") {
 		std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 		std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 		std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 		std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -1105,7 +1115,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
 
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> res = evaluator.evaluateQuery();
 		REQUIRE(res == std::unordered_set<std::string>{});
 	}
@@ -1114,6 +1124,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 	SECTION("Variable Pattern Matching in Assignments with Specific Operations") {
 		std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 		std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 		std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 		std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -1145,7 +1156,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
 
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> res = evaluator.evaluateQuery();
 		REQUIRE(res == std::unordered_set<std::string>{"x", "y"});
 	}
@@ -1153,6 +1164,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 	SECTION("Variable Pattern Matching in Assignments with Specific Operations") {
 		std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 		std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 		std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 		std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -1184,7 +1196,7 @@ TEST_CASE("SuchThatPatternStrategy Evaluation") {
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
 
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set<std::string> res = evaluator.evaluateQuery();
 		REQUIRE(res == std::unordered_set<std::string>{"x", "z"});
 	}
