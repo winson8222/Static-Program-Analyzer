@@ -29,7 +29,7 @@ TEST_CASE_METHOD(ProcedureReaderFixture, "qps/QueryProcessingSubsystem: Procedur
 
     SECTION("Verify retrieval of all procedures via QPS") {
         std::string query = "procedure p; Select p";
-        auto results = Utils::getResultsFromQuery(query, pkbManager->getPKBReaderManager());
+        auto results = Utils::getResultsFromQuery(query, pkbManager->getPKBReaderManager(), pkbManager->getPKBCacheManager());
         std::unordered_set<std::string> expectedResults = {"proc1", "proc2", "assign", "call"};
         REQUIRE(results == expectedResults);
     }

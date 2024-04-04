@@ -8,6 +8,8 @@
 TEST_CASE("stmt s1, s2; variable v; Select BOOLEAN such that not Follows(1, 2)") {
 	std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
+    
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 	std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -29,7 +31,7 @@ TEST_CASE("stmt s1, s2; variable v; Select BOOLEAN such that not Follows(1, 2)")
 	auto tokens = tokenizer.tokenize();
 	QueryParser parser(tokens);
 	auto parsingResult = parser.parse();
-	QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+	QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 	std::unordered_set<std::string> res = evaluator.evaluateQuery();
 	REQUIRE(res == std::unordered_set<std::string>{ "FALSE" });
 }
@@ -38,6 +40,7 @@ TEST_CASE("stmt s1, s2; variable v; Select BOOLEAN such that not Follows(1, 2)")
 TEST_CASE("stmt s1, s2; variable v; Select s1 such that not Follows(s1, 2)") {
 	std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 	std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -59,7 +62,7 @@ TEST_CASE("stmt s1, s2; variable v; Select s1 such that not Follows(s1, 2)") {
 	auto tokens = tokenizer.tokenize();
 	QueryParser parser(tokens);
 	auto parsingResult = parser.parse();
-	QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+	QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 	std::unordered_set<std::string> res = evaluator.evaluateQuery();
 	REQUIRE(res == std::unordered_set<std::string>{ "2", "3" });
 }
@@ -67,6 +70,7 @@ TEST_CASE("stmt s1, s2; variable v; Select s1 such that not Follows(s1, 2)") {
 TEST_CASE("stmt s1, s2; variable v; Select s1 such that not Follows(s1, 2) and Follows(s1, 3)") {
 	std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 	std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -88,7 +92,7 @@ TEST_CASE("stmt s1, s2; variable v; Select s1 such that not Follows(s1, 2) and F
 	auto tokens = tokenizer.tokenize();
 	QueryParser parser(tokens);
 	auto parsingResult = parser.parse();
-	QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+	QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 	std::unordered_set<std::string> res = evaluator.evaluateQuery();
 	REQUIRE(res == std::unordered_set<std::string>{ "2" });
 }
@@ -97,6 +101,7 @@ TEST_CASE("stmt s1, s2; variable v; Select s1 such that not Follows(s1, 2) and F
 TEST_CASE("stmt s1, s2; variable v; Select s1 such that not Follows(s1, 2) and Follows(s2, 3)") {
 	std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 	std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -118,7 +123,7 @@ TEST_CASE("stmt s1, s2; variable v; Select s1 such that not Follows(s1, 2) and F
 	auto tokens = tokenizer.tokenize();
 	QueryParser parser(tokens);
 	auto parsingResult = parser.parse();
-	QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+	QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 	std::unordered_set<std::string> res = evaluator.evaluateQuery();
 	REQUIRE(res == std::unordered_set<std::string>{ "2", "3" });
 }
@@ -126,6 +131,7 @@ TEST_CASE("stmt s1, s2; variable v; Select s1 such that not Follows(s1, 2) and F
 TEST_CASE("stmt s1, s2; variable v; Select s1 such that not Follows(s1, 2) and Follows(s1, s2)") {
 	std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 	std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -147,7 +153,7 @@ TEST_CASE("stmt s1, s2; variable v; Select s1 such that not Follows(s1, 2) and F
 	auto tokens = tokenizer.tokenize();
 	QueryParser parser(tokens);
 	auto parsingResult = parser.parse();
-	QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+	QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 	std::unordered_set<std::string> res = evaluator.evaluateQuery();
 	REQUIRE(res == std::unordered_set<std::string>{ "2" });
 }
@@ -155,6 +161,7 @@ TEST_CASE("stmt s1, s2; variable v; Select s1 such that not Follows(s1, 2) and F
 TEST_CASE("stmt s1, s2; variable v; Select <s1, s2> such that not Follows(s1, s2)") {
 	std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 	std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -176,7 +183,7 @@ TEST_CASE("stmt s1, s2; variable v; Select <s1, s2> such that not Follows(s1, s2
 	auto tokens = tokenizer.tokenize();
 	QueryParser parser(tokens);
 	auto parsingResult = parser.parse();
-	QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+	QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 	std::unordered_set<std::string> res = evaluator.evaluateQuery();
 	REQUIRE(res == std::unordered_set<std::string>{ "1 3", "2 2", "3 3", "1 1", "2 1", "3 2", "3 1" });
 }
@@ -186,6 +193,7 @@ TEST_CASE("stmt s1, s2; variable v; Select <s1, s2> such that not Follows(s1, s2
 TEST_CASE("stmt s1, s2; variable v; Select s1 such that Follows(s2, 3) and not Follows(s1, 2)") {
 	std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 	std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -207,7 +215,7 @@ TEST_CASE("stmt s1, s2; variable v; Select s1 such that Follows(s2, 3) and not F
 	auto tokens = tokenizer.tokenize();
 	QueryParser parser(tokens);
 	auto parsingResult = parser.parse();
-	QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+	QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 	std::unordered_set<std::string> res = evaluator.evaluateQuery();
 	REQUIRE(res == std::unordered_set<std::string>{ "2", "3" });
 }
@@ -216,6 +224,7 @@ TEST_CASE("stmt s1, s2; variable v; Select s1 such that Follows(s2, 3) and not F
 TEST_CASE("stmt s1, s2; variable v; Select <s1, s2> such that not Follows(s1, s2) and Follows(s1, 1)") {
 	std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 	std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -237,7 +246,7 @@ TEST_CASE("stmt s1, s2; variable v; Select <s1, s2> such that not Follows(s1, s2
 	auto tokens = tokenizer.tokenize();
 	QueryParser parser(tokens);
 	auto parsingResult = parser.parse();
-	QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+	QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 	std::unordered_set<std::string> res = evaluator.evaluateQuery();
 	REQUIRE(res == std::unordered_set<std::string>{});
 }
@@ -245,6 +254,7 @@ TEST_CASE("stmt s1, s2; variable v; Select <s1, s2> such that not Follows(s1, s2
 TEST_CASE("stmt s1, s2; variable v; Select <s1, s2> such that not Follows(s1, s2) and Follows(s1, 3)") {
 	std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 	std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -266,7 +276,7 @@ TEST_CASE("stmt s1, s2; variable v; Select <s1, s2> such that not Follows(s1, s2
 	auto tokens = tokenizer.tokenize();
 	QueryParser parser(tokens);
 	auto parsingResult = parser.parse();
-	QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+	QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 	std::unordered_set<std::string> res = evaluator.evaluateQuery();
 	REQUIRE(res == std::unordered_set<std::string>{});
 }
@@ -275,6 +285,7 @@ TEST_CASE("stmt s1, s2; variable v; Select <s1, s2> such that not Follows(s1, s2
 TEST_CASE("stmt s1, s2; variable v; Select <s1, s2> such that not Follows(s1, 3) and Follows(s1, 2)") {
 	std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 	std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -296,7 +307,7 @@ TEST_CASE("stmt s1, s2; variable v; Select <s1, s2> such that not Follows(s1, 3)
 	auto tokens = tokenizer.tokenize();
 	QueryParser parser(tokens);
 	auto parsingResult = parser.parse();
-	QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+	QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 	std::unordered_set<std::string> res = evaluator.evaluateQuery();
 	REQUIRE(res == std::unordered_set<std::string>{ "1 1", "1 2", "1 3" });
 }
@@ -304,6 +315,7 @@ TEST_CASE("stmt s1, s2; variable v; Select <s1, s2> such that not Follows(s1, 3)
 TEST_CASE("stmt s1, s2; variable v; Select s1 such that Follows(s1, s2) and not Follows(s1, 5) and Parent(1, 2)") {
 	std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
 	std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -328,7 +340,7 @@ TEST_CASE("stmt s1, s2; variable v; Select s1 such that Follows(s1, s2) and not 
 	auto tokens = tokenizer.tokenize();
 	QueryParser parser(tokens);
 	auto parsingResult = parser.parse();
-	QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+	QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 	std::unordered_set<std::string> res = evaluator.evaluateQuery();
 	REQUIRE(res == std::unordered_set<std::string>{ "1", "2" });
 }
@@ -338,6 +350,7 @@ TEST_CASE("stmt s1, s2; variable v; Select s1 such that Follows(s1, s2) and not 
 TEST_CASE("stmt s1, s2; variable v; Select s1 such that Follows(s1, s2) and not Follows(s1, 5) and not Parent(3, 2)") {
 	std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 	std::shared_ptr<VariableWriter> variableWriter = pkbWriterManager->getVariableWriter();
 	std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -366,7 +379,7 @@ TEST_CASE("stmt s1, s2; variable v; Select s1 such that Follows(s1, s2) and not 
 	auto tokens = tokenizer.tokenize();
 	QueryParser parser(tokens);
 	auto parsingResult = parser.parse();
-	QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+	QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 	std::unordered_set<std::string> res = evaluator.evaluateQuery();
 	REQUIRE(res == std::unordered_set<std::string>{ "1", "2" });
 }
@@ -375,6 +388,7 @@ TEST_CASE("stmt s1, s2; variable v; Select s1 such that Follows(s1, s2) and not 
 TEST_CASE("stmt s1, s2; variable v; Select s1 such that Uses(s1, v) and not Follows(s1, 3) and Parent(1, 2)") {
 	std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
 	std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 	std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 	std::shared_ptr<VariableWriter> variableWriter = pkbWriterManager->getVariableWriter();
 	std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
@@ -402,7 +416,7 @@ TEST_CASE("stmt s1, s2; variable v; Select s1 such that Uses(s1, v) and not Foll
 	auto tokens = tokenizer.tokenize();
 	QueryParser parser(tokens);
 	auto parsingResult = parser.parse();
-	QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+	QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 	std::unordered_set<std::string> res = evaluator.evaluateQuery();
 	REQUIRE(res == std::unordered_set<std::string>{ "3", "1" });
 }
@@ -411,6 +425,7 @@ TEST_CASE("stmt s1, s2; variable v; Select <v, s1, s2> such that Uses(s1, v) and
 	std::shared_ptr <PKBManager> pkbManager = std::make_shared<PKBManager>();
 	std::shared_ptr <PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
 	std::shared_ptr <PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    std::shared_ptr <PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 	std::shared_ptr <VariableWriter> variableWriter = pkbWriterManager->getVariableWriter();
 	std::shared_ptr <StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
 	std::shared_ptr <FollowsWriter> followWriter = pkbWriterManager->getFollowsWriter();
@@ -435,7 +450,7 @@ TEST_CASE("stmt s1, s2; variable v; Select <v, s1, s2> such that Uses(s1, v) and
 	auto tokens = tokenizer.tokenize();
 	QueryParser parser(tokens);
 	auto parsingResult = parser.parse();
-	QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+	QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 	std::unordered_set <std::string> res = evaluator.evaluateQuery();
 	REQUIRE(res
 		== std::unordered_set <std::string>{

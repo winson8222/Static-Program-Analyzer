@@ -16,10 +16,11 @@ TEST_CASE("qps/QueryProcessingSubsystem: PrintReader Integration Test") {
     // Assume you also need to insert these as statements in relevant stores
 
     auto pkbReaderManager = pkbManager->getPKBReaderManager();
+    auto pkbCacheManager = pkbManager->getPKBCacheManager();
 
     SECTION("Verify retrieval of all 'print' statement numbers via QPS") {
         std::string query = "print p; Select p";
-        auto results = Utils::getResultsFromQuery(query, pkbReaderManager);
+        auto results = Utils::getResultsFromQuery(query, pkbReaderManager, pkbCacheManager);
         std::unordered_set<std::string> expectedResults = {"3", "7"};
         REQUIRE(results == expectedResults);
     }

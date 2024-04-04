@@ -10,6 +10,7 @@
 TEST_CASE("src/qps/evaluator/suchThatStrategies/AffectsStrategy/1") {
 	std::shared_ptr <PKBManager> pkbManager = std::make_shared<PKBManager>();
 	std::shared_ptr <PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr <PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 	std::shared_ptr <PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 	std::shared_ptr <AssignWriter> assignWriter = pkbWriterManager->getAssignWriter();
 	std::shared_ptr <AssignPatternWriter> assignPatternWriter = pkbWriterManager->getAssignPatternWriter();
@@ -59,7 +60,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/AffectsStrategy/1") {
 	assignPatternWriter->addAssignPattern(2, "y", "'z''x''+'");
 	assignPatternWriter->addAssignPattern(3, "z", "'x''z''+'");
 	assignPatternWriter->addAssignPattern(4, "x", "'x''y''+'");
-	pkbManager->getPKBCacheManager()->populateCache();
 
 	SECTION("AffectsStrategy/Verify Direct Affects Relationship") {
 		// Define tokens for the query
@@ -78,7 +78,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/AffectsStrategy/1") {
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set <std::string> res = evaluator.evaluateQuery();
 		REQUIRE(res == std::unordered_set <std::string>{"FALSE"}); // Expect TRUE as 2 Affects 3 is defined
 	}
@@ -100,7 +100,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/AffectsStrategy/1") {
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set <std::string> res = evaluator.evaluateQuery();
 		REQUIRE(res == std::unordered_set <std::string>{"TRUE"});
 	}
@@ -125,7 +125,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/AffectsStrategy/1") {
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set <std::string> res = evaluator.evaluateQuery();
 		REQUIRE(res == std::unordered_set <std::string>{"FALSE"});
 	}
@@ -150,7 +150,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/AffectsStrategy/1") {
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set <std::string> res = evaluator.evaluateQuery();
 		REQUIRE(res == std::unordered_set <std::string>{"TRUE"});
 	}
@@ -175,7 +175,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/AffectsStrategy/1") {
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set <std::string> res = evaluator.evaluateQuery();
 		REQUIRE(res == std::unordered_set <std::string>{"2", "1"});
 	}
@@ -200,7 +200,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/AffectsStrategy/1") {
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set <std::string> res = evaluator.evaluateQuery();
 		REQUIRE(res== std::unordered_set <std::string>{"2", "1"});
 	}
@@ -227,7 +227,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/AffectsStrategy/1") {
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set <std::string> res = evaluator.evaluateQuery();
 		REQUIRE(res== std::unordered_set <std::string>{"2", "4", "3"});
 	}
@@ -253,7 +253,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/AffectsStrategy/1") {
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set <std::string> res = evaluator.evaluateQuery();
 		REQUIRE(res== std::unordered_set <std::string>{"2", "1"});
 	}
@@ -279,7 +279,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/AffectsStrategy/1") {
 
 		QueryParser parser(tokens);
 		auto parsingResult = parser.parse();
-		QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 		std::unordered_set <std::string> res = evaluator.evaluateQuery();
 		REQUIRE(res== std::unordered_set <std::string>{"1", "2"});
 	}

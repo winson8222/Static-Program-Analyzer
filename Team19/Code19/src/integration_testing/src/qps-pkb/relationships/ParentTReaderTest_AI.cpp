@@ -22,11 +22,12 @@ TEST_CASE("qps/QueryProcessingSubsystem: ParentTReader Integration Test") {
     statementWriter->insertStatement(3);
 
     auto pkbReaderManager = pkbManager->getPKBReaderManager();
+    auto pkbCacheManager = pkbManager->getPKBCacheManager();
 
     SECTION("Verify direct and indirect ParentT relationships via QPS") {
         // Query to find all statements that have a parent (direct or indirect)
         std::string queryAllChildren = "stmt s; Select s such that Parent*(1, s)";
-        auto resultsAllChildren = Utils::getResultsFromQuery(queryAllChildren, pkbReaderManager);
+        auto resultsAllChildren = Utils::getResultsFromQuery(queryAllChildren,pkbReaderManager, pkbCacheManager);
         std::unordered_set<std::string> expectedResultsAllChildren = {"2", "3"};
         REQUIRE(resultsAllChildren == expectedResultsAllChildren);
     }
@@ -34,7 +35,7 @@ TEST_CASE("qps/QueryProcessingSubsystem: ParentTReader Integration Test") {
     SECTION("Verify statements with no indirect parent via QPS") {
         // Query to find statements that do not have an indirect parent
         std::string queryNoIndirectParent = "stmt s; Select s such that Parent*(s, _)";
-        auto resultsNoIndirectParent = Utils::getResultsFromQuery(queryNoIndirectParent, pkbReaderManager);
+        auto resultsNoIndirectParent = Utils::getResultsFromQuery(queryNoIndirectParent,pkbReaderManager, pkbCacheManager);
         // Expect to find statements that are parents but not as a result of transitivity
         std::unordered_set<std::string> expectedResultsNoIndirectParent = {"1", "2"};
         REQUIRE(resultsNoIndirectParent == expectedResultsNoIndirectParent);
@@ -43,7 +44,7 @@ TEST_CASE("qps/QueryProcessingSubsystem: ParentTReader Integration Test") {
     SECTION("Verify non-existent ParentT relationship via QPS") {
         // Query for a non-existent ParentT relationship
         std::string queryNonExistentParentT = "stmt s; Select s such that Parent*(999, s)";
-        auto resultsNonExistentParentT = Utils::getResultsFromQuery(queryNonExistentParentT, pkbReaderManager);
+        auto resultsNonExistentParentT = Utils::getResultsFromQuery(queryNonExistentParentT,pkbReaderManager, pkbCacheManager);
         REQUIRE(resultsNonExistentParentT.empty()); // Expect no results for a non-existent transitive parent
     }
 
