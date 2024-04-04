@@ -379,13 +379,9 @@ TEST_CASE("Intra Group sorting of Related Groups") {
     clauses.push_back(ninthClause);
 
 
-
-
-
-
-
     QueryOptimiser queryOptimiser = QueryOptimiser(clauses);
     std::vector<std::shared_ptr<QueryGroup>> queryGroups = queryOptimiser.optimise(true);
     REQUIRE(queryGroups.size() == 2);
 
 }
+

@@ -205,6 +205,9 @@ std::unordered_set<std::string> QueryEvaluator::evaluateQuery() {
     bool isFirstStrategy = true;
     for (auto& queryGroup : queryGroups) {
         evaluateClauses(queryGroup->getClauses(), isFirstStrategy);
+        if (result->isTableFalse()) {
+            break;
+        }
     }
 
     // Retrieve and return the results based on the required synonym.
