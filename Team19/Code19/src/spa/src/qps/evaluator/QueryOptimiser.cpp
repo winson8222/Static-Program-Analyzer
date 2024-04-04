@@ -3,6 +3,7 @@
 
 
 
+#include <iostream>
 #include <utility>
 
 std::vector<std::shared_ptr<QueryGroup>> QueryOptimiser::optimise(bool isOptimised) {
@@ -44,31 +45,38 @@ std::vector<std::shared_ptr<QueryGroup>> QueryOptimiser::mergeCommonQueryGroups(
         return queryGroups;
     }
 
-    std::vector<std::shared_ptr<QueryGroup>> mergedGroups;
-    std::vector<bool> merged(queryGroups.size(), false); // Keep track of which groups have been merged
+    bool hasMerged = true;
+    while (hasMerged) {
+        hasMerged = false;
+        for (size_t i = 0; i < queryGroups.size() - 1 && !hasMerged; ++i) {
+            for (size_t j = i + 1; j < queryGroups.size() && !hasMerged; ++j) {
+                bool foundCommonSynonym = false;
+                const auto& iSynonyms = queryGroups[i]->getCommonSynonyms();
+                const auto& jSynonyms = queryGroups[j]->getCommonSynonyms();
 
-    for (size_t i = 0; i < queryGroups.size(); ++i) {
-        if (merged[i]) continue; // Skip already merged groups
+                // Iterate through each synonym in j's group and check if it exists in i's group
+                for (const auto& synonym : jSynonyms) {
+                    if (iSynonyms.find(synonym) != iSynonyms.end()) {
+                        foundCommonSynonym = true;
+                        break; // Found a common synonym, no need to continue
+                    }
+                }
 
-        auto currentGroup = queryGroups[i];
-        for (size_t j = i + 1; j < queryGroups.size(); ++j) {
-            if (merged[j]) continue; // Skip if already merged
+                if (foundCommonSynonym) {
+                    queryGroups[i]->mergeQueryGroup(queryGroups[j]);
+                    queryGroups.erase(queryGroups.begin() + j);
+                    hasMerged = true;
+                    // Since we've modified the vector, it's safer to restart the loop or exit if required.
+                    // However, as per your comment, if the logic needs to continue checking, adjust accordingly.
+                }
 
-            // Check if currentGroup and queryGroups[j] have common synonyms
-            bool shouldMerge = std::any_of(queryGroups[j]->getCommonSynonyms().begin(), queryGroups[j]->getCommonSynonyms().end(), [&](const std::string& synonym) {
-                return currentGroup->getCommonSynonyms().find(synonym) != currentGroup->getCommonSynonyms().end();
-            });
-
-            if (shouldMerge) {
-                currentGroup->mergeQueryGroup(queryGroups[j]);
-                merged[j] = true; // Mark as merged
             }
         }
-        mergedGroups.push_back(currentGroup); // Add either merged group or the original if no merge occurred
     }
 
-    return mergedGroups;
+    return queryGroups;
 }
+
 
 
 std::vector<std::shared_ptr<QueryGroup>> QueryOptimiser::createQueryGroups() {
