@@ -207,7 +207,7 @@ std::unordered_set<std::string> QueryEvaluator::evaluateQuery() {
         }
     }
     QueryOptimiser queryOptimiser(clauses);
-    std::vector<std::shared_ptr<QueryGroup>> queryGroups = queryOptimiser.optimise(isOptimised);
+    std::vector<std::shared_ptr<QueryGroup>> queryGroups = queryOptimiser.optimise(true);
 
 
 
@@ -215,6 +215,9 @@ std::unordered_set<std::string> QueryEvaluator::evaluateQuery() {
     bool isFirstStrategy = true;
     for (auto& queryGroup : queryGroups) {
         evaluateClauses(queryGroup->getClauses(), isFirstStrategy);
+        if (result->isTableFalse()) {
+            break;
+        }
     }
 
     // Retrieve and return the results based on the required synonym.
