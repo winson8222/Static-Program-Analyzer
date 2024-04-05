@@ -80,4 +80,16 @@ std::unordered_map<int, std::unordered_set<int>> NextTReader::getAllReversedNext
 bool NextTReader::hasNextT(int stmt1, int stmt2) {
 	return nextTStore->hasRelationship(stmt1, stmt2);
 }
+
+int NextTReader::getSize() {
+    return nextTStore->getSize();
+}
+
+int NextTReader::getRelationshipCountByKey(int stmtNum) {
+    return nextTStore->getRelationshipCountByKey(stmtNum);
+}
+
+int NextTReader::getRelationshipCountByValue(int stmtNum) {
+    return nextTStore->getRelationshipCountByValue(stmtNum);
+}
 // ai-gen end

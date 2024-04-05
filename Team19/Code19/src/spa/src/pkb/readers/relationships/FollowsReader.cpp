@@ -33,6 +33,18 @@ std::unordered_set<int> FollowsReader::getRelationshipsByKey(int stmtNum) {
   return getPostFollows(stmtNum);
 }
 
+int FollowsReader::getSize() {
+  return followsStore->getSize();
+}
+
+int FollowsReader::getRelationshipCountByKey(int stmtNum) {
+  return followsStore->getRelationshipCountByKey(stmtNum);
+}
+
+int FollowsReader::getRelationshipCountByValue(int stmtNum) {
+  return followsStore->getRelationshipCountByValue(stmtNum);
+}
+
 bool FollowsReader::hasRelationship(int stmt1, int stmt2) {
   return hasFollows(stmt1, stmt2);
 }

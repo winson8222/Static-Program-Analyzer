@@ -71,4 +71,10 @@ public:
     std::unordered_set<int> getKeys() override;
 
     std::unordered_set<std::string> getValues() override;
+
+    int getSize() override;
+
+    int getRelationshipCountByKey(int stmtNum) override;
+
+    int getRelationshipCountByValue(std::string varName) override;
 };
