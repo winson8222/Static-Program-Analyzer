@@ -57,4 +57,16 @@ std::unordered_set<int> FollowsTReader::getPostFollowsT(int stmt) {
 bool FollowsTReader::hasFollowsT(int stmt1, int stmt2) {
   return followsTStore->hasRelationship(stmt1, stmt2);
 }
+
+int FollowsTReader::getSize() {
+  return followsTStore->getSize();
+}
+
+int FollowsTReader::getRelationshipCountByKey(int stmtNum) {
+  return followsTStore->getRelationshipCountByKey(stmtNum);
+}
+
+int FollowsTReader::getRelationshipCountByValue(int stmtNum) {
+  return followsTStore->getRelationshipCountByValue(stmtNum);
+}
 // ai-gen end

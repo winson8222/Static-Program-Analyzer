@@ -57,3 +57,16 @@ return store->getKeys();
 std::unordered_set<std::string> ModifiesPReader::getValues() {
 return store->getValues();
 }
+
+int ModifiesPReader::getSize() {
+    return store->getSize();
+}
+
+int ModifiesPReader::getRelationshipCountByKey(std::string procName) {
+    return store->getRelationshipCountByKey(procName);
+}
+
+int ModifiesPReader::getRelationshipCountByValue(std::string varName) {
+    return store->getRelationshipCountByValue(varName);
+}
+// ai-gen end

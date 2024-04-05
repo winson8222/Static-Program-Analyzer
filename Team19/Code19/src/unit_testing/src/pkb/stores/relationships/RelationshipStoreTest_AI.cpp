@@ -156,4 +156,52 @@ TEST_CASE("pkb/stores/relationships/RelationshipStore") {
         auto expected = std::unordered_set<int>{2, 3};
         REQUIRE(relationshipStore.getValues() == expected);
     }
+
+    SECTION("getSize: Empty") {
+        RelationshipStore<int, int> relationshipStore;
+        REQUIRE(relationshipStore.getSize() == 0);
+    }
+
+    SECTION("getSize: Non-Empty") {
+        RelationshipStore<int, int> relationshipStore;
+        relationshipStore.addRelationship(1, 2);
+        relationshipStore.addRelationship(1, 3);
+        relationshipStore.addRelationship(2, 3);
+        relationshipStore.addRelationship(3, 4);
+        REQUIRE(relationshipStore.getSize() == 4);
+    }
+
+    SECTION("getRelationshipCountByKey: Empty Store") {
+        RelationshipStore<int, int> relationshipStore;
+        REQUIRE(relationshipStore.getRelationshipCountByKey(1) == 0);
+    }
+
+    SECTION("getRelationshipCountByKey: Non-Empty Store") {
+        RelationshipStore<int, int> relationshipStore;
+        relationshipStore.addRelationship(1, 2);
+        relationshipStore.addRelationship(1, 3);
+        relationshipStore.addRelationship(2, 3);
+        relationshipStore.addRelationship(3, 4);
+        REQUIRE(relationshipStore.getRelationshipCountByKey(1) == 2);
+        REQUIRE(relationshipStore.getRelationshipCountByKey(2) == 1);
+        REQUIRE(relationshipStore.getRelationshipCountByKey(3) == 1);
+        REQUIRE(relationshipStore.getRelationshipCountByKey(4) == 0);
+    }
+
+    SECTION("getRelationshipCountByValue: Empty Store") {
+        RelationshipStore<int, int> relationshipStore;
+        REQUIRE(relationshipStore.getRelationshipCountByValue(1) == 0);
+    }
+
+    SECTION("getRelationshipCountByValue: Non-Empty Store") {
+        RelationshipStore<int, int> relationshipStore;
+        relationshipStore.addRelationship(1, 2);
+        relationshipStore.addRelationship(1, 3);
+        relationshipStore.addRelationship(2, 3);
+        relationshipStore.addRelationship(3, 4);
+        REQUIRE(relationshipStore.getRelationshipCountByValue(2) == 1);
+        REQUIRE(relationshipStore.getRelationshipCountByValue(3) == 2);
+        REQUIRE(relationshipStore.getRelationshipCountByValue(4) == 1);
+        REQUIRE(relationshipStore.getRelationshipCountByValue(5) == 0);
+    }
 }

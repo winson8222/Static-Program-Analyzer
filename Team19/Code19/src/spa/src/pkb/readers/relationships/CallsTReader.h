@@ -36,6 +36,9 @@ public:
     std::unordered_set<std::string> getRelationshipsByKey(std::string key) override;
     std::unordered_set<std::string> getRelationshipsByValue( std::string value) override;
     bool hasRelationship( std::string key,  std::string value) override;
+    int getSize() override;
+    int getRelationshipCountByKey(std::string key) override;
+    int getRelationshipCountByValue(std::string value) override;
 
     /**
      * Retrieves all procedures indirectly called by a given procedure.

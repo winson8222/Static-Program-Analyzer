@@ -32,6 +32,18 @@ std::unordered_set<std::string> CallsTReader::getRelationshipsByValue(std::strin
     return callsTStore->getRelationshipsByValue(value);
 }
 
+int CallsTReader::getSize() {
+    return callsTStore->getSize();
+}
+
+int CallsTReader::getRelationshipCountByKey(std::string key) {
+    return callsTStore->getRelationshipCountByKey(key);
+}
+
+int CallsTReader::getRelationshipCountByValue(std::string value) {
+    return callsTStore->getRelationshipCountByValue(value);
+}
+
 bool CallsTReader::hasRelationship(std::string key, std::string value) {
     return callsTStore->hasRelationship(key, value);
 }
