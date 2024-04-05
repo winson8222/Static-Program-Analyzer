@@ -411,3 +411,23 @@ TEST_CASE("With strategy with Optimisation") {
     std::unordered_set<std::string> expectedResults = { "FALSE" };
     REQUIRE(actualResults == expectedResults);
 }
+
+TEST_CASE("With strategy with Optimisation2 0 synonyms in front") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<VariableWriter> variableWriter = pkbWriterManager->getVariableWriter();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
+    variableWriter->insertVariable("hello");
+    //    variable v;
+    //    Select BOOLEAN with v.varName = "ea"
+    Tokenizer tokenizer("stmt s1, s2, s3, s4, s5, s6; Select <s1, s2> such that Next*(s1,s2) and Next*(s2,s3) and Next*(s4,s5) with s4.stmt# = 500 and 1 = 1");
+    std::vector<Token> tokens = tokenizer.tokenize();
+
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
+    std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
+    std::unordered_set<std::string> expectedResults = { };
+    REQUIRE(actualResults == expectedResults);
+}
