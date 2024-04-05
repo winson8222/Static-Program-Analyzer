@@ -295,6 +295,27 @@ TEST_CASE("With strategy with multiple clauses") {
 		std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
 		REQUIRE(actualResults == std::unordered_set<std::string>{"hello"});
 	}
+
+	SECTION("not with 1") {
+		std::string query = " call c;  Select c.procName with not c.procName = \"hello\"";
+		Tokenizer tokenizer(query);
+		std::vector<Token> tokens = tokenizer.tokenize();
+		QueryParser parser(tokens);
+		auto parsingResult = parser.parse();
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
+		std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
+		REQUIRE(actualResults == std::unordered_set<std::string>{});
+	}
+	SECTION("not with 2") {
+		std::string query = " procedure p;  Select p with not p.procName = \"hello\"";
+		Tokenizer tokenizer(query);
+		std::vector<Token> tokens = tokenizer.tokenize();
+		QueryParser parser(tokens);
+		auto parsingResult = parser.parse();
+		QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
+		std::unordered_set<std::string> actualResults = evaluator.evaluateQuery();
+		REQUIRE(actualResults == std::unordered_set<std::string>{});
+	}
 }
 
 TEST_CASE("Multiple Clauses with with") {
