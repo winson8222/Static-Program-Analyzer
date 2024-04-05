@@ -509,4 +509,89 @@ TEST_CASE("sp/SourceProcessor: Stress tests") {
             // Output the duration
             std::cout << "LOG-INFO: Execution time for complex multi-assign source code: " << duration << " milliseconds" << std::endl;
     }
+
+    SECTION("Stress 3") {
+        auto start = std::chrono::high_resolution_clock::now();
+
+        std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+        std::string filename = "sample.txt";
+        std::string sampleProgram =
+            "procedure proc1 {"
+            "call proc13;  call proc5;  call proc18;  call proc10;  call proc4;  call proc3;  call proc15;  call proc14;  call proc16;  call proc24;  call proc12;  call proc9;  call proc6;  call proc2;  call proc19;  call proc21;  call proc11;  call proc22;}"
+            "procedure proc2 {"
+            "call proc10;  call proc15;  call proc5;  call proc9;  call proc18;  call proc17;  call proc24;  call proc14;  call proc4;  call proc21;  call proc20;  call proc16;  call proc8;  call proc3;  call proc7;  call proc23;  call proc6;  call proc11;  call proc25;  call proc22;  call proc19;}"
+            "procedure proc3 {"
+            "call proc7;  call proc17;  call proc6;  call proc4;  call proc8;}"
+            "procedure proc4 {"
+            "call proc6;  call proc16;  call proc18;  call proc19;  call proc22;  call proc14;  call proc8;  call proc7;  call proc21;  call proc23;  call proc9;  call proc11;}"
+            "procedure proc5 {"
+            "call proc17;  call proc21;  call proc13;  call proc25;  call proc10;  call proc16;  call proc24;  call proc7;  call proc23;  call proc20;}"
+            "procedure proc6 {"
+            "call proc19;  call proc14;  call proc18;  call proc9;  call proc8;  call proc10;  call proc23;  call proc21;  call proc12;  call proc17;  call proc24;  call proc16;  call proc20;}"
+            "procedure proc7 {"
+            "call proc14;  call proc24;  call proc20;  call proc17;  call proc19;  call proc23;  call proc8;  call proc15;  call proc10;  call proc18;  call proc13;  call proc16;  call proc12;  call proc22;  call proc25;  call proc21;  call proc11;  call proc9;}"
+            "procedure proc8 {"
+            "call proc15;  call proc17;  call proc23;  call proc22;  call proc11;  call proc16;  call proc14;}"
+            "procedure proc9 {"
+            "call proc16;  call proc23;  call proc18;  call proc12;  call proc13;  call proc15;  call proc24;  call proc11;  call proc10;  call proc19;  call proc21;  call proc17;  call proc22;  call proc20;}"
+            "procedure proc10 {"
+            "call proc23;  call proc25;  call proc15;  call proc18;  call proc21;  call proc17;  call proc13;  call proc11;  call proc12;}"
+            "procedure proc11 {"
+            "call proc19;  call proc14;  call proc24;  call proc25;  call proc21;  call proc17;}"
+            "procedure proc12 {"
+            "call proc16;  call proc25;  call proc20;  call proc23;  call proc18;  call proc19;  call proc21;  call proc14;  call proc15;  call proc17;  call proc22;  call proc13;  call proc24;}"
+            "procedure proc13 {"
+            "call proc16;  call proc15;  call proc22;}"
+            "procedure proc14 {"
+            "call proc23;  call proc25;  call proc20;  call proc21;  call proc19;}"
+            "procedure proc15 {"
+            "call proc19;}"
+            "procedure proc16 {"
+            "call proc22;  call proc18;  call proc23;  call proc19;  call proc17;  call proc20;}"
+            "procedure proc17 {"
+            "call proc21;  call proc25;  call proc22;  call proc20;}"
+            "procedure proc18 {"
+            "call proc23;  call proc20;  call proc21;  call proc22;  call proc24;  call proc25;}"
+            "procedure proc19 {"
+            "call proc25;  call proc21;  call proc20;  call proc24;}"
+            "procedure proc20 {"
+            "call proc21;  call proc22;  call proc25;  call proc23;  call proc24;}"
+            "procedure proc21 {"
+            "call proc23;}"
+            "procedure proc22 {"
+            "call proc24;}"
+            "procedure proc23 {"
+            "call proc24;  call proc25;}"
+            "procedure proc24 {"
+            "call proc25;}"
+            "procedure proc25 {"
+            "print x;"
+            "}";
+
+
+        std::ofstream file;
+        file.open(filename);
+        file << sampleProgram;
+        file.close();
+        REQUIRE(std::filesystem::exists(filename));
+        SourceProcessor sp = SourceProcessor(filename, pkbManager);
+        sp.parseSIMPLE();
+        sp.extractAndPopulate();
+
+        std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+        std::shared_ptr<ProcedureReader> procedureReader = pkbReaderManager->getProcedureReader();
+
+        std::unordered_set<std::string> expectedProcName = { "proc21", "proc9", "proc1", "proc20", "proc4", 
+                                                          "proc25", "proc22", "proc23", "proc24", "proc14",
+                                                          "proc11", "proc17", "proc18", "proc19", "proc15", "proc13", "proc16",
+                                                          "proc2", "proc12", "proc5", "proc10", "proc6", "proc7", "proc8", "proc3",};
+        REQUIRE(procedureReader->getAllProcedures() == expectedProcName);
+        auto end = std::chrono::high_resolution_clock::now();
+
+        // Calculate duration
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+
+        // Output the duration
+        std::cout << "LOG-INFO: Execution time for complex multi-call-procedure source code: " << duration << " milliseconds" << std::endl;
+    }
 }
