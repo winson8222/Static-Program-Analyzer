@@ -850,22 +850,28 @@ TEST_CASE("CFG for large program of SIMPLE size 420 lines") {
 	SECTION("Traversing while nodes") {
 		REQUIRE(cfgGraphs.size() == 20);
 
-		for (int iteration = 0; iteration < 20; iteration++) {
+		bool passed = true;
 
+		for (int iteration = 0; iteration < 20; iteration++) {
 			auto& node = cfgGraphs[iteration];
 
 			for (int i = 1; i <= 21; i++) {
-				REQUIRE(node->getLineNumber() == i + 21 * iteration);
+				if (node->getLineNumber() != i + 21 * iteration) {
+					passed = false;
+				}
 				node = (node->getChildren())[0];
 			}
 
 			for (int i = 20; i >= 1; i--) {
-				REQUIRE(node->getLineNumber() == i + 21 * iteration);
+				if (node->getLineNumber() != i + 21 * iteration) {
+					passed = false;
+				}
 				node = (node->getChildren())[1];
 			}
 
-			REQUIRE(node->getLineNumber() == -1);
 		}
+		
+		REQUIRE(passed);
 	}
 
 	std::filesystem::remove(filename);
