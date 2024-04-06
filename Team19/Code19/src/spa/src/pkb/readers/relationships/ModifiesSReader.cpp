@@ -6,6 +6,18 @@ bool ModifiesSReader::isEmpty() {
   return store->isEmpty();
 }
 
+int ModifiesSReader::getSize() {
+  return store->getSize();
+}
+
+int ModifiesSReader::getRelationshipCountByKey(int stmtNum) {
+  return store->getRelationshipCountByKey(stmtNum);
+}
+
+int ModifiesSReader::getRelationshipCountByValue(std::string varName) {
+  return store->getRelationshipCountByValue(varName);
+}
+
 // Custom methods
 std::unordered_set<std::string> ModifiesSReader::getAllVariablesModifiedByStmt(int stmtNum) {
   return store->getRelationshipsByKey(stmtNum);
@@ -55,3 +67,4 @@ std::unordered_set<int> ModifiesSReader::getKeys() {
 std::unordered_set<std::string> ModifiesSReader::getValues() {
   return store->getValues();
 }
+

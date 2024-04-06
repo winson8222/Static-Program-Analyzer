@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <iostream>
 #include "qps/evaluator/ResultTable.h"
 #include "qps/evaluator/strategies/WithStrategy.h"
 
@@ -11,8 +12,8 @@
 // prompt: used copilot
 // Constructor for QueryEvaluator class.
 // Initializes the strategy and entity factories and sets up the PKB reader manager and parsing result.
-QueryEvaluator::QueryEvaluator(std::shared_ptr<PKBReaderManager> pkbReaderManager, ParsingResult& parsingResult)
-    : pkbReaderManager(pkbReaderManager), parsingResult(parsingResult) {
+QueryEvaluator::QueryEvaluator(std::shared_ptr<PKBReaderManager> pkbReaderManager, std::shared_ptr<PKBCacheManager> pkbCacheManager, ParsingResult& parsingResult)
+        : pkbReaderManager(pkbReaderManager), pkbCacheManager(pkbCacheManager), parsingResult(parsingResult){
     initializeStrategyFactory();
     initializeEntityFactory();
 }
@@ -195,77 +196,27 @@ std::unordered_set<std::string> QueryEvaluator::evaluateQuery() {
         return error;
     }
 
+
     const std::vector<std::shared_ptr<Clause>> clauses = addAllClauses(parsingResult);
+    for (auto& clause : clauses) {
+        TokenType clauseRelationshipType = clause->getRelationship().getType();
+        if (clauseRelationshipType == TokenType::Affects) {
+            pkbCacheManager->populateAffectsCache();
+        } else if (clauseRelationshipType == TokenType::NextT) {
+            pkbCacheManager->populateNextTCache();
+        }
+    }
+    QueryOptimiser queryOptimiser(clauses);
+    std::vector<std::shared_ptr<QueryGroup>> queryGroups = queryOptimiser.optimise(true);
+
 
 
     // Evaluate the query using the strategies and compile the results.
     bool isFirstStrategy = true;
-    bool isOnlyBoolean = true;
-    for (auto& clause : clauses) {
-        std::shared_ptr<ResultTable> tempResult;
-        std::unique_ptr<QueryEvaluationStrategy> strategy;
-
-        // get the strategy based on the clause type
-        // make unique pointer to the clause
-
-        auto it = clauseToStrategiesMap.find(clause->getTypeName());
-        if (it != clauseToStrategiesMap.end()) {
-            strategy = it->second(clause);
-        }
-        else {
-            throw "No such strategy found";
-        }
-
-        // evaluate the strategy
-
-        tempResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult, *clause);
-
-
-
-        if (tempResult->isTableTrue()) {
-            if (handleTableTrue(clause)) {
-                continue;
-            }
-            else {
-                tempResult->setTableFalse();
-                result = tempResult;
-                break;
-            }
-        }
-
-        // if it is a false table, we can break early since the result will be false
-        if (tempResult->isTableFalse()) {
-            if (handleTableFalse(clause)) {
-                result = tempResult;
-                break;
-            }
-            else {
-                continue;
-            }
-        }
-
-        if (isFirstStrategy) {
-            isFirstStrategy = false;
-            if (clause->getClauseOperation() == Clause::ClauseOperations::AND) {
-                result = tempResult;
-            }
-            else {
-                std::shared_ptr<ResultTable> inversedResult;
-                inversedResult = getInverse(tempResult);
-                result = inversedResult;
-            }
-        }
-        else {
-            // if it is a non true and non empty table, join the result with the tempResult
-            if (clause->getClauseOperation() == Clause::ClauseOperations::AND) {
-                result = result->joinOnColumns(tempResult);
-            }
-            else {
-                // if it is a non true and non empty table, join the result with the tempResult
-                std::shared_ptr<ResultTable> inversedResult;
-                inversedResult = getInverse(tempResult);
-                result = result->joinOnColumns(inversedResult);
-            }
+    for (auto& queryGroup : queryGroups) {
+        evaluateClauses(queryGroup->getClauses(), isFirstStrategy);
+        if (result->isTableFalse()) {
+            break;
         }
     }
 
@@ -585,6 +536,81 @@ std::vector<std::shared_ptr<Clause>> QueryEvaluator::addAllClauses(ParsingResult
         clauses.push_back(std::make_shared<WithClause>(clause));
     }
     return clauses;
+}
+
+
+void QueryEvaluator::evaluateClauses(std::vector<std::shared_ptr<Clause>> clauses, bool& isFirstStrategy) {
+    for (auto& clause : clauses) {
+        std::shared_ptr<ResultTable> tempResult;
+        std::unique_ptr<QueryEvaluationStrategy> strategy;
+
+        // get the strategy based on the clause type
+        // make unique pointer to the clause
+
+        auto it = clauseToStrategiesMap.find(clause->getTypeName());
+        if (it != clauseToStrategiesMap.end()) {
+            strategy = it->second(clause);
+        }
+        else {
+            throw "No such strategy found";
+        }
+
+        // evaluate the strategy
+
+        tempResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult, *clause);
+
+
+
+        if (tempResult->isTableTrue()) {
+            if (handleTableTrue(clause)) {
+                continue;
+            }
+            else {
+                tempResult->setTableFalse();
+                result = tempResult;
+                break;
+            }
+        }
+
+        // if it is a false table, we can break early since the result will be false
+        if (tempResult->isTableFalse()) {
+            if (handleTableFalse(clause)) {
+                result = tempResult;
+                break;
+            }
+            else {
+                continue;
+            }
+        }
+
+        if (isFirstStrategy) {
+            isFirstStrategy = false;
+            if (clause->getClauseOperation() == Clause::ClauseOperations::AND) {
+                result = tempResult;
+            }
+            else {
+                std::shared_ptr<ResultTable> inversedResult;
+                inversedResult = getInverse(tempResult);
+                result = inversedResult;
+            }
+        }
+        else {
+            // if it is a non true and non empty table, join the result with the tempResult
+            if (clause->getClauseOperation() == Clause::ClauseOperations::AND) {
+                result = result->joinOnColumns(tempResult);
+            }
+            else {
+                // if it is a non true and non empty table, join the result with the tempResult
+                std::shared_ptr<ResultTable> inversedResult;
+                inversedResult = getInverse(tempResult);
+                result = result->joinOnColumns(inversedResult);
+            }
+        }
+    }
+}
+
+void QueryEvaluator::setOptimised(bool isOptimised) {
+    this->isOptimised = isOptimised;
 }
 
 // ai-gen end

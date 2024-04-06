@@ -21,31 +21,32 @@ TEST_CASE("qps/QueryProcessingSubsystem: FollowsReader Integration Test") {
     statementWriter->insertStatement(4);
 
     auto pkbReaderManager = pkbManager->getPKBReaderManager();
+    auto pkbCacheManager = pkbManager->getPKBCacheManager();
 
     SECTION("Statements directly following a given statement") {
         std::string queryDirectFollows = "stmt s; Select s such that Follows(1, s)";
-        auto resultsDirectFollows = Utils::getResultsFromQuery(queryDirectFollows, pkbReaderManager);
+        auto resultsDirectFollows = Utils::getResultsFromQuery(queryDirectFollows, pkbReaderManager, pkbCacheManager);
         std::unordered_set<std::string> expectedResultsDirectFollows = {"2"};
         REQUIRE(resultsDirectFollows == expectedResultsDirectFollows);
     }
 
     SECTION("Statements that directly follow any statement") {
         std::string queryDirectlyFollowsAny = "stmt s; Select s such that Follows(s, _)";
-        auto resultsDirectlyFollowsAny = Utils::getResultsFromQuery(queryDirectlyFollowsAny, pkbReaderManager);
+        auto resultsDirectlyFollowsAny = Utils::getResultsFromQuery(queryDirectlyFollowsAny, pkbReaderManager, pkbCacheManager);
         std::unordered_set<std::string> expectedResultsDirectlyFollowsAny = {"1", "2", "3"};
         REQUIRE(resultsDirectlyFollowsAny == expectedResultsDirectlyFollowsAny);
     }
 
     SECTION("Statements directly followed by any statement") {
         std::string queryDirectlyFollowedByAny = "stmt s; Select s such that Follows(_, s)";
-        auto resultsDirectlyFollowedByAny = Utils::getResultsFromQuery(queryDirectlyFollowedByAny, pkbReaderManager);
+        auto resultsDirectlyFollowedByAny = Utils::getResultsFromQuery(queryDirectlyFollowedByAny, pkbReaderManager, pkbCacheManager);
         std::unordered_set<std::string> expectedResultsDirectlyFollowedByAny = {"2", "3", "4"};
         REQUIRE(resultsDirectlyFollowedByAny == expectedResultsDirectlyFollowedByAny);
     }
 
     SECTION("Verify non-existent Follows relationship") {
         std::string queryNonExistentFollows = "stmt s; Select s such that Follows(999, s)";
-        auto resultsNonExistentFollows = Utils::getResultsFromQuery(queryNonExistentFollows, pkbReaderManager);
+        auto resultsNonExistentFollows = Utils::getResultsFromQuery(queryNonExistentFollows, pkbReaderManager, pkbCacheManager);
         REQUIRE(resultsNonExistentFollows.empty());
     }
 

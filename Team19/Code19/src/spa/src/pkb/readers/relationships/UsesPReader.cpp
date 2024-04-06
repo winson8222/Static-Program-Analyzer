@@ -62,3 +62,16 @@ std::unordered_set<std::string> UsesPReader::getKeys() {
 std::unordered_set<std::string> UsesPReader::getValues() {
   return store->getValues();
 }
+
+int UsesPReader::getSize() {
+  return store->getSize();
+}
+
+int UsesPReader::getRelationshipCountByKey(std::string key) {
+    return store->getRelationshipCountByKey(key);
+}
+
+int UsesPReader::getRelationshipCountByValue(std::string value) {
+    return store->getRelationshipCountByValue(value);
+}
+// ai-gen end

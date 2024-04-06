@@ -1,5 +1,7 @@
 #pragma once
 
+// ai-gen start(copilot, 2, e)
+// prompt: used copilot
 #include <memory>
 #include <string>
 #include <unordered_set>
@@ -62,4 +64,8 @@ public:
     bool hasRelationship(std::string key, std::string value) override;
     std::unordered_set<std::string> getKeys() override;
     std::unordered_set<std::string> getValues() override;
+    int getSize() override;
+    int getRelationshipCountByKey(std::string key) override;
+    int getRelationshipCountByValue(std::string value) override;
 };
+// ai-gen end

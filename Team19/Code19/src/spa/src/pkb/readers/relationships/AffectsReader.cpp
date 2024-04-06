@@ -36,6 +36,18 @@ bool AffectsReader::hasRelationship(int key, int value) {
     return affectsStore->hasRelationship(key, value);
 }
 
+int AffectsReader::getSize() {
+    return affectsStore->getSize();
+}
+
+int AffectsReader::getRelationshipCountByKey(int key) {
+    return affectsStore->getRelationshipCountByKey(key);
+}
+
+int AffectsReader::getRelationshipCountByValue(int value) {
+    return affectsStore->getRelationshipCountByValue(value);
+}
+
 std::unordered_set<int> AffectsReader::getAllAffecting() {
     return affectsStore->getKeys();
 }

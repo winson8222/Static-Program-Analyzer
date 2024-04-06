@@ -5,6 +5,7 @@
 #include "qps/evaluator/ResultTable.h"
 #include "qps/parser/ParsingResult.h" // Include your ParsingResult header
 #include "pkb/PKBReaderManager.h" // Include your PKBReader header
+#include "pkb/PKBCacheManager.h"
 
 class QueryEvaluationStrategy {
 

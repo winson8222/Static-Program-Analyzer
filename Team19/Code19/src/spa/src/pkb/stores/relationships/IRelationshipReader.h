@@ -69,5 +69,25 @@ public:
      * @return A set of values.
      */
     virtual std::unordered_set<ValueType> getValues() = 0;
+
+    /**
+     * Gets the size of the store
+     * @return The number of relationships in the store
+    */
+    virtual int getSize() = 0;
+
+     /**
+      * Gets the number of relationships by key.
+      * @param key The key to get the number of relationships for.
+      * @return The number of relationships for the key.
+      */
+    virtual int getRelationshipCountByKey(KeyType key) = 0;
+
+    /**
+      * Gets the number of relationships by value.
+      * @param value The value to get the number of relationships for.
+      * @return The number of relationships for the value.
+      */
+    virtual int getRelationshipCountByValue(ValueType value) = 0;
 };
 // ai-gen end
