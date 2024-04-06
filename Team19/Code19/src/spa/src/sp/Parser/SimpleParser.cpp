@@ -53,13 +53,13 @@ std::shared_ptr<ASTNode> SimpleParser::parseProcedure() {
 		throw std::runtime_error("Error: SimpleParser::parseProcedure encounter empty statement.");
 	}
 
-	this->tokenStream->popAndAssertToken(LexicalTokenType::KEYWORD_PROCEDURE);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::KEYWORD_PROCEDURE, this->lineManager->getLine());
 
 	std::shared_ptr<ASTNode> procedureName = this->parseProcName();
 
-	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_OPEN_BRACE);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_OPEN_BRACE, this->lineManager->getLine());
 	std::shared_ptr<ASTNode> statementList = this->parseStmtLst();
-	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_CLOSE_BRACE);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_CLOSE_BRACE, this->lineManager->getLine());
 
 	std::shared_ptr<ASTNode> procedureTree = this->createNode(ASTNodeType::PROCEDURE, this->lineManager->getLine(), procedureName->getValue());
 
@@ -118,9 +118,9 @@ std::shared_ptr<ASTNode> SimpleParser::parseStmt() {
 // ai-gen end
 
 std::shared_ptr<ASTNode> SimpleParser::parseRead() {
-	this->tokenStream->popAndAssertToken(LexicalTokenType::KEYWORD_READ);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::KEYWORD_READ, this->lineManager->getLine());
 	std::shared_ptr<ASTNode> variable = this->parseVarName();
-	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_SEMICOLON);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_SEMICOLON, this->lineManager->getLine());
 
 	std::shared_ptr<ASTNode> readTree = this->createNode(ASTNodeType::READ, this->lineManager->getLine());
 
@@ -130,9 +130,9 @@ std::shared_ptr<ASTNode> SimpleParser::parseRead() {
 }
 
 std::shared_ptr<ASTNode> SimpleParser::parsePrint() {
-	this->tokenStream->popAndAssertToken(LexicalTokenType::KEYWORD_PRINT);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::KEYWORD_PRINT, this->lineManager->getLine());
 	std::shared_ptr<ASTNode> variable = this->parseVarName();
-	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_SEMICOLON);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_SEMICOLON, this->lineManager->getLine());
 
 	std::shared_ptr<ASTNode> printTree = this->createNode(ASTNodeType::PRINT, this->lineManager->getLine());
 
@@ -142,9 +142,9 @@ std::shared_ptr<ASTNode> SimpleParser::parsePrint() {
 }
 
 std::shared_ptr<ASTNode> SimpleParser::parseCall() {
-	this->tokenStream->popAndAssertToken(LexicalTokenType::KEYWORD_CALL);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::KEYWORD_CALL, this->lineManager->getLine());
 	std::shared_ptr<ASTNode> variable = this->parseVarName();
-	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_SEMICOLON);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_SEMICOLON, this->lineManager->getLine());
 
 	std::shared_ptr<ASTNode> callTree = this->createNode(ASTNodeType::CALL, this->lineManager->getLine());
 
@@ -154,16 +154,16 @@ std::shared_ptr<ASTNode> SimpleParser::parseCall() {
 }
 
 std::shared_ptr<ASTNode> SimpleParser::parseWhile() {
-	this->tokenStream->popAndAssertToken(LexicalTokenType::KEYWORD_WHILE);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::KEYWORD_WHILE, this->lineManager->getLine());
 	std::shared_ptr<ASTNode> whileTree = this->createNode(ASTNodeType::WHILE, this->lineManager->getLine());
 
-	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_OPEN_PAREN);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_OPEN_PAREN, this->lineManager->getLine());
 	std::shared_ptr<ASTNode> condExpr = this->parseCondExpr();
-	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_CLOSE_PAREN);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_CLOSE_PAREN, this->lineManager->getLine());
 
-	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_OPEN_BRACE);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_OPEN_BRACE, this->lineManager->getLine());
 	std::shared_ptr<ASTNode> stmtLst = this->parseStmtLst();
-	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_CLOSE_BRACE);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_CLOSE_BRACE, this->lineManager->getLine());
 
 	whileTree->addChild(condExpr);
 	whileTree->addChild(stmtLst);
@@ -172,22 +172,22 @@ std::shared_ptr<ASTNode> SimpleParser::parseWhile() {
 }
 
 std::shared_ptr<ASTNode> SimpleParser::parseIf() {
-	this->tokenStream->popAndAssertToken(LexicalTokenType::KEYWORD_IF);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::KEYWORD_IF, this->lineManager->getLine());
 	std::shared_ptr<ASTNode> ifTree = this->createNode(ASTNodeType::IF_ELSE_THEN, this->lineManager->getLine());
 
-	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_OPEN_PAREN);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_OPEN_PAREN, this->lineManager->getLine());
 	std::shared_ptr<ASTNode> condExpr = this->parseCondExpr();
-	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_CLOSE_PAREN);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_CLOSE_PAREN, this->lineManager->getLine());
 
-	this->tokenStream->popAndAssertToken(LexicalTokenType::KEYWORD_THEN);
-	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_OPEN_BRACE);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::KEYWORD_THEN, this->lineManager->getLine());
+	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_OPEN_BRACE, this->lineManager->getLine());
 	std::shared_ptr<ASTNode> thenStmtLst = this->parseStmtLst();
-	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_CLOSE_BRACE);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_CLOSE_BRACE, this->lineManager->getLine());
 
-	this->tokenStream->popAndAssertToken(LexicalTokenType::KEYWORD_ELSE);
-	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_OPEN_BRACE);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::KEYWORD_ELSE, this->lineManager->getLine());
+	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_OPEN_BRACE, this->lineManager->getLine());
 	std::shared_ptr<ASTNode> elseStmtLst = this->parseStmtLst();
-	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_CLOSE_BRACE);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_CLOSE_BRACE, this->lineManager->getLine());
 
 	ifTree->addChild(condExpr);
 	ifTree->addChild(thenStmtLst);
@@ -199,11 +199,11 @@ std::shared_ptr<ASTNode> SimpleParser::parseIf() {
 std::shared_ptr<ASTNode> SimpleParser::parseAssign() {
 	std::shared_ptr<ASTNode> variable = this->parseVarName();
 
-	this->tokenStream->popAndAssertToken(LexicalTokenType::OPERATOR_ASSIGN);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::OPERATOR_ASSIGN, this->lineManager->getLine());
 	std::shared_ptr<ASTNode> assignNode = this->createNode(ASTNodeType::ASSIGN, this->lineManager->getLine());
 
 	std::shared_ptr<ASTNode> expr = this->parseExpr();
-	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_SEMICOLON);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_SEMICOLON, this->lineManager->getLine());
 
 	assignNode->addChild(variable);
 	assignNode->addChild(expr);
@@ -221,12 +221,12 @@ std::shared_ptr<ASTNode> SimpleParser::parseCondExpr() {
 	std::shared_ptr<ASTNode> operationNode;
 	// If of form '!' '(' cond_expr ')'.
 	if (firstToken.isType(LexicalTokenType::OPERATOR_NOT)) {
-		this->tokenStream->popAndAssertToken(LexicalTokenType::OPERATOR_NOT);
-		this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_OPEN_PAREN);
+		this->tokenStream->popAndAssertToken(LexicalTokenType::OPERATOR_NOT, this->lineManager->getLine());
+		this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_OPEN_PAREN, this->lineManager->getLine());
 
 		std::shared_ptr<ASTNode> condExpr = this->parseCondExpr(); // Recursive parsing of cond_expr
 
-		this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_CLOSE_PAREN);
+		this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_CLOSE_PAREN, this->lineManager->getLine());
 
 		operationNode = this->createNode(ASTNodeType::NOT, this->lineManager->getLine());
 
@@ -236,17 +236,17 @@ std::shared_ptr<ASTNode> SimpleParser::parseCondExpr() {
 	}
 
 	// If of form  '(' cond_expr ')' '&&' '(' cond_expr ')' OR '(' cond_expr ')' '||' '(' cond_expr ')'
-	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_OPEN_PAREN);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_OPEN_PAREN, this->lineManager->getLine());
 	std::shared_ptr<ASTNode> left = this->parseCondExpr();
-	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_CLOSE_PAREN);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_CLOSE_PAREN, this->lineManager->getLine());
 
 	// Retrieve logical operator (AND, OR)
 	LexicalToken logicalOperator = this->tokenStream->peekToken();
-	this->tokenStream->popAndAssertToken(LexicalTokenType::OPERATOR_CONDITIONAL);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::OPERATOR_CONDITIONAL, this->lineManager->getLine());
 
-	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_OPEN_PAREN);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_OPEN_PAREN, this->lineManager->getLine());
 	std::shared_ptr<ASTNode> right = this->parseCondExpr();
-	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_CLOSE_PAREN);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_CLOSE_PAREN, this->lineManager->getLine());
 
 	ASTNodeType astType = LexicalTokenTypeMapper::lexicalToAstMap.at(logicalOperator.getTokenType());
 	operationNode = this->createNode(astType, this->lineManager->getLine());
@@ -261,7 +261,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseRelExpr() {
 	std::shared_ptr<ASTNode> left = this->parseRelFactor();
 
 	LexicalToken operatorToken = this->tokenStream->peekToken();
-	this->tokenStream->popAndAssertToken(LexicalTokenType::OPERATOR_RELATIONAL);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::OPERATOR_RELATIONAL, this->lineManager->getLine());
 
 	std::shared_ptr<ASTNode> right = this->parseRelFactor();
 
@@ -287,7 +287,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseExpr() {
 
 	while (operation.isType(LexicalTokenType::OPERATOR_EXPR)) {
 		// Consume operation token
-		this->tokenStream->popAndAssertToken(LexicalTokenType::OPERATOR_EXPR);
+		this->tokenStream->popAndAssertToken(LexicalTokenType::OPERATOR_EXPR, this->lineManager->getLine());
 
 		ASTNodeType astType = LexicalTokenTypeMapper::lexicalToAstMap.at(operation.getTokenType());
 		std::shared_ptr<ASTNode> operationNode = this->createNode(astType, this->lineManager->getLine());
@@ -313,7 +313,7 @@ std::shared_ptr<ASTNode> SimpleParser::parseTerm() {
 
 	while (operation.isType(LexicalTokenType::OPERATOR_TERM)) {
 		// Consume operation token
-		this->tokenStream->popAndAssertToken(LexicalTokenType::OPERATOR_TERM);
+		this->tokenStream->popAndAssertToken(LexicalTokenType::OPERATOR_TERM, this->lineManager->getLine());
 
 		ASTNodeType astType = LexicalTokenTypeMapper::lexicalToAstMap.at(operation.getTokenType());
 		std::shared_ptr<ASTNode> operationNode = this->createNode(astType, this->lineManager->getLine());
@@ -345,26 +345,26 @@ std::shared_ptr<ASTNode> SimpleParser::parseFactor() {
 	}
 
 	// Last case: (expr)
-	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_OPEN_PAREN);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_OPEN_PAREN, this->lineManager->getLine());
 	std::shared_ptr<ASTNode> expr = parseExpr();
-	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_CLOSE_PAREN);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::SYMBOL_CLOSE_PAREN, this->lineManager->getLine());
 	return expr;
 }
 
 std::shared_ptr<ASTNode> SimpleParser::parseVarName() {
 	LexicalToken variable = this->tokenStream->peekToken();
-	this->tokenStream->popAndAssertToken(LexicalTokenType::NAME);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::NAME, this->lineManager->getLine());
 	return this->createNode(ASTNodeType::VARIABLE, this->lineManager->getLine(), variable.getValue());
 }
 
 std::shared_ptr<ASTNode> SimpleParser::parseProcName() {
 	LexicalToken procedureName = this->tokenStream->peekToken();
-	this->tokenStream->popAndAssertToken(LexicalTokenType::NAME);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::NAME, this->lineManager->getLine());
 	return this->createNode(ASTNodeType::VARIABLE, this->lineManager->getLine(), procedureName.getValue());
 }
 
 std::shared_ptr<ASTNode> SimpleParser::parseConstValue() {
 	LexicalToken constant = this->tokenStream->peekToken();
-	this->tokenStream->popAndAssertToken(LexicalTokenType::INTEGER);
+	this->tokenStream->popAndAssertToken(LexicalTokenType::INTEGER, this->lineManager->getLine());
 	return this->createNode(ASTNodeType::CONSTANT, this->lineManager->getLine(), constant.getValue());
 }

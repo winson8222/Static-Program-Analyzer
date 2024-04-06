@@ -33,7 +33,7 @@ public:
 	* 
 	* @throws An error if the next token does not match the given type.
 	*/
-	void popAndAssertToken(LexicalTokenType type);
+	void popAndAssertToken(LexicalTokenType type, int line);
 
 private:
 	std::vector<LexicalToken> tokens;

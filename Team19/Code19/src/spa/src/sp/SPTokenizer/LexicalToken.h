@@ -58,5 +58,5 @@ public:
 	 * @param type A expected lexical token type.
 	 * @throws Retrieves a runtime_error if the token's type doesn't match the expected type.
 	 */
-	void assertToken(LexicalTokenType type);
+	void assertToken(LexicalTokenType type, int line);
 };

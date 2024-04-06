@@ -16,7 +16,7 @@ std::vector<std::string> SPTokenizer::splitLine(const std::string& content) {
 	return result;
 }
 
-std::vector<LexicalToken> SPTokenizer::tokenize(const std::string& content) {
+std::shared_ptr<std::vector<LexicalToken>> SPTokenizer::tokenize(const std::string& content) {
 	std::vector<LexicalToken> results;
 	std::vector<std::string> lines = SPTokenizer::splitLine(content);
 	int numberOfLines = static_cast<int>(lines.size());
@@ -24,6 +24,7 @@ std::vector<LexicalToken> SPTokenizer::tokenize(const std::string& content) {
 	bool isPreviousTokenKeyword = false;
 
 	for (int lineNumber = 0; lineNumber < numberOfLines; lineNumber++) {
+
 		std::string line = lines[lineNumber];
 
 		while (!line.empty()) {
@@ -54,7 +55,7 @@ std::vector<LexicalToken> SPTokenizer::tokenize(const std::string& content) {
 		}
 	}
 
-	return results;
+	return std::make_shared<std::vector<LexicalToken>>(results);
 }
 
 void SPTokenizer::assertValidToken(LexicalTokenType type, const std::string& name) {

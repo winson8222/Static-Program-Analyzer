@@ -28,9 +28,9 @@ bool LexicalToken::isType(LexicalTokenType type) {
     return LexicalTokenTypeMapper::isType(this->getTokenType(), type);
 }
 
-void LexicalToken::assertToken(LexicalTokenType type) {
+void LexicalToken::assertToken(LexicalTokenType type, int line) {
     if (!this->isType(type)) {
         throw std::runtime_error("Error: Expected " + LexicalTokenTypeMapper::printType(type) + " but got " + 
-            LexicalTokenTypeMapper::printType(this->getTokenType()));
+            LexicalTokenTypeMapper::printType(this->getTokenType()) + " at line " + std::to_string(line));
     }
 }
