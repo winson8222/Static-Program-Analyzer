@@ -28,7 +28,7 @@ TEST_CASE_METHOD(IfStatementFixture, "qps/QueryProcessingSubsystem: IfReader Int
 
     SECTION("Retrieve All If Statement Numbers") {
         std::string query = "if ifs; Select ifs";
-        auto results = Utils::getResultsFromQuery(query, pkbManager->getPKBReaderManager());
+        auto results = Utils::getResultsFromQuery(query, pkbManager->getPKBReaderManager(), pkbManager->getPKBCacheManager());
         std::unordered_set<std::string> expectedResults = {"2", "6"};
         REQUIRE(results == expectedResults);
     }

@@ -48,7 +48,7 @@ TEST_CASE_METHOD(AssignPatternMatchingFixture, "qps/QueryProcessingSubsystem: As
     SECTION("Retrieve All RHS") {
         std::unordered_set<std::string> expectedLhs = {"x", "z", "y"};
         std::string query = "variable v; assign a; Select v pattern a(v, _)";
-        std::unordered_set<std::string> result = Utils::getResultsFromQuery(query, pkbManager->getPKBReaderManager());
+        std::unordered_set<std::string> result = Utils::getResultsFromQuery(query, pkbManager->getPKBReaderManager(), pkbManager->getPKBCacheManager());
         REQUIRE(result == expectedLhs);
     }
 
@@ -65,11 +65,11 @@ TEST_CASE_METHOD(AssignPatternMatchingFixture, "qps/QueryProcessingSubsystem: As
 
     SECTION("Pattern Matching with Specific RHS") {
         std::string query1 = "assign a; Select a pattern a(_, _\"y\"_)";
-        auto results1 = Utils::getResultsFromQuery(query1, pkbManager->getPKBReaderManager());
+        auto results1 = Utils::getResultsFromQuery(query1, pkbManager->getPKBReaderManager(), pkbManager->getPKBCacheManager());
         REQUIRE(results1 == std::unordered_set<std::string>{"1"});
 
         std::string query2 = "assign a; Select a pattern a(_, _\"x\"_)";
-        auto results2 = Utils::getResultsFromQuery(query2, pkbManager->getPKBReaderManager());
+        auto results2 = Utils::getResultsFromQuery(query2, pkbManager->getPKBReaderManager(), pkbManager->getPKBCacheManager());
         REQUIRE(results2 == std::unordered_set<std::string>{"2"});
     }
 

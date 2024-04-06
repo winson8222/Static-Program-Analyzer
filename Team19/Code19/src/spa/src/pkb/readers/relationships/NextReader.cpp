@@ -56,4 +56,16 @@ std::unordered_set<int> NextReader::getNext(int stmt) {
 bool NextReader::hasNext(int stmt1, int stmt2) {
 	return nextStore->hasRelationship(stmt1, stmt2);
 }
+
+int NextReader::getSize() {
+    return nextStore->getSize();
+}
+
+int NextReader::getRelationshipCountByKey(int stmtNum) {
+    return nextStore->getRelationshipCountByKey(stmtNum);
+}
+
+int NextReader::getRelationshipCountByValue(int stmtNum) {
+    return nextStore->getRelationshipCountByValue(stmtNum);
+}
 // ai-gen end

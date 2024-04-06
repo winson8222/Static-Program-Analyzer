@@ -75,6 +75,7 @@ public:
     std::string getValue() const;
 
     void setType(TokenType type);
+    bool isEqual(Token& token) ;
 
 private:
     TokenType type;    // Stores the type of the token

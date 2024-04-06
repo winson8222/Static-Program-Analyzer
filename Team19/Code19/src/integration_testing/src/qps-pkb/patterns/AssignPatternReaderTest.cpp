@@ -8,6 +8,7 @@ TEST_CASE("qps/QueryProcessingSubsystem: AssignPatternReader Integration Test") 
     auto pkbManager = std::make_shared<PKBManager>();
     auto assignPatternWriter = pkbManager->getPKBWriterManager()->getAssignPatternWriter();
     auto pkbReaderManager = pkbManager->getPKBReaderManager();
+    auto pkbCacheManager = pkbManager->getPKBCacheManager();
     auto variableWriter = pkbManager->getPKBWriterManager()->getVariableWriter();
     auto assignWriter = pkbManager->getPKBWriterManager()->getAssignWriter();
 
@@ -23,14 +24,14 @@ TEST_CASE("qps/QueryProcessingSubsystem: AssignPatternReader Integration Test") 
 
     SECTION("Wildcard RHS Pattern Match") {
         std::string queryWildcard = "assign a; Select a pattern a(_, _)";
-        auto resultWildcard = Utils::getResultsFromQuery(queryWildcard, pkbReaderManager);
+        auto resultWildcard = Utils::getResultsFromQuery(queryWildcard, pkbReaderManager, pkbCacheManager);
         std::unordered_set<std::string> expectedResultsWildcard = {"1"};
         REQUIRE(resultWildcard == expectedResultsWildcard);
     }
 
     SECTION("Partial Matching with Variable in RHS Pattern") {
         std::string queryPartialMatchVariable = R"(assign a; Select a pattern a(_, _"x"_))";
-        auto resultPartialMatchVariable = Utils::getResultsFromQuery(queryPartialMatchVariable, pkbReaderManager);
+        auto resultPartialMatchVariable = Utils::getResultsFromQuery(queryPartialMatchVariable, pkbReaderManager, pkbCacheManager);
         std::unordered_set<std::string> expectedResultsPartialMatchVariable = {"1"};
         REQUIRE(resultPartialMatchVariable == expectedResultsPartialMatchVariable);
     }
@@ -47,7 +48,7 @@ TEST_CASE("qps/QueryProcessingSubsystem: AssignPatternReader Integration Test") 
     SECTION("Non-Existent Variable in RHS Pattern") {
         // This query attempts to match a pattern with a non-existent variable in the RHS, which should yield no results.
         std::string queryNonExistentVariable = R"(assign a; Select a pattern a(_, _"nonExistentVar"_))";
-        auto resultsNonExistentVariable = Utils::getResultsFromQuery(queryNonExistentVariable, pkbReaderManager);
+        auto resultsNonExistentVariable = Utils::getResultsFromQuery(queryNonExistentVariable, pkbReaderManager, pkbCacheManager);
         REQUIRE(resultsNonExistentVariable.empty());
     }
 }

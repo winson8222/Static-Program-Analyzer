@@ -55,3 +55,15 @@ std::unordered_set<int> ParentReader::getRelationshipsByKey(int stmtNum) {
 bool ParentReader::hasRelationship(int stmt1, int stmt2) {
   return hasParent(stmt1, stmt2);
 }
+
+int ParentReader::getSize() {
+  return parentStore->getSize();
+}
+
+int ParentReader::getRelationshipCountByKey(int stmtNum) {
+  return parentStore->getRelationshipCountByKey(stmtNum);
+}
+
+int ParentReader::getRelationshipCountByValue(int stmtNum) {
+  return parentStore->getRelationshipCountByValue(stmtNum);
+}

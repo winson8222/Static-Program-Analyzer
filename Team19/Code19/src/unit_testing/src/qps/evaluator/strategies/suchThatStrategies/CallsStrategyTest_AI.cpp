@@ -13,6 +13,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/1") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
     std::shared_ptr<CallsWriter> callsWriter = pkbWriterManager->getCallsWriter();
@@ -40,7 +41,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/1") {
     clause.setSecondParam(Token(TokenType::QuoutIDENT, "\"proc3\""));
     parsingResult.addSuchThatClause(clause);
 
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
     std::unordered_set<std::string> res = evaluator.evaluateQuery();
     REQUIRE(res == std::unordered_set<std::string>{ "proc1" });
 
@@ -50,6 +51,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/2") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
     std::shared_ptr<CallsWriter> callsWriter = pkbWriterManager->getCallsWriter();
@@ -73,7 +75,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/2") {
     clause.setSecondParam(Token(TokenType::Wildcard, "_"));
     parsingResult.addSuchThatClause(clause);
 
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
     std::unordered_set<std::string> res = evaluator.evaluateQuery();
     REQUIRE(res == std::unordered_set<std::string>{ "proc1", "proc2" });
 
@@ -83,6 +85,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/3") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
     std::shared_ptr<CallsWriter> callsWriter = pkbWriterManager->getCallsWriter();
@@ -107,7 +110,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/3") {
     clause.setSecondParam(Token(TokenType::IDENT, "p"));
     parsingResult.addSuchThatClause(clause);
 
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
     std::unordered_set<std::string> res = evaluator.evaluateQuery();
     REQUIRE(res == std::unordered_set<std::string>{ "proc3" });
 
@@ -117,6 +120,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/4") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
     std::shared_ptr<CallsWriter> callsWriter = pkbWriterManager->getCallsWriter();
@@ -144,7 +148,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/4") {
     procedureWriter->insertProcedure("proc4");
 
 
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
     std::unordered_set<std::string> res = evaluator.evaluateQuery();
     REQUIRE(res == std::unordered_set<std::string>{ "proc1", "proc4" });
 
@@ -154,6 +158,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/5") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
     std::shared_ptr<CallsWriter> callsWriter = pkbWriterManager->getCallsWriter();
@@ -178,7 +183,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/5") {
     clause.setSecondParam(Token(TokenType::Wildcard, "_"));
     parsingResult.addSuchThatClause(clause);
 
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
     std::unordered_set<std::string> res = evaluator.evaluateQuery();
     REQUIRE(res == std::unordered_set<std::string>{ "proc3", "proc4", "proc1", "proc2"});
 
@@ -188,6 +193,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/6") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
     std::shared_ptr<CallsWriter> callsWriter = pkbWriterManager->getCallsWriter();
@@ -212,7 +218,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/6") {
     clause.setSecondParam(Token(TokenType::QuoutIDENT, "\"proc5\""));
     parsingResult.addSuchThatClause(clause);
 
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
     std::unordered_set<std::string> res = evaluator.evaluateQuery();
     REQUIRE(res == std::unordered_set<std::string>{});
 
@@ -222,6 +228,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/7") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
     std::shared_ptr<CallsWriter> callsWriter = pkbWriterManager->getCallsWriter();
@@ -248,7 +255,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/7") {
     clause.setSecondParam(Token(TokenType::QuoutIDENT, "\"proc4\""));
     parsingResult.addSuchThatClause(clause);
 
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
     std::unordered_set<std::string> res = evaluator.evaluateQuery();
     REQUIRE(res == std::unordered_set<std::string>{"proc1" , "proc2", "proc3", "proc4"});
 
@@ -258,6 +265,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/8") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
     std::shared_ptr<CallsWriter> callsWriter = pkbWriterManager->getCallsWriter();
@@ -284,7 +292,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/8") {
     parsingResult = parser.parse();
 
 
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
     std::unordered_set<std::string> res = evaluator.evaluateQuery();
     REQUIRE(res == std::unordered_set<std::string>{ "proc1", "proc2"});
 
@@ -294,6 +302,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/9") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
     std::shared_ptr<CallsTWriter> CallsTWriter = pkbWriterManager->getCallsTWriter();
@@ -319,7 +328,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/9") {
     clause.setSecondParam(Token(TokenType::QuoutIDENT, "\"proc4\""));
     parsingResult.addSuchThatClause(clause);
 
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
     std::unordered_set<std::string> res = evaluator.evaluateQuery();
     REQUIRE(res == std::unordered_set<std::string>{ "proc2", "proc3"});
 
@@ -329,6 +338,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/10") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
     std::shared_ptr<CallsTWriter> CallsTWriter = pkbWriterManager->getCallsTWriter();
@@ -354,7 +364,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/10") {
     clause.setSecondParam(Token(TokenType::Wildcard, "_"));
     parsingResult.addSuchThatClause(clause);
 
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
     std::unordered_set<std::string> res = evaluator.evaluateQuery();
     REQUIRE(res == std::unordered_set<std::string>{ "proc1", "proc2", "proc3"});
 
@@ -364,6 +374,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/11") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
     std::shared_ptr<CallsTWriter> CallsTWriter = pkbWriterManager->getCallsTWriter();
@@ -390,7 +401,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/11") {
     clause.setSecondParam(Token(TokenType::IDENT, "p"));
     parsingResult.addSuchThatClause(clause);
 
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
     std::unordered_set<std::string> res = evaluator.evaluateQuery();
     REQUIRE(res == std::unordered_set<std::string>{ "proc5" });
 
@@ -400,6 +411,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/12") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
     std::shared_ptr<CallsTWriter> CallsTWriter = pkbWriterManager->getCallsTWriter();
@@ -425,7 +437,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/12") {
     clause.setSecondParam(Token(TokenType::Wildcard, "_"));
     parsingResult.addSuchThatClause(clause);
 
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
     std::unordered_set<std::string> res = evaluator.evaluateQuery();
     REQUIRE(res == std::unordered_set<std::string>{ "proc3", "proc4", "proc1", "proc2", "proc5"});
 
@@ -435,6 +447,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/13") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
     std::shared_ptr<CallsTWriter> CallsTWriter = pkbWriterManager->getCallsTWriter();
@@ -460,7 +473,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/13") {
     clause.setSecondParam(Token(TokenType::QuoutIDENT, "\"proc6\""));
     parsingResult.addSuchThatClause(clause);
 
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
     std::unordered_set<std::string> res = evaluator.evaluateQuery();
     REQUIRE(res == std::unordered_set<std::string>{});
 
@@ -470,6 +483,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/14") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
     std::shared_ptr<CallsTWriter> CallsTWriter = pkbWriterManager->getCallsTWriter();
     std::shared_ptr<ProcedureWriter> procedureWriter = pkbWriterManager->getProcedureWriter();
@@ -497,7 +511,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/14") {
     Tokenizer tokenizer(query);
     ParsingResult parsingResult = QueryParser(tokenizer.tokenize()).parse();
 
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
     std::unordered_set<std::string> res = evaluator.evaluateQuery();
     REQUIRE(res == std::unordered_set<std::string>{"TRUE"});
 
@@ -507,6 +521,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/15") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
     std::shared_ptr<CallsTWriter> CallsTWriter = pkbWriterManager->getCallsTWriter();
     std::shared_ptr<ProcedureWriter> procedureWriter = pkbWriterManager->getProcedureWriter();
@@ -531,7 +546,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/15") {
     clause.setSecondParam(Token(TokenType::QuoutIDENT, "\"proc5\""));
     parsingResult.addSuchThatClause(clause);
 
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
     std::unordered_set<std::string> res = evaluator.evaluateQuery();
     REQUIRE(res == std::unordered_set<std::string>{});
 
@@ -541,6 +556,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/16") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
 
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
     std::shared_ptr<CallsTWriter> CallsTWriter = pkbWriterManager->getCallsTWriter();
@@ -564,7 +580,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/16") {
     ParsingResult parsingResult;
     parsingResult = QueryParser(tokens).parse();
 
-    QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+    QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
     std::unordered_set<std::string> res = evaluator.evaluateQuery();
     REQUIRE(res == std::unordered_set<std::string>{ "proc2", "proc3", "proc1"});
 
@@ -575,6 +591,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/18") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
     std::shared_ptr<CallWriter> callWriter = pkbWriterManager->getCallWriter();
     std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
     std::shared_ptr<CallsWriter> callsWriter = pkbWriterManager->getCallsWriter();
@@ -608,9 +625,6 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/18") {
     callProcNameWriter->addCallProcName(4,"proc4");
     callProcNameWriter->addCallProcName(6,"proc4");
     callProcNameWriter->addCallProcName(5,"proc5");
-    pkbManager->getPKBCacheManager()->populateCache();
-
-
 
     SECTION("simple select of procsName using proc") {
         std::vector<Token> tokens = {
@@ -624,7 +638,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/18") {
         };
 
         ParsingResult parsingResult = QueryParser(tokens).parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{ "proc1", "proc2", "proc3", "proc4", "proc5"});
     }
@@ -641,7 +655,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/18") {
         };
 
         ParsingResult parsingResult = QueryParser(tokens).parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{ "proc2", "proc3", "proc4", "proc5"});
     }
@@ -658,7 +672,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/18") {
         };
 
         ParsingResult parsingResult = QueryParser(tokens).parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{ "2", "3", "4", "5", "6"});
     }
@@ -681,7 +695,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/18") {
         };
 
         ParsingResult parsingResult = QueryParser(tokens).parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{ "2 proc2", "3 proc3", "4 proc4", "6 proc4", "5 proc5"});
     }
@@ -712,7 +726,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/18") {
         };
 
         ParsingResult parsingResult = QueryParser(tokens).parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{ "4 proc4", "2 proc2" });
     }
@@ -750,7 +764,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/18") {
         };
 
         ParsingResult parsingResult = QueryParser(tokens).parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{ "4 proc4 v", "2 proc2 v", "4 proc4 x", "2 proc2 x" });
     }
@@ -790,7 +804,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/18") {
         };
 
         ParsingResult parsingResult = QueryParser(tokens).parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{ "2 proc2 v", "4 proc4 v", "6 proc4 v", "3 proc3 v", "5 proc5 v" });
     }
@@ -830,7 +844,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/18") {
         };
 
         ParsingResult parsingResult = QueryParser(tokens).parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{ "4 proc4 proc4", "3 proc3 x", "2 proc2 proc2" });
     }
@@ -868,7 +882,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/CallsStrategy/18") {
         };
 
         ParsingResult parsingResult = QueryParser(tokens).parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
         REQUIRE(res == std::unordered_set<std::string>{ "2 proc2 v", "2 proc2 x" });
     }

@@ -8,6 +8,7 @@
 TEST_CASE("src/qps/evaluator/suchThatStrategies/PatternStrategy") {
     std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
 
     // Preparing PKB with required data for the test
@@ -51,7 +52,7 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/PatternStrategy") {
 
         QueryParser parser(tokens);
         auto parsingResult = parser.parse();
-        QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+        QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
         std::unordered_set<std::string> res = evaluator.evaluateQuery();
 
         REQUIRE(res == std::unordered_set<std::string>{"6"}); // Statement 6 expected to match the pattern

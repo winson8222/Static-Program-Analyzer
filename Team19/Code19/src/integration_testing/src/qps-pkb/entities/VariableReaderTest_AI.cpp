@@ -38,7 +38,7 @@ TEST_CASE_METHOD(VariableReaderFixture, "qps/QueryProcessingSubsystem: VariableR
 
     SECTION("Verify retrieval of all variables via QPS") {
         std::string query = "variable v; Select v";
-        auto results = Utils::getResultsFromQuery(query, pkbManager->getPKBReaderManager());
+        auto results = Utils::getResultsFromQuery(query, pkbManager->getPKBReaderManager(), pkbManager->getPKBCacheManager());
         std::unordered_set<std::string> expectedResults = {"x", "y", "z", "read"};
         REQUIRE(results == expectedResults);
     }
@@ -48,7 +48,7 @@ TEST_CASE_METHOD(VariableReaderFixture, "qps/QueryProcessingSubsystem: VariableR
     SECTION("Verify store is cleared correctly via QPS") {
         variableWriter->clear(); // Clear all variables
         std::string query = "variable v; Select v";
-        auto resultsAfterClear = Utils::getResultsFromQuery(query, pkbManager->getPKBReaderManager());
+        auto resultsAfterClear = Utils::getResultsFromQuery(query, pkbManager->getPKBReaderManager(), pkbManager->getPKBCacheManager());
         REQUIRE(resultsAfterClear.empty());
     }
 }

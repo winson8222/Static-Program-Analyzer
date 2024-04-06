@@ -44,7 +44,7 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
 	vector<Token> tokens = tokenizer.tokenize();
 	QueryParser parser(tokens);
 	auto parsingResult = parser.parse();
-	QueryEvaluator evaluator(pkbReaderManager, parsingResult);
+	QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
 	std::unordered_set<string> res = evaluator.evaluateQuery();
     int synCount = parsingResult.getRequiredSynonyms().size();
 
