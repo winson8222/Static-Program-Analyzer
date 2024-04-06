@@ -1,5 +1,10 @@
 1 - Basic test
 procedure p;
 Select p 
-proc1, proc2, proc3, proc4, proc5, proc6, proc7, proc8, proc9, proc10, proc11, proc12, proc13, proc14, proc15, proc16, proc17, proc18, proc19, proc20
+proc1, proc2, proc3, proc4, proc5, proc6, proc7, proc8, proc9, proc10, proc11, proc12, proc13, proc14, proc15, proc16, proc17, proc18, proc19, proc20, proc21, proc22, proc23, proc24, proc25
+5000
+2 - Get all read statements
+read read;
+Select read
+21, 42, 63, 84, 105, 126, 147, 168, 189, 210, 231, 252, 273, 294, 315, 336, 357, 378, 399, 420, 441, 462, 483, 504, 525
 5000
