@@ -1,6 +1,9 @@
 #pragma once
 
+#include <string>
+#include <vector>
 #include "LexicalToken.h"
+#include "LexicalTokenType.h"
 
 /**
  * @brief Represents a tokenizer which takes in a string and tokenizes it.
