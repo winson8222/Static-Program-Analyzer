@@ -68,8 +68,18 @@ stmt s1, s2, s3; assign a1, a2; variable v;
 Select s1 such that Follows(s1, s2) and Parent(s2, a1) and Uses(a1, v) and Modifies(a2, v) pattern a2 ("variable", "hi")
 none
 5000
-15 - Complex Query with Multiple Synonyms with wrong and
+15 - Complex Query with Multiple Synonyms with wrong and such that
 stmt s1, s2, s3; assign a1, a2; variable v;
 Select s1 such that Follows(s1, s2) and Parent(s2, a1) and Uses(a1, v) and Modifies(a2, v) and pattern a2 ("variable", "hi")
+SyntaxError
+5000
+16 - Complex Query with Multiple Synonyms with wrong and with
+stmt s1, s2, s3; assign a1, a2; variable v;
+Select s1 such that Follows(s1, s2) and Parent(s2, a1) and Uses(a1, v) and Modifies(a2, v) and with 1=1
+SyntaxError
+5000
+17 - Complex Query with Multiple Synonyms with wrong and pattern
+stmt s1, s2, s3; assign a1, a2; variable v;
+Select s1 pattern a2 ("variable", "hi") and Follows(s1, s2) and Parent(s2, a1) and Uses(a1, v) and Modifies(a2, v)
 SyntaxError
 5000
