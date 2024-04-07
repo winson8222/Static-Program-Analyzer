@@ -21,7 +21,7 @@ bool WithClause::isSynonym(std::string &ref) {
     return ref.find('.') != std::string::npos;
 }
 
-std::string WithClause::extractSynonym(std::string &ref) const {
+std::string WithClause::extractSynonym(std::string ref) {
     return ref.substr(0, ref.find('.'));
 }
 

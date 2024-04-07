@@ -207,7 +207,7 @@ std::unordered_set<std::string> QueryEvaluator::evaluateQuery() {
         }
     }
     QueryOptimiser queryOptimiser(clauses);
-    std::vector<std::shared_ptr<QueryGroup>> queryGroups = queryOptimiser.optimise(true);
+    std::vector<std::shared_ptr<QueryGroup>> queryGroups = queryOptimiser.optimise(true, pkbReaderManager);
 
 
 
@@ -556,8 +556,12 @@ void QueryEvaluator::evaluateClauses(std::vector<std::shared_ptr<Clause>> clause
         }
 
         // evaluate the strategy
-
-        tempResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult, *clause);
+        if (clause->getClauseOperation() == Clause::ClauseOperations::AND && !isFirstStrategy) {
+            tempResult = strategy->evaluateQueryOptimised(*pkbReaderManager, parsingResult, *clause, result);
+        }
+        else {
+            tempResult = strategy->evaluateQuery(*pkbReaderManager, parsingResult, *clause);
+        }
 
 
 
@@ -586,7 +590,7 @@ void QueryEvaluator::evaluateClauses(std::vector<std::shared_ptr<Clause>> clause
         if (isFirstStrategy) {
             isFirstStrategy = false;
             if (clause->getClauseOperation() == Clause::ClauseOperations::AND) {
-                result = tempResult;
+                result = result->joinOnColumns(tempResult);
             }
             else {
                 std::shared_ptr<ResultTable> inversedResult;
@@ -597,7 +601,12 @@ void QueryEvaluator::evaluateClauses(std::vector<std::shared_ptr<Clause>> clause
         else {
             // if it is a non true and non empty table, join the result with the tempResult
             if (clause->getClauseOperation() == Clause::ClauseOperations::AND) {
-                result = result->joinOnColumns(tempResult);
+                if (isOptimised) {
+                    result = result->joinOnColumns(tempResult);
+                } else {
+                    result = result->joinOnColumns(tempResult);
+                }
+
             }
             else {
                 // if it is a non true and non empty table, join the result with the tempResult

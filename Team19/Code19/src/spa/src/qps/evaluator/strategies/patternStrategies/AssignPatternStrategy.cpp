@@ -4,6 +4,15 @@
 #include <unordered_set>
 #include <utility>
 
+
+std::shared_ptr<ResultTable> AssignPatternStrategy::evaluateQueryOptimised(PKBReaderManager &pkbReaderManager,
+                                                                     const ParsingResult &parsingResult,
+                                                                     const Clause &clause,
+                                                                     std::shared_ptr<ResultTable> result) {
+    setIntermediateResultTable(result);
+    return evaluateQuery(pkbReaderManager, parsingResult, clause);
+}
+
 std::shared_ptr<ResultTable> AssignPatternStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) {
 	auto resultTable = std::make_shared<ResultTable>();
 	this->assignPatternReader = pkbReaderManager.getAssignPatternReader();
@@ -11,12 +20,15 @@ std::shared_ptr<ResultTable> AssignPatternStrategy::evaluateQuery(PKBReaderManag
 
 
 	const PatternClause* patternClause = dynamic_cast<const PatternClause*>(&clause);
-	this->firstParam = patternClause->getFirstParam();
-	this->secondParam = patternClause->getSecondParam();
-	this->relationShip = patternClause->getRelationship();
+    setBothParams(clause);
+	Token relationship = patternClause->getRelationship();
+    setRelationship(relationship);
+    Token firstParam = getFirstParam();
+    Token secondParam = getSecondParam();
 
 
-	if (this->firstParam.getType() == TokenType::IDENT) {
+
+	if (firstParam.getType() == TokenType::IDENT) {
 		processSynonyms(parsingResult, resultTable);
 	}
 	else if (firstParam.getType() == TokenType::QuoutIDENT) {
@@ -34,17 +46,20 @@ std::shared_ptr<ResultTable> AssignPatternStrategy::evaluateQuery(PKBReaderManag
 }
 
 void AssignPatternStrategy::processSynonyms(ParsingResult parsingResult, std::shared_ptr<ResultTable> resultTable) {
-	std::string firstColName = this->relationShip.getValue();
-	std::string secondColName = this->firstParam.getValue();
-	insertColsToTable(this->relationShip, this->firstParam, resultTable);
+    Token firstParam = getFirstParam();
+    Token secondParam = getSecondParam();
+    Token relationship = getRelationship();
+	std::string firstColName = relationship.getValue();
+	std::string secondColName = firstParam.getValue();
+	insertColsToTable(relationship, firstParam, resultTable);
 	std::unordered_set<int> allStmts;
 	std::string secondParamValue;
 	secondParamValue = extractQuotedExpression(secondParam);
 	secondParamValue = ShuntingYard::convertToPostfix(secondParamValue);
-	if (this->secondParam.getType() == TokenType::ExpressionSpec) {
+	if (secondParam.getType() == TokenType::ExpressionSpec) {
 		allStmts = assignPatternReader->getStatementNumbersWithRHS(secondParamValue);
 	}
-	else if (this->secondParam.getType() == TokenType::PartialExpressionSpec) {
+	else if (secondParam.getType() == TokenType::PartialExpressionSpec) {
 		allStmts = assignPatternReader->getStatementNumbersWithPartialRHS(secondParamValue);
 	}
 	else {
@@ -53,14 +68,17 @@ void AssignPatternStrategy::processSynonyms(ParsingResult parsingResult, std::sh
 	for (auto stmt : allStmts) {
 		std::string var = assignPatternReader->getLHS(stmt);
 		std::pair<std::string, std::string> col1 = make_pair(firstParam.getValue(), var);
-		std::pair<std::string, std::string> col2 = make_pair(relationShip.getValue(), std::to_string(stmt));
+		std::pair<std::string, std::string> col2 = make_pair(relationship.getValue(), std::to_string(stmt));
 		insertRowToTable(col1, col2, resultTable);
 	}
 }
 
 void AssignPatternStrategy::processQuotedIdent(ParsingResult parsingResult, std::shared_ptr<ResultTable> result) {
-	std::string firstColName = this->relationShip.getValue();
-	insertSingleColToTable(this->relationShip, result);
+    Token firstParam = getFirstParam();
+    Token secondParam = getSecondParam();
+    Token relationship = getRelationship();
+	std::string firstColName = relationship.getValue();
+	insertSingleColToTable(relationship, result);
 	std::unordered_set<int> allStmts;
 	std::string firstParamValue;
 	std::string secondParamValue;
@@ -68,10 +86,10 @@ void AssignPatternStrategy::processQuotedIdent(ParsingResult parsingResult, std:
 	//    firstParamValue = ShuntingYard::convertToPostfix(firstParamValue);
 	secondParamValue = extractQuotedExpression(secondParam);
 	secondParamValue = ShuntingYard::convertToPostfix(secondParamValue);
-	if (this->secondParam.getType() == TokenType::ExpressionSpec) {
+	if (secondParam.getType() == TokenType::ExpressionSpec) {
 		allStmts = assignPatternReader->getStatementNumbersWithLHSRHS(firstParamValue, secondParamValue);
 	}
-	else if (this->secondParam.getType() == TokenType::PartialExpressionSpec) {
+	else if (secondParam.getType() == TokenType::PartialExpressionSpec) {
 		allStmts = assignPatternReader->getStatementNumbersWithLHSPartialRHS(firstParamValue, secondParamValue);
 	}
 	else {
@@ -85,16 +103,19 @@ void AssignPatternStrategy::processQuotedIdent(ParsingResult parsingResult, std:
 
 
 void AssignPatternStrategy::processWildcard(ParsingResult parsingResult, std::shared_ptr<ResultTable> result) {
-	std::string firstColName = this->relationShip.getValue();
-	insertSingleColToTable(this->relationShip, result);
+    Token firstParam = getFirstParam();
+    Token secondParam = getSecondParam();
+    Token relationship = getRelationship();
+	std::string firstColName = relationship.getValue();
+	insertSingleColToTable(relationship, result);
 	std::unordered_set<int> allStmts;
 	std::string secondParamValue;
 	secondParamValue = extractQuotedExpression(secondParam);
 	secondParamValue = ShuntingYard::convertToPostfix(secondParamValue);
-	if (this->secondParam.getType() == TokenType::ExpressionSpec) {
+	if (secondParam.getType() == TokenType::ExpressionSpec) {
 		allStmts = assignPatternReader->getStatementNumbersWithRHS(secondParamValue);
 	}
-	else if (this->secondParam.getType() == TokenType::PartialExpressionSpec) {
+	else if (secondParam.getType() == TokenType::PartialExpressionSpec) {
 		allStmts = assignPatternReader->getStatementNumbersWithPartialRHS(secondParamValue);
 	}
 	else {

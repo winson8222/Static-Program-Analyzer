@@ -610,6 +610,7 @@ TEST_CASE("Next Optimisation") {
     std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
     std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
+    pkbCacheManager->populateCache();
     SECTION("IntraGroup prioritise one constant and one Synonym") {
         std::string query = "stmt s1, s2, s3, s4; Select s1 such that Next*(s1,s2) and Next*(s2,s3) and Next*(s3,s4) and Next*(s1, 2)";
         Tokenizer tokenizer = Tokenizer(query);
@@ -643,3 +644,40 @@ TEST_CASE("Next Optimisation2") {
 }
 
 
+TEST_CASE("Next Optimisation3") {
+//    if if1, if2; call c; Select c such that Next*(c, if2) and Next*(if1, c)
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
+    std::shared_ptr<CallWriter> callWriter = pkbWriterManager->getCallWriter();
+    std::shared_ptr<NextWriter> nextWriter = pkbWriterManager->getNextWriter();
+    std::shared_ptr<IfWriter> ifWriter = pkbWriterManager->getIfWriter();
+    // previous
+    callWriter->insertCall(9);
+    callWriter->insertCall(5);
+    callWriter->insertCall(13);
+    // only following
+    callWriter->insertCall(17);
+    callWriter->insertCall(15);
+    ifWriter->insertIf(1);
+    ifWriter->insertIf(2);
+    nextWriter->addNext(9, 1);
+    nextWriter->addNext(5, 1);
+    nextWriter->addNext(13, 1);
+    nextWriter->addNext(2, 9);
+    nextWriter->addNext(2, 5);
+    nextWriter->addNext(2, 13);
+    nextWriter->addNext(2, 17);
+    nextWriter->addNext(2, 15);
+    pkbCacheManager->populateCache();
+    std::string query = "if if1, if2; call c; Select c such that Next*(c, if2) and Next*(if1, c)";
+    Tokenizer tokenizer = Tokenizer(query);
+    std::vector<Token> tokens = tokenizer.tokenize();
+    QueryParser parser(tokens);
+    auto parsingResult = parser.parse();
+    QueryEvaluator evaluator = QueryEvaluator(pkbReaderManager, pkbCacheManager, parsingResult);
+    std::unordered_set<std::string> res = evaluator.evaluateQuery();
+    REQUIRE(res == std::unordered_set<std::string>{"9", "5", "13"});
+
+}

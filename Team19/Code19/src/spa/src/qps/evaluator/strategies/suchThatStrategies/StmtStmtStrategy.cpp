@@ -54,3 +54,86 @@ void StmtStmtStrategy::insertRowsWithTwoCols(const Token &firstParam, const Toke
         }
     }
 }
+
+
+
+void StmtStmtStrategy::processSynonyms(std::shared_ptr<ResultTable> resultTable, const ParsingResult &parsingResult,
+                                      PKBReaderManager &pkbReaderManager) {
+
+    Token firstParam = getFirstParam();
+    Token secondParam = getSecondParam();
+    insertColsToTable(firstParam, secondParam, resultTable);
+    // Choose the correct reader based on the variant indicating "Next" or "Next*"
+    std::shared_ptr<IRelationshipReader<int, int>> affectsReader = getReader();
+    insertRowsWithTwoCols(firstParam, secondParam, affectsReader, parsingResult, resultTable, pkbReaderManager);
+
+}
+
+void StmtStmtStrategy::processFirstParam(std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
+    Token firstParam = getFirstParam();
+    Token secondParam = getSecondParam();
+    std::shared_ptr<IRelationshipReader<int, int>> reader = getReader();
+    std::string colName = firstParam.getValue();
+    resultTable->insertAllColumns({colName});
+    std::unordered_set<std::string> keyStatementsInString;
+    std::unordered_set<int> keyStatements;
+    if (secondParam.getType() == TokenType::INTEGER) {
+        int stmtNum = std::stoi(secondParam.getValue());
+        // Get all statements that affect a specific statement number
+        keyStatements = reader->getRelationshipsByValue(stmtNum);
+    } else if (secondParam.getType() == TokenType::Wildcard) {
+        // If the second parameter is a wildcard, fetch all statements that affect others
+        keyStatements = reader->getKeys();
+    }
+
+    std::string statementType = parsingResult.getDeclaredSynonym(firstParam.getValue());
+    std::unordered_set<int> allFilteredAffectingStmts = getFilteredStmtsNumByType(keyStatements, statementType, pkbReaderManager);
+    insertStmtRowsWithSingleCol(allFilteredAffectingStmts, resultTable, colName);
+}
+
+void StmtStmtStrategy::processSecondParam(std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
+    Token firstParam = getFirstParam();
+    Token secondParam = getSecondParam();
+    std::shared_ptr<IRelationshipReader<int, int>> reader = getReader();
+    std::string colName = secondParam.getValue();
+    resultTable->insertAllColumns({colName});
+    std::unordered_set<std::string> affectedStatementsInString;
+    std::unordered_set<int> valueStatements;
+    if (firstParam.getType() == TokenType::INTEGER) {
+        // Specific statement number provided for the first parameter
+        int stmtNum = std::stoi(firstParam.getValue());
+        // Get all statements that are affected by the specific statement number
+        valueStatements = reader->getRelationshipsByKey(stmtNum);
+    } else if (firstParam.getType() == TokenType::Wildcard) {
+        // If the first parameter is a wildcard, fetch all statements that are affected by others
+        valueStatements = reader->getValues();
+    }
+    std::string statementType = parsingResult.getDeclaredSynonym(secondParam.getValue());
+    std::unordered_set<int> allFilteredAffectedStmts = getFilteredStmtsNumByType(valueStatements, statementType, pkbReaderManager);
+    insertStmtRowsWithSingleCol(allFilteredAffectedStmts, resultTable, colName);
+}
+
+void StmtStmtStrategy::processIntegerParams(std::shared_ptr<ResultTable> resultTable) {
+    // Ensure both parameters are indeed integers
+    Token firstParam = getFirstParam();
+    Token secondParam = getSecondParam();
+    std::shared_ptr<IRelationshipReader<int, int>> reader = getReader();
+    bool relationshipExists;
+    if (isBothParamsWildcard(firstParam, secondParam)) {
+        // If both params are wildcards, we can just check if there is a next statement
+        relationshipExists = !reader->getValues().empty();
+        if (relationshipExists) {
+            resultTable->setAsTruthTable();
+        }
+    } else {
+        setTrueIfRelationShipExist(firstParam, secondParam, reader, resultTable);
+    }
+}
+
+void StmtStmtStrategy::setReader(const std::shared_ptr<IRelationshipReader<int, int>> &reader) {
+    this->reader = reader;
+}
+
+std::shared_ptr<IRelationshipReader<int, int>> StmtStmtStrategy::getReader() {
+    return reader;
+}
