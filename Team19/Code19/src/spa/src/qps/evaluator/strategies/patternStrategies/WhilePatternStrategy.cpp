@@ -14,17 +14,19 @@ std::shared_ptr<ResultTable> WhilePatternStrategy::evaluateQueryOptimised(PKBRea
 
 std::shared_ptr<ResultTable> WhilePatternStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) {
     auto resultTable = std::make_shared<ResultTable>();
-    this->whilePatternReader = pkbReaderManager.getWhilePatternReader();
-    this->whileReader = pkbReaderManager.getWhileReader();
+    whilePatternReader = pkbReaderManager.getWhilePatternReader();
+    whileReader = pkbReaderManager.getWhileReader();
 
 
     const PatternClause *patternClause = dynamic_cast<const PatternClause *>(&clause);
-    this->firstParam = patternClause->getFirstParam();
-    this->secondParam = patternClause->getSecondParam();
-    this->relationShip = patternClause->getRelationship();
+    setBothParams(clause);
+    Token firstParam = getFirstParam();
+    Token secondParam = getSecondParam();
+    Token relationship = patternClause->getRelationship();
+    setRelationship(relationship);
 
 
-    if (this->firstParam.getType() == TokenType::IDENT) {
+    if (firstParam.getType() == TokenType::IDENT) {
         processSynonyms(parsingResult, resultTable);
     } else if (firstParam.getType() == TokenType::QuoutIDENT) {
         processQuotedIdent(parsingResult, resultTable);
@@ -39,15 +41,21 @@ std::shared_ptr<ResultTable> WhilePatternStrategy::evaluateQuery(PKBReaderManage
 }
 
 void WhilePatternStrategy::processSynonyms(ParsingResult parsingResult, std::shared_ptr<ResultTable> resultTable) {
-    std::string firstColName = this->relationShip.getValue();
-    std::string secondColName = this->firstParam.getValue();
-    insertColsToTable(this->relationShip, this->firstParam, resultTable);
-    insertRowsWithTwoCols(firstParam, relationShip,  parsingResult, whilePatternReader, resultTable);
+    Token firstParam = getFirstParam();
+    Token secondParam = getSecondParam();
+    Token relationship = getRelationship();
+    std::string firstColName = relationship.getValue();
+    std::string secondColName = firstParam.getValue();
+    insertColsToTable(relationship, firstParam, resultTable);
+    insertRowsWithTwoCols(firstParam, relationship,  parsingResult, whilePatternReader, resultTable);
 }
 
 void WhilePatternStrategy::processQuotedIdent(ParsingResult parsingResult, std::shared_ptr<ResultTable> result) {
-    std::string firstColName = this->relationShip.getValue();
-    insertSingleColToTable(this->relationShip, result);
+    Token firstParam = getFirstParam();
+    Token secondParam = getSecondParam();
+    Token relationship = getRelationship();
+    std::string firstColName = relationship.getValue();
+    insertSingleColToTable(relationship, result);
     std::unordered_set<int> allStmts;
     std::string firstParamValue;
     std::string secondParamValue;
@@ -60,8 +68,11 @@ void WhilePatternStrategy::processQuotedIdent(ParsingResult parsingResult, std::
 
 
 void WhilePatternStrategy::processWildcard(ParsingResult parsingResult, std::shared_ptr<ResultTable> result) {
-    std::string firstColName = this->relationShip.getValue();
-    insertSingleColToTable(this->relationShip, result);
+    Token firstParam = getFirstParam();
+    Token secondParam = getSecondParam();
+    Token relationship = getRelationship();
+    std::string firstColName = relationship.getValue();
+    insertSingleColToTable(relationship, result);
     std::unordered_set<int> allStmts;
     allStmts = whilePatternReader->getAllStatementNumbersOfWhileControlVariables();
     insertStmtRowsWithSingleCol(allStmts, result, firstColName);

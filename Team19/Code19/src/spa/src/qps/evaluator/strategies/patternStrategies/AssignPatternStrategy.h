@@ -8,9 +8,7 @@ class AssignPatternStrategy : public PatternStrategy {
 private:
     std::shared_ptr<AssignPatternReader> assignPatternReader;
     std::shared_ptr<AssignReader> assignReader;
-    Token firstParam;
-    Token secondParam;
-    Token relationShip;
+
 
 public:
     std::shared_ptr<ResultTable> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) override;

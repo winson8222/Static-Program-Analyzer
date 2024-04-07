@@ -7,9 +7,7 @@ class WhilePatternStrategy : public PatternStrategy {
 private:
     std::shared_ptr<WhilePatternReader> whilePatternReader;
     std::shared_ptr<WhileReader> whileReader;
-    Token firstParam;
-    Token secondParam;
-    Token relationShip;
+
 
 
 public:

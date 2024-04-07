@@ -7,9 +7,7 @@ class IfPatternStrategy : public PatternStrategy {
 private:
     std::shared_ptr<IfPatternReader> ifPatternReader;
     std::shared_ptr<IfReader> ifReader;
-    Token firstParam;
-    Token secondParam;
-    Token relationShip;
+
 
 
 public:

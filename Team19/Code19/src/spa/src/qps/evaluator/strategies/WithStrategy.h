@@ -21,8 +21,7 @@
 
 class WithStrategy : public QueryEvaluationStrategy {
 private:
-	Token firstParam;
-	Token secondParam;
+
 	ParsingResult parsingResult;
 
 	/**
