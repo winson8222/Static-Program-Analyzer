@@ -1,3 +1,6 @@
+// Uncomment the below to get runtime of stress tests
+// #define SKIP_STRESS_TESTS
+
 #include "catch.hpp"
 
 #include <filesystem>
