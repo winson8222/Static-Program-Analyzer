@@ -21,13 +21,13 @@ env:
 jobs:
   memory_check:
     name: Memory check with Valgrind
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
     - name: Install Valgrind
-      run: brew install valgrind
+      run: sudo apt-get install valgrind
 
     - name: Create Build Environment
       shell: bash
