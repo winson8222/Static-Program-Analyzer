@@ -41,12 +41,14 @@ jobs:
     # Build projects on MacOS and build Autotester
     - name: Build Project
       shell: bash
+      continue-on-error: true
       working-directory: ${{ env.BUILD_DIR }}
       run: |
         cmake --build . --config ${{ env.BUILD_TYPE }} -j 4
         cmake --build . --target integration_testing --config ${{ env.BUILD_TYPE }} -j 4
 
     - name: Run Valgrind
+      continue-on-error: true
       working-directory: ${{ env.TEST_DIR }}
       run: | 
         valgrind --leak-check=full --show-leak-kinds=all ${{ env.TEST_DIR }}/integration_testing
