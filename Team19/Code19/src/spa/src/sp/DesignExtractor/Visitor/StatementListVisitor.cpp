@@ -15,7 +15,7 @@ StatementListVisitor::StatementListVisitor(std::shared_ptr<ASTNode> root,
 void StatementListVisitor::visit() {
 	StatementFactory statementFactory;
 	
-	for (auto statement : statementLists) {
+	for (std::shared_ptr<ASTNode> statement : statementLists) {
 		std::shared_ptr<StatementVisitor> statementVisitor = statementFactory.createVisitor(statement, this->contexts, this->pkbWriterManager);
 		statementVisitor->visit();
 		statementVisitor->setParents(this->contexts, statement, this->pkbWriterManager);
@@ -34,9 +34,11 @@ void StatementListVisitor::setContext(std::vector<std::shared_ptr<ASTNode>> cont
 // extract follows and follows* relationship
 // this can only be done on the StatementList visitor
 // current time complexity is O(n^2), due to the nested for loop
-// in milestone 3 we try to optimize this to at least O(nlogn)
+// in milestone 3 we try to optimize this to at least O(n logn)
 void StatementListVisitor::handleAllFollows() {
 	int size = statementLists.size();
+	FollowsExtractor followsExtractor();
+	FollowsTExtractor followsTExtractor();
 
 	for (int i = 0; i < size - 1; i++) {
 		std::shared_ptr<ASTNode> ast1 = root->getChildByIndex(i);
