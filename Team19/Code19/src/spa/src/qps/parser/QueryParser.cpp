@@ -442,7 +442,9 @@ void QueryParser::parsePatternClause() {
     if (peekNextToken(TokenType::Comma)) {
         advanceToken();
         advanceToken();
-        parseEntRef();
+        if (currentToken().getType() != TokenType::Wildcard) {
+            throwSyntaxError();
+        }
         clause.setThirdParam(currentToken());
     }
 
