@@ -2,7 +2,6 @@ name: Memory check and management
 
 # ai-gen start (gpt, 2, e)
 # prompt: https://chat.openai.com/share/889297a9-013e-4b5c-a215-ac8fcd331431
-
 on:
   push:
     branches:
@@ -14,12 +13,40 @@ on:
     - cron: "0 09,23 * * *"
 
 env:
-  BUILD_TYPE: Debug
+    BUILD_TYPE: Debug
+    CMAKE_DIR: ${{ github.workspace }}/Team19/Code19
+    BUILD_DIR: ${{ github.workspace }}/Team19/Code19/build
+    TEST_DIR: ${{ github.workspace }}/Team19/Code19/build/src/integration_testing
 
 jobs:
-  lint:
-    name: Setup memory check
-    runs-on: windows-latest
+  memory_check:
+    name: Memory check with Valgrind
+    runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v2
-    
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install Valgrind
+      run: brew install valgrind
+
+    - name: Create Build Environment
+      shell: bash
+      run: cmake -E make_directory ${{ env.BUILD_DIR }}
+
+    - name: Configure CMake
+      shell: bash
+      working-directory: ${{ env.BUILD_DIR }}
+      run: cmake ${{ env.CMAKE_DIR }} -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+
+    # Build projects on MacOS and build Autotester
+    - name: Build Project
+      shell: bash
+      working-directory: ${{ env.BUILD_DIR }}
+      run: |
+        cmake --build . --config ${{ env.BUILD_TYPE }} -j 4
+        cmake --build . --target integration_testing --config ${{ env.BUILD_TYPE }} -j 4
+
+    - name: Run Valgrind
+      working-directory: ${{ env.TEST_DIR }}
+      run: | 
+        valgrind --leak-check=full --show-leak-kinds=all ${{ env.TEST_DIR }}/integration_testing
