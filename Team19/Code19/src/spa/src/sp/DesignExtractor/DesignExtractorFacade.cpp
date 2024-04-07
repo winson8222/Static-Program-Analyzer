@@ -24,7 +24,7 @@ void DesignExtractorFacade::extractAll() {
 		handleProcedureVisitor(procs);
 	}
 
-	for (auto cfg : this->cfgGraphs) {
+	for (std::shared_ptr<CFGNode> cfg : this->cfgGraphs) {
 		handleCFGVisitor(cfg);
 	}
 }
@@ -32,7 +32,6 @@ void DesignExtractorFacade::extractAll() {
 void DesignExtractorFacade::handleProcedureVisitor(std::shared_ptr<ASTNode> procedureNode) {
 	ProcedureVisitor procedureVisitor(procedureNode, pkbWriterManager);
 	procedureVisitor.visit();
-	procedureVisitor.setIsVisited();
 }
 
 void DesignExtractorFacade::handleCFGVisitor(std::shared_ptr<CFGNode> cfgNode) {
