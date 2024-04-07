@@ -148,7 +148,11 @@ private:
      * @return A string representation of the AST node and its children.
      */
     std::string recursiveString(int tabs) const;
-    std::size_t ASTNode::combine_hash(std::size_t seed, std::size_t hash) const;
+
+    /*
+    * Optimization hash function for AST Node performances
+    */
+    std::size_t combine_hash(std::size_t seed, std::size_t hash) const;
 };
 
 /*
