@@ -11,6 +11,8 @@ class QueryEvaluationStrategy {
 
 private:
     std::shared_ptr<ResultTable> intermediateResultTable;
+    Token firstParam;
+    Token secondParam;
 
 public:
     virtual std::shared_ptr<ResultTable> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) = 0;
@@ -41,5 +43,12 @@ protected:
     static bool hasBothCommonSynonyms(const Clause& clause, std::shared_ptr<ResultTable> resultTable);
     static bool hasLeftCommonSynonym(const Clause& clause, std::shared_ptr<ResultTable> resultTable);
     static bool hasRightCommonSynonym(const Clause& clause, std::shared_ptr<ResultTable> resultTable);
+    void setFirstParam(const Token& firstParam);
+    void setSecondParam(const Token& secondParam);
+    void setBothParams(const Clause& clause);
+    Token getFirstParam();
+    Token getSecondParam();
+    bool isParamOfType(const Token& token, TokenType type);
+
 
 };

@@ -178,25 +178,63 @@ bool QueryEvaluationStrategy::hasCommonSynonyms(std::unordered_set<std::string> 
 }
 
 bool QueryEvaluationStrategy::hasBothCommonSynonyms(const Clause &clause, std::shared_ptr<ResultTable> resultTable) {
-    if (clause.getFirstParam().getType() == TokenType::IDENT && clause.getSecondParam().getType() == TokenType::IDENT) {
+    TokenType firstParamType = clause.getFirstParamType();
+    TokenType secondParamType = clause.getSecondParamType();
+    std::string firstParamValue = clause.getFirstParam().getValue();
+    std::string secondParamValue = clause.getSecondParam().getValue();
+
+    if (firstParamType == TokenType::IDENT && clause.getSecondParam().getType() == TokenType::IDENT) {
         return resultTable->hasColumn(clause.getFirstParam().getValue()) && resultTable->hasColumn(clause.getSecondParam().getValue());
+    }
+    if (firstParamType == TokenType::Ref && clause.getSecondParam().getType() == TokenType::Ref) {
+        std::string firstSynonymValue = WithClause::extractSynonym(firstParamValue);
+        std::string secondSynonymValue = WithClause::extractSynonym(secondParamValue);
+        return resultTable->hasColumn(firstSynonymValue) && resultTable->hasColumn(secondSynonymValue);
     }
     return false;
 }
 
 bool QueryEvaluationStrategy::hasLeftCommonSynonym(const Clause &clause, std::shared_ptr<ResultTable> resultTable) {
-    if (clause.getFirstParam().getType() == TokenType::IDENT) {
+    TokenType firstParamType = clause.getFirstParamType();
+    if (firstParamType == TokenType::IDENT) {
         return resultTable->hasColumn(clause.getFirstParam().getValue());
+    }
+
+    if (firstParamType == TokenType::Ref) {
+        std::string firstSynonymValue = WithClause::extractSynonym(clause.getFirstParam().getValue());
+        return resultTable->hasColumn(firstSynonymValue);
     }
     return false;
 }
 
 bool QueryEvaluationStrategy::hasRightCommonSynonym(const Clause &clause, std::shared_ptr<ResultTable> resultTable) {
-    if (clause.getSecondParam().getType() == TokenType::IDENT) {
+    TokenType secondParamType = clause.getSecondParamType();
+    if (secondParamType == TokenType::IDENT) {
         return resultTable->hasColumn(clause.getSecondParam().getValue());
     }
+    if (secondParamType == TokenType::Ref) {
+        std::string secondSynonymValue = WithClause::extractSynonym(clause.getSecondParam().getValue());
+        return resultTable->hasColumn(secondSynonymValue);
+    }
+
     return false;
 }
 
 
 
+void QueryEvaluationStrategy::setBothParams(const Clause &clause) {
+    firstParam = clause.getFirstParam();
+    secondParam = clause.getSecondParam();
+}
+
+bool QueryEvaluationStrategy::isParamOfType(const Token &token, TokenType type) {
+    return token.getType() == type;
+}
+
+Token QueryEvaluationStrategy::getFirstParam() {
+    return firstParam;
+}
+
+Token QueryEvaluationStrategy::getSecondParam() {
+    return secondParam;
+}

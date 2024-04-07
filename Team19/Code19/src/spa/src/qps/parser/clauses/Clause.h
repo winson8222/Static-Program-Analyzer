@@ -24,7 +24,9 @@ struct Clause {
          }
     Token getRelationship() const { return relationship; }
     Token getFirstParam() const { return firstParam; }
+    TokenType getFirstParamType() const { return firstParam.getType(); }
     Token getSecondParam() const { return secondParam; }
+    TokenType getSecondParamType() const { return secondParam.getType(); }
     void setRelationship(const Token& rel) { relationship = rel; }
     void setFirstParam(const Token& param) { firstParam = param; }
     void setSecondParam(const Token& param) { secondParam = param; }

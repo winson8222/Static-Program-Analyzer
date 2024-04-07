@@ -10,19 +10,26 @@
  *
  */
 class StmtStmtStrategy : public SuchThatStrategy {
+
+private:
+    std::shared_ptr<IRelationshipReader<int, int>> reader;
 public:
 	~StmtStmtStrategy() override = default;
 
+    void processSynonyms(std::shared_ptr<ResultTable> resultTable, const ParsingResult &parsingResult,
+                         PKBReaderManager &pkbReaderManager);
 
-	virtual void processIntegerParams(std::shared_ptr<ResultTable> resultTable) = 0;
+	void processIntegerParams(std::shared_ptr<ResultTable> resultTable);
 
-	virtual void processFirstParam(std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) = 0;
+	void processFirstParam(std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager);
 
-	virtual void processSecondParam(std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) = 0;
+	void processSecondParam(std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager);
 protected:
 	static bool isBothParamsInteger(const Token& firstParam, const Token& secondParam);
 	static void setTrueIfRelationShipExist(const Token& firstParam, const Token& secondParam, 
 		const std::shared_ptr<IRelationshipReader<int, int>>& reader, std::shared_ptr<ResultTable> resultTable);
 	static void insertRowsWithTwoCols(const Token& firstParam, const Token& secondParam, std::shared_ptr<IRelationshipReader<int, int>> reader,
 		const ParsingResult& parsingResult, std::shared_ptr<ResultTable> resultTable, PKBReaderManager& pkbReaderManager);
+    void setReader(const std::shared_ptr<IRelationshipReader<int, int>>& reader);
+    std::shared_ptr<IRelationshipReader<int, int>> getReader();
 };
