@@ -4,6 +4,9 @@
 #include <unordered_set>
 #include <utility>
 
+
+
+
 std::shared_ptr<StatementReader> PatternStrategy::getStatementReader() {
     return statementReader;
 }
