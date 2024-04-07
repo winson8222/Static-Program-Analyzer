@@ -58,4 +58,7 @@ public:
     bool hasRelationship(int key, std::string value) override;
     std::unordered_set<int> getKeys() override;
     std::unordered_set<std::string> getValues() override;
+    int getSize() override;
+    int getRelationshipCountByKey(int key) override;
+    int getRelationshipCountByValue(std::string value) override;
 };

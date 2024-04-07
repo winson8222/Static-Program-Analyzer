@@ -8,11 +8,13 @@
 
 std::vector<std::shared_ptr<QueryGroup>> QueryOptimiser::optimise(bool isOptimised) {
     // if isOptimised is False, return a single queryGroup
+
     if (!isOptimised) {
         std::shared_ptr<QueryGroup> queryGroup = createSingleQueryGroup();
         queryGroup->setClauses(clauses);
         return {queryGroup};
     }
+    sortAllClauses();
     std::vector<std::shared_ptr<QueryGroup>> queryGroups = createQueryGroups();
     std::vector<std::shared_ptr<QueryGroup>> mergedQueryGroups = mergeCommonQueryGroups(queryGroups);
     mergedQueryGroups = sortQueryGroups(mergedQueryGroups);
@@ -22,7 +24,7 @@ std::vector<std::shared_ptr<QueryGroup>> QueryOptimiser::optimise(bool isOptimis
         setRelatedClausesAndPenalties(mergedQueryGroups[i]);
         // set up relationshipsMap and sort the relationshipsMap by penalty
     }
-    sortRelationshipsMap();
+
     for (size_t i = 0; i < mergedQueryGroups.size(); ++i) {
         sortQueryGroup(mergedQueryGroups[i]);
     }
@@ -38,6 +40,10 @@ void QueryOptimiser::sortQueryGroup(std::shared_ptr<QueryGroup> &queryGroup) {
 
 std::shared_ptr<QueryGroup> QueryOptimiser::createSingleQueryGroup() {
     return std::make_shared<QueryGroup>();
+}
+
+void QueryOptimiser::sortAllClauses() {
+    std::sort(clauses.begin(), clauses.end(), comparePenalty);
 }
 
 std::vector<std::shared_ptr<QueryGroup>> QueryOptimiser::mergeCommonQueryGroups(std::vector<std::shared_ptr<QueryGroup>>& queryGroups) {
@@ -146,12 +152,7 @@ bool QueryOptimiser::comparePenalty(const std::shared_ptr<Clause> &a, const std:
     return a->getPenalty() < b->getPenalty();
 }
 
-void QueryOptimiser::sortRelationshipsMap() {
-    for (auto& [synonym, currentClauses] : relationshipsMap) {
-        std::sort(currentClauses.begin(), currentClauses.end(),
-                  comparePenalty);
-    }
-}
+
 
 void QueryOptimiser::addRelatedClausesIfExists(std::string synonym, std::unordered_set<std::shared_ptr<Clause>>& addedClauses, std::vector<std::shared_ptr<Clause>>& sortedClauses) {
     if (relationshipsMap.find(synonym) != relationshipsMap.end()) {

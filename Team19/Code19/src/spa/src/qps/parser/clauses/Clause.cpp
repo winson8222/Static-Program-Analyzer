@@ -21,7 +21,7 @@ void Clause::calculatePenalties() {
 }
 
 int Clause::getPenalty() {
-    if (penalty) {
+    if (penalty != -1) {
         return penalty;
     } else {
         calculatePenalties();
