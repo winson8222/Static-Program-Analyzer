@@ -20,11 +20,12 @@ env:
     TEST_DIR: ${{ github.workspace }}/Team19/Code19/build/src/autotester
     AUTOTESTER_M1_DIR: ${{ github.workspace }}/Team19/Tests19/system_testing/m1
     AUTOTESTER_M2_DIR: ${{ github.workspace }}/Team19/Tests19/system_testing/m2
+    AUTOTESTER_M3_DIR: ${{ github.workspace }}/Team19/Tests19/system_testing/m3
 
 jobs:
   build_autotester_mac:
     runs-on: macos-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -104,7 +105,7 @@ jobs:
         working-directory: ${{ env.AUTOTESTER_M2_DIR }}
         run: |
             mkdir -p logs outputs
-            echo "[System Test] Running all tests for Milestone 1"
+            echo "[System Test] Running all tests for Milestone 2"
             EXIT_CODE="0"
 
             for file in source/*_source.txt; do
@@ -138,7 +139,52 @@ jobs:
                     echo "[Alert!] Some system tests have failed. Please try again!"
                     # Please note that we are not failing the build for milestone 2
                     # But before CI/CD submission and M2, need to set this to 2 instead of 0
-                    # EXIT_CODE="2"
+                    EXIT_CODE="2"
+                fi
+                fi
+            done
+
+            exit $EXIT_CODE
+
+      - name: Run Autotester on Milestone 3
+        shell: bash
+        working-directory: ${{ env.AUTOTESTER_M3_DIR }}
+        run: |
+            mkdir -p logs outputs
+            echo "[System Test] Running all tests for Milestone 3"
+            EXIT_CODE="0"
+
+            for file in source/*_source.txt; do
+                # shellcheck disable=SC2001
+                test_name=$(echo "$file" | sed 's|.*/\(.*\)_source\.txt$|\1|') # regex generated with aid of ChatGPT
+                echo "[System Test] Running Test: $test_name"
+                # Start time measurement in milliseconds
+                # Run the test and capture the time
+                TIME_FILE="logs/time_${test_name}.txt"
+                (time ${{ env.TEST_DIR }}/autotester "$file" queries/"$test_name"_queries.txt outputs/"$test_name"_output.xml > logs/log_"$test_name".txt) 2>&1 | tee "$TIME_FILE"
+
+                # Extract the real time, convert to milliseconds
+                real_seconds=$(grep real "$TIME_FILE" | awk '{print $2}' | sed -E 's/([0-9]+)m([0-9.]+)s/\1*60+\2/' | bc)
+                milliseconds=$(echo "$real_seconds*1000/1" | bc)
+
+                echo "[System Test] Test $test_name completed in $milliseconds milliseconds"
+
+                if [ "$?" != 0 ]; then
+                echo "[System Test] Test $test_name has failed"
+                EXIT_CODE="1"
+                else
+                echo "[System Test] Test $test_name succeed"
+                head -1 logs/log_"$test_name".txt
+                FILENAME=outputs/"$test_name"_output.xml
+                QUERIES=$(grep -o '</query>' "$FILENAME" | wc -l)
+                PASSES=$(grep -o '<passed/>' "$FILENAME" | wc -l)
+                FAILS=$(grep -c '</failed>' "$FILENAME" || echo "0")
+                EXCEPTIONS=$(grep -c '<exception/>' "$FILENAME" || echo "0")
+                echo "[System Test] Queries: $QUERIES; Passes: $PASSES; Fails: $FAILS; EXCEPTIONS: $EXCEPTIONS"
+                if [ "$QUERIES" != "$PASSES" ]; then
+                    echo "[Alert!] Some system tests have failed. Please try again!"
+                    # Please note that we are not failing the build for milestone 2
+                    # But before CI/CD submission and M2, need to set this to 2 instead of 0
                     EXIT_CODE="0"
                 fi
                 fi
