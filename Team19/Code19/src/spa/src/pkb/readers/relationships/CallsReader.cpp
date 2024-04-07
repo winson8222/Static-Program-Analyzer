@@ -37,6 +37,18 @@ bool CallsReader::hasRelationship(std::string key, std::string value) {
     return callsStore->hasRelationship(key, value);
 }
 
+int CallsReader::getSize() {
+    return callsStore->getSize();
+}
+
+int CallsReader::getRelationshipCountByKey(std::string key) {
+    return callsStore->getRelationshipCountByKey(key);
+}
+
+int CallsReader::getRelationshipCountByValue(std::string value) {
+    return callsStore->getRelationshipCountByValue(value);
+}
+
 // Custom methods
 std::unordered_set<std::string> CallsReader::getDirectlyCalledProcedures(std::string caller) {
     return callsStore->getRelationshipsByKey(caller);

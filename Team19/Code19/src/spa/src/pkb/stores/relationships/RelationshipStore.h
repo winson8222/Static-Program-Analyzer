@@ -93,5 +93,41 @@ public:
         keyToValueMap.clear();
         valueToKeyMap.clear();
     }
+
+    /**
+     * Gets the size of the store
+     * @return The number of relationships in the store
+    */
+    int getSize() override {
+        int count = 0;
+        for (auto& key : keyToValueMap.getKeys()) {
+            count += keyToValueMap.getValuesByKey(key).size();
+        }
+        return count;
+    }
+
+    /**
+     * Gets the number of relationships by key.
+     * @param key The key to get the number of relationships for.
+     * @return The number of relationships for the key.
+     */
+    int getRelationshipCountByKey(KeyType key) override {
+        if (!keyToValueMap.hasKey(key)) {
+            return 0;
+        }
+        return keyToValueMap.getValuesByKey(key).size();
+    }
+
+    /**
+      * Gets the number of relationships by value.
+      * @param value The value to get the number of relationships for.
+      * @return The number of relationships for the value.
+      */
+    int getRelationshipCountByValue(ValueType value) override {
+        if (!valueToKeyMap.hasKey(value)) {
+            return 0;
+        }
+        return valueToKeyMap.getValuesByKey(value).size();
+    }
 };
 // ai-gen end

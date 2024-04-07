@@ -1,0 +1,474 @@
+procedure proc1 {
+        while(x == 2) {read x;}
+        while(x != 2) {read x;}
+        while(x < 2) {read x;}
+        while(x <= 2) {read x;}
+        while(x > 2) {read x;}
+        while(x >= 2) {read x;}
+        while(!(x == 2)) {read x;}
+
+        while(0 == 2147483647) {read x;}
+        while(0 != 2147483647) {read x;}
+        while(0 < 2147483647) {read x;}
+        while(0 <= 2147483647) {read x;}
+        while(0 > 2147483647) {read x;}
+        while(0 >= 2147483647) {read x;}
+        while(!(0 == 2147483647)) {read x;}
+
+        while((x == 2) && (x == 1)) {read x;}
+        while((x != 2) || (x != 2)) {read x;}
+        while((!(x == 2)) && (!(x == 1))) {read x;}
+        while( ((x == 2) && (x == 1)) || (x == 3)) {read x;}
+        while(!(!(!(!(!(!(!(!(!(!(x==3))))))))))) {read x;}
+        while(((x <= y) || (!(y == z))) && (!(z >= x))) {read x;}
+}
+
+procedure proc2 {
+        while(x == 2) {read x;}
+        while(x != 2) {read x;}
+        while(x < 2) {read x;}
+        while(x <= 2) {read x;}
+        while(x > 2) {read x;}
+        while(x >= 2) {read x;}
+        while(!(x == 2)) {read x;}
+
+        while(0 == 2147483647) {read x;}
+        while(0 != 2147483647) {read x;}
+        while(0 < 2147483647) {read x;}
+        while(0 <= 2147483647) {read x;}
+        while(0 > 2147483647) {read x;}
+        while(0 >= 2147483647) {read x;}
+        while(!(0 == 2147483647)) {read x;}
+
+        while((x == 2) && (x == 1)) {read x;}
+        while((x != 2) || (x != 2)) {read x;}
+        while((!(x == 2)) && (!(x == 1))) {read x;}
+        while( ((x == 2) && (x == 1)) || (x == 3)) {read x;}
+        while(!(!(!(!(!(!(!(!(!(!(x==3))))))))))) {read x;}
+        while(((x <= y) || (!(y == z))) && (!(z >= x))) {read x;}
+}
+
+procedure proc3 {
+        while(x == 2) {read x;}
+        while(x != 2) {read x;}
+        while(x < 2) {read x;}
+        while(x <= 2) {read x;}
+        while(x > 2) {read x;}
+        while(x >= 2) {read x;}
+        while(!(x == 2)) {read x;}
+
+        while(0 == 2147483647) {read x;}
+        while(0 != 2147483647) {read x;}
+        while(0 < 2147483647) {read x;}
+        while(0 <= 2147483647) {read x;}
+        while(0 > 2147483647) {read x;}
+        while(0 >= 2147483647) {read x;}
+        while(!(0 == 2147483647)) {read x;}
+
+        while((x == 2) && (x == 1)) {read x;}
+        while((x != 2) || (x != 2)) {read x;}
+        while((!(x == 2)) && (!(x == 1))) {read x;}
+        while( ((x == 2) && (x == 1)) || (x == 3)) {read x;}
+        while(!(!(!(!(!(!(!(!(!(!(x==3))))))))))) {read x;}
+        while(((x <= y) || (!(y == z))) && (!(z >= x))) {read x;}
+}
+
+procedure proc4 {
+        while(x == 2) {read x;}
+        while(x != 2) {read x;}
+        while(x < 2) {read x;}
+        while(x <= 2) {read x;}
+        while(x > 2) {read x;}
+        while(x >= 2) {read x;}
+        while(!(x == 2)) {read x;}
+
+        while(0 == 2147483647) {read x;}
+        while(0 != 2147483647) {read x;}
+        while(0 < 2147483647) {read x;}
+        while(0 <= 2147483647) {read x;}
+        while(0 > 2147483647) {read x;}
+        while(0 >= 2147483647) {read x;}
+        while(!(0 == 2147483647)) {read x;}
+
+        while((x == 2) && (x == 1)) {read x;}
+        while((x != 2) || (x != 2)) {read x;}
+        while((!(x == 2)) && (!(x == 1))) {read x;}
+        while( ((x == 2) && (x == 1)) || (x == 3)) {read x;}
+        while(!(!(!(!(!(!(!(!(!(!(x==3))))))))))) {read x;}
+        while(((x <= y) || (!(y == z))) && (!(z >= x))) {read x;}
+}
+
+procedure proc5 {
+        while(x == 2) {read x;}
+        while(x != 2) {read x;}
+        while(x < 2) {read x;}
+        while(x <= 2) {read x;}
+        while(x > 2) {read x;}
+        while(x >= 2) {read x;}
+        while(!(x == 2)) {read x;}
+
+        while(0 == 2147483647) {read x;}
+        while(0 != 2147483647) {read x;}
+        while(0 < 2147483647) {read x;}
+        while(0 <= 2147483647) {read x;}
+        while(0 > 2147483647) {read x;}
+        while(0 >= 2147483647) {read x;}
+        while(!(0 == 2147483647)) {read x;}
+
+        while((x == 2) && (x == 1)) {read x;}
+        while((x != 2) || (x != 2)) {read x;}
+        while((!(x == 2)) && (!(x == 1))) {read x;}
+        while( ((x == 2) && (x == 1)) || (x == 3)) {read x;}
+        while(!(!(!(!(!(!(!(!(!(!(x==3))))))))))) {read x;}
+        while(((x <= y) || (!(y == z))) && (!(z >= x))) {read x;}
+}
+
+procedure proc6 {
+        while(x == 2) {read x;}
+        while(x != 2) {read x;}
+        while(x < 2) {read x;}
+        while(x <= 2) {read x;}
+        while(x > 2) {read x;}
+        while(x >= 2) {read x;}
+        while(!(x == 2)) {read x;}
+
+        while(0 == 2147483647) {read x;}
+        while(0 != 2147483647) {read x;}
+        while(0 < 2147483647) {read x;}
+        while(0 <= 2147483647) {read x;}
+        while(0 > 2147483647) {read x;}
+        while(0 >= 2147483647) {read x;}
+        while(!(0 == 2147483647)) {read x;}
+
+        while((x == 2) && (x == 1)) {read x;}
+        while((x != 2) || (x != 2)) {read x;}
+        while((!(x == 2)) && (!(x == 1))) {read x;}
+        while( ((x == 2) && (x == 1)) || (x == 3)) {read x;}
+        while(!(!(!(!(!(!(!(!(!(!(x==3))))))))))) {read x;}
+        while(((x <= y) || (!(y == z))) && (!(z >= x))) {read x;}
+}
+
+procedure proc7 {
+        while(x == 2) {read x;}
+        while(x != 2) {read x;}
+        while(x < 2) {read x;}
+        while(x <= 2) {read x;}
+        while(x > 2) {read x;}
+        while(x >= 2) {read x;}
+        while(!(x == 2)) {read x;}
+
+        while(0 == 2147483647) {read x;}
+        while(0 != 2147483647) {read x;}
+        while(0 < 2147483647) {read x;}
+        while(0 <= 2147483647) {read x;}
+        while(0 > 2147483647) {read x;}
+        while(0 >= 2147483647) {read x;}
+        while(!(0 == 2147483647)) {read x;}
+
+        while((x == 2) && (x == 1)) {read x;}
+        while((x != 2) || (x != 2)) {read x;}
+        while((!(x == 2)) && (!(x == 1))) {read x;}
+        while( ((x == 2) && (x == 1)) || (x == 3)) {read x;}
+        while(!(!(!(!(!(!(!(!(!(!(x==3))))))))))) {read x;}
+        while(((x <= y) || (!(y == z))) && (!(z >= x))) {read x;}
+}
+
+procedure proc8 {
+        while(x == 2) {read x;}
+        while(x != 2) {read x;}
+        while(x < 2) {read x;}
+        while(x <= 2) {read x;}
+        while(x > 2) {read x;}
+        while(x >= 2) {read x;}
+        while(!(x == 2)) {read x;}
+
+        while(0 == 2147483647) {read x;}
+        while(0 != 2147483647) {read x;}
+        while(0 < 2147483647) {read x;}
+        while(0 <= 2147483647) {read x;}
+        while(0 > 2147483647) {read x;}
+        while(0 >= 2147483647) {read x;}
+        while(!(0 == 2147483647)) {read x;}
+
+        while((x == 2) && (x == 1)) {read x;}
+        while((x != 2) || (x != 2)) {read x;}
+        while((!(x == 2)) && (!(x == 1))) {read x;}
+        while( ((x == 2) && (x == 1)) || (x == 3)) {read x;}
+        while(!(!(!(!(!(!(!(!(!(!(x==3))))))))))) {read x;}
+        while(((x <= y) || (!(y == z))) && (!(z >= x))) {read x;}
+}
+
+procedure proc9 {
+        while(x == 2) {read x;}
+        while(x != 2) {read x;}
+        while(x < 2) {read x;}
+        while(x <= 2) {read x;}
+        while(x > 2) {read x;}
+        while(x >= 2) {read x;}
+        while(!(x == 2)) {read x;}
+
+        while(0 == 2147483647) {read x;}
+        while(0 != 2147483647) {read x;}
+        while(0 < 2147483647) {read x;}
+        while(0 <= 2147483647) {read x;}
+        while(0 > 2147483647) {read x;}
+        while(0 >= 2147483647) {read x;}
+        while(!(0 == 2147483647)) {read x;}
+
+        while((x == 2) && (x == 1)) {read x;}
+        while((x != 2) || (x != 2)) {read x;}
+        while((!(x == 2)) && (!(x == 1))) {read x;}
+        while( ((x == 2) && (x == 1)) || (x == 3)) {read x;}
+        while(!(!(!(!(!(!(!(!(!(!(x==3))))))))))) {read x;}
+        while(((x <= y) || (!(y == z))) && (!(z >= x))) {read x;}
+}
+
+procedure proc10 {
+        while(x == 2) {read x;}
+        while(x != 2) {read x;}
+        while(x < 2) {read x;}
+        while(x <= 2) {read x;}
+        while(x > 2) {read x;}
+        while(x >= 2) {read x;}
+        while(!(x == 2)) {read x;}
+
+        while(0 == 2147483647) {read x;}
+        while(0 != 2147483647) {read x;}
+        while(0 < 2147483647) {read x;}
+        while(0 <= 2147483647) {read x;}
+        while(0 > 2147483647) {read x;}
+        while(0 >= 2147483647) {read x;}
+        while(!(0 == 2147483647)) {read x;}
+
+        while((x == 2) && (x == 1)) {read x;}
+        while((x != 2) || (x != 2)) {read x;}
+        while((!(x == 2)) && (!(x == 1))) {read x;}
+        while( ((x == 2) && (x == 1)) || (x == 3)) {read x;}
+        while(!(!(!(!(!(!(!(!(!(!(x==3))))))))))) {read x;}
+        while(((x <= y) || (!(y == z))) && (!(z >= x))) {read x;}
+}
+
+procedure proc11 {
+        while(x == 2) {read x;}
+        while(x != 2) {read x;}
+        while(x < 2) {read x;}
+        while(x <= 2) {read x;}
+        while(x > 2) {read x;}
+        while(x >= 2) {read x;}
+        while(!(x == 2)) {read x;}
+
+        while(0 == 2147483647) {read x;}
+        while(0 != 2147483647) {read x;}
+        while(0 < 2147483647) {read x;}
+        while(0 <= 2147483647) {read x;}
+        while(0 > 2147483647) {read x;}
+        while(0 >= 2147483647) {read x;}
+        while(!(0 == 2147483647)) {read x;}
+
+        while((x == 2) && (x == 1)) {read x;}
+        while((x != 2) || (x != 2)) {read x;}
+        while((!(x == 2)) && (!(x == 1))) {read x;}
+        while( ((x == 2) && (x == 1)) || (x == 3)) {read x;}
+        while(!(!(!(!(!(!(!(!(!(!(x==3))))))))))) {read x;}
+        while(((x <= y) || (!(y == z))) && (!(z >= x))) {read x;}
+}
+
+procedure proc12 {
+        while(x == 2) {read x;}
+        while(x != 2) {read x;}
+        while(x < 2) {read x;}
+        while(x <= 2) {read x;}
+        while(x > 2) {read x;}
+        while(x >= 2) {read x;}
+        while(!(x == 2)) {read x;}
+
+        while(0 == 2147483647) {read x;}
+        while(0 != 2147483647) {read x;}
+        while(0 < 2147483647) {read x;}
+        while(0 <= 2147483647) {read x;}
+        while(0 > 2147483647) {read x;}
+        while(0 >= 2147483647) {read x;}
+        while(!(0 == 2147483647)) {read x;}
+
+        while((x == 2) && (x == 1)) {read x;}
+        while((x != 2) || (x != 2)) {read x;}
+        while((!(x == 2)) && (!(x == 1))) {read x;}
+        while( ((x == 2) && (x == 1)) || (x == 3)) {read x;}
+        while(!(!(!(!(!(!(!(!(!(!(x==3))))))))))) {read x;}
+        while(((x <= y) || (!(y == z))) && (!(z >= x))) {read x;}
+}
+
+procedure proc13 {
+        while(x == 2) {read x;}
+        while(x != 2) {read x;}
+        while(x < 2) {read x;}
+        while(x <= 2) {read x;}
+        while(x > 2) {read x;}
+        while(x >= 2) {read x;}
+        while(!(x == 2)) {read x;}
+
+        while(0 == 2147483647) {read x;}
+        while(0 != 2147483647) {read x;}
+        while(0 < 2147483647) {read x;}
+        while(0 <= 2147483647) {read x;}
+        while(0 > 2147483647) {read x;}
+        while(0 >= 2147483647) {read x;}
+        while(!(0 == 2147483647)) {read x;}
+
+        while((x == 2) && (x == 1)) {read x;}
+        while((x != 2) || (x != 2)) {read x;}
+        while((!(x == 2)) && (!(x == 1))) {read x;}
+        while( ((x == 2) && (x == 1)) || (x == 3)) {read x;}
+        while(!(!(!(!(!(!(!(!(!(!(x==3))))))))))) {read x;}
+        while(((x <= y) || (!(y == z))) && (!(z >= x))) {read x;}
+}
+
+procedure proc14 {
+        while(x == 2) {read x;}
+        while(x != 2) {read x;}
+        while(x < 2) {read x;}
+        while(x <= 2) {read x;}
+        while(x > 2) {read x;}
+        while(x >= 2) {read x;}
+        while(!(x == 2)) {read x;}
+
+        while(0 == 2147483647) {read x;}
+        while(0 != 2147483647) {read x;}
+        while(0 < 2147483647) {read x;}
+        while(0 <= 2147483647) {read x;}
+        while(0 > 2147483647) {read x;}
+        while(0 >= 2147483647) {read x;}
+        while(!(0 == 2147483647)) {read x;}
+
+        while((x == 2) && (x == 1)) {read x;}
+        while((x != 2) || (x != 2)) {read x;}
+        while((!(x == 2)) && (!(x == 1))) {read x;}
+        while( ((x == 2) && (x == 1)) || (x == 3)) {read x;}
+        while(!(!(!(!(!(!(!(!(!(!(x==3))))))))))) {read x;}
+        while(((x <= y) || (!(y == z))) && (!(z >= x))) {read x;}
+}
+
+procedure proc15 {
+        while(x == 2) {read x;}
+        while(x != 2) {read x;}
+        while(x < 2) {read x;}
+        while(x <= 2) {read x;}
+        while(x > 2) {read x;}
+        while(x >= 2) {read x;}
+        while(!(x == 2)) {read x;}
+
+        while(0 == 2147483647) {read x;}
+        while(0 != 2147483647) {read x;}
+        while(0 < 2147483647) {read x;}
+        while(0 <= 2147483647) {read x;}
+        while(0 > 2147483647) {read x;}
+        while(0 >= 2147483647) {read x;}
+        while(!(0 == 2147483647)) {read x;}
+
+        while((x == 2) && (x == 1)) {read x;}
+        while((x != 2) || (x != 2)) {read x;}
+        while((!(x == 2)) && (!(x == 1))) {read x;}
+        while( ((x == 2) && (x == 1)) || (x == 3)) {read x;}
+        while(!(!(!(!(!(!(!(!(!(!(x==3))))))))))) {read x;}
+        while(((x <= y) || (!(y == z))) && (!(z >= x))) {read x;}
+}
+
+procedure proc16 {
+        while(x == 2) {read x;}
+        while(x != 2) {read x;}
+        while(x < 2) {read x;}
+        while(x <= 2) {read x;}
+        while(x > 2) {read x;}
+        while(x >= 2) {read x;}
+        while(!(x == 2)) {read x;}
+
+        while(0 == 2147483647) {read x;}
+        while(0 != 2147483647) {read x;}
+        while(0 < 2147483647) {read x;}
+        while(0 <= 2147483647) {read x;}
+        while(0 > 2147483647) {read x;}
+        while(0 >= 2147483647) {read x;}
+        while(!(0 == 2147483647)) {read x;}
+
+        while((x == 2) && (x == 1)) {read x;}
+        while((x != 2) || (x != 2)) {read x;}
+        while((!(x == 2)) && (!(x == 1))) {read x;}
+        while( ((x == 2) && (x == 1)) || (x == 3)) {read x;}
+        while(!(!(!(!(!(!(!(!(!(!(x==3))))))))))) {read x;}
+        while(((x <= y) || (!(y == z))) && (!(z >= x))) {read x;}
+}
+
+procedure proc17 {
+        while(x == 2) {read x;}
+        while(x != 2) {read x;}
+        while(x < 2) {read x;}
+        while(x <= 2) {read x;}
+        while(x > 2) {read x;}
+        while(x >= 2) {read x;}
+        while(!(x == 2)) {read x;}
+
+        while(0 == 2147483647) {read x;}
+        while(0 != 2147483647) {read x;}
+        while(0 < 2147483647) {read x;}
+        while(0 <= 2147483647) {read x;}
+        while(0 > 2147483647) {read x;}
+        while(0 >= 2147483647) {read x;}
+        while(!(0 == 2147483647)) {read x;}
+
+        while((x == 2) && (x == 1)) {read x;}
+        while((x != 2) || (x != 2)) {read x;}
+        while((!(x == 2)) && (!(x == 1))) {read x;}
+        while( ((x == 2) && (x == 1)) || (x == 3)) {read x;}
+        while(!(!(!(!(!(!(!(!(!(!(x==3))))))))))) {read x;}
+        while(((x <= y) || (!(y == z))) && (!(z >= x))) {read x;}
+}
+
+procedure proc18 {
+        while(x == 2) {read x;}
+        while(x != 2) {read x;}
+        while(x < 2) {read x;}
+        while(x <= 2) {read x;}
+        while(x > 2) {read x;}
+        while(x >= 2) {read x;}
+        while(!(x == 2)) {read x;}
+
+        while(0 == 2147483647) {read x;}
+        while(0 != 2147483647) {read x;}
+        while(0 < 2147483647) {read x;}
+        while(0 <= 2147483647) {read x;}
+        while(0 > 2147483647) {read x;}
+        while(0 >= 2147483647) {read x;}
+        while(!(0 == 2147483647)) {read x;}
+
+        while((x == 2) && (x == 1)) {read x;}
+        while((x != 2) || (x != 2)) {read x;}
+        while((!(x == 2)) && (!(x == 1))) {read x;}
+        while( ((x == 2) && (x == 1)) || (x == 3)) {read x;}
+        while(!(!(!(!(!(!(!(!(!(!(x==3))))))))))) {read x;}
+        while(((x <= y) || (!(y == z))) && (!(z >= x))) {read x;}
+}
+
+procedure proc19 {
+        while(x == 2) {read x;}
+        while(x != 2) {read x;}
+        while(x < 2) {read x;}
+        while(x <= 2) {read x;}
+        while(x > 2) {read x;}
+        while(x >= 2) {read x;}
+        while(!(x == 2)) {read x;}
+
+        while(0 == 2147483647) {read x;}
+        while(0 != 2147483647) {read x;}
+        while(0 < 2147483647) {read x;}
+        while(0 <= 2147483647) {read x;}
+        while(0 > 2147483647) {read x;}
+        while(0 >= 2147483647) {read x;}
+        while(!(0 == 2147483647)) {read x;}
+
+        while((x == 2) && (x == 1)) {read x;}
+        while((x != 2) || (x != 2)) {read x;}
+        while((!(x == 2)) && (!(x == 1))) {read x;}
+        while( ((x == 2) && (x == 1)) || (x == 3)) {read x;}
+        while(!(!(!(!(!(!(!(!(!(!(x==3))))))))))) {read x;}
+        while(((x <= y) || (!(y == z))) && (!(z >= x))) {read x;}
+}

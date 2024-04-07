@@ -24,5 +24,5 @@ public:
     // Setters
 
     void setThirdParam(const Token& param) { thirdParam = param; }
-
+    std::unordered_set<std::string> getAllSynonyms() const override;
 };

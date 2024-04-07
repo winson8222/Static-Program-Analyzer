@@ -60,4 +60,10 @@ public:
     std::unordered_set<std::string> getKeys() override;
 
     std::unordered_set<std::string> getValues() override;
+
+    int getSize() override;
+
+    int getRelationshipCountByKey(std::string procName) override;
+
+    int getRelationshipCountByValue(std::string varName) override;
 };

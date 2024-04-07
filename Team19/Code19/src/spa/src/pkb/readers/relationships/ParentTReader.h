@@ -63,5 +63,11 @@ public:
     std::unordered_set<int> getRelationshipsByKey(int stmtNum) override;
 
     bool hasRelationship(int stmt1, int stmt2) override;
+
+    int getSize() override;
+
+    int getRelationshipCountByKey(int stmtNum) override;
+
+    int getRelationshipCountByValue(int stmtNum) override;
 };
 // ai-gen end

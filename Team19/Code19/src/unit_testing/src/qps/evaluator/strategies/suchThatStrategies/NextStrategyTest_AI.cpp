@@ -601,4 +601,45 @@ TEST_CASE("src/qps/evaluator/suchThatStrategies/NextStrategy/3") {
 		std::unordered_set<std::string> res = evaluator.evaluateQuery();
 		REQUIRE(res == std::unordered_set<std::string>{"FALSE"});
 	}
+
+
 }
+
+TEST_CASE("Next Optimisation") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
+    SECTION("IntraGroup prioritise one constant and one Synonym") {
+        std::string query = "stmt s1, s2, s3, s4; Select s1 such that Next*(s1,s2) and Next*(s2,s3) and Next*(s3,s4) and Next*(s1, 2)";
+        Tokenizer tokenizer = Tokenizer(query);
+        std::vector<Token> tokens = tokenizer.tokenize();
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator = QueryEvaluator(pkbReaderManager, pkbCacheManager, parsingResult);
+        std::unordered_set<std::string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<std::string>{ });
+    }
+}
+
+
+//Select <s1> such that Next*(s1, s4) and Next*(s1, s5) and Parent(s1, s2) and Follows(s1, s3)
+TEST_CASE("Next Optimisation2") {
+    std::shared_ptr<PKBManager> pkbManager = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkbManager->getPKBReaderManager();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkbManager->getPKBCacheManager();
+    SECTION("IntraGroup prioritise one constant and one Synonym") {
+        std::string query = "stmt s1, s2, s3, s4, s5; Select <s1> such that Next*(s1, s4) and Next*(s1, s5) and Parent(s1, s2) and Follows(s1, s3)";
+        Tokenizer tokenizer = Tokenizer(query);
+        std::vector<Token> tokens = tokenizer.tokenize();
+        QueryParser parser(tokens);
+        auto parsingResult = parser.parse();
+        QueryEvaluator evaluator = QueryEvaluator(pkbReaderManager, pkbCacheManager, parsingResult);
+        std::unordered_set<std::string> res = evaluator.evaluateQuery();
+        REQUIRE(res == std::unordered_set<std::string>{ });
+        // optimal order should be Parent(s1, s2) and Follows(s1, s3) and Next*(s1, s4) and Next*(s1, s5)
+    }
+}
+
+

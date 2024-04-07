@@ -30,5 +30,21 @@ private:
     static void handleRightParenthesis(Shunt& shunt);
     static void cleanUpStack(Shunt& shunt);
     static void handleNextCharacter(Shunt& shunt, char c);
+    static void handleEndOfExpression(Shunt& shunt);
+    static const char MINUS = '-';
+    static const char PLUS = '+';
+    static const char MULTIPLY = '*';
+    static const char DIVIDE = '/';
+    static const char MODULO = '%';
+    static const char LEFT_PARENTHESIS = '(';
+    static const char RIGHT_PARENTHESIS = ')';
+    static const char QUOTE = '\'';
+    static const char ZERO = '0';
+    static const char NINE = '9';
+    static const char LOWER_A = 'a';
+    static const char LOWER_Z = 'z';
+    static const char UPPER_A = 'A';
+    static const char UPPER_Z = 'Z';
+    static const char SPACE = ' ';
 };
 // ai-gen end
