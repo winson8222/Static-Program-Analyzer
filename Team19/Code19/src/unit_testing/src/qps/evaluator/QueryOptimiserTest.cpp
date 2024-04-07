@@ -3,10 +3,21 @@
 #include "qps/parser/clauses/Clause.h"
 #include "qps/parser/clauses/SuchThatClause.h"
 #include <memory>
+#include "pkb/PKBManager.h"
+#include "qps/parser/Tokenizer.h"
+#include "qps/parser/QueryParser.h"
+#include "qps/evaluator/QueryEvaluator.h"
 
 
 TEST_CASE("qps/evaluator/QueryOptimiser") {
+    std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkb->getPKBReaderManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkb->getPKBCacheManager();
+    pkbCacheManager->populateCache();
     SECTION("qps/evaluator/QueryOptimiser with Single Clause") {
+
+
 
 
         std::vector<std::shared_ptr<Clause>> clauses;
@@ -23,7 +34,7 @@ TEST_CASE("qps/evaluator/QueryOptimiser") {
 
         SECTION("with single Clause") {
             QueryOptimiser queryOptimiser = QueryOptimiser(clauses);
-            std::vector<std::shared_ptr<QueryGroup>> queryGroups = queryOptimiser.optimise(true);
+            std::vector<std::shared_ptr<QueryGroup>> queryGroups = queryOptimiser.optimise(true, pkbReaderManager);
             REQUIRE(queryGroups.size() == 1);
             REQUIRE(queryGroups[0]->getClauses()[0]->getFirstParam().isEqual(firstParam));
             REQUIRE(queryGroups[0]->getClauses()[0]->getSecondParam().isEqual(secondParam));
@@ -42,7 +53,7 @@ TEST_CASE("qps/evaluator/QueryOptimiser") {
             clauses.push_back(secondClause);
 
             QueryOptimiser queryOptimiser = QueryOptimiser(clauses);
-            std::vector<std::shared_ptr<QueryGroup>> queryGroups = queryOptimiser.optimise(true);
+            std::vector<std::shared_ptr<QueryGroup>> queryGroups = queryOptimiser.optimise(true, pkbReaderManager);
             REQUIRE(queryGroups.size() == 1);
             REQUIRE(queryGroups[0]->getClauses()[0]->getFirstParam().isEqual(firstParam2));
             REQUIRE(queryGroups[0]->getClauses()[0]->getSecondParam().isEqual(secondParam2));
@@ -64,7 +75,7 @@ TEST_CASE("qps/evaluator/QueryOptimiser") {
             clauses.push_back(secondClause);
 
             QueryOptimiser queryOptimiser = QueryOptimiser(clauses);
-            std::vector<std::shared_ptr<QueryGroup>> queryGroups = queryOptimiser.optimise(true);
+            std::vector<std::shared_ptr<QueryGroup>> queryGroups = queryOptimiser.optimise(true, pkbReaderManager);
             REQUIRE(queryGroups.size() == 2);
 
         }
@@ -104,7 +115,7 @@ TEST_CASE("qps/evaluator/QueryOptimiser") {
         clauses.push_back(thirdClause);
 
         QueryOptimiser queryOptimiser = QueryOptimiser(clauses);
-        std::vector<std::shared_ptr<QueryGroup>> queryGroups = queryOptimiser.optimise(true);
+        std::vector<std::shared_ptr<QueryGroup>> queryGroups = queryOptimiser.optimise(true, pkbReaderManager);
         REQUIRE(queryGroups.size() == 2);
 
     }
@@ -143,7 +154,7 @@ TEST_CASE("qps/evaluator/QueryOptimiser") {
         clauses.push_back(thirdClause);
 
         QueryOptimiser queryOptimiser = QueryOptimiser(clauses);
-        std::vector<std::shared_ptr<QueryGroup>> queryGroups = queryOptimiser.optimise(true);
+        std::vector<std::shared_ptr<QueryGroup>> queryGroups = queryOptimiser.optimise(true, pkbReaderManager);
         REQUIRE(queryGroups.size() == 3);
 
 
@@ -185,7 +196,7 @@ TEST_CASE("qps/evaluator/QueryOptimiser") {
 
 
         QueryOptimiser queryOptimiser = QueryOptimiser(clauses);
-        std::vector<std::shared_ptr<QueryGroup>> queryGroups = queryOptimiser.optimise(true);
+        std::vector<std::shared_ptr<QueryGroup>> queryGroups = queryOptimiser.optimise(true, pkbReaderManager);
         REQUIRE(queryGroups.size() == 3);
 
 
@@ -230,7 +241,7 @@ TEST_CASE("qps/evaluator/QueryOptimiser") {
 
 
         QueryOptimiser queryOptimiser = QueryOptimiser(clauses);
-        std::vector<std::shared_ptr<QueryGroup>> queryGroups = queryOptimiser.optimise(true);
+        std::vector<std::shared_ptr<QueryGroup>> queryGroups = queryOptimiser.optimise(true, pkbReaderManager);
         REQUIRE(queryGroups.size() == 3);
         REQUIRE(queryGroups[0]->getClauses().size() == 1);
 
@@ -279,7 +290,7 @@ TEST_CASE("qps/evaluator/QueryOptimiser") {
 
 
         QueryOptimiser queryOptimiser = QueryOptimiser(clauses);
-        std::vector<std::shared_ptr<QueryGroup>> queryGroups = queryOptimiser.optimise(true);
+        std::vector<std::shared_ptr<QueryGroup>> queryGroups = queryOptimiser.optimise(true, pkbReaderManager);
         REQUIRE(queryGroups.size() == 1);
 
     }
@@ -374,8 +385,50 @@ TEST_CASE("qps/evaluator/QueryOptimiser") {
 
 
         QueryOptimiser queryOptimiser = QueryOptimiser(clauses);
-        std::vector<std::shared_ptr<QueryGroup>> queryGroups = queryOptimiser.optimise(true);
+        std::vector<std::shared_ptr<QueryGroup>> queryGroups = queryOptimiser.optimise(true, pkbReaderManager);
         REQUIRE(queryGroups.size() == 2);
 
     }
+}
+
+TEST_CASE("Dynamically check number of Next statements and sort") {
+    std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkb->getPKBReaderManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkb->getPKBCacheManager();
+    std::shared_ptr<NextWriter> nextWriter = pkbWriterManager->getNextWriter();
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+
+    statementWriter->insertStatement(1);
+    statementWriter->insertStatement(2);
+    statementWriter->insertStatement(3);
+    statementWriter->insertStatement(4);
+    statementWriter->insertStatement(5);
+    statementWriter->insertStatement(6);
+    statementWriter->insertStatement(7);
+    statementWriter->insertStatement(8);
+    statementWriter->insertStatement(9);
+    statementWriter->insertStatement(10);
+    nextWriter->addNext(1, 2);
+    nextWriter->addNext(2, 3);
+    nextWriter->addNext(3, 4);
+    nextWriter->addNext(4, 5);
+    nextWriter->addNext(5, 6);
+    nextWriter->addNext(6, 7);
+    nextWriter->addNext(7, 8);
+    nextWriter->addNext(8, 9);
+    nextWriter->addNext(9, 10);
+    pkbCacheManager->populateCache();
+    std::vector<std::shared_ptr<Clause>> clauses;
+
+    std::string query = "stmt s; Select s such that Next*(1, s) and Next*(2, s) and Next*(3, s) and Next*(4, s) and Next*(5, s) and Next*(6, s) and Next*(7, s) and Next*(8, s) and Next*(9, s)";
+    Tokenizer tokenizer = Tokenizer(query);
+    std::vector<Token> tokens = tokenizer.tokenize();
+    QueryParser queryParser = QueryParser(tokens);
+    ParsingResult parsingResult = queryParser.parse();
+    QueryEvaluator queryEvaluator = QueryEvaluator(pkbReaderManager, pkbCacheManager, parsingResult);
+    std::unordered_set<std::string> results = queryEvaluator.evaluateQuery();
+    REQUIRE(results.size() == 1);
+
+
 }

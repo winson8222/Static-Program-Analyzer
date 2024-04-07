@@ -4,6 +4,15 @@
 #include <unordered_set>
 #include <utility>
 
+
+std::shared_ptr<ResultTable> AssignPatternStrategy::evaluateQueryOptimised(PKBReaderManager &pkbReaderManager,
+                                                                     const ParsingResult &parsingResult,
+                                                                     const Clause &clause,
+                                                                     std::shared_ptr<ResultTable> result) {
+    setIntermediateResultTable(result);
+    return evaluateQuery(pkbReaderManager, parsingResult, clause);
+}
+
 std::shared_ptr<ResultTable> AssignPatternStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) {
 	auto resultTable = std::make_shared<ResultTable>();
 	this->assignPatternReader = pkbReaderManager.getAssignPatternReader();

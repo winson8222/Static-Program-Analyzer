@@ -7,6 +7,14 @@
 // A parents relationship is defined between two statements (stmtRef, stmtRef),
 // where a stmtRef can be a wildcard, an integer, or a synonym.
 
+std::shared_ptr<ResultTable> ParentStrategy::evaluateQueryOptimised(PKBReaderManager &pkbReaderManager,
+                                                                  const ParsingResult &parsingResult,
+                                                                  const Clause &clause,
+                                                                  std::shared_ptr<ResultTable> result) {
+    setIntermediateResultTable(result);
+    return evaluateQuery(pkbReaderManager, parsingResult, clause);
+}
+
 std::shared_ptr<ResultTable> ParentStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) {
     auto resultTable = std::make_shared<ResultTable>();
     std::string requiredSynonym;

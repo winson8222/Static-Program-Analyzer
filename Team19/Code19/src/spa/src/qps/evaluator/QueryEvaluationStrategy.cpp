@@ -158,3 +158,45 @@ void QueryEvaluationStrategy::insertRowsWithSingleColumn(std::string colName, st
         insertSingleColRowToTable(colPair, resultTable);
     }
 }
+
+std::shared_ptr<ResultTable> QueryEvaluationStrategy::getIntermediateResultTable() {
+    return intermediateResultTable;
+}
+
+void QueryEvaluationStrategy::setIntermediateResultTable(std::shared_ptr<ResultTable> resultTable) {
+    intermediateResultTable = resultTable;
+}
+
+bool QueryEvaluationStrategy::hasCommonSynonyms(std::unordered_set<std::string> synonyms,
+                                                std::shared_ptr<ResultTable> resultTable) {
+    for (const std::string& synonym : synonyms) {
+        if (resultTable->hasColumn(synonym)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool QueryEvaluationStrategy::hasBothCommonSynonyms(const Clause &clause, std::shared_ptr<ResultTable> resultTable) {
+    if (clause.getFirstParam().getType() == TokenType::IDENT && clause.getSecondParam().getType() == TokenType::IDENT) {
+        return resultTable->hasColumn(clause.getFirstParam().getValue()) && resultTable->hasColumn(clause.getSecondParam().getValue());
+    }
+    return false;
+}
+
+bool QueryEvaluationStrategy::hasLeftCommonSynonym(const Clause &clause, std::shared_ptr<ResultTable> resultTable) {
+    if (clause.getFirstParam().getType() == TokenType::IDENT) {
+        return resultTable->hasColumn(clause.getFirstParam().getValue());
+    }
+    return false;
+}
+
+bool QueryEvaluationStrategy::hasRightCommonSynonym(const Clause &clause, std::shared_ptr<ResultTable> resultTable) {
+    if (clause.getSecondParam().getType() == TokenType::IDENT) {
+        return resultTable->hasColumn(clause.getSecondParam().getValue());
+    }
+    return false;
+}
+
+
+

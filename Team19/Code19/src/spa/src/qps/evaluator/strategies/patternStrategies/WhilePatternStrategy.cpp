@@ -3,6 +3,15 @@
 #include <string>
 #include <unordered_set>
 
+
+std::shared_ptr<ResultTable> WhilePatternStrategy::evaluateQueryOptimised(PKBReaderManager &pkbReaderManager,
+                                                                     const ParsingResult &parsingResult,
+                                                                     const Clause &clause,
+                                                                     std::shared_ptr<ResultTable> result) {
+    setIntermediateResultTable(result);
+    return evaluateQuery(pkbReaderManager, parsingResult, clause);
+}
+
 std::shared_ptr<ResultTable> WhilePatternStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) {
     auto resultTable = std::make_shared<ResultTable>();
     this->whilePatternReader = pkbReaderManager.getWhilePatternReader();

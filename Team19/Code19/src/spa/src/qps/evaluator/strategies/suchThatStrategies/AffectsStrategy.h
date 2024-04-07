@@ -13,7 +13,7 @@ private:
 public:
     // Override the evaluateQuery method to implement the Affects evaluation logic
     std::shared_ptr<ResultTable> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) override;
-
+    std::shared_ptr<ResultTable> evaluateQueryOptimised(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause, std::shared_ptr<ResultTable> result) override;
     // Evaluate Affects when both parameters are synonyms (i.e., both are statement numbers for assignments)
     void processSynonyms(std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager);
 

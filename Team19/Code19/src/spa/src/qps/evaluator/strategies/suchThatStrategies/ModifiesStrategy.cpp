@@ -1,5 +1,14 @@
 #include "ModifiesStrategy.h"
 
+
+std::shared_ptr<ResultTable> ModifiesStrategy::evaluateQueryOptimised(PKBReaderManager &pkbReaderManager,
+                                                                    const ParsingResult &parsingResult,
+                                                                    const Clause &clause,
+                                                                    std::shared_ptr<ResultTable> result) {
+    setIntermediateResultTable(result);
+    return evaluateQuery(pkbReaderManager, parsingResult, clause);
+}
+
 std::shared_ptr<ResultTable> ModifiesStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause)
 {
     auto resultTable = std::make_shared<ResultTable>();

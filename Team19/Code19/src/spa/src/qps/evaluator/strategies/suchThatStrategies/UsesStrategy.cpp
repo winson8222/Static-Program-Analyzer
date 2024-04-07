@@ -2,6 +2,16 @@
 #include <memory>
 #include <unordered_map>
 
+
+std::shared_ptr<ResultTable> UsesStrategy::evaluateQueryOptimised(PKBReaderManager &pkbReaderManager,
+                                                                  const ParsingResult &parsingResult,
+                                                                  const Clause &clause,
+                                                                  std::shared_ptr<ResultTable> result) {
+    setIntermediateResultTable(result);
+    return evaluateQuery(pkbReaderManager, parsingResult, clause);
+}
+
+
 std::shared_ptr<ResultTable> UsesStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause)
 {
     auto resultTable = std::make_shared<ResultTable>();

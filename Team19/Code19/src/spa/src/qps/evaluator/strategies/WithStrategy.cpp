@@ -14,6 +14,15 @@
  * @param parsingResult Contains the parsed query details.
  * @return A shared pointer to the populated result table.
  */
+std::shared_ptr<ResultTable> WithStrategy::evaluateQueryOptimised(PKBReaderManager &pkbReaderManager,
+                                                                  const ParsingResult &parsingResult,
+                                                                  const Clause &clause,
+                                                                  std::shared_ptr<ResultTable> result) {
+    setIntermediateResultTable(result);
+    return evaluateQuery(pkbReaderManager, parsingResult, clause);
+}
+
+
 std::shared_ptr<ResultTable> WithStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) {
     auto resultTable = std::make_shared<ResultTable>();
     // Initializing PKB readers for With clause

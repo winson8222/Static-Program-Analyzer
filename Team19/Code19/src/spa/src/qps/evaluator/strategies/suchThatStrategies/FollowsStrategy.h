@@ -67,4 +67,5 @@ public:
      * @param resultTable The result table to be populated with the evaluation results.
      */
     void processIntegerParams(std::shared_ptr<ResultTable> resultTable) override;
+    std::shared_ptr<ResultTable> evaluateQueryOptimised(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause, std::shared_ptr<ResultTable> result) override;
 };

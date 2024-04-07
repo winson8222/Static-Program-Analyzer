@@ -5,6 +5,14 @@
 
 // Standard library dependencies
 
+
+std::shared_ptr<ResultTable> FollowsStrategy::evaluateQueryOptimised(PKBReaderManager &pkbReaderManager,
+                                                                    const ParsingResult &parsingResult,
+                                                                    const Clause &clause,
+                                                                    std::shared_ptr<ResultTable> result) {
+    setIntermediateResultTable(result);
+    return evaluateQuery(pkbReaderManager, parsingResult, clause);
+}
 /**
  * Evaluates Follows or Follows* queries between two statements.
  * Determines the relationship based on the parsing result and updates the result table accordingly.

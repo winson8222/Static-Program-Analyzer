@@ -92,5 +92,7 @@ public:
     bool isEmpty();
     bool isTableFalse();
     void populateWithTwoColumns(std::string col1, std::string col2, std::unordered_set<std::string> values, std::unordered_set<std::string> values2);
+    void populateWithTwoColumnsWithExactEntries(std::string col1, std::string col2, std::vector<std::string> values, std::vector<std::string> values2);
     void populateWithOneColumn(std::string col1, std::unordered_set<std::string> values);
+    void populateWithOneColumnWithExactEntries(std::string col1, std::vector<std::string> values);
 };
