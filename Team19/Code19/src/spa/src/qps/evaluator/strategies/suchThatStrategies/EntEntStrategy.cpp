@@ -26,3 +26,86 @@ void EntEntStrategy::setTrueIfRelationShipExist(const Token& firstParam, const T
 		}
 	}
 }
+
+void EntEntStrategy::setReader(const std::shared_ptr<IRelationshipReader<std::string, std::string>> &reader) {
+    this->reader = reader;
+}
+
+std::shared_ptr<IRelationshipReader<std::string, std::string>> EntEntStrategy::getReader() {
+    return reader;
+}
+
+void EntEntStrategy::processBothSynonyms(const ParsingResult &parsingResult,
+                                        std::shared_ptr<ResultTable> resultTable) {
+    // get the types of both synonyms
+    Token firstParam = getFirstParam();
+    Token secondParam = getSecondParam();
+    std::string firstParamType = parsingResult.getDeclaredSynonym(firstParam.getValue());
+    std::string secondParamType = parsingResult.getDeclaredSynonym(secondParam.getValue());
+    insertColsToTable(firstParam, secondParam, resultTable);
+    std::shared_ptr<IRelationshipReader<std::string, std::string>> reader = getReader();
+    if (firstParamType == "procedure") {
+        std::unordered_set<std::string> allProcs = reader->getKeys();
+//                this->usesPReader->getAllProcsThatUseAnyVariable();
+
+        for (std::string proc : allProcs) {
+            std::unordered_set<std::string> allVars =
+                    reader->getRelationshipsByKey(proc);
+            // copy the value of procs to a rvalue string
+            insertRowsWithMatchedResults(firstParam, secondParam, proc, allVars, resultTable);
+        }
+    }
+}
+
+
+void EntEntStrategy::processFirstParam(const ParsingResult &parsingResult, std::shared_ptr<ResultTable> resultTable) {
+    Token firstParam = getFirstParam();
+    Token secondParam = getSecondParam();
+    std::string colName = firstParam.getValue();
+    insertSingleColToTable(firstParam, resultTable);
+    std::shared_ptr<IRelationshipReader<std::string, std::string>> reader = getReader();
+    std::unordered_set<std::string> allProcs;
+    if (secondParam.getType() == TokenType::QuoutIDENT) {
+        std::string secondParamValue = extractQuotedExpression(secondParam);
+        allProcs = reader->getRelationshipsByValue(secondParamValue);
+
+    } else {
+        // it is a wildcard
+        allProcs = reader->getKeys();
+
+    }
+    insertRowsWithSingleColumn(colName, allProcs, resultTable);
+}
+
+void EntEntStrategy::processSecondParam(const ParsingResult &parsingResult, std::shared_ptr<ResultTable> resultTable) {
+    Token firstParam = getFirstParam();
+    Token secondParam = getSecondParam();
+    std::string colName = secondParam.getValue();
+    insertSingleColToTable(secondParam, resultTable);
+    std::unordered_set<std::string> allVars;
+    std::shared_ptr<IRelationshipReader<std::string, std::string>> reader = getReader();
+    if (firstParam.getType() == TokenType::QuoutIDENT) {
+        std::string firstParamValue = extractQuotedExpression(firstParam);
+        allVars = reader->getRelationshipsByKey(firstParamValue);
+
+    } else {
+        // it is a wildcard
+        allVars = reader->getValues();
+
+    }
+    insertRowsWithSingleColumn(colName, allVars, resultTable);
+}
+
+void EntEntStrategy::processBothConstants(const ParsingResult &parsingResult,
+                                         std::shared_ptr<ResultTable> resultTable) {
+    Token firstParam = getFirstParam();
+    Token secondParam = getSecondParam();
+    std::shared_ptr<IRelationshipReader<std::string, std::string>> reader = getReader();
+    if (isBothParamsWildcard(firstParam, secondParam)) {
+        if (!reader->getKeys().empty()) {
+            resultTable->setAsTruthTable();
+        }
+    } else {
+        setTrueIfRelationShipExist(firstParam, secondParam, reader, resultTable);
+    }
+}

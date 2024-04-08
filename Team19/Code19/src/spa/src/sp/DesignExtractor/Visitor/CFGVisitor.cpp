@@ -1,9 +1,9 @@
 #include "sp/DesignExtractor/Visitor/CFGVisitor.h"
+#include <stack>
 
 CFGVisitor::CFGVisitor(std::shared_ptr<CFGNode> cfg,
-	std::shared_ptr<PKBWriterManager> pkbWriterManager) {
-	this->cfg = cfg;
-	this->pkbWriterManager = pkbWriterManager;
+	std::shared_ptr<PKBWriterManager> pkbWriterManager) :
+		cfg(cfg), pkbWriterManager(pkbWriterManager) {
 }
 
 void CFGVisitor::visit() {
@@ -16,7 +16,7 @@ void CFGVisitor::visitCFGNode(std::shared_ptr<CFGNode> cfgNode) {
 	}
 
 	// Extracts the next relationship for the current CFG node
-	for (auto childNode : cfgNode->getChildren()) {
+	for (std::shared_ptr<CFGNode> childNode : cfgNode->getChildren()) {
 		// Do not invoke the NextExtractor if the child node is a dummy node
 		if (childNode->isEndOfProcedure()) {	
 			continue;

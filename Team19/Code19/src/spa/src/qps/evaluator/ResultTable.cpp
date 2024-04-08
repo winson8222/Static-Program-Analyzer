@@ -317,3 +317,23 @@ void ResultTable::populateWithOneColumn(std::string col1, std::unordered_set<std
         this->insertNewRow(newRow);
     }
 }
+
+void ResultTable::populateWithTwoColumnsWithExactEntries(std::string col1, std::string col2,
+                                                         std::vector<std::string> values,
+                                                         std::vector<std::string> values2) {
+    for (int i = 0; i < values.size(); i++) {
+        std::unordered_map<std::string, std::string> newRow;
+        newRow[col1] = values[i];
+        newRow[col2] = values2[i];
+        this->insertNewRow(newRow);
+    }
+}
+
+
+void ResultTable::populateWithOneColumnWithExactEntries(std::string col1, std::vector<std::string> values) {
+    for (const auto& entity : values) {
+        std::unordered_map<std::string, std::string> newRow;
+        newRow[col1] = entity;
+        this->insertNewRow(newRow);
+    }
+}

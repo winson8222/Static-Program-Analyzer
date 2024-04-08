@@ -6,7 +6,7 @@
 #include <iostream>
 #include <utility>
 
-std::vector<std::shared_ptr<QueryGroup>> QueryOptimiser::optimise(bool isOptimised) {
+std::vector<std::shared_ptr<QueryGroup>> QueryOptimiser::optimise(bool isOptimised, std::shared_ptr<PKBReaderManager>& pkbReaderManager) {
     // if isOptimised is False, return a single queryGroup
 
     if (!isOptimised) {
@@ -14,6 +14,7 @@ std::vector<std::shared_ptr<QueryGroup>> QueryOptimiser::optimise(bool isOptimis
         queryGroup->setClauses(clauses);
         return {queryGroup};
     }
+    this->pkbReaderManager = pkbReaderManager;
     sortAllClauses();
     std::vector<std::shared_ptr<QueryGroup>> queryGroups = createQueryGroups();
     std::vector<std::shared_ptr<QueryGroup>> mergedQueryGroups = mergeCommonQueryGroups(queryGroups);
@@ -152,6 +153,38 @@ bool QueryOptimiser::comparePenalty(const std::shared_ptr<Clause> &a, const std:
     return a->getPenalty() < b->getPenalty();
 }
 
+const std::map<TokenType, std::function<std::shared_ptr<IRelationshipReader<int, int>>(std::shared_ptr<PKBReaderManager>&)>> QueryOptimiser::highPenaltyClauseToReaderMap = {
+        {TokenType::NextT, [](std::shared_ptr<PKBReaderManager>& readerManager) { return readerManager->getNextTReader(); }},
+        {TokenType::Affects, [](std::shared_ptr<PKBReaderManager>& readerManager) { return readerManager->getAffectsReader(); }},
+};  // Add more relationships here
+
+int QueryOptimiser::getStoreSize(const std::shared_ptr<Clause> &clause, std::shared_ptr<PKBReaderManager>& pkbReaderManager) {
+    Token firstParam = clause->getFirstParam();
+    Token secondParam = clause->getSecondParam();
+    TokenType relationshipType = clause->getRelationship().getType();
+    std::shared_ptr<IRelationshipReader<int, int>> reader = highPenaltyClauseToReaderMap.at(relationshipType)(pkbReaderManager);
+    if (firstParam.getType() == TokenType::IDENT && secondParam.getType() == TokenType::IDENT) {
+        return reader->getSize();
+    } else if (firstParam.getType() == TokenType::IDENT) {
+        if (secondParam.getType() == TokenType::INTEGER) {
+            int value = std::stoi(secondParam.getValue());
+            return reader->getRelationshipCountByValue(value);
+        } else if (secondParam.getType() == TokenType::Wildcard) {
+            return reader->getKeys().size();
+        }
+    } else if (secondParam.getType() == TokenType::IDENT) {
+        if (firstParam.getType() == TokenType::INTEGER) {
+            int key = std::stoi(firstParam.getValue());
+            return reader->getRelationshipCountByKey(key);
+        } else if (firstParam.getType() == TokenType::Wildcard) {
+            return reader->getValues().size();
+        }
+    } else {
+        return 0;
+    }
+    return 0;
+}
+
 
 
 void QueryOptimiser::addRelatedClausesIfExists(std::string synonym, std::unordered_set<std::shared_ptr<Clause>>& addedClauses, std::vector<std::shared_ptr<Clause>>& sortedClauses) {
@@ -165,6 +198,8 @@ void QueryOptimiser::addRelatedClausesIfExists(std::string synonym, std::unorder
         }
     }
 }
+
+
 
 std::vector<std::shared_ptr<Clause>> QueryOptimiser::sortByRelatedClauses(const std::vector<std::shared_ptr<Clause>> &clauses) {
     std::unordered_set<std::shared_ptr<Clause>> addedClauses;
@@ -195,7 +230,11 @@ std::vector<std::shared_ptr<Clause>> QueryOptimiser::sortByRelatedClauses(const 
         }
     }
 
-    std::sort(highPenaltyClauses.begin(), highPenaltyClauses.end(), comparePenalty);
+    std::sort(highPenaltyClauses.begin(),highPenaltyClauses.end(), [this](const std::shared_ptr<Clause>& a, const std::shared_ptr<Clause>& b) {
+        return getStoreSize(a, this->pkbReaderManager) < getStoreSize(b, this->pkbReaderManager);
+    });
+
+
     sortedClauses.insert(sortedClauses.end(), highPenaltyClauses.begin(), highPenaltyClauses.end());
     return sortedClauses;
 }

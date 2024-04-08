@@ -3,22 +3,32 @@
 #include <string>
 #include <unordered_set>
 
+
+std::shared_ptr<ResultTable> AffectsStrategy::evaluateQueryOptimised(PKBReaderManager &pkbReaderManager,
+                                                                    const ParsingResult &parsingResult,
+                                                                    const Clause &clause,
+                                                                    std::shared_ptr<ResultTable> result) {
+    setIntermediateResultTable(result);
+    return evaluateQuery(pkbReaderManager, parsingResult, clause);
+}
+
 std::shared_ptr<ResultTable> AffectsStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) {
     auto resultTable = std::make_shared<ResultTable>();
-    this->affectsReader = pkbReaderManager.getAffectsReader();
+    setBothParams(clause);
+    std::shared_ptr<IRelationshipReader<int, int>> affectsReader = pkbReaderManager.getAffectsReader();
+    setReader(affectsReader);
+    Token firstParam = getFirstParam();
+    Token secondParam = getSecondParam();
 
-    const auto suchClause = dynamic_cast<const SuchThatClause*>(&clause);
-    this->firstParam = suchClause->getFirstParam();
-    this->secondParam = suchClause->getSecondParam();
 
-    if (firstParam.getType() == TokenType::IDENT && secondParam.getType() == TokenType::IDENT) {
+    if (isParamOfType(firstParam, TokenType::IDENT) && isParamOfType(secondParam, TokenType::IDENT)) {
         // Both parameters are synonyms, representing assignment statement numbers.
         processSynonyms(resultTable, parsingResult, pkbReaderManager);
-    } else if (firstParam.getType() == TokenType::IDENT ) {
+    } else if (isParamOfType(firstParam, TokenType::IDENT)) {
         // Mixed parameter types: one is a specific statement number, and the other is a synonym.
             processFirstParam(resultTable, parsingResult, pkbReaderManager);
 
-    } else if (secondParam.getType() == TokenType::IDENT) {
+    } else if (isParamOfType(secondParam, TokenType::IDENT)) {
             processSecondParam(resultTable, parsingResult, pkbReaderManager);
     } else {
         // Both parameters are specific statement numbers
@@ -26,65 +36,4 @@ std::shared_ptr<ResultTable> AffectsStrategy::evaluateQuery(PKBReaderManager& pk
     }
 
     return resultTable;
-}
-
-void AffectsStrategy::processSynonyms(std::shared_ptr<ResultTable> resultTable, const ParsingResult &parsingResult,
-                                      PKBReaderManager &pkbReaderManager) {
-    insertColsToTable(firstParam, secondParam, resultTable);
-    // Choose the correct reader based on the variant indicating "Next" or "Next*"
-
-    insertRowsWithTwoCols(firstParam, secondParam, affectsReader, parsingResult, resultTable, pkbReaderManager);
-
-}
-
-void AffectsStrategy::processFirstParam(std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
-    std::string colName = firstParam.getValue();
-    resultTable->insertAllColumns({colName});
-    std::unordered_set<std::string> affectingStatementsInString;
-    std::unordered_set<int> affectingStatements;
-    if (secondParam.getType() == TokenType::INTEGER) {
-        int stmtNum = std::stoi(secondParam.getValue());
-        // Get all statements that affect a specific statement number
-        affectingStatements = affectsReader->getAffecting(stmtNum);
-    } else if (secondParam.getType() == TokenType::Wildcard) {
-        // If the second parameter is a wildcard, fetch all statements that affect others
-        affectingStatements = affectsReader->getAllAffecting();
-    }
-
-    std::string statementType = parsingResult.getDeclaredSynonym(firstParam.getValue());
-    std::unordered_set<int> allFilteredAffectingStmts = getFilteredStmtsNumByType(affectingStatements, statementType, pkbReaderManager);
-    insertStmtRowsWithSingleCol(allFilteredAffectingStmts, resultTable, colName);
-}
-
-void AffectsStrategy::processSecondParam(std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager) {
-    std::string colName = secondParam.getValue();
-    resultTable->insertAllColumns({colName});
-    std::unordered_set<std::string> affectedStatementsInString;
-    std::unordered_set<int> affectedStatements;
-    if (firstParam.getType() == TokenType::INTEGER) {
-        // Specific statement number provided for the first parameter
-        int stmtNum = std::stoi(firstParam.getValue());
-        // Get all statements that are affected by the specific statement number
-        affectedStatements = affectsReader->getAffected(stmtNum);
-    } else if (firstParam.getType() == TokenType::Wildcard) {
-        // If the first parameter is a wildcard, fetch all statements that are affected by others
-        affectedStatements = affectsReader->getAllAffected();
-    }
-    std::string statementType = parsingResult.getDeclaredSynonym(secondParam.getValue());
-    std::unordered_set<int> allFilteredAffectedStmts = getFilteredStmtsNumByType(affectedStatements, statementType, pkbReaderManager);
-    insertStmtRowsWithSingleCol(allFilteredAffectedStmts, resultTable, colName);
-}
-
-void AffectsStrategy::processIntegerParams(std::shared_ptr<ResultTable> resultTable) {
-    // Ensure both parameters are indeed integers
-    bool relationshipExists;
-    if (isBothParamsWildcard(firstParam, secondParam)) {
-        // If both params are wildcards, we can just check if there is a next statement
-        relationshipExists = !affectsReader->getAllAffected().empty();
-        if (relationshipExists) {
-            resultTable->setAsTruthTable();
-        }
-    } else {
-        setTrueIfRelationShipExist(firstParam, secondParam, affectsReader, resultTable);
-    }
 }

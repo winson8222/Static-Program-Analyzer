@@ -276,12 +276,12 @@ SyntaxError
 56. Invalid ifs
 while w; if i; variable v; assign a;
 Select i pattern i("v",_,"a")
-SemanticError
+SyntaxError
 5000
 57. Invalid ifs
 while w; if i; variable v; assign a;
 Select i pattern i("v",_,kp)
-SemanticError
+SyntaxError
 5000
 58. Invalid ifs
 while w; if i; variable v; assign a;
