@@ -17,8 +17,7 @@ std::shared_ptr<ResultTable> AffectsStrategy::evaluateQuery(PKBReaderManager& pk
     setBothParams(clause);
     std::shared_ptr<IRelationshipReader<int, int>> affectsReader = pkbReaderManager.getAffectsReader();
     setReader(affectsReader);
-    Token firstParam = getFirstParam();
-    Token secondParam = getSecondParam();
+
 
 
     if (isParamOfType(firstParam, TokenType::IDENT) && isParamOfType(secondParam, TokenType::IDENT)) {

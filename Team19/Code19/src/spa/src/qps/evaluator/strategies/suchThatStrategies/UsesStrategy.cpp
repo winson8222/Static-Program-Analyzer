@@ -20,8 +20,6 @@ std::shared_ptr<ResultTable> UsesStrategy::evaluateQuery(PKBReaderManager& pkbRe
     std::shared_ptr<UsesSReader> usesReader = pkbReaderManager.getUsesSReader();
     setReader(usesReader);
 
-    const Token& firstParam = getFirstParam();
-    const Token& secondParam = getSecondParam();
     setBothParams(clause);
 
     if (isBothParamsSynonym(firstParam, secondParam)) {

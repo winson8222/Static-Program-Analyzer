@@ -231,10 +231,3 @@ bool QueryEvaluationStrategy::isParamOfType(const Token &token, TokenType type) 
     return token.getType() == type;
 }
 
-Token QueryEvaluationStrategy::getFirstParam() {
-    return firstParam;
-}
-
-Token QueryEvaluationStrategy::getSecondParam() {
-    return secondParam;
-}

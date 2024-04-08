@@ -36,8 +36,7 @@ std::shared_ptr<ResultTable> FollowsStrategy::evaluateQuery(PKBReaderManager& pk
         reader = pkbReaderManager.getFollowsTReader();
     }
     setReader(reader);
-    Token firstParam = getFirstParam();
-    Token secondParam = getSecondParam();
+
 
 
 	// Handling different parameter types for the Follows relationship

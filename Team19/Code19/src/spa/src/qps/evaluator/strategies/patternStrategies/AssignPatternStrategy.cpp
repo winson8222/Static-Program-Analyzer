@@ -23,9 +23,6 @@ std::shared_ptr<ResultTable> AssignPatternStrategy::evaluateQuery(PKBReaderManag
     setBothParams(clause);
 	Token relationship = patternClause->getRelationship();
     setRelationship(relationship);
-    Token firstParam = getFirstParam();
-    Token secondParam = getSecondParam();
-
 
 
 	if (firstParam.getType() == TokenType::IDENT) {
@@ -46,9 +43,6 @@ std::shared_ptr<ResultTable> AssignPatternStrategy::evaluateQuery(PKBReaderManag
 }
 
 void AssignPatternStrategy::processSynonyms(ParsingResult parsingResult, std::shared_ptr<ResultTable> resultTable) {
-    Token firstParam = getFirstParam();
-    Token secondParam = getSecondParam();
-    Token relationship = getRelationship();
 	std::string firstColName = relationship.getValue();
 	std::string secondColName = firstParam.getValue();
 	insertColsToTable(relationship, firstParam, resultTable);
@@ -74,9 +68,6 @@ void AssignPatternStrategy::processSynonyms(ParsingResult parsingResult, std::sh
 }
 
 void AssignPatternStrategy::processQuotedIdent(ParsingResult parsingResult, std::shared_ptr<ResultTable> result) {
-    Token firstParam = getFirstParam();
-    Token secondParam = getSecondParam();
-    Token relationship = getRelationship();
 	std::string firstColName = relationship.getValue();
 	insertSingleColToTable(relationship, result);
 	std::unordered_set<int> allStmts;
@@ -103,9 +94,7 @@ void AssignPatternStrategy::processQuotedIdent(ParsingResult parsingResult, std:
 
 
 void AssignPatternStrategy::processWildcard(ParsingResult parsingResult, std::shared_ptr<ResultTable> result) {
-    Token firstParam = getFirstParam();
-    Token secondParam = getSecondParam();
-    Token relationship = getRelationship();
+
 	std::string firstColName = relationship.getValue();
 	insertSingleColToTable(relationship, result);
 	std::unordered_set<int> allStmts;

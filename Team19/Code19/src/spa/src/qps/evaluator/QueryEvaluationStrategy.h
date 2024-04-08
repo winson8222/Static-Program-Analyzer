@@ -10,9 +10,7 @@
 class QueryEvaluationStrategy {
 
 private:
-    std::shared_ptr<ResultTable> intermediateResultTable;
-    Token firstParam;
-    Token secondParam;
+
 
 public:
     virtual std::shared_ptr<ResultTable> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) = 0;
@@ -22,6 +20,9 @@ public:
     void setIntermediateResultTable(std::shared_ptr<ResultTable> intermediateResultTable);
 
 protected:
+    std::shared_ptr<ResultTable> intermediateResultTable;
+    Token firstParam;
+    Token secondParam;
     static void convertIntSetToStringSet(const std::unordered_set<int>& intSet, std::unordered_set<std::string>& stringSet);
     static std::string extractQuotedExpression(const Token& token);
     static bool isBothParamsWildcard(const Token& firstParam, const Token& secondParam);
@@ -46,9 +47,5 @@ protected:
     void setFirstParam(const Token& firstParam);
     void setSecondParam(const Token& secondParam);
     void setBothParams(const Clause& clause);
-    Token getFirstParam();
-    Token getSecondParam();
     bool isParamOfType(const Token& token, TokenType type);
-
-
 };

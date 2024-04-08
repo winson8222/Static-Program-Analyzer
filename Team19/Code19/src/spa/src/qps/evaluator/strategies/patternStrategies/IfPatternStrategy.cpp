@@ -15,15 +15,12 @@ std::shared_ptr<ResultTable> IfPatternStrategy::evaluateQueryOptimised(PKBReader
 std::shared_ptr<ResultTable> IfPatternStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) {
     auto resultTable = std::make_shared<ResultTable>();
     ifPatternReader = pkbReaderManager.getIfPatternReader();
-    ifReader = pkbReaderManager.getIfReader();
 
 
     const PatternClause *patternClause = dynamic_cast<const PatternClause *>(&clause);
     setBothParams(clause);
     Token relationship = patternClause->getRelationship();
     setRelationship(relationship);
-    Token firstParam = getFirstParam();
-    Token secondParam = getSecondParam();
 
 
     if (firstParam.getType() == TokenType::IDENT) {
@@ -41,9 +38,7 @@ std::shared_ptr<ResultTable> IfPatternStrategy::evaluateQuery(PKBReaderManager& 
 }
 
 void IfPatternStrategy::processSynonyms(ParsingResult parsingResult, std::shared_ptr<ResultTable> resultTable) {
-    Token firstParam = getFirstParam();
-    Token secondParam = getSecondParam();
-    Token relationship = getRelationship();
+
     std::string firstColName = relationship.getValue();
     std::string secondColName = firstParam.getValue();
     insertColsToTable(relationship, firstParam, resultTable);
@@ -51,9 +46,7 @@ void IfPatternStrategy::processSynonyms(ParsingResult parsingResult, std::shared
 }
 
 void IfPatternStrategy::processQuotedIdent(ParsingResult parsingResult, std::shared_ptr<ResultTable> result) {
-    Token firstParam = getFirstParam();
-    Token secondParam = getSecondParam();
-    Token relationship = getRelationship();
+
     std::string firstColName = relationship.getValue();
     insertSingleColToTable(relationship, result);
     std::unordered_set<int> allStmts;
@@ -67,9 +60,7 @@ void IfPatternStrategy::processQuotedIdent(ParsingResult parsingResult, std::sha
 }
 
 void IfPatternStrategy::processWildcard(ParsingResult parsingResult, std::shared_ptr<ResultTable> result) {
-    Token firstParam = getFirstParam();
-    Token secondParam = getSecondParam();
-    Token relationship = getRelationship();
+
     std::string firstColName = relationship.getValue();
     insertSingleColToTable(relationship, result);
     std::unordered_set<int> allStmts;

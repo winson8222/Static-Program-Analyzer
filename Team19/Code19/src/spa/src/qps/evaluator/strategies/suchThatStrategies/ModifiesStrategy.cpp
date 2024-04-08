@@ -17,8 +17,7 @@ std::shared_ptr<ResultTable> ModifiesStrategy::evaluateQuery(PKBReaderManager& p
     std::shared_ptr<ModifiesSReader> modifiesSReader = pkbReaderManager.getModifiesSReader();
     setReader(modifiesSReader);
 
-    const Token& firstParam = getFirstParam();
-    const Token& secondParam = getSecondParam();
+
     setBothParams(clause);
 
     if (isBothParamsSynonym(firstParam, secondParam)) {
