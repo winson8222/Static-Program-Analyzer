@@ -30,7 +30,7 @@ void StmtStmtStrategy::setTrueIfRelationShipExist(const Token &firstParam, const
 }
 
 void StmtStmtStrategy::insertRowsWithTwoCols(const Token &firstParam, const Token &secondParam,std::shared_ptr<IRelationshipReader<int ,int>> reader,
-                           const ParsingResult &parsingResult, std::shared_ptr<ResultTable> resultTable, PKBReaderManager &pkbReaderManager) {
+                                             const ParsingResult &parsingResult, std::shared_ptr<ResultTable> resultTable, PKBReaderManager &pkbReaderManager) {
     std::string firstParamValue = firstParam.getValue();
     std::string secondParamValue = secondParam.getValue();
     const std::string& firstStatementType = parsingResult.getRequiredSynonymType(firstParamValue);
@@ -58,13 +58,13 @@ void StmtStmtStrategy::insertRowsWithTwoCols(const Token &firstParam, const Toke
 
 
 void StmtStmtStrategy::processSynonyms(std::shared_ptr<ResultTable> resultTable, const ParsingResult &parsingResult,
-                                      PKBReaderManager &pkbReaderManager) {
+                                       PKBReaderManager &pkbReaderManager) {
 
 
     insertColsToTable(firstParam, secondParam, resultTable);
     // Choose the correct reader based on the variant indicating "Next" or "Next*"
-    std::shared_ptr<IRelationshipReader<int, int>> affectsReader = getReader();
-    insertRowsWithTwoCols(firstParam, secondParam, affectsReader, parsingResult, resultTable, pkbReaderManager);
+
+    insertRowsWithTwoCols(firstParam, secondParam, reader, parsingResult, resultTable, pkbReaderManager);
 
 }
 
@@ -126,9 +126,6 @@ void StmtStmtStrategy::setReader(const std::shared_ptr<IRelationshipReader<int, 
     this->reader = reader;
 }
 
-std::shared_ptr<IRelationshipReader<int, int>> StmtStmtStrategy::getReader() {
-    return reader;
-}
 
 
 void StmtStmtStrategy::addTrueRelationshipsInResultTable(std::shared_ptr<ResultTable> newResultTable) {
@@ -144,11 +141,7 @@ void StmtStmtStrategy::addTrueRelationshipsInResultTable(std::shared_ptr<ResultT
         std::vector<std::string> filteredSynonymValues;
         std::unordered_set<std::string> allSynonymValues = intermediateResultTable->getColumnValues(commonSynonym);
         // filter unordered set using reader->hasRelationship
-        for (const auto& value : allSynonymValues) {
-            if (reader->hasRelationship(std::stoi(value), std::stoi(value))) {
-                filteredSynonymValues.push_back(value);
-            }
-        }
+        addToListIfRelationshipExistsWithItself(allSynonymValues, filteredSynonymValues);
         newResultTable->populateWithOneColumnWithExactEntries(commonSynonym, filteredSynonymValues);
     } else {
         newResultTable->addColumnsSet({leftSynonymName, rightSynonymName});
@@ -156,55 +149,32 @@ void StmtStmtStrategy::addTrueRelationshipsInResultTable(std::shared_ptr<ResultT
         std::vector<std::string> filteredRightSynonymValues;
         std::unordered_set<std::string> allLeftSynonymsValues = intermediateResultTable->getColumnValues(leftSynonymName);
         std::unordered_set<std::string> allRightSynonymsValues = intermediateResultTable->getColumnValues(rightSynonymName);
-        for (const auto& leftValue : allLeftSynonymsValues) {
-            for (const auto& rightValue : allRightSynonymsValues) {
-                if (reader->hasRelationship(std::stoi(leftValue), std::stoi(rightValue))) {
-                    filteredLeftSynonymValues.push_back(leftValue);
-                    filteredRightSynonymValues.push_back(rightValue);
-                }
-            }
-        }
+        addPairIfRelationshipExists(allLeftSynonymsValues, allRightSynonymsValues, filteredLeftSynonymValues, filteredRightSynonymValues);
         newResultTable->populateWithTwoColumnsWithExactEntries(leftSynonymName, rightSynonymName, filteredLeftSynonymValues, filteredRightSynonymValues);
     }
 }
 
 void StmtStmtStrategy::addTrueLeftSynonymInResultTable(std::shared_ptr<ResultTable> newResultTable, const ParsingResult& parsingResult,PKBReaderManager& pkbReaderManager) {
 
-    std::shared_ptr<ResultTable> result = getIntermediateResultTable();
     std::string leftSynonymName = firstParam.getValue();
-    std::unordered_set<std::string> leftSynonymValues = result->getColumnValues(leftSynonymName);
+    std::unordered_set<std::string> leftSynonymValues = intermediateResultTable->getColumnValues(leftSynonymName);
     std::vector<std::string> filteredLeftSynonymValues;
     std::string rightParamValue = secondParam.getValue();
     TokenType rightParamType = secondParam.getType();
     if (rightParamType == TokenType::Wildcard) {
         newResultTable->insertColumn(leftSynonymName);
-        for (const auto& leftValue : leftSynonymValues) {
-            if (reader->getRelationshipCountByValue(std::stoi(leftValue)) > 0) {
-                filteredLeftSynonymValues.push_back(leftValue);
-            }
-        }
+        addToListIfKeyExists(leftSynonymValues, filteredLeftSynonymValues);
         newResultTable->populateWithOneColumnWithExactEntries(leftSynonymName, filteredLeftSynonymValues);
     } else if (rightParamType == TokenType::INTEGER) {
         newResultTable->insertColumn(leftSynonymName);
-        for (const auto& leftValue : leftSynonymValues) {
-            if (reader->hasRelationship(std::stoi(leftValue), std::stoi(rightParamValue))) {
-                filteredLeftSynonymValues.push_back(leftValue);
-            }
-        }
+        addToListIfKeyRelationshipExists(leftSynonymValues, filteredLeftSynonymValues, rightParamValue);
         newResultTable->populateWithOneColumnWithExactEntries(leftSynonymName, filteredLeftSynonymValues);
     } else {
         std::vector<std::string> filteredRightSynonymValues;
         std::string rightSynonymName = secondParam.getValue();
         std::string rightSynonymType = parsingResult.getRequiredSynonymType(rightSynonymName);
         newResultTable->addColumnsSet({leftSynonymName, rightSynonymName});
-        for (const auto& leftValue : leftSynonymValues) {
-            std::unordered_set<int> allMatchingRightValues = reader->getRelationshipsByKey(std::stoi(leftValue));
-            std::unordered_set<int> allFilteredMatchingRightValues = getFilteredStmtsNumByType(allMatchingRightValues, rightSynonymType, pkbReaderManager);
-            for (const auto& rightValue : allFilteredMatchingRightValues) {
-                filteredLeftSynonymValues.push_back(leftValue);
-                filteredRightSynonymValues.push_back(std::to_string(rightValue));
-            }
-        }
+        addPairsToListsByKey(leftSynonymValues, rightSynonymType, pkbReaderManager, filteredLeftSynonymValues, filteredRightSynonymValues);
         newResultTable->populateWithTwoColumnsWithExactEntries(leftSynonymName, rightSynonymName, filteredLeftSynonymValues, filteredRightSynonymValues);
     }
 
@@ -220,36 +190,125 @@ void StmtStmtStrategy::addTrueRightSynonymInResultTable(std::shared_ptr<ResultTa
     TokenType leftParamType = firstParam.getType();
     if (leftParamType == TokenType::Wildcard) {
         newResultTable->insertColumn(rightSynonymName);
-        for (const auto& rightValue : rightSynonymValues) {
-            if (reader->getRelationshipCountByValue(std::stoi(rightValue)) > 0) {
-                filteredRightSynonymValues.push_back(rightValue);
-            }
-        }
+        addToListIfValueExists(rightSynonymValues, filteredRightSynonymValues);
         newResultTable->populateWithOneColumnWithExactEntries(rightSynonymName, filteredRightSynonymValues);
     } else if (leftParamType == TokenType::INTEGER) {
         newResultTable->insertColumn(rightSynonymName);
-        for (const auto& rightValue : rightSynonymValues) {
-            if (reader->hasRelationship(std::stoi(leftParamValue), std::stoi(rightValue))) {
-                filteredRightSynonymValues.push_back(rightValue);
-            }
-        }
+        addToListIfValueRelationshipExists(rightSynonymValues, filteredRightSynonymValues, leftParamValue);
         newResultTable->populateWithOneColumnWithExactEntries(rightSynonymName, filteredRightSynonymValues);
     } else {
         std::vector<std::string> filteredLeftSynonymValues;
         std::string leftSynonymName = firstParam.getValue();
         std::string leftSynonymType = parsingResult.getRequiredSynonymType(leftSynonymName);
         newResultTable->addColumnsSet({leftSynonymName, rightSynonymName});
-        for (const auto& rightValue : rightSynonymValues) {
-            std::unordered_set<int> allMatchingLeftValues = reader->getRelationshipsByValue(std::stoi(rightValue));
-            std::unordered_set<int> allFilteredMatchingLeftValues = getFilteredStmtsNumByType(allMatchingLeftValues, leftSynonymType, pkbReaderManager);
-            for (const auto& leftValue : allFilteredMatchingLeftValues) {
-                filteredRightSynonymValues.push_back(rightValue);
-                filteredLeftSynonymValues.push_back(std::to_string(leftValue));
-            }
-        }
+        addPairsToListsByValue(rightSynonymValues, leftSynonymType, pkbReaderManager, filteredRightSynonymValues, filteredLeftSynonymValues);
         newResultTable->populateWithTwoColumnsWithExactEntries(leftSynonymName, rightSynonymName, filteredLeftSynonymValues, filteredRightSynonymValues);
     }
 }
 
 
+void StmtStmtStrategy::addToListIfKeyExists(
+        const std::unordered_set<std::string>& values,
+        std::vector<std::string>& filteredValues) {
+    for (const auto& value : values) {
+        if (reader->getRelationshipCountByKey(std::stoi(value)) > 0) {
+            filteredValues.push_back(value);
+        }
+    }
+}
 
+void StmtStmtStrategy::addToListIfValueExists(
+        const std::unordered_set<std::string>& values,
+        std::vector<std::string>& filteredValues) {
+    for (const auto& value : values) {
+        if (reader->getRelationshipCountByValue(std::stoi(value)) > 0) {
+            filteredValues.push_back(value);
+        }
+    }
+}
+
+
+
+
+void StmtStmtStrategy::addToListIfRelationshipExistsWithItself(const std::unordered_set<std::string> &values,
+                                                               std::vector<std::string> &filteredValues) {
+    for (const auto& value : values) {
+        if (reader->hasRelationship(std::stoi(value), std::stoi(value))) {
+            filteredValues.push_back(value);
+        }
+    }
+}
+
+
+
+void StmtStmtStrategy::addPairsToListsByKey(const std::unordered_set<std::string> &sourceKeys,
+                                            const std::string &type, PKBReaderManager &pkbReaderManager,
+                                            std::vector<std::string> &firstList, std::vector<std::string> &secondList) {
+    for (const auto &sourceKey: sourceKeys) {
+        // Fetch relationships for the source value
+        std::unordered_set<int> allMatchingValues = reader->getRelationshipsByKey(std::stoi(sourceKey));
+
+        // Filter these values by the specified type
+        std::unordered_set<int> allFilteredMatchingValues = getFilteredStmtsNumByType(allMatchingValues, type,
+                                                                                      pkbReaderManager);
+
+        // Convert the set of integers to a set of strings
+        std::unordered_set<std::string> allFilteredMatchingValuesInString;
+        convertIntSetToStringSet(allFilteredMatchingValues, allFilteredMatchingValuesInString);
+
+        // Add correlated values to lists
+        addCorrelatedValuesToLists(sourceKey, allFilteredMatchingValuesInString, firstList, secondList);
+    }
+}
+
+void StmtStmtStrategy::addPairsToListsByValue(const std::unordered_set<std::string> &sourceValues,
+                                              const std::string &type, PKBReaderManager &pkbReaderManager,
+                                              std::vector<std::string> &firstList,
+                                              std::vector<std::string> &secondList) {
+
+    // Iterate over each source value
+    for (const auto& sourceValue : sourceValues) {
+        // Fetch all matching values based on the source value
+        std::unordered_set<int> allMatchingKeys = reader->getRelationshipsByValue(std::stoi(sourceValue));
+        std::unordered_set<int> allFilteredMatchingKeys = getFilteredStmtsNumByType(allMatchingKeys, type, pkbReaderManager);
+        std::unordered_set<std::string> allFilteredMatchingKeysInString;
+        convertIntSetToStringSet(allFilteredMatchingKeys, allFilteredMatchingKeysInString);
+        addCorrelatedValuesToLists(sourceValue, allFilteredMatchingKeysInString, firstList, secondList);
+    }
+
+}
+
+
+void StmtStmtStrategy::addPairIfRelationshipExists(const std::unordered_set<std::string> &sourceValues,
+                                                   const std::unordered_set<std::string> &targetValues,
+                                                   std::vector<std::string> &sourceList,
+                                                   std::vector<std::string> &targetList) {
+    for (const auto& sourceValue : sourceValues) {
+        for (const auto& targetValue : targetValues) {
+            if (reader->hasRelationship(std::stoi(sourceValue), std::stoi(targetValue))) {
+                sourceList.push_back(sourceValue);
+                targetList.push_back(targetValue);
+            }
+        }
+    }
+}
+
+void StmtStmtStrategy::addToListIfKeyRelationshipExists(const std::unordered_set<std::string> &values,
+                                                        std::vector<std::string> &filteredValues,
+                                                        const std::string &comparisonValue) {
+    for (const auto& value : values) {
+        if (reader->hasRelationship(std::stoi(value), std::stoi(comparisonValue))) {
+            filteredValues.push_back(value);
+        }
+    }
+}
+
+void StmtStmtStrategy::addToListIfValueRelationshipExists(const std::unordered_set<std::string> &values,
+                                                          std::vector<std::string> &filteredValues,
+                                                          const std::string &comparisonValue) {
+    for (const auto& value : values) {
+        if (reader->hasRelationship(std::stoi(comparisonValue), std::stoi(value))) {
+            filteredValues.push_back(value);
+        }
+    }
+}

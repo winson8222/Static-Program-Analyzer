@@ -16,7 +16,6 @@ public:
     virtual std::shared_ptr<ResultTable> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) = 0;
     virtual std::shared_ptr<ResultTable> evaluateQueryOptimised(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause, std::shared_ptr<ResultTable> result) = 0;
     virtual ~QueryEvaluationStrategy() = default;
-    std::shared_ptr<ResultTable> getIntermediateResultTable();
     void setIntermediateResultTable(std::shared_ptr<ResultTable> intermediateResultTable);
 
 protected:
@@ -48,4 +47,10 @@ protected:
     void setSecondParam(const Token& secondParam);
     void setBothParams(const Clause& clause);
     bool isParamOfType(const Token& token, TokenType type);
+
+    void addCorrelatedValuesToLists(
+            const std::string& sourceValue,
+            const std::unordered_set<std::string>& matchingValues,
+            std::vector<std::string>& firstList,
+            std::vector<std::string>& secondList);
 };
