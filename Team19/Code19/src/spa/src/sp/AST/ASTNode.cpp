@@ -1,22 +1,24 @@
 #include <sstream>
+#include <numeric>
 #include "sp/AST/ASTNode.h"
 #include "sp/AST/ASTUtility.h"
 
 // ai-gen start (gpt, 2, e)
 // prompt: https://chat.openai.com/share/a181de60-e76f-496c-9bee-7ea80f2be651
 
-ASTNode::ASTNode() {
-	this->type = ASTNodeType::PROGRAMS;
-	this->lineNumber = 0;
-	this->value = "default";
-    this->visited = false;
+ASTNode::ASTNode()
+    : type(ASTNodeType::PROGRAMS), 
+    lineNumber(0), 
+    value("default"), 
+    visited(false) {
 }
 
-ASTNode::ASTNode(ASTNodeType type, int lineNumber, std::string value) {
-    this->type = type;
-    this->lineNumber = lineNumber;
-    this->value = value;
-    this->visited = false;
+ASTNode::ASTNode(ASTNodeType type, int lineNumber, std::string value)
+    : type(type), 
+    lineNumber(lineNumber), 
+    value(std::move(value)), 
+    visited(false) {
+
 }
 
 void ASTNode::addChild(std::shared_ptr<ASTNode> child) {
@@ -24,17 +26,31 @@ void ASTNode::addChild(std::shared_ptr<ASTNode> child) {
 }
 
 void ASTNode::setValue(std::string value) {
-    this->value = value;
+    this->value = std::move(value);
+}
+
+
+std::size_t ASTNode::combine_hash(std::size_t seed, std::size_t hash) const {
+    return seed ^ (hash + 0x9e3779b9 + (seed << 6) + (seed >> 2));
 }
 
 std::size_t ASTNode::hash() const {
-    // Concatenate the properties of ASTNode
-    std::stringstream ss;
-    ss << ASTUtility::getASTNodeType.find(type)->second << lineNumber << value;
+    // Obtain the string representation of 'type'
+    std::string type_str = ASTUtility::getASTNodeType.find(type)->second;
 
-    // Hash the concatenated string
-    std::hash<std::string> hasher;
-    return hasher(ss.str());
+    // Hash each component
+    std::hash<std::string> hash_string;
+    std::hash<int> hash_int;
+    std::size_t hash_type = hash_string(type_str);
+    std::size_t hash_lineNumber = hash_int(lineNumber);
+    std::size_t hash_value = hash_string(value);
+
+    // Combine the hashes
+    std::size_t seed = hash_type;
+    seed = combine_hash(seed, hash_lineNumber);
+    seed = combine_hash(seed, hash_value);
+
+    return seed;
 }
 
 std::string ASTNode::toString() const {
@@ -69,15 +85,13 @@ std::string ASTNode::getRPNForm() {
 		throw std::runtime_error("ERROR: ASTNode is not valid expression");
     }
 
-    if (children.size() == 0) {
+    if (children.empty()) {
         return "'" + value + "'";
     }
-    std::string result;
-
-    // depth-first search to concatenate the children recursively into RPN
-    for (const auto& child : children) {
-		result += child->getRPNForm();
-	}
+    std::string result = std::accumulate(children.begin(), children.end(), std::string{},
+        [](const std::string& acc, const std::shared_ptr<ASTNode>& child) {
+            return acc + child->getRPNForm();
+        });
     result = result + "'" + value + "'";
     return result;
 }

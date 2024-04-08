@@ -9,9 +9,17 @@
 
 class QueryEvaluationStrategy {
 
+private:
+    std::shared_ptr<ResultTable> intermediateResultTable;
+    Token firstParam;
+    Token secondParam;
+
 public:
     virtual std::shared_ptr<ResultTable> evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) = 0;
+    virtual std::shared_ptr<ResultTable> evaluateQueryOptimised(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause, std::shared_ptr<ResultTable> result) = 0;
     virtual ~QueryEvaluationStrategy() = default;
+    std::shared_ptr<ResultTable> getIntermediateResultTable();
+    void setIntermediateResultTable(std::shared_ptr<ResultTable> intermediateResultTable);
 
 protected:
     static void convertIntSetToStringSet(const std::unordered_set<int>& intSet, std::unordered_set<std::string>& stringSet);
@@ -28,7 +36,19 @@ protected:
     // used when there is 2 columns, example a matched with x y z, this will fill the table with ax, ay, az
     static void insertRowsWithMatchedResults(const Token& firstParam, const Token& secondParam, std::string searched, std::unordered_set<std::string> results,
                                              const std::shared_ptr<ResultTable>& resultTable);
-    // used with there is only 1 column, it will fills the table with all possible results of this synonym
+    // used with there is only 1 column, it will fill the table with all possible results of this synonym
     static void insertRowsWithSingleColumn(std::string colName, std::unordered_set<std::string> results, std::shared_ptr<ResultTable> resultTable);
     static void insertStmtRowsWithSingleCol(std::unordered_set<int> filteredStmts, std::shared_ptr<ResultTable> resultTable, std::string colName);
+    static bool hasCommonSynonyms(std::unordered_set<std::string> synonyms, std::shared_ptr<ResultTable> resultTable);
+    static bool hasBothCommonSynonyms(const Clause& clause, std::shared_ptr<ResultTable> resultTable);
+    static bool hasLeftCommonSynonym(const Clause& clause, std::shared_ptr<ResultTable> resultTable);
+    static bool hasRightCommonSynonym(const Clause& clause, std::shared_ptr<ResultTable> resultTable);
+    void setFirstParam(const Token& firstParam);
+    void setSecondParam(const Token& secondParam);
+    void setBothParams(const Clause& clause);
+    Token getFirstParam();
+    Token getSecondParam();
+    bool isParamOfType(const Token& token, TokenType type);
+
+
 };

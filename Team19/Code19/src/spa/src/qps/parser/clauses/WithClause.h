@@ -15,7 +15,7 @@ public:
     }
     std::unordered_set<std::string> getAllSynonyms() const override;
     static bool isSynonym(std::string& ref) ;
-    std::string extractSynonym(std::string& ref) const;
+    static std::string extractSynonym(std::string ref);
 
 
 

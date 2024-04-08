@@ -26,7 +26,7 @@ std::vector<std::shared_ptr<ASTNode>> CallVisitor::getProcedureContexts() {
 	std::shared_ptr<ASTNode> mostRecentProcedure;
 	std::shared_ptr<ASTNode> calleeProcedure = this->root->getChildByIndex(0);
 	std::vector<std::shared_ptr<ASTNode>> procedureContexts;
-	for (auto value : this->contexts) {
+	for (std::shared_ptr<ASTNode> value : this->contexts) {
 		if (value->equalType(ASTNodeType::PROCEDURE)) {
 			procedureContexts.push_back(value);
 			mostRecentProcedure = value;

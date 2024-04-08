@@ -4,6 +4,9 @@
 #include <unordered_set>
 #include <utility>
 
+
+
+
 std::shared_ptr<StatementReader> PatternStrategy::getStatementReader() {
     return statementReader;
 }
@@ -22,4 +25,12 @@ void PatternStrategy::insertRowsWithTwoCols(Token firstParam, Token relationship
             insertRowToTable(col1, col2, resultTable);
         }
     }
+}
+
+void PatternStrategy::setRelationship(Token relationShip) {
+    this->relationship = relationShip;
+}
+
+Token PatternStrategy::getRelationship() {
+    return relationship;
 }
