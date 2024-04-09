@@ -125,3 +125,114 @@ void StmtStmtStrategy::processIntegerParams(std::shared_ptr<ResultTable> resultT
 void StmtStmtStrategy::setReader(const std::shared_ptr<IRelationshipReader<int, int>> &reader) {
     this->reader = reader;
 }
+
+
+
+
+void StmtStmtStrategy::addToListIfKeyExists(
+        const std::unordered_set<std::string>& values,
+        std::vector<std::string>& filteredValues) {
+    for (const auto& value : values) {
+        if (reader->getRelationshipCountByKey(std::stoi(value)) > 0) {
+            filteredValues.push_back(value);
+        }
+    }
+}
+
+void StmtStmtStrategy::addToListIfValueExists(
+        const std::unordered_set<std::string>& values,
+        std::vector<std::string>& filteredValues) {
+    for (const auto& value : values) {
+        if (reader->getRelationshipCountByValue(std::stoi(value)) > 0) {
+            filteredValues.push_back(value);
+        }
+    }
+}
+
+
+
+
+void StmtStmtStrategy::addToListIfRelationshipExistsWithItself(const std::unordered_set<std::string> &values,
+                                                               std::vector<std::string> &filteredValues) {
+    for (const auto& value : values) {
+        if (reader->hasRelationship(std::stoi(value), std::stoi(value))) {
+            filteredValues.push_back(value);
+        }
+    }
+}
+
+
+
+void StmtStmtStrategy::addPairsToListsByKey(const std::unordered_set<std::string> &sourceKeys,
+                                            const std::string &type, PKBReaderManager &pkbReaderManager,
+                                            std::vector<std::string> &firstList, std::vector<std::string> &secondList) {
+    for (const auto &sourceKey: sourceKeys) {
+        // Fetch relationships for the source value
+        std::unordered_set<int> allMatchingValues = reader->getRelationshipsByKey(std::stoi(sourceKey));
+
+        // Filter these values by the specified type
+        std::unordered_set<int> allFilteredMatchingValues = getFilteredStmtsNumByType(allMatchingValues, type,
+                                                                                      pkbReaderManager);
+
+        // Convert the set of integers to a set of strings
+        std::unordered_set<std::string> allFilteredMatchingValuesInString;
+        convertIntSetToStringSet(allFilteredMatchingValues, allFilteredMatchingValuesInString);
+
+        // Add correlated values to lists
+        addCorrelatedValuesToLists(sourceKey, allFilteredMatchingValuesInString, firstList, secondList);
+    }
+}
+
+void StmtStmtStrategy::addPairsToListsByValue(const std::unordered_set<std::string> &sourceValues,
+                                              const std::string &type, PKBReaderManager &pkbReaderManager,
+                                              std::vector<std::string> &firstList,
+                                              std::vector<std::string> &secondList) {
+
+    // Iterate over each source value
+    for (const auto& sourceValue : sourceValues) {
+        // Fetch all matching values based on the source value
+        std::unordered_set<int> allMatchingKeys = reader->getRelationshipsByValue(std::stoi(sourceValue));
+        std::unordered_set<int> allFilteredMatchingKeys = getFilteredStmtsNumByType(allMatchingKeys, type, pkbReaderManager);
+        std::unordered_set<std::string> allFilteredMatchingKeysInString;
+        convertIntSetToStringSet(allFilteredMatchingKeys, allFilteredMatchingKeysInString);
+        addCorrelatedValuesToLists(sourceValue, allFilteredMatchingKeysInString, firstList, secondList);
+    }
+
+}
+
+
+void StmtStmtStrategy::addPairIfRelationshipExists(const std::unordered_set<std::string> &sourceValues,
+                                                   const std::unordered_set<std::string> &targetValues,
+                                                   std::vector<std::string> &sourceList,
+                                                   std::vector<std::string> &targetList) {
+    for (const auto& sourceValue : sourceValues) {
+        for (const auto& targetValue : targetValues) {
+            if (reader->hasRelationship(std::stoi(sourceValue), std::stoi(targetValue))) {
+                sourceList.push_back(sourceValue);
+                targetList.push_back(targetValue);
+            }
+        }
+    }
+}
+
+void StmtStmtStrategy::addToListIfKeyRelationshipExists(const std::unordered_set<std::string> &values,
+                                                        std::vector<std::string> &filteredValues,
+                                                        const Token& comparisonToken) {
+    std::string comparisonValue = comparisonToken.getValue();
+    for (const auto& value : values) {
+        if (reader->hasRelationship(std::stoi(value), std::stoi(comparisonValue))) {
+            filteredValues.push_back(value);
+        }
+    }
+}
+
+void StmtStmtStrategy::addToListIfValueRelationshipExists(const std::unordered_set<std::string> &values,
+                                                          std::vector<std::string> &filteredValues,
+                                                          const Token& comparisonToken) {
+    std::string comparisonValue = comparisonToken.getValue();
+    for (const auto& value : values) {
+        if (reader->hasRelationship(std::stoi(comparisonValue), std::stoi(value))) {
+            filteredValues.push_back(value);
+        }
+    }
+}
