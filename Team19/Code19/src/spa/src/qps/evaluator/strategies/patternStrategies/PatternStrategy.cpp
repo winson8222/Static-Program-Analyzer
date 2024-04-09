@@ -31,3 +31,4 @@ void PatternStrategy::setRelationship(Token relationShip) {
     this->relationship = relationShip;
 }
 
+

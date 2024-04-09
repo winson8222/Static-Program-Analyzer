@@ -16,4 +16,5 @@ public:
     void processSynonyms(ParsingResult parsingResult, std::shared_ptr<ResultTable> result) override;
     void processQuotedIdent(ParsingResult parsingResult, std::shared_ptr<ResultTable> result) override;
     void processWildcard(ParsingResult parsingResult, std::shared_ptr<ResultTable> result) override;
+
 };

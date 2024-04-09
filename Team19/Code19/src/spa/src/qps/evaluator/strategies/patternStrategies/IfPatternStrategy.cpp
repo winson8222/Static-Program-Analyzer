@@ -8,6 +8,7 @@ std::shared_ptr<ResultTable> IfPatternStrategy::evaluateQueryOptimised(PKBReader
                                                                      const ParsingResult &parsingResult,
                                                                      const Clause &clause,
                                                                      std::shared_ptr<ResultTable> result) {
+
     setIntermediateResultTable(result);
     return evaluateQuery(pkbReaderManager, parsingResult, clause);
 }
@@ -67,3 +68,9 @@ void IfPatternStrategy::processWildcard(ParsingResult parsingResult, std::shared
     allStmts = ifPatternReader->getAllStatementNumbersOfIfControlVariables();
     insertStmtRowsWithSingleCol(allStmts, result, firstColName);
 }
+
+
+
+
+
+

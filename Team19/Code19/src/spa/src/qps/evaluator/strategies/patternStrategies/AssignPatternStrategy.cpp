@@ -115,3 +115,4 @@ void AssignPatternStrategy::processWildcard(ParsingResult parsingResult, std::sh
 	convertIntSetToStringSet(allStmts, allStmtInString);
 	insertRowsWithSingleColumn(firstColName, allStmtInString, result);
 }
+
