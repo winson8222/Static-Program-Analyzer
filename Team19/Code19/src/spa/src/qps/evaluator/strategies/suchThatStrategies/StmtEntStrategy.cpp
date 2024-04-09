@@ -214,3 +214,19 @@ void StmtEntStrategy::addToListIfValueRelationshipExists(const std::unordered_se
         }
     }
 }
+
+std::shared_ptr<ResultTable> StmtEntStrategy::getEvaluatedResultTable(PKBReaderManager &pkbReaderManager,
+                                                                      const ParsingResult &parsingResult,
+                                                                      std::shared_ptr<ResultTable> resultTable) {
+
+    if (isBothParamsSynonym(firstParam, secondParam)) {
+        processBothSynonyms(parsingResult, resultTable, pkbReaderManager);
+    } else if (isParamOfType(firstParam, TokenType::IDENT)) {
+        processFirstParam(parsingResult, resultTable, pkbReaderManager);
+    } else if (isParamOfType(secondParam, TokenType::IDENT)) {
+        processSecondParam(parsingResult, resultTable, pkbReaderManager);
+    } else {
+        processBothConstants( parsingResult, resultTable);
+    }
+    return resultTable;
+}

@@ -37,18 +37,7 @@ std::shared_ptr<ResultTable> CallsStrategy::evaluateQuery(PKBReaderManager& pkbR
         reader = pkbReaderManager.getCallsTReader();
     }
     setReader(reader);
+    return getEvaluatedResultTable(pkbReaderManager, parsingResult, resultTable);
 
-
-    if (isBothParamsSynonym(firstParam, secondParam)) {
-        this->processBothSynonyms(parsingResult, resultTable);
-    } else if (firstParam.getType() == TokenType::IDENT) {
-        this->processFirstParam(parsingResult, resultTable);
-    } else if (secondParam.getType() == TokenType::IDENT) {
-        this->processSecondParam(parsingResult, resultTable);
-    } else {
-        this->processBothConstants(parsingResult, resultTable);
-    }
-
-    return resultTable;
 }
 

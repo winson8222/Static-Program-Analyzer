@@ -25,16 +25,6 @@ std::shared_ptr<ResultTable> UsesStrategy::evaluateQuery(PKBReaderManager& pkbRe
     setReader(usesReader);
 
     setBothParams(clause);
-
-    if (isBothParamsSynonym(firstParam, secondParam)) {
-        processBothSynonyms(parsingResult, resultTable, pkbReaderManager);
-    } else if (firstParam.getType() == TokenType::IDENT) {
-        processFirstParam(parsingResult, resultTable, pkbReaderManager);
-    } else if (secondParam.getType() == TokenType::IDENT) {
-        processSecondParam(parsingResult, resultTable, pkbReaderManager);
-    } else {
-        processBothConstants( parsingResult, resultTable);
-    }
-    return resultTable;
+    return getEvaluatedResultTable(pkbReaderManager, parsingResult, resultTable);
 }
 

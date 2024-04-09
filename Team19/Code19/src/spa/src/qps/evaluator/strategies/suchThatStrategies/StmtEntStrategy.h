@@ -9,7 +9,7 @@ private:
 
 public:
 	~StmtEntStrategy() override = default;
-
+    std::shared_ptr<ResultTable> getEvaluatedResultTable(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, std::shared_ptr<ResultTable> resultTable) override;
 	void processBothSynonyms(const ParsingResult& parsingResult
 		, std::shared_ptr<ResultTable> resultTable, PKBReaderManager& pkbReaderManager);
 	void processFirstParam(const ParsingResult& parsingResult

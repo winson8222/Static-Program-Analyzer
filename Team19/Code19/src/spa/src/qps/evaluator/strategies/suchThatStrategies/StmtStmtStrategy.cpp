@@ -236,3 +236,24 @@ void StmtStmtStrategy::addToListIfValueRelationshipExists(const std::unordered_s
         }
     }
 }
+
+std::shared_ptr<ResultTable> StmtStmtStrategy::getEvaluatedResultTable(PKBReaderManager &pkbReaderManager,
+                                                                       const ParsingResult &parsingResult,
+                                                                       std::shared_ptr<ResultTable> resultTable) {
+
+    if (isBothParamsSynonym(firstParam, secondParam)) {
+        // Both parameters are synonyms, representing assignment statement numbers.
+        processSynonyms(resultTable, parsingResult, pkbReaderManager);
+    } else if (isParamOfType(firstParam, TokenType::IDENT)) {
+        // Mixed parameter types: one is a specific statement number, and the other is a synonym.
+        processFirstParam(resultTable, parsingResult, pkbReaderManager);
+
+    } else if (isParamOfType(secondParam, TokenType::IDENT)) {
+        processSecondParam(resultTable, parsingResult, pkbReaderManager);
+    } else {
+        // Both parameters are specific statement numbers
+        processIntegerParams(resultTable);
+    }
+
+    return resultTable;
+}

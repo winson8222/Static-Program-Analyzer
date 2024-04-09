@@ -201,3 +201,19 @@ void EntEntStrategy::addToListIfValueRelationshipExists(const std::unordered_set
         }
     }
 }
+
+std::shared_ptr<ResultTable> EntEntStrategy::getEvaluatedResultTable(PKBReaderManager &pkbReaderManager,
+                                                                     const ParsingResult &parsingResult,
+                                                                     std::shared_ptr<ResultTable> resultTable) {
+    if (isBothParamsSynonym(firstParam, secondParam)) {
+        this->processBothSynonyms(parsingResult, resultTable);
+    } else if (isParamOfType(firstParam, TokenType::IDENT)) {
+        this->processFirstParam(parsingResult, resultTable);
+    } else if (isParamOfType(secondParam, TokenType::IDENT)) {
+        this->processSecondParam(parsingResult, resultTable);
+    } else {
+        this->processBothConstants(parsingResult, resultTable);
+    }
+
+    return resultTable;
+}

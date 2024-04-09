@@ -39,21 +39,6 @@ std::shared_ptr<ResultTable> ParentStrategy::evaluateQuery(PKBReaderManager& pkb
         reader = pkbReaderManager.getParentTReader();
     }
     setReader(reader);
-
-
-    if (firstParam.getType() == TokenType::IDENT && secondParam.getType() == TokenType::IDENT) {
-        processSynonyms(resultTable, parsingResult, pkbReaderManager);
-    }
-    else if (firstParam.getType() == TokenType::IDENT) {
-        processFirstParam(resultTable, parsingResult, pkbReaderManager);
-    }
-    else if (secondParam.getType() == TokenType::IDENT) {
-        processSecondParam(resultTable, parsingResult, pkbReaderManager);
-    }
-    else {
-        processIntegerParams(resultTable);
-    }
-
-    return resultTable;
+    return getEvaluatedResultTable(pkbReaderManager, parsingResult, resultTable);
 }
 

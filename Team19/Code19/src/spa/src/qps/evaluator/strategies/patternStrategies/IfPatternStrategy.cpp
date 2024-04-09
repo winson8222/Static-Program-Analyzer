@@ -22,19 +22,7 @@ std::shared_ptr<ResultTable> IfPatternStrategy::evaluateQuery(PKBReaderManager& 
     setBothParams(clause);
     Token relationship = patternClause->getRelationship();
     setRelationship(relationship);
-
-
-    if (firstParam.getType() == TokenType::IDENT) {
-        processSynonyms(parsingResult, resultTable);
-    } else if (firstParam.getType() == TokenType::QuoutIDENT) {
-        processQuotedIdent(parsingResult, resultTable);
-    } else if (firstParam.getType() == TokenType::Wildcard) {
-        processWildcard(parsingResult, resultTable);
-    } else {
-        throw "Invalid firstParam type";
-    }
-
-    return resultTable;
+    return getEvaluatedResultTable(pkbReaderManager, parsingResult, resultTable);
 
 }
 

@@ -14,6 +14,7 @@ public:
 protected:
     std::shared_ptr<StatementReader> statementReader;
     Token relationship;
+
     virtual void processSynonyms(ParsingResult parsingResult, std::shared_ptr<ResultTable> result) = 0;
     virtual void processQuotedIdent(ParsingResult parsingResult, std::shared_ptr<ResultTable> result) = 0;
     virtual void processWildcard(ParsingResult parsingResult, std::shared_ptr<ResultTable> result) = 0;

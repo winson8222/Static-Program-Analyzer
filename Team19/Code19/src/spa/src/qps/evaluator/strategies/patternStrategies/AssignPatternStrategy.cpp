@@ -24,21 +24,7 @@ std::shared_ptr<ResultTable> AssignPatternStrategy::evaluateQuery(PKBReaderManag
 	Token relationship = patternClause->getRelationship();
     setRelationship(relationship);
 
-
-	if (firstParam.getType() == TokenType::IDENT) {
-		processSynonyms(parsingResult, resultTable);
-	}
-	else if (firstParam.getType() == TokenType::QuoutIDENT) {
-		processQuotedIdent(parsingResult, resultTable);
-	}
-	else if (firstParam.getType() == TokenType::Wildcard) {
-		processWildcard(parsingResult, resultTable);
-	}
-	else {
-		throw "Invalid firstParam type";
-	}
-
-	return resultTable;
+    return getEvaluatedResultTable(pkbReaderManager, parsingResult, resultTable);
 
 }
 
@@ -114,5 +100,26 @@ void AssignPatternStrategy::processWildcard(ParsingResult parsingResult, std::sh
 	std::unordered_set<std::string> allStmtInString;
 	convertIntSetToStringSet(allStmts, allStmtInString);
 	insertRowsWithSingleColumn(firstColName, allStmtInString, result);
+}
+
+std::shared_ptr<ResultTable> AssignPatternStrategy::getEvaluatedResultTable(PKBReaderManager &pkbReaderManager,
+                                                                            const ParsingResult &parsingResult,
+                                                                            std::shared_ptr<ResultTable> resultTable) {
+
+
+    if (firstParam.getType() == TokenType::IDENT) {
+        processSynonyms(parsingResult, resultTable);
+    }
+    else if (firstParam.getType() == TokenType::QuoutIDENT) {
+        processQuotedIdent(parsingResult, resultTable);
+    }
+    else if (firstParam.getType() == TokenType::Wildcard) {
+        processWildcard(parsingResult, resultTable);
+    }
+    else {
+        throw "Invalid firstParam type";
+    }
+
+    return resultTable;
 }
 

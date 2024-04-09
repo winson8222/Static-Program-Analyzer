@@ -46,23 +46,6 @@ std::shared_ptr<ResultTable> FollowsStrategy::evaluateQuery(PKBReaderManager& pk
         reader = pkbReaderManager.getFollowsTReader();
     }
     setReader(reader);
-
-
-
-	// Handling different parameter types for the Follows relationship
-	if (isBothParamsSynonym(firstParam, secondParam)) {
-		processSynonyms(resultTable, parsingResult, pkbReaderManager);
-	}
-	else if (firstParam.getType() == TokenType::IDENT) {
-		processFirstParam(resultTable, parsingResult, pkbReaderManager);
-	}
-	else if (secondParam.getType() == TokenType::IDENT) {
-		processSecondParam(resultTable, parsingResult, pkbReaderManager);
-	}
-	else {
-		processIntegerParams(resultTable);
-	}
-
-	return resultTable;
+    return getEvaluatedResultTable(pkbReaderManager, parsingResult, resultTable);
 }
 

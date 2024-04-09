@@ -20,6 +20,7 @@ public:
 
 
 protected:
+    std::shared_ptr<ResultTable> getEvaluatedResultTable(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult ,std::shared_ptr<ResultTable> resultTable) override;
 	static bool isBothParamsInteger(const Token& firstParam, const Token& secondParam);
 	static void setTrueIfRelationShipExist(const Token& firstParam, const Token& secondParam, 
 		const std::shared_ptr<IRelationshipReader<int, int>>& reader, std::shared_ptr<ResultTable> resultTable);

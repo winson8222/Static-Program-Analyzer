@@ -8,7 +8,7 @@ private:
 
 public:
 	~EntEntStrategy() override = default;
-
+    std::shared_ptr<ResultTable> getEvaluatedResultTable(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, std::shared_ptr<ResultTable> resultTable) override;
 	void processBothSynonyms(const ParsingResult& parsingResult, std::shared_ptr<ResultTable> resultTable);
 	void processFirstParam(const ParsingResult& parsingResult, std::shared_ptr<ResultTable> resultTable);
 	void processSecondParam(const ParsingResult& parsingResult, std::shared_ptr<ResultTable> resultTable);
