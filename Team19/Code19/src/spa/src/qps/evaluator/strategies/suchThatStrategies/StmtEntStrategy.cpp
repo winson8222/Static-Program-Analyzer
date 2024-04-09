@@ -28,9 +28,7 @@ void StmtEntStrategy::setTrueIfRelationShipExist(const Token &firstParam, const 
 void StmtEntStrategy::processBothSynonyms(const ParsingResult& parsingResult,
                                        std::shared_ptr<ResultTable> resultTable, PKBReaderManager& pkbReaderManager)
 {
-    const Token& firstParam = getFirstParam();
-    const Token& secondParam = getSecondParam();
-    std::shared_ptr<IRelationshipReader<int, std::string>> reader = getReader();
+
     // get all statements that modifies a variable
     std::unordered_set<int> allKeyStmts = reader->getKeys();
     // check what type of statement is the firstParam
@@ -51,9 +49,7 @@ void StmtEntStrategy::processBothSynonyms(const ParsingResult& parsingResult,
 void StmtEntStrategy::processFirstParam(const ParsingResult& parsingResult
         ,std::shared_ptr<ResultTable> resultTable, PKBReaderManager& pkbReaderManager) {
     // get all statements that modifies a variable
-    const Token& firstParam = getFirstParam();
-    const Token& secondParam = getSecondParam();
-    std::shared_ptr<IRelationshipReader<int, std::string>> reader = getReader();
+
     std::unordered_set<int> allKeyStmts;
     if (secondParam.getType() == TokenType::Wildcard) {
         allKeyStmts = reader->getKeys();
@@ -83,9 +79,7 @@ void StmtEntStrategy::processFirstParam(const ParsingResult& parsingResult
 void StmtEntStrategy::processSecondParam(const ParsingResult &parsingResult,
                                       std::shared_ptr<ResultTable> resultTable, PKBReaderManager& pkbReaderManager) {
     // get all variables that are modified by a statement
-    const Token& firstParam = getFirstParam();
-    const Token& secondParam = getSecondParam();
-    std::shared_ptr<IRelationshipReader<int, std::string>> reader = getReader();
+
     std::unordered_set<std::string> allValues;
     if (firstParam.getType() == TokenType::Wildcard) {
         allValues = reader->getValues();
@@ -102,10 +96,7 @@ void StmtEntStrategy::processSecondParam(const ParsingResult &parsingResult,
 
 void StmtEntStrategy::processBothConstants(const ParsingResult &parsingResult,
                                         std::shared_ptr<ResultTable> resultTable) {
-    // check if the statement modifies the variable
-    const Token& firstParam = getFirstParam();
-    const Token& secondParam = getSecondParam();
-    std::shared_ptr<IRelationshipReader<int, std::string>> reader = getReader();
+
     if (isBothParamsWildcard(firstParam, secondParam)) {
         if (!reader->getKeys().empty()) {
             resultTable->setAsTruthTable();

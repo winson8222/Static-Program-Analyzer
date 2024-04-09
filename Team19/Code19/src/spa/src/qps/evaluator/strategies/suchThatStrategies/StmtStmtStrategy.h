@@ -13,17 +13,12 @@ class StmtStmtStrategy : public SuchThatStrategy {
 
 private:
     std::shared_ptr<IRelationshipReader<int, int>> reader;
+
+
 public:
 	~StmtStmtStrategy() override = default;
 
-    void processSynonyms(std::shared_ptr<ResultTable> resultTable, const ParsingResult &parsingResult,
-                         PKBReaderManager &pkbReaderManager);
 
-	void processIntegerParams(std::shared_ptr<ResultTable> resultTable);
-
-	void processFirstParam(std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager);
-
-	void processSecondParam(std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager);
 protected:
 	static bool isBothParamsInteger(const Token& firstParam, const Token& secondParam);
 	static void setTrueIfRelationShipExist(const Token& firstParam, const Token& secondParam, 
@@ -31,5 +26,57 @@ protected:
 	static void insertRowsWithTwoCols(const Token& firstParam, const Token& secondParam, std::shared_ptr<IRelationshipReader<int, int>> reader,
 		const ParsingResult& parsingResult, std::shared_ptr<ResultTable> resultTable, PKBReaderManager& pkbReaderManager);
     void setReader(const std::shared_ptr<IRelationshipReader<int, int>>& reader);
-    std::shared_ptr<IRelationshipReader<int, int>> getReader();
+    void processSynonyms(std::shared_ptr<ResultTable> resultTable, const ParsingResult &parsingResult,
+                         PKBReaderManager &pkbReaderManager);
+
+    void processIntegerParams(std::shared_ptr<ResultTable> resultTable);
+
+    void processFirstParam(std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager);
+
+    void processSecondParam(std::shared_ptr<ResultTable> resultTable, const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager);
+
+    void addTrueRelationshipsInResultTable(std::shared_ptr<ResultTable> newResultTable);
+    void addTrueLeftSynonymInResultTable(std::shared_ptr<ResultTable> newResultTable, const ParsingResult& parsingResult,PKBReaderManager& pkbReaderManager);
+    void addTrueRightSynonymInResultTable(std::shared_ptr<ResultTable> newResultTable, const ParsingResult& parsingResult,PKBReaderManager& pkbReaderManager);
+    void addToListIfKeyRelationshipExists( const std::unordered_set<std::string>& values,
+                                           std::vector<std::string>& filteredValues,
+                                           const std::string& comparisonValue);
+
+    void addToListIfValueRelationshipExists( const std::unordered_set<std::string>& values,
+                                             std::vector<std::string>& filteredValues,
+                                             const std::string& comparisonValue);
+
+    void addToListIfRelationshipExistsWithItself(
+            const std::unordered_set<std::string>& values,
+            std::vector<std::string>& filteredValues);
+
+    void addToListIfValueExists(
+            const std::unordered_set<std::string>& values,
+            std::vector<std::string>& filteredValues);
+
+    void addToListIfKeyExists(
+            const std::unordered_set<std::string>& values,
+            std::vector<std::string>& filteredValues);
+
+    void addPairsToListsByKey(
+            const std::unordered_set<std::string>& sourceValues,
+            const std::string& type,
+            PKBReaderManager& pkbReaderManager,
+            std::vector<std::string>& firstList,
+            std::vector<std::string>& secondList);
+
+    void addPairsToListsByValue(
+            const std::unordered_set<std::string>& sourceValues,
+            const std::string& type,
+            PKBReaderManager& pkbReaderManager,
+            std::vector<std::string>& firstList,
+            std::vector<std::string>& secondList);
+
+    void addPairIfRelationshipExists(
+            const std::unordered_set<std::string>& sourceValues,
+            const std::unordered_set<std::string>& targetValues,
+            std::vector<std::string>& sourceList,
+            std::vector<std::string>& targetList);
+
 };
+

@@ -73,6 +73,9 @@ private:
     // Private methods for parsing different parts of the input.
     void parseDeclarations();
     void parseSelectClause();
+    void parseSelectTuple();
+    void parseSelectSingle();
+    void parseSelectTupleElement();
     void parseSuchThatClause();
     void parsePatternClause();
     void parseWithClause();

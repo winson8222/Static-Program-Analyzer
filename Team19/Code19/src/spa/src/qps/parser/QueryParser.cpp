@@ -139,60 +139,77 @@ void QueryParser::parseSynonym() {
 // Parses the select clause in the query.
 // Checks for the 'Select' keyword and ensures the following token is a valid identifier.
 void QueryParser::parseSelectClause() {
-    if (currentToken().getValue() != "Select") {
+    ensureToken(TokenType::SelectKeyword);
+    advanceToken();
+
+    if (match(TokenType::LeftAngleBracket)) {
+        parseSelectTuple();
+    } else {
+        parseSelectSingle();
+    }
+}
+
+void QueryParser::parseSelectTuple() {
+    advanceToken();
+    int numberOfSynonymsSelected = 0;
+
+    while (!match(TokenType::RightAngleBracket)) {
+        parseSelectTupleElement();
+        numberOfSynonymsSelected++;
+
+        if (match(TokenType::RightAngleBracket)) {
+            break;
+        }
+
+        ensureToken(TokenType::Comma);
+        advanceToken();
+    }
+
+    if (numberOfSynonymsSelected == 0) {
         throwSyntaxError();
     }
+}
+
+void QueryParser::parseSelectSingle() {
+    currentSuchThatToken = currentToken();
+    size_t startIndex = currentTokenIndex;
+
+    if (tokens.size() > currentTokenIndex + 1 && peekNextToken(TokenType::Dot)) {
+        parseAttrRef();
+    } else {
+        if (!match(TokenType::IDENT)) {
+            ensureToken(TokenType::BooleanKeyword);
+            parsingResult.setBooleanSelection();
+        }
+    }
+
+    std::string concatenatedTokens = concatTokens(startIndex, currentTokenIndex);
+    parsingResult.setRequiredSynonym(concatenatedTokens);
+
+    if (parsingResult.getDeclaredSynonym(currentSuchThatToken.getValue()).empty() &&
+        currentSuchThatToken.getValue() != "BOOLEAN") {
+        setSemanticError();
+    }
+}
+
+void QueryParser::parseSelectTupleElement() {
+    currentSuchThatToken = currentToken();
+    size_t startIndex = currentTokenIndex;
+
+    if (peekNextToken(TokenType::Dot)) {
+        parseAttrRef();
+    } else {
+        ensureToken(TokenType::IDENT);
+    }
+
+    std::string concatenatedTokens = concatTokens(startIndex, currentTokenIndex);
+    parsingResult.setRequiredSynonym(concatenatedTokens);
+
+    if (parsingResult.getDeclaredSynonym(currentSuchThatToken.getValue()).empty()) {
+        setSemanticError();
+    }
+
     advanceToken();
-    if (match(TokenType::LeftAngleBracket)) {
-        advanceToken();
-        int numberOfSynonymsSelected = 0;
-        while (!match(TokenType::RightAngleBracket)) {
-            currentSuchThatToken = currentToken();
-            size_t startIndex = currentTokenIndex;
-            
-            if (peekNextToken(TokenType::Dot)) {
-                parseAttrRef();
-            }
-            else {
-                ensureToken(TokenType::IDENT);
-            }
-            
-            std::string concatenatedTokens = concatTokens(startIndex, currentTokenIndex);
-            parsingResult.setRequiredSynonym(concatenatedTokens);
-            numberOfSynonymsSelected++;
-            if (parsingResult.getDeclaredSynonym(currentSuchThatToken.getValue()).empty()) {
-                setSemanticError();
-            }
-            advanceToken();
-            if (match(TokenType::RightAngleBracket)) {
-                break;
-            }
-            ensureToken(TokenType::Comma);
-            advanceToken();
-        }
-        if (numberOfSynonymsSelected == 0) {
-            throwSyntaxError();
-        }
-    }
-    else {
-        currentSuchThatToken = currentToken();
-        size_t startIndex = currentTokenIndex;
-        if (tokens.size() > currentTokenIndex + 1 && peekNextToken(TokenType::Dot)) {
-            parseAttrRef();
-        }
-        else {
-            if (!match(TokenType::IDENT)) {
-                ensureToken(TokenType::BooleanKeyword);
-                parsingResult.setBooleanSelection();
-            }
-        }
-        std::string concatenatedTokens = concatTokens(startIndex, currentTokenIndex);
-        parsingResult.setRequiredSynonym(concatenatedTokens);
-        if (parsingResult.getDeclaredSynonym(currentSuchThatToken.getValue()).empty() && currentSuchThatToken.getValue() != "BOOLEAN") {
-            setSemanticError();
-        }
-    }
-   
 }
 
 

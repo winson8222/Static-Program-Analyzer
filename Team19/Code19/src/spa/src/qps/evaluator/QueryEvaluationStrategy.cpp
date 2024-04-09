@@ -159,12 +159,9 @@ void QueryEvaluationStrategy::insertRowsWithSingleColumn(std::string colName, st
     }
 }
 
-std::shared_ptr<ResultTable> QueryEvaluationStrategy::getIntermediateResultTable() {
-    return intermediateResultTable;
-}
 
 void QueryEvaluationStrategy::setIntermediateResultTable(std::shared_ptr<ResultTable> resultTable) {
-    intermediateResultTable = resultTable;
+    intermediateResultTable = std::move(resultTable);
 }
 
 bool QueryEvaluationStrategy::hasCommonSynonyms(std::unordered_set<std::string> synonyms,
@@ -231,10 +228,14 @@ bool QueryEvaluationStrategy::isParamOfType(const Token &token, TokenType type) 
     return token.getType() == type;
 }
 
-Token QueryEvaluationStrategy::getFirstParam() {
-    return firstParam;
-}
+void QueryEvaluationStrategy::addCorrelatedValuesToLists(
+        const std::string& sourceValue,
+        const std::unordered_set<std::string>& matchingValues,
+        std::vector<std::string>& firstList,
+        std::vector<std::string>& secondList) {
 
-Token QueryEvaluationStrategy::getSecondParam() {
-    return secondParam;
+    for (const auto& matchingValue : matchingValues) {
+        firstList.push_back(sourceValue);
+        secondList.push_back(matchingValue);
+    }
 }

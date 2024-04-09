@@ -21,8 +21,7 @@ std::shared_ptr<ResultTable> UsesPStrategy::evaluateQuery(PKBReaderManager& pkbR
 
 //    const SuchThatClause* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
 
-    Token firstParam = getFirstParam();
-    Token secondParam = getSecondParam();
+
     if (isBothParamsSynonym(firstParam, secondParam)) {
         this->processBothSynonyms(parsingResult, resultTable);
     } else if (isParamOfType(firstParam, TokenType::IDENT)) {
