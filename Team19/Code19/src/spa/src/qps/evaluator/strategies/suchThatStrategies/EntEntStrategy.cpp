@@ -38,12 +38,11 @@ std::shared_ptr<IRelationshipReader<std::string, std::string>> EntEntStrategy::g
 void EntEntStrategy::processBothSynonyms(const ParsingResult &parsingResult,
                                         std::shared_ptr<ResultTable> resultTable) {
     // get the types of both synonyms
-    Token firstParam = getFirstParam();
-    Token secondParam = getSecondParam();
+
     std::string firstParamType = parsingResult.getDeclaredSynonym(firstParam.getValue());
     std::string secondParamType = parsingResult.getDeclaredSynonym(secondParam.getValue());
     insertColsToTable(firstParam, secondParam, resultTable);
-    std::shared_ptr<IRelationshipReader<std::string, std::string>> reader = getReader();
+
     if (firstParamType == "procedure") {
         std::unordered_set<std::string> allProcs = reader->getKeys();
 //                this->usesPReader->getAllProcsThatUseAnyVariable();
@@ -59,11 +58,9 @@ void EntEntStrategy::processBothSynonyms(const ParsingResult &parsingResult,
 
 
 void EntEntStrategy::processFirstParam(const ParsingResult &parsingResult, std::shared_ptr<ResultTable> resultTable) {
-    Token firstParam = getFirstParam();
-    Token secondParam = getSecondParam();
+
     std::string colName = firstParam.getValue();
     insertSingleColToTable(firstParam, resultTable);
-    std::shared_ptr<IRelationshipReader<std::string, std::string>> reader = getReader();
     std::unordered_set<std::string> allProcs;
     if (secondParam.getType() == TokenType::QuoutIDENT) {
         std::string secondParamValue = extractQuotedExpression(secondParam);
@@ -78,12 +75,10 @@ void EntEntStrategy::processFirstParam(const ParsingResult &parsingResult, std::
 }
 
 void EntEntStrategy::processSecondParam(const ParsingResult &parsingResult, std::shared_ptr<ResultTable> resultTable) {
-    Token firstParam = getFirstParam();
-    Token secondParam = getSecondParam();
+
     std::string colName = secondParam.getValue();
     insertSingleColToTable(secondParam, resultTable);
     std::unordered_set<std::string> allVars;
-    std::shared_ptr<IRelationshipReader<std::string, std::string>> reader = getReader();
     if (firstParam.getType() == TokenType::QuoutIDENT) {
         std::string firstParamValue = extractQuotedExpression(firstParam);
         allVars = reader->getRelationshipsByKey(firstParamValue);
@@ -98,9 +93,7 @@ void EntEntStrategy::processSecondParam(const ParsingResult &parsingResult, std:
 
 void EntEntStrategy::processBothConstants(const ParsingResult &parsingResult,
                                          std::shared_ptr<ResultTable> resultTable) {
-    Token firstParam = getFirstParam();
-    Token secondParam = getSecondParam();
-    std::shared_ptr<IRelationshipReader<std::string, std::string>> reader = getReader();
+
     if (isBothParamsWildcard(firstParam, secondParam)) {
         if (!reader->getKeys().empty()) {
             resultTable->setAsTruthTable();

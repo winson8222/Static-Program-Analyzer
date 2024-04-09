@@ -29,8 +29,7 @@ std::shared_ptr<ResultTable> WithStrategy::evaluateQuery(PKBReaderManager& pkbRe
     const WithClause* withClause = dynamic_cast<const WithClause*>(&clause);
     setBothParams(clause);
     this->parsingResult = parsingResult;
-    Token firstParam = getFirstParam();
-    Token secondParam = getSecondParam();
+
 
     if (isAttrRefIdentical(firstParam, secondParam)) {
         resultTable->setAsTruthTable();

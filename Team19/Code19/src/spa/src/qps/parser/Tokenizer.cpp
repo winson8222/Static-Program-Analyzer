@@ -46,44 +46,32 @@ TokenType Tokenizer::determineTokenType(const std::string& tokenStr) {
         return TokenType::Wildcard;
     }
 
-    TokenType tokenType;
+    // List of token determination functions
+    std::vector<std::function<TokenType(Tokenizer*, const std::string&)>> determinationFunctions = {
+            &Tokenizer::determineClauseKeywordToken,
+            &Tokenizer::determineBooleanToken,
+            &Tokenizer::determineAttrNameToken,
+            &Tokenizer::determineQuoutToken,
+            &Tokenizer::determineSingleCharToken,
+            &Tokenizer::determineDesignEntityToken,
+            &Tokenizer::determineRelRefToken
+    };
 
-    tokenType = determineClauseKeywordToken(tokenStr);
-    if (!isSyntaxError(tokenType)) return tokenType;
+    for (auto& func : determinationFunctions) {
+        TokenType tokenType = func(this, tokenStr);
+        if (tokenType != TokenType::SyntaxError) {
+            return tokenType;
+        }
+    }
 
-    tokenType = determineBooleanToken(tokenStr);
-    if (!isSyntaxError(tokenType)) return tokenType;
-
-    tokenType = determineAttrNameToken(tokenStr);
-    if (!isSyntaxError(tokenType)) return tokenType;
-
-    tokenType = determineQuoutToken(tokenStr);
-    if (!isSyntaxError(tokenType)) return tokenType;
-
-    tokenType = determineSingleCharToken(tokenStr);
-    if (!isSyntaxError(tokenType)) return tokenType;
-
-    tokenType = determineDesignEntityToken(tokenStr);
-    if (!isSyntaxError(tokenType))return tokenType;
-
-    tokenType = determineRelRefToken(tokenStr);
-    if (!isSyntaxError(tokenType)) return tokenType;
-
-    tokenType = determineClauseKeywordToken(tokenStr);
-    if (!isSyntaxError(tokenType)) return tokenType;
-
-    // IDENT: Starts with a letter and may continue with letters or digits.
+    // Additional checks if the token does not fit any predefined patterns
     if (std::regex_match(tokenStr, std::regex("^[a-zA-Z][a-zA-Z0-9]*$"))) {
         return TokenType::IDENT;
     }
-
-    // INTEGER: Either 0 or a sequence of digits with no leading zero.
     if (std::regex_match(tokenStr, std::regex("^(0|[1-9][0-9]*)$"))) {
         return TokenType::INTEGER;
     }
-
-    // OPERATOR: "+-*/%&|<>=!~^"
-    if (std::regex_match(tokenStr, std::regex("^[+\\-*/%&|!~^]$"))) {
+    if (std::regex_match(tokenStr, std::regex("^[+\\-*/%&|<>=!~^]$"))) {
         return TokenType::Operator;
     }
 

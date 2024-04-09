@@ -27,8 +27,7 @@ std::shared_ptr<ResultTable> CallsStrategy::evaluateQuery(PKBReaderManager& pkbR
         reader = pkbReaderManager.getCallsTReader();
     }
     setReader(reader);
-    Token firstParam = getFirstParam();
-    Token secondParam = getSecondParam();
+
 
     if (isBothParamsSynonym(firstParam, secondParam)) {
         this->processBothSynonyms(parsingResult, resultTable);

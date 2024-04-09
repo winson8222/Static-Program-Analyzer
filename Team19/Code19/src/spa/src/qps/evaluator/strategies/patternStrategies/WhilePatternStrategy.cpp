@@ -20,8 +20,6 @@ std::shared_ptr<ResultTable> WhilePatternStrategy::evaluateQuery(PKBReaderManage
 
     const PatternClause *patternClause = dynamic_cast<const PatternClause *>(&clause);
     setBothParams(clause);
-    Token firstParam = getFirstParam();
-    Token secondParam = getSecondParam();
     Token relationship = patternClause->getRelationship();
     setRelationship(relationship);
 
@@ -41,9 +39,6 @@ std::shared_ptr<ResultTable> WhilePatternStrategy::evaluateQuery(PKBReaderManage
 }
 
 void WhilePatternStrategy::processSynonyms(ParsingResult parsingResult, std::shared_ptr<ResultTable> resultTable) {
-    Token firstParam = getFirstParam();
-    Token secondParam = getSecondParam();
-    Token relationship = getRelationship();
     std::string firstColName = relationship.getValue();
     std::string secondColName = firstParam.getValue();
     insertColsToTable(relationship, firstParam, resultTable);
@@ -51,9 +46,6 @@ void WhilePatternStrategy::processSynonyms(ParsingResult parsingResult, std::sha
 }
 
 void WhilePatternStrategy::processQuotedIdent(ParsingResult parsingResult, std::shared_ptr<ResultTable> result) {
-    Token firstParam = getFirstParam();
-    Token secondParam = getSecondParam();
-    Token relationship = getRelationship();
     std::string firstColName = relationship.getValue();
     insertSingleColToTable(relationship, result);
     std::unordered_set<int> allStmts;
@@ -68,9 +60,6 @@ void WhilePatternStrategy::processQuotedIdent(ParsingResult parsingResult, std::
 
 
 void WhilePatternStrategy::processWildcard(ParsingResult parsingResult, std::shared_ptr<ResultTable> result) {
-    Token firstParam = getFirstParam();
-    Token secondParam = getSecondParam();
-    Token relationship = getRelationship();
     std::string firstColName = relationship.getValue();
     insertSingleColToTable(relationship, result);
     std::unordered_set<int> allStmts;
