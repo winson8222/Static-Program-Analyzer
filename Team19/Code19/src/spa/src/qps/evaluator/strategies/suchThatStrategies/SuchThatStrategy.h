@@ -15,4 +15,10 @@ class SuchThatStrategy : public QueryEvaluationStrategy {
 
 public:
     SuchThatStrategy() = default;
+
+protected:
+
+
+
+
 };

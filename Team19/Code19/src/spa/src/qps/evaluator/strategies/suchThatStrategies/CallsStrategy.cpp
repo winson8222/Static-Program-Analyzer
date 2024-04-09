@@ -9,8 +9,36 @@ std::shared_ptr<ResultTable> CallsStrategy::evaluateQueryOptimised(PKBReaderMana
                                                                     const ParsingResult &parsingResult,
                                                                     const Clause &clause,
                                                                     std::shared_ptr<ResultTable> result) {
+    const auto* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
+    this->variant = suchClause->getRelationship().getValue();
+    setBothParams(clause);
+    std::shared_ptr<IRelationshipReader<std::string, std::string>> reader;
+    if (variant == "Calls") {
+        reader = pkbReaderManager.getCallsReader();
+    } else if (variant == "Calls*") {
+        reader = pkbReaderManager.getCallsTReader();
+    }
+    setReader(reader);
+
     setIntermediateResultTable(result);
-    return evaluateQuery(pkbReaderManager, parsingResult, clause);
+    std::unordered_set<std::string> allSynonyms = clause.getAllSynonyms();
+    if (!hasCommonSynonyms(allSynonyms, result)) {
+        std::shared_ptr<ResultTable> newResults = evaluateQuery(pkbReaderManager, parsingResult, clause);
+        return newResults;
+    }
+
+    auto optimisedResultTable = std::make_shared<ResultTable>();
+
+    if (hasBothCommonSynonyms(clause, result)) {
+        addTrueRelationshipsInResultTable(optimisedResultTable);
+    } else if (hasLeftCommonSynonym(clause, result)) {
+        addTrueLeftSynonymInResultTable(optimisedResultTable, parsingResult, pkbReaderManager);
+    } else if (hasRightCommonSynonym(clause, result)) {
+        addTrueRightSynonymInResultTable(optimisedResultTable, parsingResult, pkbReaderManager);
+    } else {
+        return evaluateQuery(pkbReaderManager, parsingResult, clause);
+    }
+    return optimisedResultTable;
 }
 
 std::shared_ptr<ResultTable> CallsStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause)

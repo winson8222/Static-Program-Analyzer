@@ -47,7 +47,13 @@ protected:
     void setSecondParam(const Token& secondParam);
     void setBothParams(const Clause& clause);
     bool isParamOfType(const Token& token, TokenType type);
+    void addToListIfKeyRelationshipExists( const std::unordered_set<std::string>& values,
+            std::vector<std::string>& filteredValues,
+            const std::string& comparisonValue);
 
+    void addToListIfValueRelationshipExists( const std::unordered_set<std::string>& values,
+                                           std::vector<std::string>& filteredValues,
+                                           const std::string& comparisonValue);
     void addCorrelatedValuesToLists(
             const std::string& sourceValue,
             const std::unordered_set<std::string>& matchingValues,
