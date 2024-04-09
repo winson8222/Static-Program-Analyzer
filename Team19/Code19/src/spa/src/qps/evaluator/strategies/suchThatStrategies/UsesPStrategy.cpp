@@ -10,28 +10,8 @@ std::shared_ptr<ResultTable> UsesPStrategy::evaluateQueryOptimised(PKBReaderMana
                                                                   std::shared_ptr<ResultTable> result) {
     setBothParams(clause);
     std::shared_ptr<IRelationshipReader<std::string, std::string>> reader = pkbReaderManager.getUsesPReader();
-
     setReader(reader);
-
-    setIntermediateResultTable(result);
-    std::unordered_set<std::string> allSynonyms = clause.getAllSynonyms();
-    if (!hasCommonSynonyms(allSynonyms, result)) {
-        std::shared_ptr<ResultTable> newResults = evaluateQuery(pkbReaderManager, parsingResult, clause);
-        return newResults;
-    }
-
-    auto optimisedResultTable = std::make_shared<ResultTable>();
-
-    if (hasBothCommonSynonyms(clause, result)) {
-        addTrueRelationshipsInResultTable(optimisedResultTable);
-    } else if (hasLeftCommonSynonym(clause, result)) {
-        addTrueLeftSynonymInResultTable(optimisedResultTable, parsingResult, pkbReaderManager);
-    } else if (hasRightCommonSynonym(clause, result)) {
-        addTrueRightSynonymInResultTable(optimisedResultTable, parsingResult, pkbReaderManager);
-    } else {
-        return evaluateQuery(pkbReaderManager, parsingResult, clause);
-    }
-    return optimisedResultTable;
+    return getOptimallyEvaluatedResultTable(parsingResult, pkbReaderManager, clause, result);
 }
 
 std::shared_ptr<ResultTable> UsesPStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause)

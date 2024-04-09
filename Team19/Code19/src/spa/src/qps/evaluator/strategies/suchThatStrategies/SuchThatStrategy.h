@@ -17,6 +17,8 @@ public:
     SuchThatStrategy() = default;
 
 protected:
+    std::shared_ptr<ResultTable> getOptimallyEvaluatedResultTable(const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager, const Clause& clause,
+                                                                  std::shared_ptr<ResultTable> result);
     void addTrueRelationshipsInResultTable(std::shared_ptr<ResultTable> newResultTable);
     void addTrueLeftSynonymInResultTable(std::shared_ptr<ResultTable> newResultTable, const ParsingResult& parsingResult,PKBReaderManager& pkbReaderManager);
     void addTrueRightSynonymInResultTable(std::shared_ptr<ResultTable> newResultTable, const ParsingResult& parsingResult,PKBReaderManager& pkbReaderManager);
