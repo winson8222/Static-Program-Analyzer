@@ -110,87 +110,8 @@ void StmtEntStrategy::setReader(std::shared_ptr<IRelationshipReader<int, std::st
     this->reader = reader;
 }
 
-std::shared_ptr<IRelationshipReader<int, std::string>> StmtEntStrategy::getReader() {
-    return reader;
-}
-
-void StmtEntStrategy::addTrueRelationshipsInResultTable(std::shared_ptr<ResultTable> newResultTable) {
 
 
-
-    std::string leftSynonymName = firstParam.getValue();
-    std::string rightSynonymName = secondParam.getValue();
-
-    if (leftSynonymName == rightSynonymName) {
-        const std::string& commonSynonym = leftSynonymName;
-        newResultTable->insertColumn(commonSynonym);
-        std::vector<std::string> filteredSynonymValues;
-        std::unordered_set<std::string> allSynonymValues = intermediateResultTable->getColumnValues(commonSynonym);
-        // filter unordered set using reader->hasRelationship
-        addToListIfRelationshipExistsWithItself(allSynonymValues, filteredSynonymValues);
-        newResultTable->populateWithOneColumnWithExactEntries(commonSynonym, filteredSynonymValues);
-    } else {
-        newResultTable->addColumnsSet({leftSynonymName, rightSynonymName});
-        std::vector<std::string> filteredLeftSynonymValues;
-        std::vector<std::string> filteredRightSynonymValues;
-        std::unordered_set<std::string> allLeftSynonymsValues = intermediateResultTable->getColumnValues(leftSynonymName);
-        std::unordered_set<std::string> allRightSynonymsValues = intermediateResultTable->getColumnValues(rightSynonymName);
-        addPairIfRelationshipExists(allLeftSynonymsValues, allRightSynonymsValues, filteredLeftSynonymValues, filteredRightSynonymValues);
-        newResultTable->populateWithTwoColumnsWithExactEntries(leftSynonymName, rightSynonymName, filteredLeftSynonymValues, filteredRightSynonymValues);
-    }
-}
-
-void StmtEntStrategy::addTrueLeftSynonymInResultTable(std::shared_ptr<ResultTable> newResultTable, const ParsingResult& parsingResult,PKBReaderManager& pkbReaderManager) {
-
-    std::string leftSynonymName = firstParam.getValue();
-    std::unordered_set<std::string> leftSynonymValues = intermediateResultTable->getColumnValues(leftSynonymName);
-    std::vector<std::string> filteredLeftSynonymValues;
-    std::string rightParamValue = secondParam.getValue();
-    TokenType rightParamType = secondParam.getType();
-    if (rightParamType == TokenType::Wildcard) {
-        newResultTable->insertColumn(leftSynonymName);
-        addToListIfKeyExists(leftSynonymValues, filteredLeftSynonymValues);
-        newResultTable->populateWithOneColumnWithExactEntries(leftSynonymName, filteredLeftSynonymValues);
-    } else if (rightParamType == TokenType::QuoutIDENT) {
-        newResultTable->insertColumn(leftSynonymName);
-        addToListIfKeyRelationshipExists(leftSynonymValues, filteredLeftSynonymValues, secondParam);
-        newResultTable->populateWithOneColumnWithExactEntries(leftSynonymName, filteredLeftSynonymValues);
-    } else {
-        std::vector<std::string> filteredRightSynonymValues;
-        std::string rightSynonymName = secondParam.getValue();
-        std::string rightSynonymType = parsingResult.getRequiredSynonymType(rightSynonymName);
-        newResultTable->addColumnsSet({leftSynonymName, rightSynonymName});
-        addPairsToListsByKey(leftSynonymValues, rightSynonymType, pkbReaderManager, filteredLeftSynonymValues, filteredRightSynonymValues);
-        newResultTable->populateWithTwoColumnsWithExactEntries(leftSynonymName, rightSynonymName, filteredLeftSynonymValues, filteredRightSynonymValues);
-    }
-
-}
-
-
-void StmtEntStrategy::addTrueRightSynonymInResultTable(std::shared_ptr<ResultTable> newResultTable, const ParsingResult& parsingResult,PKBReaderManager& pkbReaderManager) {
-
-    std::string rightSynonymName = secondParam.getValue();
-    std::unordered_set<std::string> rightSynonymValues = intermediateResultTable->getColumnValues(rightSynonymName);
-    std::vector<std::string> filteredRightSynonymValues;
-    std::string leftParamValue = firstParam.getValue();
-    TokenType leftParamType = firstParam.getType();
-    if (leftParamType == TokenType::Wildcard) {
-        newResultTable->insertColumn(rightSynonymName);
-        addToListIfValueExists(rightSynonymValues, filteredRightSynonymValues);
-        newResultTable->populateWithOneColumnWithExactEntries(rightSynonymName, filteredRightSynonymValues);
-    } else if (leftParamType == TokenType::INTEGER) {
-        newResultTable->insertColumn(rightSynonymName);
-        addToListIfValueRelationshipExists(rightSynonymValues, filteredRightSynonymValues, firstParam);
-        newResultTable->populateWithOneColumnWithExactEntries(rightSynonymName, filteredRightSynonymValues);
-    } else {
-        std::vector<std::string> filteredLeftSynonymValues;
-        std::string leftSynonymName = firstParam.getValue();
-        std::string leftSynonymType = parsingResult.getRequiredSynonymType(leftSynonymName);
-        newResultTable->addColumnsSet({leftSynonymName, rightSynonymName});
-        addPairsToListsByValue(rightSynonymValues, leftSynonymType, pkbReaderManager, filteredRightSynonymValues, filteredLeftSynonymValues);
-        newResultTable->populateWithTwoColumnsWithExactEntries(leftSynonymName, rightSynonymName, filteredLeftSynonymValues, filteredRightSynonymValues);
-    }
-}
 
 
 void StmtEntStrategy::addToListIfKeyExists(

@@ -21,48 +21,45 @@ public:
 	static void setTrueIfRelationShipExist(const Token& firstParam, const Token& secondParam,
 		const std::shared_ptr<IRelationshipReader<int, std::string>>& reader, std::shared_ptr<ResultTable> resultTable);
     void setReader(std::shared_ptr<IRelationshipReader<int, std::string>> reader);
-    std::shared_ptr<IRelationshipReader<int, std::string>> getReader();
-
-    void addTrueRelationshipsInResultTable(std::shared_ptr<ResultTable> newResultTable);
-    void addTrueLeftSynonymInResultTable(std::shared_ptr<ResultTable> newResultTable, const ParsingResult& parsingResult,PKBReaderManager& pkbReaderManager);
-    void addTrueRightSynonymInResultTable(std::shared_ptr<ResultTable> newResultTable, const ParsingResult& parsingResult,PKBReaderManager& pkbReaderManager);
     void addToListIfKeyRelationshipExists( const std::unordered_set<std::string>& values,
                                            std::vector<std::string>& filteredValues,
-                                           const Token& comparisonToken);
+                                           const Token& comparisonToken) override;
 
-    void addToListIfValueRelationshipExists( const std::unordered_set<std::string>& values,
-                                             std::vector<std::string>& filteredValues,
-                                             const Token& comparisonToken);
+    void addToListIfValueRelationshipExists(const std::unordered_set<std::string>& values,
+                                            std::vector<std::string>& filteredValues,
+                                            const Token& comparisonToken) override;
 
     void addToListIfRelationshipExistsWithItself(
             const std::unordered_set<std::string>& values,
-            std::vector<std::string>& filteredValues);
+            std::vector<std::string>& filteredValues) override;
 
     void addToListIfValueExists(
             const std::unordered_set<std::string>& values,
-            std::vector<std::string>& filteredValues);
+            std::vector<std::string>& filteredValues) override;
 
     void addToListIfKeyExists(
             const std::unordered_set<std::string>& values,
-            std::vector<std::string>& filteredValues);
+            std::vector<std::string>& filteredValues) override;
 
     void addPairsToListsByKey(
             const std::unordered_set<std::string>& sourceValues,
             const std::string& type,
             PKBReaderManager& pkbReaderManager,
             std::vector<std::string>& firstList,
-            std::vector<std::string>& secondList);
+            std::vector<std::string>& secondList) override;
 
     void addPairsToListsByValue(
             const std::unordered_set<std::string>& sourceValues,
             const std::string& type,
             PKBReaderManager& pkbReaderManager,
             std::vector<std::string>& firstList,
-            std::vector<std::string>& secondList);
+            std::vector<std::string>& secondList) override;
 
     void addPairIfRelationshipExists(
             const std::unordered_set<std::string>& sourceValues,
             const std::unordered_set<std::string>& targetValues,
             std::vector<std::string>& sourceList,
-            std::vector<std::string>& targetList);
+            std::vector<std::string>& targetList) override;
+
+
 };
