@@ -4,11 +4,9 @@
 
 class PrintVarExtractor : public IRelationshipExtractor {
 public:
-	PrintVarExtractor(std::shared_ptr<ASTNode> ast1,
-		std::shared_ptr<ASTNode> ast2,
-		std::shared_ptr<PrintVarNameWriter> printVarWriter);
+	PrintVarExtractor(std::shared_ptr<PrintVarNameWriter> printVarWriter);
 
-	void extract() override;
+	void extract(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2) override;
 
 private:
 	std::shared_ptr<PrintVarNameWriter> printVarWriter;

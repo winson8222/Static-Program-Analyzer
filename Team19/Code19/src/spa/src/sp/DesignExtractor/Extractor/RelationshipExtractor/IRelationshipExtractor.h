@@ -15,22 +15,13 @@ public:
 	IRelationshipExtractor() = default;
 
 	explicit IRelationshipExtractor(std::shared_ptr<ASTNode> ast1,
-		std::shared_ptr<ASTNode> ast2)
-		: ast1(ast1), ast2(ast2) {}
+		std::shared_ptr<ASTNode> ast2) {}
 
 	/*
 	* Extracts relationships from the AST and stores it in the PKB by calling
 	* the respective PKB writer manager methods
 	*/
-	virtual void extract() = 0;
-
-	/*
-	* Sets the AST nodes to be used for extracting relationships
-	*/
-	void setASTs(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2);
-
-	std::shared_ptr<ASTNode> ast1;
-	std::shared_ptr<ASTNode> ast2;
+	virtual void extract(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2) = 0;
 };
 
 /*
@@ -42,27 +33,11 @@ public:
 	ICFGExtractor() = default;
 
 	explicit ICFGExtractor(std::shared_ptr<CFGNode> cfg1,
-		std::shared_ptr<CFGNode> cfg2)
-		: cfg1(cfg1), cfg2(cfg2) {}
+		std::shared_ptr<CFGNode> cfg2) {}
 
 	/*
 	* Extracts relationships from the CFG and stores it in the PKB by calling
 	* the respective PKB writer manager methods
 	*/
-	virtual void extract() = 0;
-
-	/*
-	* Sets the CFG nodes to be used for extracting relationships
-	*/
-	void setCFGs(std::shared_ptr<CFGNode> cfg1, std::shared_ptr<CFGNode> cfg2);
-
-	/*
-	* The parent (previous) node of the CFG
-	*/
-	std::shared_ptr<CFGNode> cfg1;
-
-	/*
-	* The child (next) node of the CFG
-	*/
-	std::shared_ptr<CFGNode> cfg2;
+	virtual void extract(std::shared_ptr<CFGNode> cfg1, std::shared_ptr<CFGNode> cfg2) = 0;
 };

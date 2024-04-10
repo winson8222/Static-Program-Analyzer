@@ -33,19 +33,20 @@ TEST_CASE("Next Extractors") {
 			z = z + 1;
 		}
 		*/
+		NextExtractor nextExtractor(pkbWriterManager->getNextWriter());
 		std::shared_ptr<CFGNode> assign1 = std::make_shared<CFGNode>(1);
 		std::shared_ptr<CFGNode> assign2 = std::make_shared<CFGNode>(2);
 		assign1->addChild(assign2);
-		NextExtractor nextExtractor(assign1, assign2, pkbWriterManager->getNextWriter());
-		nextExtractor.extract();
+		
+		nextExtractor.extract(assign1, assign2);
 
 		std::unordered_set<int> expectedNextOf1 = { 2 };
 		REQUIRE(pkbReaderManager->getNextReader()->getNext(1) == expectedNextOf1);
 
 		std::shared_ptr<CFGNode> print3 = std::make_shared<CFGNode>(3);
 		assign2->addChild(print3);
-		NextExtractor nextExtractor2(assign2, print3, pkbWriterManager->getNextWriter());
-		nextExtractor2.extract();
+
+		nextExtractor.extract(assign2, print3);
 
 		std::unordered_set<int> expectedNexts2 = { 3 };
 		REQUIRE(pkbReaderManager->getNextReader()->getNext(2) == expectedNexts2);
@@ -66,8 +67,7 @@ TEST_CASE("Next Extractors") {
 		while4->addChild(if6);
 
 		for (auto node : while4->getChildren()) {
-			NextExtractor nextExtractor(while4, node, pkbWriterManager->getNextWriter());
-			nextExtractor.extract();
+			nextExtractor.extract(while4, node);
 		}
 		std::unordered_set<int> expectedNextsTof4 = { 5, 6 };
 		REQUIRE(pkbReaderManager->getNextReader()->getNext(4) == expectedNextsTof4);
@@ -78,10 +78,8 @@ TEST_CASE("Next Extractors") {
 		assign7->addChild(assign9);
 		assign8->addChild(assign9);
 
-		NextExtractor nextExtractor3(assign7, assign9, pkbWriterManager->getNextWriter());
-		nextExtractor3.extract();
-		NextExtractor nextExtractor4(assign8, assign9, pkbWriterManager->getNextWriter());
-		nextExtractor4.extract();
+		nextExtractor.extract(assign7, assign9);
+		nextExtractor.extract(assign8, assign9);
 
 		std::unordered_set<int> expectedPrevTo9 = { 7, 8 };
 		REQUIRE(pkbReaderManager->getNextReader()->getPrevious(9) == expectedPrevTo9);
