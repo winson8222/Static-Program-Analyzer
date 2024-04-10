@@ -8,6 +8,7 @@ std::shared_ptr<ResultTable> IfPatternStrategy::evaluateQueryOptimised(PKBReader
                                                                      const ParsingResult &parsingResult,
                                                                      const Clause &clause,
                                                                      std::shared_ptr<ResultTable> result) {
+
     setIntermediateResultTable(result);
     return evaluateQuery(pkbReaderManager, parsingResult, clause);
 }
@@ -21,19 +22,7 @@ std::shared_ptr<ResultTable> IfPatternStrategy::evaluateQuery(PKBReaderManager& 
     setBothParams(clause);
     Token relationship = patternClause->getRelationship();
     setRelationship(relationship);
-
-
-    if (firstParam.getType() == TokenType::IDENT) {
-        processSynonyms(parsingResult, resultTable);
-    } else if (firstParam.getType() == TokenType::QuoutIDENT) {
-        processQuotedIdent(parsingResult, resultTable);
-    } else if (firstParam.getType() == TokenType::Wildcard) {
-        processWildcard(parsingResult, resultTable);
-    } else {
-        throw "Invalid firstParam type";
-    }
-
-    return resultTable;
+    return getEvaluatedResultTable(pkbReaderManager, parsingResult, resultTable);
 
 }
 
@@ -67,3 +56,9 @@ void IfPatternStrategy::processWildcard(ParsingResult parsingResult, std::shared
     allStmts = ifPatternReader->getAllStatementNumbersOfIfControlVariables();
     insertStmtRowsWithSingleCol(allStmts, result, firstColName);
 }
+
+
+
+
+
+

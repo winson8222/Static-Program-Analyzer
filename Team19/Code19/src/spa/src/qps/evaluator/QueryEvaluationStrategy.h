@@ -22,6 +22,7 @@ protected:
     std::shared_ptr<ResultTable> intermediateResultTable;
     Token firstParam;
     Token secondParam;
+    virtual std::shared_ptr<ResultTable> getEvaluatedResultTable(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, std::shared_ptr<ResultTable> resultTable) = 0;
     static void convertIntSetToStringSet(const std::unordered_set<int>& intSet, std::unordered_set<std::string>& stringSet);
     static std::string extractQuotedExpression(const Token& token);
     static bool isBothParamsWildcard(const Token& firstParam, const Token& secondParam);
