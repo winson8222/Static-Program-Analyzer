@@ -21,8 +21,8 @@ void PrintVisitor::visit() {
 	PrintExtractor printExtractor(this->root, this->pkbWriterManager->getPrintWriter());
 	printExtractor.extract();
 
-	PrintVarExtractor printVarExtractor(this->root, this->childVariable, this->pkbWriterManager->getPrintVarNameWriter());
-	printVarExtractor.extract();
+	PrintVarExtractor printVarExtractor(this->pkbWriterManager->getPrintVarNameWriter());
+	printVarExtractor.extract(this->root, this->childVariable);
 
 	VariableVisitor variableVisitor(childVariable, this->pkbWriterManager);
 	variableVisitor.setUsedContext(contexts, root);

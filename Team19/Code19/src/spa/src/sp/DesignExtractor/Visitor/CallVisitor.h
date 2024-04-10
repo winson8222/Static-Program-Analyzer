@@ -44,16 +44,6 @@ private:
 	std::vector<std::shared_ptr<ASTNode>> getProcedureContexts();
 
 	/*
-	* Handle invokations of call procedure extractor
-	*/
-	void handleCallsP(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2);
-
-	/*
-	* Handle invokations of call procedure extractor transitively
-	*/
-	void handleCallsT(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2);
-
-	/*
 	* Handle invokations of call extractor
 	*/
 	void handleCallExtractor();

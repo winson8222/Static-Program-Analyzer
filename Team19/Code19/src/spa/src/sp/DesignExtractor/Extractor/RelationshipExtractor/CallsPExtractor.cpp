@@ -1,34 +1,31 @@
 #include "sp/DesignExtractor/Extractor/RelationshipExtractor/CallsPExtractor.h"
 
-CallsPExtractor::CallsPExtractor(std::shared_ptr<ASTNode> ast1,
-	std::shared_ptr<ASTNode> ast2, std::shared_ptr<CallsWriter> callWriter)
-	: IRelationshipExtractor(ast1, ast2) {
+CallsPExtractor::CallsPExtractor(std::shared_ptr<CallsWriter> callWriter)
+	: IRelationshipExtractor() {
 	this->callWriter = callWriter;
 }
 
-void CallsPExtractor::extract() {
+void CallsPExtractor::extract(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2) {
 	// Extract all the call statements
-	this->callWriter->addCalls(this->ast1->getValue(), this->ast2->getValue());
+	this->callWriter->addCalls(ast1->getValue(), ast2->getValue());
 }
 
-CallsTExtractor::CallsTExtractor(std::shared_ptr<ASTNode> ast1,
-	std::shared_ptr<ASTNode> ast2, std::shared_ptr<CallsTWriter> callWriter)
-	: IRelationshipExtractor(ast1, ast2) {
+CallsTExtractor::CallsTExtractor(std::shared_ptr<CallsTWriter> callWriter)
+	: IRelationshipExtractor() {
 	this->callWriter = callWriter;
 }
 
-void CallsTExtractor::extract() {
+void CallsTExtractor::extract(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2) {
 	// Extract all the call statements
-	this->callWriter->addCallsT(this->ast1->getValue(), this->ast2->getValue());
+	this->callWriter->addCallsT(ast1->getValue(), ast2->getValue());
 }
 
-CallProcNameExtractor::CallProcNameExtractor(std::shared_ptr<ASTNode> ast1,
-	std::shared_ptr<ASTNode> ast2, std::shared_ptr<CallProcNameWriter> callWriter)
-	: IRelationshipExtractor(ast1, ast2) {
+CallProcNameExtractor::CallProcNameExtractor(std::shared_ptr<CallProcNameWriter> callWriter)
+	: IRelationshipExtractor() {
 	this->callWriter = callWriter;
 }
 
-void CallProcNameExtractor::extract() {
+void CallProcNameExtractor::extract(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2) {
 	// Extract all the call line number to values
-	this->callWriter->addCallProcName(this->ast1->getLineNumber(), this->ast2->getValue());
+	this->callWriter->addCallProcName(ast1->getLineNumber(), ast2->getValue());
 }

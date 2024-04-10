@@ -12,45 +12,42 @@ TEST_CASE("sp/SourceProcessor: Modifies(unit)") {
     std::shared_ptr<PKBWriterManager> pkbWriterManager = pkbManager->getPKBWriterManager();
     std::shared_ptr<ModifiesSReader> modifiesSReader = pkbManager->getPKBReaderManager()->getModifiesSReader();
     std::shared_ptr<ModifiesPReader> modifiesPReader = pkbManager->getPKBReaderManager()->getModifiesPReader();
-
+    ModifiesSExtractor modifiesExtractor1(pkbWriterManager->getModifiesSWriter());
     SECTION("Basic ModifiesS") {
         SECTION("Test assign") {
             std::shared_ptr<ASTNode> ast1 = std::make_shared<ASTNode>(ASTNodeType::ASSIGN, 1, "x");
             std::shared_ptr<ASTNode> ast2 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "x");
-            ModifiesSExtractor modifiesExtractor1(ast1, ast2, pkbWriterManager->getModifiesSWriter());
-            modifiesExtractor1.extract();
+            
+            modifiesExtractor1.extract(ast1, ast2);
             REQUIRE(modifiesSReader->doesStmtModifyVariable(1, "x"));
         }
         
         SECTION("Test read") {
             std::shared_ptr<ASTNode> ast3 = std::make_shared<ASTNode>(ASTNodeType::READ, 2, "read");
             std::shared_ptr<ASTNode> ast4 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 2, "y");
-            ModifiesSExtractor modifiesExtractor2(ast3, ast4, pkbWriterManager->getModifiesSWriter());
-            modifiesExtractor2.extract();
+            modifiesExtractor1.extract(ast3, ast4);
             REQUIRE(modifiesSReader->doesStmtModifyVariable(2, "y"));
         }
         
         SECTION("Test ifs") {
             std::shared_ptr<ASTNode> ast5 = std::make_shared<ASTNode>(ASTNodeType::IF_ELSE_THEN, 3, "ifs");
             std::shared_ptr<ASTNode> ast6 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 4, "z");
-            ModifiesSExtractor modifiesExtractor3(ast5, ast6, pkbWriterManager->getModifiesSWriter());
-            modifiesExtractor3.extract();
+            modifiesExtractor1.extract(ast5, ast6);
             REQUIRE(modifiesSReader->doesStmtModifyVariable(3, "z"));
         }
         
         SECTION("Test while") {
             std::shared_ptr<ASTNode> ast7 = std::make_shared<ASTNode>(ASTNodeType::WHILE, 5, "while");
             std::shared_ptr<ASTNode> ast8 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 6, "t");
-            ModifiesSExtractor modifiesExtractor4(ast7, ast8, pkbWriterManager->getModifiesSWriter());
-            modifiesExtractor4.extract();
+            modifiesExtractor1.extract(ast7, ast8);
             REQUIRE(modifiesSReader->doesStmtModifyVariable(5, "t"));
         }
         
         SECTION("Test procedure") {
             std::shared_ptr<ASTNode> ast9 = std::make_shared<ASTNode>(ASTNodeType::PROCEDURE, 0, "proc");
             std::shared_ptr<ASTNode> ast10 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 0, "x");
-            ModifiesPExtractor modifiesExtractor5(ast9, ast10, pkbWriterManager->getModifiesPWriter());
-            modifiesExtractor5.extract();
+            ModifiesPExtractor modifiesExtractor1(pkbWriterManager->getModifiesPWriter());
+            modifiesExtractor1.extract(ast9, ast10);
             REQUIRE(modifiesPReader->doesProcModifyVariable("proc", "x"));
         }
 
@@ -62,8 +59,7 @@ TEST_CASE("sp/SourceProcessor: Modifies(unit)") {
         SECTION("Test call") {
             std::shared_ptr<ASTNode> ast13 = std::make_shared<ASTNode>(ASTNodeType::CALL, 8, "call");
             std::shared_ptr<ASTNode> ast14 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 8, "z");
-            ModifiesSExtractor modifiesExtractor7(ast13, ast14, pkbWriterManager->getModifiesSWriter());
-            modifiesExtractor7.extract();
+            modifiesExtractor1.extract(ast13, ast14);
             REQUIRE(modifiesSReader->doesStmtModifyVariable(8, "z"));
         }
     }

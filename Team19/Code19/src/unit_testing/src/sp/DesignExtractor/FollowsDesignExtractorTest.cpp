@@ -17,8 +17,8 @@ TEST_CASE("sp/SourceProcessor: Follow(unit)") {
 		SECTION("Test Parent") {
 			std::shared_ptr<ASTNode> ast1 = std::make_shared<ASTNode>(ASTNodeType::IF_ELSE_THEN, 1, "ifs");
 			std::shared_ptr<ASTNode> ast2 = std::make_shared<ASTNode>(ASTNodeType::ASSIGN, 2, "x");
-			FollowsExtractor followsExtractor(ast1, ast2, pkbWriterManager->getFollowsWriter());
-			followsExtractor.extract();
+			FollowsExtractor followsExtractor(pkbWriterManager->getFollowsWriter());
+			followsExtractor.extract(ast1, ast2);
 			std::unordered_set<int> expected = { 2 };
 			REQUIRE(followsReader->getPostFollows(1) == expected);
 		}
@@ -26,8 +26,8 @@ TEST_CASE("sp/SourceProcessor: Follow(unit)") {
 		SECTION("Test ParentT") {
 			std::shared_ptr<ASTNode> ast3 = std::make_shared<ASTNode>(ASTNodeType::WHILE, 3, "whiles");
 			std::shared_ptr<ASTNode> ast4 = std::make_shared<ASTNode>(ASTNodeType::PRINT, 6, "print");
-			FollowsTExtractor followsExtractor(ast3, ast4, pkbWriterManager->getFollowsTWriter());
-			followsExtractor.extract();
+			FollowsTExtractor followsExtractor(pkbWriterManager->getFollowsTWriter());
+			followsExtractor.extract(ast3, ast4);
 			std::unordered_set<int> expected = { 3 };
 			REQUIRE(followsTReader->getPreFollowsT(6) == expected);
 		}

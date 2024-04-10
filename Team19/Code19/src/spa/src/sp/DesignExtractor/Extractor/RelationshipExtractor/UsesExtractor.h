@@ -11,11 +11,9 @@
 */
 class UsesSExtractor : public IRelationshipExtractor {
 public:
-	UsesSExtractor(std::shared_ptr<ASTNode> ast1,
-		std::shared_ptr<ASTNode> ast2,
-		std::shared_ptr<UsesSWriter> usesSWriter);
+	UsesSExtractor(std::shared_ptr<UsesSWriter> usesSWriter);
 
-	void extract() override;
+	void extract(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2) override;
 
 private:
 	std::shared_ptr<UsesSWriter> usesSWriter;
@@ -28,11 +26,9 @@ private:
 */
 class UsesPExtractor : public IRelationshipExtractor {
 public:
-	UsesPExtractor(std::shared_ptr<ASTNode> ast1,
-		std::shared_ptr<ASTNode> ast2,
-		std::shared_ptr<UsesPWriter> usesPWriter);
+	UsesPExtractor(std::shared_ptr<UsesPWriter> usesPWriter);
 
-	void extract() override;
+	void extract(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2) override;
 
 private:
 	std::shared_ptr<UsesPWriter> usesPWriter;

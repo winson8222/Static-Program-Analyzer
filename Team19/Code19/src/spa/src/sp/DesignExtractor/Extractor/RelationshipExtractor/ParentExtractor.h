@@ -9,11 +9,9 @@
 */
 class ParentExtractor : public IRelationshipExtractor {
 public:
-	ParentExtractor(std::shared_ptr<ASTNode> ast1,
-		std::shared_ptr<ASTNode> ast2,
-		std::shared_ptr<ParentWriter> parentWriter);
+	ParentExtractor(std::shared_ptr<ParentWriter> parentWriter);
 
-	void extract() override;
+	void extract(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2) override;
 
 private:
 	std::shared_ptr<ParentWriter> parentWriter;
@@ -26,11 +24,9 @@ private:
 */
 class ParentTExtractor : public IRelationshipExtractor {
 public:
-	ParentTExtractor(std::shared_ptr<ASTNode> ast1,
-		std::shared_ptr<ASTNode> ast2,
-		std::shared_ptr<ParentTWriter> parentTWriter);
+	ParentTExtractor(std::shared_ptr<ParentTWriter> parentTWriter);
 
-	void extract() override;
+	void extract(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2) override;
 
 private:
 	std::shared_ptr<ParentTWriter> parentTWriter;
