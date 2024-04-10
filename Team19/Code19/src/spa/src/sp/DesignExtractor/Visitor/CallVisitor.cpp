@@ -26,18 +26,23 @@ std::vector<std::shared_ptr<ASTNode>> CallVisitor::getProcedureContexts() {
 	std::shared_ptr<ASTNode> mostRecentProcedure;
 	std::shared_ptr<ASTNode> calleeProcedure = this->root->getChildByIndex(0);
 	std::vector<std::shared_ptr<ASTNode>> procedureContexts;
+
+	CallProcNameExtractor callProcNameExtractor(this->pkbWriterManager->getCallProcNameWriter());
+	CallsPExtractor callsPExtractor(this->pkbWriterManager->getCallsWriter());
+	CallsTExtractor callsTExtractor(this->pkbWriterManager->getCallsTWriter());
+
 	for (std::shared_ptr<ASTNode> value : this->contexts) {
 		if (value->equalType(ASTNodeType::PROCEDURE)) {
 			procedureContexts.push_back(value);
 			mostRecentProcedure = value;
-			handleCallsT(value, calleeProcedure);
+			callsTExtractor.extract(value, calleeProcedure);
 		}
 		else if (value->equalType(value->getType())) {
 			procedureContexts.push_back(value);
 		}
 	}
 
-	handleCallsP(mostRecentProcedure, calleeProcedure);
+	callsPExtractor.extract(mostRecentProcedure, calleeProcedure);
 	procedureContexts.push_back(this->root);
 	return procedureContexts;
 }
@@ -48,16 +53,6 @@ void CallVisitor::handleCallExtractor() {
 }
 
 void CallVisitor::handleCallProcNameExtractor() {
-	CallProcNameExtractor callProcNameExtractor(this->root, this->procNode, this->pkbWriterManager->getCallProcNameWriter());
-	callProcNameExtractor.extract();
-}
-
-void CallVisitor::handleCallsP(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2) {
-	CallsPExtractor callsPExtractor(ast1, ast2, this->pkbWriterManager->getCallsWriter());
-	callsPExtractor.extract();
-}
-
-void CallVisitor::handleCallsT(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2) {
-	CallsTExtractor callsTExtractor(ast1, ast2, this->pkbWriterManager->getCallsTWriter());
-	callsTExtractor.extract();
+	CallProcNameExtractor callProcNameExtractor(this->pkbWriterManager->getCallProcNameWriter());
+	callProcNameExtractor.extract(this->root, this->procNode);
 }

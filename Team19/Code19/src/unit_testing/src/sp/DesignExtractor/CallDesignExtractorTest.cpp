@@ -30,16 +30,16 @@ TEST_CASE("Calls") {
 		std::shared_ptr<ASTNode> call = std::make_shared<ASTNode>(ASTNodeType::CALL, 1, "call");
 		std::shared_ptr<ASTNode> proc = std::make_shared<ASTNode>(ASTNodeType::PROCEDURE, 1, "proc");
 		call->addChild(proc);
-		CallProcNameExtractor callProcNameExtractor(call, proc, pkbWriterManager->getCallProcNameWriter());
-		callProcNameExtractor.extract();
+		CallProcNameExtractor callProcNameExtractor(pkbWriterManager->getCallProcNameWriter());
+		callProcNameExtractor.extract(call, proc);
 
 		std::string expectedCalls = "proc";
 		REQUIRE(pkbReaderManager->getCallProcNameReader()->getCalledProcedureName(1) == expectedCalls);
 
 		std::shared_ptr<ASTNode> call1 = std::make_shared<ASTNode>(ASTNodeType::CALL, 2, "call");
 		call1->addChild(proc);
-		CallProcNameExtractor callProcNameExtractor1(call1, proc, pkbWriterManager->getCallProcNameWriter());
-		callProcNameExtractor1.extract();
+		CallProcNameExtractor callProcNameExtractor1(pkbWriterManager->getCallProcNameWriter());
+		callProcNameExtractor1.extract(call1, proc);
 
 		std::unordered_set<int> expectedCalls1 = { 1, 2 };
 		REQUIRE(pkbReaderManager->getCallProcNameReader()->getCallers("proc") == expectedCalls1);
@@ -49,8 +49,8 @@ TEST_CASE("Calls") {
 	SECTION("Test call statements") {
 		std::shared_ptr<ASTNode> proc1 = std::make_shared<ASTNode>(ASTNodeType::PROCEDURE, 1, "proc1");
 		std::shared_ptr<ASTNode> proc2 = std::make_shared<ASTNode>(ASTNodeType::PROCEDURE, 2, "proc2");
-		CallsPExtractor callExtractor(proc1, proc2, pkbWriterManager->getCallsWriter());
-		callExtractor.extract();
+		CallsPExtractor callExtractor(pkbWriterManager->getCallsWriter());
+		callExtractor.extract(proc1, proc2);
 
 		std::unordered_set<std::string> expectedCallers = { "proc1" };
 		std::unordered_set<std::string> expectedCallees = { "proc2" };
@@ -62,8 +62,8 @@ TEST_CASE("Calls") {
 	SECTION("Test call transitive statements") {
 		std::shared_ptr<ASTNode> proc1 = std::make_shared<ASTNode>(ASTNodeType::PROCEDURE, 1, "proc1");
 		std::shared_ptr<ASTNode> proc2 = std::make_shared<ASTNode>(ASTNodeType::PROCEDURE, 2, "proc2");
-		CallsTExtractor callExtractor(proc1, proc2, pkbWriterManager->getCallsTWriter());
-		callExtractor.extract();
+		CallsTExtractor callExtractor(pkbWriterManager->getCallsTWriter());
+		callExtractor.extract(proc1, proc2);
 
 		std::unordered_set<std::string> expectedCallers = { "proc1" };
 		std::unordered_set<std::string> expectedCallees = { "proc2" };

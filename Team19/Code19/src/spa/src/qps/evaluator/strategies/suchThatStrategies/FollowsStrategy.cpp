@@ -21,25 +21,7 @@ std::shared_ptr<ResultTable> FollowsStrategy::evaluateQueryOptimised(PKBReaderMa
     }
     setReader(reader);
 
-    setIntermediateResultTable(result);
-    std::unordered_set<std::string> allSynonyms = clause.getAllSynonyms();
-    if (!hasCommonSynonyms(allSynonyms, result)) {
-        std::shared_ptr<ResultTable> newResults = evaluateQuery(pkbReaderManager, parsingResult, clause);
-        return newResults;
-    }
-
-    auto optimisedResultTable = std::make_shared<ResultTable>();
-
-    if (hasBothCommonSynonyms(clause, result)) {
-        addTrueRelationshipsInResultTable(optimisedResultTable);
-    } else if (hasLeftCommonSynonym(clause, result)) {
-        addTrueLeftSynonymInResultTable(optimisedResultTable, parsingResult, pkbReaderManager);
-    } else if (hasRightCommonSynonym(clause, result)) {
-        addTrueRightSynonymInResultTable(optimisedResultTable, parsingResult, pkbReaderManager);
-    } else {
-        return evaluateQuery(pkbReaderManager, parsingResult, clause);
-    }
-    return optimisedResultTable;
+    return getOptimallyEvaluatedResultTable(parsingResult, pkbReaderManager, clause, result);
 }
 /**
  * Evaluates Follows or Follows* queries between two statements.
@@ -64,23 +46,6 @@ std::shared_ptr<ResultTable> FollowsStrategy::evaluateQuery(PKBReaderManager& pk
         reader = pkbReaderManager.getFollowsTReader();
     }
     setReader(reader);
-
-
-
-	// Handling different parameter types for the Follows relationship
-	if (isBothParamsSynonym(firstParam, secondParam)) {
-		processSynonyms(resultTable, parsingResult, pkbReaderManager);
-	}
-	else if (firstParam.getType() == TokenType::IDENT) {
-		processFirstParam(resultTable, parsingResult, pkbReaderManager);
-	}
-	else if (secondParam.getType() == TokenType::IDENT) {
-		processSecondParam(resultTable, parsingResult, pkbReaderManager);
-	}
-	else {
-		processIntegerParams(resultTable);
-	}
-
-	return resultTable;
+    return getEvaluatedResultTable(pkbReaderManager, parsingResult, resultTable);
 }
 

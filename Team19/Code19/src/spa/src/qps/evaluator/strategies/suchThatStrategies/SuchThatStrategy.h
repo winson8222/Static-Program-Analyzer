@@ -15,4 +15,54 @@ class SuchThatStrategy : public QueryEvaluationStrategy {
 
 public:
     SuchThatStrategy() = default;
+
+protected:
+    std::shared_ptr<ResultTable> getOptimallyEvaluatedResultTable(const ParsingResult& parsingResult, PKBReaderManager& pkbReaderManager, const Clause& clause,
+                                                                  std::shared_ptr<ResultTable> result);
+    void addTrueRelationshipsInResultTable(std::shared_ptr<ResultTable> newResultTable);
+    void addTrueLeftSynonymInResultTable(std::shared_ptr<ResultTable> newResultTable, const ParsingResult& parsingResult,PKBReaderManager& pkbReaderManager);
+    void addTrueRightSynonymInResultTable(std::shared_ptr<ResultTable> newResultTable, const ParsingResult& parsingResult,PKBReaderManager& pkbReaderManager);
+    virtual void addToListIfKeyRelationshipExists( const std::unordered_set<std::string>& values,
+                                           std::vector<std::string>& filteredValues,
+                                           const Token& comparisonToken) = 0;
+
+    virtual void addToListIfValueRelationshipExists( const std::unordered_set<std::string>& values,
+                                             std::vector<std::string>& filteredValues,
+                                             const Token& comparisonToken) = 0;
+
+    virtual void addToListIfRelationshipExistsWithItself(
+            const std::unordered_set<std::string>& values,
+            std::vector<std::string>& filteredValues) = 0;
+
+    virtual void addToListIfValueExists(
+            const std::unordered_set<std::string>& values,
+            std::vector<std::string>& filteredValues) = 0;
+
+    virtual void addToListIfKeyExists(
+            const std::unordered_set<std::string>& values,
+            std::vector<std::string>& filteredValues) = 0;
+
+    virtual void addPairsToListsByKey(
+            const std::unordered_set<std::string>& sourceValues,
+            const std::string& type,
+            PKBReaderManager& pkbReaderManager,
+            std::vector<std::string>& firstList,
+            std::vector<std::string>& secondList) = 0;
+
+    virtual void addPairsToListsByValue(
+            const std::unordered_set<std::string>& sourceValues,
+            const std::string& type,
+            PKBReaderManager& pkbReaderManager,
+            std::vector<std::string>& firstList,
+            std::vector<std::string>& secondList) = 0;
+
+    virtual void addPairIfRelationshipExists(
+            const std::unordered_set<std::string>& sourceValues,
+            const std::unordered_set<std::string>& targetValues,
+            std::vector<std::string>& sourceList,
+            std::vector<std::string>& targetList) = 0;
+
+
+
+
 };

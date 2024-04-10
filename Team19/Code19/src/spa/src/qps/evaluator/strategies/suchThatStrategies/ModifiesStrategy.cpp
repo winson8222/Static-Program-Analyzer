@@ -5,8 +5,12 @@ std::shared_ptr<ResultTable> ModifiesStrategy::evaluateQueryOptimised(PKBReaderM
                                                                     const ParsingResult &parsingResult,
                                                                     const Clause &clause,
                                                                     std::shared_ptr<ResultTable> result) {
-    setIntermediateResultTable(result);
-    return evaluateQuery(pkbReaderManager, parsingResult, clause);
+    setBothParams(clause);
+    std::shared_ptr<IRelationshipReader<int, std::string>> reader = pkbReaderManager.getModifiesSReader();
+
+    setReader(reader);
+
+    return getOptimallyEvaluatedResultTable(parsingResult, pkbReaderManager, clause, result);
 }
 
 std::shared_ptr<ResultTable> ModifiesStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause)
@@ -20,15 +24,6 @@ std::shared_ptr<ResultTable> ModifiesStrategy::evaluateQuery(PKBReaderManager& p
 
     setBothParams(clause);
 
-    if (isBothParamsSynonym(firstParam, secondParam)) {
-        processBothSynonyms(parsingResult, resultTable, pkbReaderManager);
-    } else if (firstParam.getType() == TokenType::IDENT) {
-        processFirstParam(parsingResult, resultTable, pkbReaderManager);
-    } else if (secondParam.getType() == TokenType::IDENT) {
-        processSecondParam(parsingResult, resultTable, pkbReaderManager);
-    } else {
-        processBothConstants( parsingResult, resultTable);
-    }
-    return resultTable;
+    return getEvaluatedResultTable(pkbReaderManager, parsingResult, resultTable);
 }
 

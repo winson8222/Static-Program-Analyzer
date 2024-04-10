@@ -9,8 +9,18 @@ std::shared_ptr<ResultTable> CallsStrategy::evaluateQueryOptimised(PKBReaderMana
                                                                     const ParsingResult &parsingResult,
                                                                     const Clause &clause,
                                                                     std::shared_ptr<ResultTable> result) {
-    setIntermediateResultTable(result);
-    return evaluateQuery(pkbReaderManager, parsingResult, clause);
+    const auto* suchClause = dynamic_cast<const SuchThatClause*>(&clause);
+    this->variant = suchClause->getRelationship().getValue();
+    setBothParams(clause);
+    std::shared_ptr<IRelationshipReader<std::string, std::string>> reader;
+    if (variant == "Calls") {
+        reader = pkbReaderManager.getCallsReader();
+    } else if (variant == "Calls*") {
+        reader = pkbReaderManager.getCallsTReader();
+    }
+    setReader(reader);
+
+    return getOptimallyEvaluatedResultTable(parsingResult, pkbReaderManager, clause, result);
 }
 
 std::shared_ptr<ResultTable> CallsStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause)
@@ -27,18 +37,7 @@ std::shared_ptr<ResultTable> CallsStrategy::evaluateQuery(PKBReaderManager& pkbR
         reader = pkbReaderManager.getCallsTReader();
     }
     setReader(reader);
+    return getEvaluatedResultTable(pkbReaderManager, parsingResult, resultTable);
 
-
-    if (isBothParamsSynonym(firstParam, secondParam)) {
-        this->processBothSynonyms(parsingResult, resultTable);
-    } else if (firstParam.getType() == TokenType::IDENT) {
-        this->processFirstParam(parsingResult, resultTable);
-    } else if (secondParam.getType() == TokenType::IDENT) {
-        this->processSecondParam(parsingResult, resultTable);
-    } else {
-        this->processBothConstants(parsingResult, resultTable);
-    }
-
-    return resultTable;
 }
 

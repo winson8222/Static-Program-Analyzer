@@ -24,6 +24,8 @@ private:
 
 	ParsingResult parsingResult;
 
+    std::shared_ptr<ResultTable> getEvaluatedResultTable(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult,std::shared_ptr<ResultTable> resultTable) override;
+
 	/**
 	 * Retrieves the entities from the result table based on the given synonym and entity reader for integer entities.
 	 * @param synonym The synonym to retrieve the entities for.

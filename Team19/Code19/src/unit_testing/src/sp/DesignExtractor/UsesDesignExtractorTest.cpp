@@ -19,10 +19,10 @@ TEST_CASE("sp/SourceProcessor: Uses(unit)") {
             std::shared_ptr<ASTNode> ast1 = std::make_shared<ASTNode>(ASTNodeType::ASSIGN, 1, "z");
             std::shared_ptr<ASTNode> ast2 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "x");
             std::shared_ptr<ASTNode> ast3 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 1, "y");
-            UsesSExtractor usesExtractor(ast1, ast2, pkbWriterManager->getUsesSWriter());
-            usesExtractor.extract();
-            UsesSExtractor usesExtractor2(ast1, ast3, pkbWriterManager->getUsesSWriter());
-            usesExtractor2.extract();
+            UsesSExtractor usesExtractor(pkbWriterManager->getUsesSWriter());
+            usesExtractor.extract(ast1, ast2);
+            UsesSExtractor usesExtractor2(pkbWriterManager->getUsesSWriter());
+            usesExtractor2.extract(ast1, ast3);
 
             REQUIRE(usesSReader->doesStmtUseVariable(1, "x"));
             REQUIRE(usesSReader->doesStmtUseVariable(1, "y"));
@@ -32,40 +32,40 @@ TEST_CASE("sp/SourceProcessor: Uses(unit)") {
         SECTION("Test print") {
             std::shared_ptr<ASTNode> ast3 = std::make_shared<ASTNode>(ASTNodeType::PRINT, 2, "print");
             std::shared_ptr<ASTNode> ast4 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 2, "y");
-            UsesSExtractor usesExtractor3(ast3, ast4, pkbWriterManager->getUsesSWriter());
-            usesExtractor3.extract();
+            UsesSExtractor usesExtractor3(pkbWriterManager->getUsesSWriter());
+            usesExtractor3.extract(ast3, ast4);
             REQUIRE(usesSReader->doesStmtUseVariable(2, "y"));
         }
 
         SECTION("Test ifs") {
             std::shared_ptr<ASTNode> ast5 = std::make_shared<ASTNode>(ASTNodeType::IF_ELSE_THEN, 3, "ifs");
             std::shared_ptr<ASTNode> ast6 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 4, "z");
-            UsesSExtractor usesExtractor4(ast5, ast6, pkbWriterManager->getUsesSWriter());
-            usesExtractor4.extract();
+            UsesSExtractor usesExtractor4(pkbWriterManager->getUsesSWriter());
+            usesExtractor4.extract(ast5, ast6);
             REQUIRE(usesSReader->doesStmtUseVariable(3, "z"));
         }
 
         SECTION("Test while") {
             std::shared_ptr<ASTNode> ast7 = std::make_shared<ASTNode>(ASTNodeType::WHILE, 5, "while");
             std::shared_ptr<ASTNode> ast8 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 6, "t");
-            UsesSExtractor usesExtractor5(ast7, ast8, pkbWriterManager->getUsesSWriter());
-            usesExtractor5.extract();
+            UsesSExtractor usesExtractor5(pkbWriterManager->getUsesSWriter());
+            usesExtractor5.extract(ast7, ast8);
             REQUIRE(usesSReader->doesStmtUseVariable(5, "t"));
         }
 
         SECTION("Test procedure") {
             std::shared_ptr<ASTNode> ast9 = std::make_shared<ASTNode>(ASTNodeType::PROCEDURE, 0, "proc");
             std::shared_ptr<ASTNode> ast10 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 0, "x");
-            UsesPExtractor usesExtractor6(ast9, ast10, pkbWriterManager->getUsesPWriter());
-            usesExtractor6.extract();
+            UsesPExtractor usesExtractor6(pkbWriterManager->getUsesPWriter());
+            usesExtractor6.extract(ast9, ast10);
             REQUIRE(usesPPReader->doesProcUseVariable("proc", "x"));
         }
 
         SECTION("Test call") {
 			std::shared_ptr<ASTNode> ast13 = std::make_shared<ASTNode>(ASTNodeType::CALL, 8, "call");
 			std::shared_ptr<ASTNode> ast14 = std::make_shared<ASTNode>(ASTNodeType::VARIABLE, 8, "x");
-			UsesSExtractor usesExtractor8(ast13, ast14, pkbWriterManager->getUsesSWriter());
-			usesExtractor8.extract();
+			UsesSExtractor usesExtractor8(pkbWriterManager->getUsesSWriter());
+			usesExtractor8.extract(ast13, ast14);
 			REQUIRE(usesSReader->doesStmtUseVariable(8, "x"));
         }
     }

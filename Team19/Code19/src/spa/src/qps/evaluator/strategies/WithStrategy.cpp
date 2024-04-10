@@ -6,31 +6,10 @@
 #include <vector>
 #include "qps/parser/clauses/WithClause.h"
 
-/**
- * Evaluates equality between 2 parameters.
- * Determines the relationship based on the parsing result and updates the result table accordingly.
- *
- * @param pkbReaderManager Provides access to the program knowledge base.
- * @param parsingResult Contains the parsed query details.
- * @return A shared pointer to the populated result table.
- */
-std::shared_ptr<ResultTable> WithStrategy::evaluateQueryOptimised(PKBReaderManager &pkbReaderManager,
-                                                                  const ParsingResult &parsingResult,
-                                                                  const Clause &clause,
-                                                                  std::shared_ptr<ResultTable> result) {
-    setIntermediateResultTable(result);
-    return evaluateQuery(pkbReaderManager, parsingResult, clause);
-}
 
 
-std::shared_ptr<ResultTable> WithStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) {
-    auto resultTable = std::make_shared<ResultTable>();
-    // Initializing PKB readers for With clause
-    const WithClause* withClause = dynamic_cast<const WithClause*>(&clause);
-    setBothParams(clause);
-    this->parsingResult = parsingResult;
-
-
+std::shared_ptr<ResultTable> WithStrategy::getEvaluatedResultTable(PKBReaderManager &pkbReaderManager,
+                                                                   const ParsingResult &parsingResult, std::shared_ptr<ResultTable> resultTable) {
     if (isAttrRefIdentical(firstParam, secondParam)) {
         resultTable->setAsTruthTable();
         return resultTable;
@@ -55,6 +34,33 @@ std::shared_ptr<ResultTable> WithStrategy::evaluateQuery(PKBReaderManager& pkbRe
     }
 
     return resultTable;
+
+}
+/**
+ * Evaluates equality between 2 parameters.
+ * Determines the relationship based on the parsing result and updates the result table accordingly.
+ *
+ * @param pkbReaderManager Provides access to the program knowledge base.
+ * @param parsingResult Contains the parsed query details.
+ * @return A shared pointer to the populated result table.
+ */
+std::shared_ptr<ResultTable> WithStrategy::evaluateQueryOptimised(PKBReaderManager &pkbReaderManager,
+                                                                  const ParsingResult &parsingResult,
+                                                                  const Clause &clause,
+                                                                  std::shared_ptr<ResultTable> result) {
+    setIntermediateResultTable(result);
+    return evaluateQuery(pkbReaderManager, parsingResult, clause);
+}
+
+
+std::shared_ptr<ResultTable> WithStrategy::evaluateQuery(PKBReaderManager& pkbReaderManager, const ParsingResult& parsingResult, const Clause& clause) {
+    auto resultTable = std::make_shared<ResultTable>();
+    // Initializing PKB readers for With clause
+    const WithClause* withClause = dynamic_cast<const WithClause*>(&clause);
+    setBothParams(clause);
+    this->parsingResult = parsingResult;
+    return getEvaluatedResultTable(pkbReaderManager, parsingResult, resultTable);
+
 }
 
 std::unordered_set<std::string> WithStrategy::retrieveIntStringLinks(std::string synonym, const std::shared_ptr<ResultTable>& resultTable, const std::shared_ptr<ILinkReader<int, std::string>> linkReader) {

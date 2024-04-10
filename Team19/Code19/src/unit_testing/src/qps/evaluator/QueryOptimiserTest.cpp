@@ -432,3 +432,40 @@ TEST_CASE("Dynamically check number of Next statements and sort") {
 
 
 }
+
+
+//assign a; while w;
+//Select <w, a.stmt#> such that Uses(a, "end") such that Parent(w, a) pattern a("middle",_) and a(_,_"start"_)
+TEST_CASE("failed test cases for StmtEnt Opt") {
+    std::shared_ptr<PKBManager> pkb = std::make_shared<PKBManager>();
+    std::shared_ptr<PKBWriterManager> pkbWriterManager = pkb->getPKBWriterManager();
+    std::shared_ptr<PKBReaderManager> pkbReaderManager = pkb->getPKBReaderManager();
+    std::shared_ptr<PKBCacheManager> pkbCacheManager = pkb->getPKBCacheManager();
+    std::shared_ptr<UsesSWriter> usesSWriter = pkbWriterManager->getUsesSWriter();
+    std::shared_ptr<AssignWriter> assignWriter = pkbWriterManager->getAssignWriter();
+    std::shared_ptr<StatementWriter> statementWriter = pkbWriterManager->getStatementWriter();
+    std::shared_ptr<ParentWriter> parentWriter = pkbWriterManager->getParentWriter();
+    std::shared_ptr<AssignPatternWriter> assignPatternWriter = pkbWriterManager->getAssignPatternWriter();
+    std::shared_ptr<WhileWriter> whileWriter = pkbWriterManager->getWhileWriter();
+
+    pkbCacheManager->populateCache();
+    std::vector<std::shared_ptr<Clause>> clauses;
+    whileWriter->insertWhile(6);
+    statementWriter->insertStatement(6);
+    assignWriter->insertAssign(7);
+    assignPatternWriter->addAssignPattern(7, "middle", "end");
+    usesSWriter->addUsesS(7, "end");
+    parentWriter->addParent(6, 7);
+
+
+    std::string query = "assign a; while w; Select <w, a.stmt#> such that Uses(a, \"end\") such that Parent(w, a) pattern a(\"middle\",_)";
+    Tokenizer tokenizer = Tokenizer(query);
+    std::vector<Token> tokens = tokenizer.tokenize();
+    QueryParser queryParser = QueryParser(tokens);
+    ParsingResult parsingResult = queryParser.parse();
+    QueryEvaluator queryEvaluator = QueryEvaluator(pkbReaderManager, pkbCacheManager, parsingResult);
+    std::unordered_set<std::string> results = queryEvaluator.evaluateQuery();
+    REQUIRE(results.size() == 1);
+
+
+}

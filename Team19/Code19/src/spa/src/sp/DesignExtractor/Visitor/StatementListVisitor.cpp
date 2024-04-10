@@ -37,17 +37,17 @@ void StatementListVisitor::setContext(std::vector<std::shared_ptr<ASTNode>> cont
 // in milestone 3 we try to optimize this to at least O(n logn)
 void StatementListVisitor::handleAllFollows() {
 	int size = statementLists.size();
-	FollowsExtractor followsExtractor();
-	FollowsTExtractor followsTExtractor();
+	FollowsExtractor followsExtractor(this->pkbWriterManager->getFollowsWriter());
+	FollowsTExtractor followsTExtractor(this->pkbWriterManager->getFollowsTWriter());
 
 	for (int i = 0; i < size - 1; i++) {
 		std::shared_ptr<ASTNode> ast1 = root->getChildByIndex(i);
 		std::shared_ptr<ASTNode> ast2 = root->getChildByIndex(i + 1);
-		handleFollowsS(ast1, ast2);
+		followsExtractor.extract(ast1, ast2);
 
 		for (int j = i + 1; j < size; j++) {
 			std::shared_ptr<ASTNode> ast3 = root->getChildByIndex(j);
-			handleFollowsT(ast1, ast3);
+			followsTExtractor.extract(ast1, ast3);
 		}
 	}
 }
@@ -55,14 +55,4 @@ void StatementListVisitor::handleAllFollows() {
 void StatementListVisitor::handleStatementExtraction(std::shared_ptr<ASTNode> statement) {
 	StatementExtractor statementExtractor(statement, this->pkbWriterManager->getStatementWriter());
 	statementExtractor.extract();
-}
-
-void StatementListVisitor::handleFollowsS(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2) {
-	FollowsExtractor followsExtractor(ast1, ast2, this->pkbWriterManager->getFollowsWriter());
-	followsExtractor.extract();
-}
-
-void StatementListVisitor::handleFollowsT(std::shared_ptr<ASTNode> ast1, std::shared_ptr<ASTNode> ast2) {
-	FollowsTExtractor followsExtractor(ast1, ast2, this->pkbWriterManager->getFollowsTWriter());
-	followsExtractor.extract();
 }
