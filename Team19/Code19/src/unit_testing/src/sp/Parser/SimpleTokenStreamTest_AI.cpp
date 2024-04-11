@@ -7,9 +7,9 @@ TEST_CASE("Check SimpleTokenStream behavior for Whitespace at the end.") {
 	auto token_ptr = std::make_shared<std::vector<LexicalToken>>(tokens);
 	SimpleTokenStream tokenStream(token_ptr);
 	REQUIRE(tokenStream.hasTokensLeft() == true);
-	REQUIRE_NOTHROW(tokenStream.popAndAssertToken(LexicalTokenType::INTEGER));
+	REQUIRE_NOTHROW(tokenStream.popAndAssertToken(LexicalTokenType::INTEGER, 0));
 	REQUIRE(tokenStream.hasTokensLeft() == false);
-	REQUIRE_NOTHROW(tokenStream.popAndAssertToken(LexicalTokenType::NULL_TOKEN));
+	REQUIRE_NOTHROW(tokenStream.popAndAssertToken(LexicalTokenType::NULL_TOKEN, 0));
 }
 
 // Check whether the next non-whitespace token function works correctly
@@ -17,7 +17,7 @@ TEST_CASE("Check SimpleTokenstream behavior for skipping whitespaces.") {
 	std::vector<LexicalToken> tokens = { LexicalToken(LexicalTokenType::WHITESPACE), LexicalToken(LexicalTokenType::INTEGER) };
 	auto token_ptr = std::make_shared<std::vector<LexicalToken>>(tokens);
 	SimpleTokenStream tokenStream(token_ptr);
-	REQUIRE_NOTHROW(tokenStream.popAndAssertToken(LexicalTokenType::INTEGER));
+	REQUIRE_NOTHROW(tokenStream.popAndAssertToken(LexicalTokenType::INTEGER, 0));
 }
 
 // Check behavior for empty input token vector
