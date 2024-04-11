@@ -51,7 +51,7 @@ bool SimpleTokenStream::hasTokensLeft() {
 	return !nextToken.isType(LexicalTokenType::NULL_TOKEN);
 }
 
-void SimpleTokenStream::popAndAssertToken(LexicalTokenType type) {
+void SimpleTokenStream::popAndAssertToken(LexicalTokenType type, int line) {
 	LexicalToken nextToken = this->getNextToken();
-	nextToken.assertToken(type);
+	nextToken.assertToken(type, line);
 }
