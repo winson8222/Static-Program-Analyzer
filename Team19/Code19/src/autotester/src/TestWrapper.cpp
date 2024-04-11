@@ -37,23 +37,7 @@ void TestWrapper::parse(std::string filename) {
 // method to evaluating a query
 void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
 
-	// call your evaluator to evaluate the query here
-    // ...code to evaluate query...
-    pkbCacheManager->populateCache();
-	Tokenizer tokenizer(query);
-	vector<Token> tokens = tokenizer.tokenize();
-	QueryParser parser(tokens);
-	auto parsingResult = parser.parse();
-	QueryEvaluator evaluator(pkbReaderManager, pkbCacheManager, parsingResult);
-	std::unordered_set<string> res = evaluator.evaluateQuery();
-    int synCount = parsingResult.getRequiredSynonyms().size();
-
-    for (auto & re : res) {
-        results.push_back(re);
-    }
-    pkbCacheManager->clearCache();
-
-	// store the answers to the query in the results list (it is initially empty)
-	// each result must be a string.
+	QueryProcessor qp = QueryProcessor(this->pkbReaderManager, this->pkbCacheManager);
+    qp.processQuery(query, results);
 
 }
