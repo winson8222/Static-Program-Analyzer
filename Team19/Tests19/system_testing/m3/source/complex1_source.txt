@@ -1,0 +1,105 @@
+procedure main {
+    call complexLogic;
+}
+
+procedure complexLogic {
+    read a;
+    read b;
+    read c;
+    read d;
+    read e;
+    read f;
+    read g;
+    read h;
+
+    i = a;
+    while (i < a) {
+        j = 0;
+        while (j < b) {
+            k = 0;
+            while (k < c) {
+                m = 0;
+                while (m < d) {
+                    n = 0;
+                    while (n < e) {
+                        o = 0;
+                        while (o < f) {
+                            p = 0;
+                            while (p < g) {
+                                if (i % 2 == 0) then {
+                                    if (j % 3 == 0) then {
+                                        if (k % 5 == 0) then {
+                                            if (m % 7 == 0) then {
+                                                if (n % 11 == 0) then {
+                                                    if (o % 13 == 0) then {
+                                                        if (p % 17 == 0) then {
+                                                            result1 = a * b * c * d * e * f * g;
+                                                        } else {
+                                                            result1 = b * c * d * e * f * g * h;
+                                                        }
+                                                    } else {
+                                                        result1 = c * d * e * f * g * h * a;
+                                                    }
+                                                } else {
+                                                    result1 = d * e * f * g * h * a * b;
+                                                }
+                                            } else {
+                                                result1 = e * f * g * h * a * b * c;
+                                            }
+                                        } else {
+                                            result1 = f * g * h * a * b * c * d;
+                                        }
+                                    } else {
+                                        result1 = g * h * a * b * c * d * e;
+                                    }
+                                } else {
+                                    result1 = h * a * b * c * d * e * f;
+                                }
+
+                                if (i % 3 == 0) then {
+                                    if (j % 5 == 0) then {
+                                        if (k % 7 == 0) then {
+                                            if (m % 11 == 0) then {
+                                                if (n % 13 == 0) then {
+                                                    if (o % 17 == 0) then {
+                                                        if (p % 2 == 0) then {
+                                                            result2 = a + b + c + d + e + f + g;
+                                                        } else {
+                                                            result2 = b + c + d + e + f + g + h;
+                                                        }
+                                                    } else {
+                                                        result2 = c + d + e + f + g + h + a;
+                                                    }
+                                                } else {
+                                                    result2 = d + e + f + g + h + a + b;
+                                                }
+                                            } else {
+                                                result2 = e + f + g + h + a + b + c;
+                                            }
+                                        } else {
+                                            result2 = f + g + h + a + b + c + d;
+                                        }
+                                    } else {
+                                        result2 = g + h + a + b + c + d + e;
+                                    }
+                                } else {
+                                    result2 = h + a + b + c + d + e + f;
+                                }
+
+                                print result1;
+                                print result2;
+                                p = p + 1;
+                            }
+                            o = o + 1;
+                        }
+                        n = n + 1;
+                    }
+                    m = m + 1;
+                }
+                k = k + 1;
+            }
+            j = j + 1;
+        }
+        i = i + 1;
+    }
+}

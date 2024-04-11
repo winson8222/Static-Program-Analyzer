@@ -1,0 +1,15 @@
+1 - Comment
+variable v;
+Select v
+a,b,c,d,e,f,g,h,i,j,k,m,n,o,p,result1,result2
+5000
+2 - Comment
+stmt s1, s2;
+Select s1 such that Uses(s1, "a") and not Next*(10, s1)
+1, 10
+5000
+3 - Comment
+stmt s1, s2; assign a;
+Select a such that Uses(s1, "a") and not Next*(10, s1) with a.stmt# = s1.stmt# and a.stmt# = 10 and a.stmt# = s1.stmt# and a.stmt# = s1.stmt# and a.stmt# = s1.stmt# and a.stmt# = s1.stmt# and a.stmt# = s1.stmt# and a.stmt# = s1.stmt# and a.stmt# = s1.stmt# and a.stmt# = s1.stmt# and a.stmt# = s1.stmt# and a.stmt# = s1.stmt# and a.stmt# = s1.stmt# and a.stmt# = s1.stmt# and a.stmt# = s1.stmt# such that not Next*(10, s1) and not Next*(10, s1) and not Next*(10, s1) and not Next*(10, s1) and not Next*(10, s1) and not Next*(10, s1) and not Next*(10, s1) and not Next*(10, s1) and not Next*(10, s1) and not Next*(10, s1) and not Next*(10, s1)
+10
+5000
