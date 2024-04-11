@@ -1734,6 +1734,16 @@ TEST_CASE("BOOLEAN used as synonym") {
     REQUIRE(parsingResult.isQueryValid());
 }
 
+TEST_CASE("jumbled up query") {
+
+    std::string query = "stmt s, s1,s2; call ca; constant c; read r; print pn; stmt n, n1,n2,n3; if ifs, ifs1; while w; variable v,v1,v2,v3,v4; assign a,a1,a2,a3; procedure p,p1,p2,p3; Select <v4.varName> such that Parent*(ifs1,r) and Modifies(s2, v4) such that Follows(n,n1) and Next*(n, n2) and Affects*(n2,s1) with s1.stmt# = n3.stmt# with p2.procName = p3.procName such that Calls(p,p1) pattern w( v3, _) such that Affects(a2,a3) such that Uses(s,v2) pattern ifs1 ( v4, _, _ ) and a (v4,_\"d\"_)";
+    Tokenizer tokenizer(query);
+    vector<Token> tokens = tokenizer.tokenize();
+    QueryParser queryParser(tokens);
+    ParsingResult parsingResult = queryParser.parse();
+    REQUIRE(parsingResult.isQueryValid());
+}
+
 
 
 

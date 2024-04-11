@@ -746,6 +746,7 @@ void QueryParser::ensureToken(TokenType expected) {
 // Throws a standard invalid_argument exception with a custom error message for incomplete error.
 void QueryParser::throwSyntaxError() {
     throw std::invalid_argument("SyntaxError");
+
 }
 // Parses a variable synonym in the query.
 void QueryParser::parseEntSynonym() {
