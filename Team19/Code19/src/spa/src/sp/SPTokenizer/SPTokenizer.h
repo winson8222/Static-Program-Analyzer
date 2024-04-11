@@ -1,6 +1,9 @@
 #pragma once
 
+#include <string>
+#include <vector>
 #include "LexicalToken.h"
+#include "LexicalTokenType.h"
 
 /**
  * @brief Represents a tokenizer which takes in a string and tokenizes it.
@@ -13,14 +16,13 @@ public:
 	* @param content The content to be tokenized.
 	* @return A vector of lexical tokens.
 	*/
-	static std::vector<LexicalToken> tokenize(const std::string& content);
+	static std::shared_ptr<std::vector<LexicalToken>> tokenize(const std::string& content);
 
+private:
 	/**
 	* Split a line (of multiple lines) into a vector of strings.
 	*/
 	static std::vector<std::string> splitLine(const std::string& content);
-
-private:
 
 	/*
 	* @brief Check and assert that a string valued token is valid.

@@ -1,18 +1,13 @@
 #include "LexicalToken.h"
-#include <iostream>
-
+#include <stdexcept>
 
 LexicalToken::LexicalToken(LexicalTokenType type) {
     this->type = type;
-    this->lineNumber = -1;
-    this->linePosition = -1;
     this->value = "";
 }
 
-LexicalToken::LexicalToken(LexicalTokenType t, int lineNumber, int linePosition, std::string value) {
+LexicalToken::LexicalToken(LexicalTokenType t, std::string value) {
     this->type = t;
-    this->lineNumber = lineNumber;
-    this->linePosition = linePosition;
     this->value = value;
 }
 
@@ -25,32 +20,17 @@ std::string LexicalToken::getValue() const {
     return this->value;
 }
 
-int LexicalToken::getLinePosition() {
-    return this->linePosition;
-}
-
 LexicalTokenType LexicalToken::getTokenType() {
     return this->type;
-}
-
-int LexicalToken::getLine() {
-    return this->lineNumber;
 }
 
 bool LexicalToken::isType(LexicalTokenType type) {
     return LexicalTokenTypeMapper::isType(this->getTokenType(), type);
 }
 
-void LexicalToken::print() {
-    std::cout << "Token Type: " << LexicalTokenTypeMapper::tokenToStringMap.find(type)->second << " ";
-    std::cout << "Line Number: " << lineNumber << " ";
-    std::cout << "Line Position: " << linePosition << " ";
-    std::cout << "Value: " << std::endl;
-}
-
-void LexicalToken::assertToken(LexicalTokenType type) {
+void LexicalToken::assertToken(LexicalTokenType type, int line) {
     if (!this->isType(type)) {
-        throw std::runtime_error("Error: Expected " + LexicalTokenTypeMapper::printType(type) + " but got " + LexicalTokenTypeMapper::printType(this->getTokenType()) +
-            " At Line " + std::to_string(this->getLine()) + "Position" + std::to_string(this->getLinePosition()));
+        throw std::runtime_error("Error: Expected " + LexicalTokenTypeMapper::printType(type) + " but got " + 
+            LexicalTokenTypeMapper::printType(this->getTokenType()) + " at line " + std::to_string(line));
     }
 }
