@@ -2,6 +2,7 @@
 #include <fstream>
 #include <filesystem>
 #include <sstream>
+#include <stdexcept>
 
 std::string FileProcessor::readFileToString(const std::string& filename) {
 	// Create an input file stream to read the file
