@@ -540,7 +540,7 @@ void QueryParser::checkExprSyntax(const std::string &expr) {
     std::string operand;
     for (char c : expr) {
         if (c == '(') {
-            if (prevOperand && !operand.empty()) {
+            if (prevOperand && !operand.empty() || prevRightBracket) {
                 throwSyntaxError();
             }
             prevOperand = true;
